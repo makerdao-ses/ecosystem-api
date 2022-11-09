@@ -2,6 +2,7 @@ import { gql } from "apollo-server-core";
 
 export const typeDefs = gql`
 
+    "The social media channels of a Core Unit - If applicable "
     type SocialMediaChannels {
         id: ID!
         cuId: String
@@ -30,6 +31,7 @@ export const typeDefs = gql`
         followerCount: Int!
     }
 
+    "Allows for filtering of Core Units using Social Media channel values"
     input SocialMediaChannelsFilter {
         id: ID
         cuId: String
@@ -43,7 +45,9 @@ export const typeDefs = gql`
     }
 
     extend type Query {
+        "Retrieves all Social Media Channels of Core Units"
         socialMediaChannels: [SocialMediaChannels],
+        "Retrieves specific Social Media Channel"
         socialMediaChannel(filter: SocialMediaChannelsFilter): [SocialMediaChannels]
     }
 

@@ -13,9 +13,13 @@ export const typeDefs = gql`
         image: String
         "Type of core unit"
         category: [CoreUnitCategory]
+        "Short description of the mandate of the Core Unit"
         sentenceDescription: String
+        "Longer description of the mandate of the Core Unit"
         paragraphDescription: String
+        "Optional image provided for accompanying the paragraph description "
         paragraphImage: String
+        "Short format of Core Unit code"
         shortCode: String        
         "Access details on the social media channels of a Core Unit"
         socialMediaChannels: [SocialMediaChannels]
@@ -26,6 +30,7 @@ export const typeDefs = gql`
         cuUpdates: [CuUpdate]
     }
 
+    "The broad categorisation of the work the Core Unit mostly engages in - a Core Unit can have more than one"
     enum CoreUnitCategory {
         Technical
         Support
@@ -37,6 +42,7 @@ export const typeDefs = gql`
         Legal
     }
 
+    "Update provided by a specific Core Unit"
     type CuUpdate {
         id: ID!
         cuId: ID!
@@ -51,11 +57,13 @@ export const typeDefs = gql`
     }
 
     extend type Query {
-        "Use this query to retrieve information about ALL Core Units"
+        "Retrieve information about ALL Core Units"
         coreUnits(limit: Int, offset: Int): [CoreUnit],
-        "Use this query to retrieve information about a single Core Unit, use arguments to filter."
+        "Retrieve information about a single Core Unit, use arguments to filter"
         coreUnit(filter: CoreUnitFilter): [CoreUnit],
+        "Retrieve all updates provided by Core Units"
         cuUpdates: [CuUpdate],
+        "Retrieve a single Core Unit update"
         cuUpdate(filter: CuUpdateFilter): [CuUpdate]
     }
 
