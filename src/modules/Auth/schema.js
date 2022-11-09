@@ -48,8 +48,7 @@ export const typeDefs = [gql`
     }
     
     type Query {
-        user(filter: UsersFilter): [User]
-        users: [User]
+        users(input: UsersFilter): [User]
     }
 
     type Mutation {
@@ -61,38 +60,24 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        user: async (_, { filter }, { user, auth, dataSources }) => {
+        users: async (_, { input }, { user, auth, dataSources }) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
-                    const queryParams = Object.keys(filter);
-                    if (queryParams.length > 1) {
-                        throw "Choose no more than 1 parameters"
+                    let paramName;
+                    let paramValue;
+                    if (input) {
+                        const queryParams = Object.keys(input)
+                        if (queryParams.length > 1) {
+                            throw "Choose no more than 1 parameters"
+                        }
+                        paramName = queryParams[0];
+                        paramValue = input[queryParams[0]];
                     }
-                    const paramName = queryParams[0];
-                    const paramValue = filter[queryParams[0]];
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
                         const result = await dataSources.db.Auth.getUsers(paramName, paramValue);
-                        return parseToSchemaUser(result)
-                    } else {
-                        throw new AuthenticationError('You are not authorized to perform this query')
-                    }
-
-                }
-            } catch (error) {
-                throw new AuthenticationError(error ? error : 'You are not authorized to perform this query')
-            }
-        },
-        users: async (_, __, { user, auth, dataSources }) => {
-            try {
-                if (!user && !auth) {
-                    throw new AuthenticationError("Not authenticated, login!")
-                } else {
-                    const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
-                    if (allowed[0].count > 0) {
-                        const result = await dataSources.db.Auth.getUsers();
                         return parseToSchemaUser(result)
                     } else {
                         throw new AuthenticationError('You are not authorized to perform this query')
@@ -227,49 +212,3 @@ const parseToSchemaUser = (result) => {
     });
     return resultUsers
 }
-
-/*
-const parseToSchemaUser = (result) => {
-    // concatenate permissions for each user
-    const usernames = result.map(user => user.username);
-    let userObj = { id: '', username: '', isActive: '', roles: { id: '', name: '', permissions: [] } }
-    const resultUsers = [];
-    usernames.forEach((username, index) => {
-        if (userObj.username !== username) {
-            userObj.id = result[index].id
-            userObj.username = username;
-            // add isActive when ready in DB
-            userObj.isActive = ''
-            userObj.roles.id = result[index].roleId
-            userObj.roles.name = result[index].roleName
-            userObj.roles.permissions = []
-            usernames.forEach((usrName, i) => {
-                if (result[i].username === username) {
-                    let str = `${result[i].resource}/${result[i].permission}`
-                    if (result[i].resourceId !== null) {
-                        str = str.concat(`/${result[i].resourceId}`)
-                    }
-
-                    userObj.roles.permissions.push(str);
-                }
-            })
-
-            resultUsers.push({
-                id: userObj.id,
-                username: userObj.username,
-                isActive: userObj.isActive,
-                roles: {
-                    id: userObj.roles.id,
-                    name: userObj.roles.name,
-                    permissions: [...userObj.roles.permissions]
-                }
-            })
-
-        }
-    });
-    // end concatenate permissions for each user
-    return resultUsers
-}
-
-
-*/
