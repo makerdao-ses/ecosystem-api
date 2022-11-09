@@ -9,7 +9,7 @@ export const typeDefs = [gql`
     type User {
         id: ID
         username: String
-        isActive: String
+        active: Boolean
         roles: [Role]
     }
 
@@ -46,6 +46,11 @@ export const typeDefs = [gql`
         username: String
         # isActive: String
     }
+
+    input UserSetActiveFlag {
+        id: ID!
+        active: Boolean!
+    }
     
     type Query {
         users(input: UsersFilter): [User]
@@ -55,6 +60,7 @@ export const typeDefs = [gql`
         userCreate(input: UserInput): User!
         userLogin(input: AuthInput!): UserPayload!
         userChangePassword(input: UpdatePassword!): User!
+        userSetActiveFlag(input: UserSetActiveFlag): [User]
     }
 `];
 
@@ -158,6 +164,25 @@ export const resolvers = {
             } catch (error) {
                 throw new AuthenticationError(error ? error : 'password is incorrect')
             }
+        },
+        userSetActiveFlag: async (_, { input }, { user, auth, dataSources }) => {
+            try {
+                if (!user && !auth) {
+                    throw new AuthenticationError("Not authenticated, login!")
+                } else {
+                    const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
+                    if (allowed[0].count > 0) {
+                        await dataSources.db.Auth.setActiveFlag(input.id, input.active)
+                        const result = await dataSources.db.Auth.getUsers('id', input.id);
+                        return parseToSchemaUser(result)
+                    }
+                    else {
+                        throw new AuthenticationError('You are not authorized to perform this query')
+                    }
+                }
+            } catch (error) {
+                throw new AuthenticationError(error ? error : 'password is incorrect')
+            }
         }
     }
 
@@ -165,7 +190,7 @@ export const resolvers = {
 
 const parseToSchemaUser = (result) => {
     const usernames = result.map(user => user.username);
-    let userObj = { id: '', username: '', isActive: '', roles: [] }
+    let userObj = { id: '', username: '', active: '', roles: [] }
     const resultUsers = [];
     usernames.forEach((username, index) => {
         // If creating extra roles, we need to redo below 2 lines to automatically create role objects
@@ -174,8 +199,7 @@ const parseToSchemaUser = (result) => {
         if (userObj.username !== username) {
             userObj.id = result[index].id
             userObj.username = username;
-            // add isActive when ready in DB
-            userObj.isActive = ''
+            userObj.active = result[index].active
             userObj.roles = []
             role.id = result[index].roleId
             role.name = result[index].roleName
@@ -205,7 +229,7 @@ const parseToSchemaUser = (result) => {
             resultUsers.push({
                 id: userObj.id,
                 username: userObj.username,
-                isActive: userObj.isActive,
+                active: userObj.active,
                 roles: userObj.roles
             })
         }

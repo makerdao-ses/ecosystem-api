@@ -81,7 +81,7 @@ export class AuthModel {
     async getUsers(paramName: string | undefined, paramValue: number | string | undefined): Promise<User[]> {
         if (paramName !== undefined && paramValue !== undefined) {
             return await this.knex
-                .select('User.id', 'username', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
+                .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
                 .from('User')
                 .join('UserRole', function () {
                     this
@@ -101,7 +101,7 @@ export class AuthModel {
 
         } else {
             return await this.knex
-                .select('User.id', 'username', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
+                .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
                 .from('User')
                 .join('UserRole', function () {
                     this
@@ -118,6 +118,10 @@ export class AuthModel {
                 })
                 .orderBy('User.id', 'asc')
         }
+    };
+
+    async setActiveFlag(userId: number, active: boolean): Promise<any> {
+        return this.knex('User').where('id', userId).update({ active });
     }
 };
 
