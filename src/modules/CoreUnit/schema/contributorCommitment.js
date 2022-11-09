@@ -2,22 +2,17 @@ import { gql } from "apollo-server-core";
 
 export const typeDefs = gql`
 
-    "Information on the length of time and level of commitment the contributor has to their current position"
     type ContributorCommitment {
         id: ID!
         cuId: ID!
         contributorId: ID!
-        "Date on which this commitment period started"
         startDate: String!
-        "Level of commitment"
         commitment: Commitment
         cuCode: String!
         contributor: [Contributor]
-        "Role title"
         jobTitle: String
     }
 
-    "Level of commitment - Part-Time / Full-Time etc"
     enum Commitment {
         FullTime
         PartTime
@@ -25,7 +20,6 @@ export const typeDefs = gql`
         Inactive
     }
 
-    "Social media information for a specific contributor"
     type Contributor {
         id: ID!
         name: String!
@@ -47,8 +41,7 @@ export const typeDefs = gql`
         cuCode: String
         jobTitle: String
     }
-    
-    "Allows filtering of the contributor table"
+
     input ContributorFilter {
         id: ID
         name: String
@@ -59,13 +52,9 @@ export const typeDefs = gql`
     }
 
     type Query {
-        "Retrieve the full Contributor Commitment table"
         contributorCommitments: [ContributorCommitment]
-        "Retrieve specific data from the Contributor Commitment table"
         contributorCommitment(filter: ContributorCommitmentFilter): [ContributorCommitment]
-        "Retrieve ALL Contributors"
         contributors(limit: Int, offset: Int): [Contributor]
-        "Retrieve specific Contributor entries"
         contributor(filter: ContributorFilter): [Contributor]
     }
 
