@@ -105,13 +105,14 @@ export const resolvers = {
                         if (user.active === false) {
                             throw new Error('Account disabled. Reach admin for more info.')
                         }
+                        const result = await dataSources.db.Auth.getUsers('id', user.id);
+                        const userObj = parseToSchemaUser(result)
+                        const cuId = getCuIdFromPermissions(userObj);
                         const token = jwt.sign(
-                            { id: user.id, username: user.username },
+                            { id: user.id, cuId, username: user.username },
                             process.env.SECRET,
                             { algorithm: "HS256", subject: `${user.id}`, expiresIn: "7d" }
                         );
-                        const result = await dataSources.db.Auth.getUsers('id', user.id);
-                        const userObj = parseToSchemaUser(result)
                         return {
                             user: userObj[0],
                             authToken: token
@@ -251,3 +252,18 @@ const parseToSchemaUser = (result) => {
     });
     return resultUsers
 }
+
+const getCuIdFromPermissions = (userObj) => {
+    const roles = userObj[0].roles.map(role => {
+        return role.permissions;
+    }).flat();
+    let cuId = undefined;
+    roles.forEach(role => {
+        const id = role.substring(role.length - 2);
+        const regex = /[0-9]{2}/;
+        if (regex.test(id)) {
+            cuId = id;
+        }
+    });
+    return cuId;
+};
