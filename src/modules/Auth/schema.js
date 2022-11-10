@@ -102,12 +102,15 @@ export const resolvers = {
                 if (user != undefined) {
                     const match = await bcrypt.compare(input.password, user.password);
                     if (match === true) {
+                        if (user.active === false) {
+                            throw new Error('Account disabled. Reach admin for more info.')
+                        }
                         const token = jwt.sign(
                             { id: user.id, username: user.username },
                             process.env.SECRET,
                             { algorithm: "HS256", subject: `${user.id}`, expiresIn: "7d" }
                         );
-                        const result = await dataSources.db.Auth.getUsers(user.id);
+                        const result = await dataSources.db.Auth.getUsers('id', user.id);
                         const userObj = parseToSchemaUser(result)
                         return {
                             user: userObj[0],
@@ -120,7 +123,8 @@ export const resolvers = {
                     throw new Error('no such user')
                 }
             } catch (error) {
-                throw new AuthenticationError('User not signed up')
+                console.log(error);
+                throw new AuthenticationError(error ? error : 'User not signed up')
             }
         },
         userCreate: async (_, { input }, { user, auth, dataSources }) => {
@@ -128,6 +132,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
                         const [user] = await dataSources.db.Auth.getUser(input.username);
@@ -149,6 +156,9 @@ export const resolvers = {
         userChangePassword: async (_, { input }, { user, dataSources }) => {
             try {
                 if (user) {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const [userObj] = await dataSources.db.Auth.getUser(input.username)
                     const match = await bcrypt.compare(input.password, userObj.password);
                     if (match) {
@@ -170,6 +180,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
                         await dataSources.db.Auth.setActiveFlag(input.id, input.active)

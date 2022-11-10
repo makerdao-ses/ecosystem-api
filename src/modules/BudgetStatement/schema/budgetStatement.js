@@ -508,6 +508,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatements")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         if (input.length < 1) {
@@ -531,6 +534,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItems")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
@@ -555,6 +561,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
@@ -580,6 +589,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
@@ -604,6 +616,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to delete budgetLineItems")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         console.log(`deleting ${input.length} line items from CU ${user.cuId}`);
@@ -622,6 +637,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         console.log(`Adding ${input.length} wallets to CU ${user.cuId}`)
@@ -639,6 +657,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         console.log(`Adding ${input.ftes} ftes to CU ${user.cuId}`)
@@ -656,6 +677,9 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
+                    if (user.active === false) {
+                        throw new Error('Account disabled. Reach admin for more info.')
+                    }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         console.log(`Updating ${input.ftes} ftes to CU ${user.cuId}`)
