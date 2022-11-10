@@ -132,7 +132,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
@@ -156,10 +157,10 @@ export const resolvers = {
         userChangePassword: async (_, { input }, { user, dataSources }) => {
             try {
                 if (user) {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(input.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const [userObj] = await dataSources.db.Auth.getUser(input.username)
                     const match = await bcrypt.compare(input.password, userObj.password);
                     if (match) {
                         const hash = await bcrypt.hash(input.newPassword, 10);
@@ -180,7 +181,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')

@@ -508,7 +508,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatements")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -534,7 +535,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItems")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -561,7 +563,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -589,7 +592,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -616,7 +620,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to delete budgetLineItems")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -637,7 +642,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -657,7 +663,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
@@ -677,7 +684,8 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
                 } else {
-                    if (user.active === false) {
+                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
