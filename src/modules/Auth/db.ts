@@ -122,6 +122,11 @@ export class AuthModel {
 
     async setActiveFlag(userId: number, active: boolean): Promise<any> {
         return this.knex('User').where('id', userId).update({ active });
+    };
+
+    async userDelete(userId: number | string): Promise<any> {
+        await this.knex('UserRole').where('userId', userId).del();
+        await this.knex('User').where('id', userId).del();
     }
 };
 

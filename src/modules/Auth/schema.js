@@ -51,6 +51,10 @@ export const typeDefs = [gql`
         id: ID!
         active: Boolean!
     }
+
+    input UserDelete {
+        id: ID
+    }
     
     type Query {
         users(input: UsersFilter): [User]
@@ -61,6 +65,7 @@ export const typeDefs = [gql`
         userLogin(input: AuthInput!): UserPayload!
         userChangePassword(input: UpdatePassword!): User!
         userSetActiveFlag(input: UserSetActiveFlag): [User]
+        userDelete(filter: UserDelete): User
     }
 `];
 
@@ -198,6 +203,37 @@ export const resolvers = {
                 }
             } catch (error) {
                 throw new AuthenticationError(error ? error : 'password is incorrect')
+            }
+        },
+        userDelete: async (_, { filter }, { user, auth, dataSources }) => {
+            try {
+                if (!user && !auth) {
+                    throw new AuthenticationError("Not authenticated, login!")
+                } else {
+                    const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
+                    if (allowed[0].count > 0) {
+                        if (filter == undefined) {
+                            throw Error('Specify which user to delete in filter')
+                        }
+                        console.log(`deleting user ${filter.id} as system manager`)
+                        const result = await dataSources.db.Auth.getUsers('id', filter.id);
+                        if (result.length < 1) {
+                            throw Error(`UserId:${filter.id} doesn't exists`)
+                        }
+                        await dataSources.db.Auth.userDelete(filter.id)
+                        return parseToSchemaUser(result)
+                    } else {
+                        console.log(`deleting user ${user.id} as user`)
+                        const result = await dataSources.db.Auth.getUsers('id', user.id);
+                        if (result.length < 1) {
+                            throw Error(`UserId:${filter.id} doesn't exists`)
+                        }
+                        await dataSources.db.Auth.userDelete(filter.id)
+                        return parseToSchemaUser(result)
+                    }
+                }
+            } catch (error) {
+                throw new AuthenticationError(error)
             }
         }
     }
