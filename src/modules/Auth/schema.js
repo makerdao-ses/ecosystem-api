@@ -65,7 +65,7 @@ export const typeDefs = [gql`
         userLogin(input: AuthInput!): UserPayload!
         userChangePassword(input: UpdatePassword!): User!
         userSetActiveFlag(input: UserSetActiveFlag): [User]
-        userDelete(filter: UserDelete): User
+        userDelete(filter: UserDelete): [User]
     }
 `];
 
@@ -226,9 +226,9 @@ export const resolvers = {
                         console.log(`deleting user ${user.id} as user`)
                         const result = await dataSources.db.Auth.getUsers('id', user.id);
                         if (result.length < 1) {
-                            throw Error(`UserId:${filter.id} doesn't exists`)
+                            throw Error(`UserId:${user.id} doesn't exists`)
                         }
-                        await dataSources.db.Auth.userDelete(filter.id)
+                        await dataSources.db.Auth.userDelete(user.id)
                         return parseToSchemaUser(result)
                     }
                 }
