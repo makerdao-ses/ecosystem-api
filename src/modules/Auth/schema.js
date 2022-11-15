@@ -37,7 +37,7 @@ export const typeDefs = [gql`
 
     input UpdatePassword {
         username: String!
-        password: String!
+        password: String
         newPassword: String!
     }
 
@@ -167,19 +167,34 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const match = await bcrypt.compare(input.password, userObj.password);
+                    const match = await bcrypt.compare(input.newPassword, userObj.password);
                     if (match) {
+                        throw new Error('new password should not be as old password')
+                    }
+                    const allowed = await dataSources.db.Auth.canManage(user.id, 'System');
+                    if (allowed[0].count > 0) {
                         const hash = await bcrypt.hash(input.newPassword, 10);
-                        const result = await dataSources.db.Auth.changeUserPassword(input.username, hash);
-                        return result[0];
+                        await dataSources.db.Auth.changeUserPassword(input.username, hash);
+                        const result = await dataSources.db.Auth.getUsers('username', input.username);
+                        return parseToSchemaUser(result)[0];
                     } else {
-                        throw new Error('wrong password')
+                        if (input.password !== '') {
+                            const match = await bcrypt.compare(input.password, userObj.password);
+                            if (match) {
+                                const hash = await bcrypt.hash(input.newPassword, 10);
+                                await dataSources.db.Auth.changeUserPassword(input.username, hash);
+                                const result = await dataSources.db.Auth.getUsers('username', input.username);
+                                return parseToSchemaUser(result)[0];
+                            } else {
+                                throw new Error('wrong old password')
+                            }
+                        }
                     }
                 } else {
                     throw new Error('Gotta be logged in first no?')
                 }
             } catch (error) {
-                throw new AuthenticationError(error ? error : 'password is incorrect')
+                throw new Error(error ? error : 'password is incorrect')
             }
         },
         userSetActiveFlag: async (_, { input }, { user, auth, dataSources }) => {
