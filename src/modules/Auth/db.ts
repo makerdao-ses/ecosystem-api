@@ -67,13 +67,12 @@ export class AuthModel {
         return this.knex('User').where('username', username).update('password', password).returning('*')
     };
 
-    async createUser(cuId: string, username: string, password: string): Promise<any> {
-        const user = await this.knex('User').insert({ username, password }).returning("*");
-        const userRole = await this.knex('UserRole').insert({ userId: user[0].id, roleId: 1, resource: 'CoreUnit', resourceId: cuId }).returning('*');
+    async createUser(username: string, password: string): Promise<any> {
+        const user = await this.knex('User').insert({ username, password, active: true }).returning("*");
         return {
             id: user[0].id,
-            cuId: userRole[0].resourceId,
-            username: user[0].username
+            username: user[0].username,
+            active: user[0].active
         }
 
     };

@@ -25,7 +25,6 @@ export const typeDefs = [gql`
     }
 
     input UserInput {
-        cuId: ID!
         username: String!
         password: String!
     }
@@ -61,9 +60,9 @@ export const typeDefs = [gql`
     }
 
     type Mutation {
-        userCreate(input: UserInput): User!
+        userCreate(input: UserInput): User
         userLogin(input: AuthInput!): UserPayload!
-        userChangePassword(input: UpdatePassword!): User!
+        userChangePassword(input: UpdatePassword!): User
         userSetActiveFlag(input: UserSetActiveFlag): [User]
         userDelete(filter: UserDelete): [User]
     }
@@ -147,8 +146,8 @@ export const resolvers = {
                         const [user] = await dataSources.db.Auth.getUser(input.username);
                         if (user === undefined) {
                             const hash = await bcrypt.hash(input.password, 10);
-                            const result = await dataSources.db.Auth.createUser(input.cuId, input.username, hash)
-                            return result;
+                            const userCreate = await dataSources.db.Auth.createUser(input.username, hash)
+                            return userCreate;
                         } else {
                             throw new Error('username already taken, try a new one')
                         }
@@ -176,6 +175,10 @@ export const resolvers = {
                         const hash = await bcrypt.hash(input.newPassword, 10);
                         await dataSources.db.Auth.changeUserPassword(input.username, hash);
                         const result = await dataSources.db.Auth.getUsers('username', input.username);
+                        if (result.length < 1) {
+                            const [user] = await dataSources.db.Auth.getUser(input.username)
+                            return user;
+                        }
                         return parseToSchemaUser(result)[0];
                     } else {
                         if (input.password !== '') {
