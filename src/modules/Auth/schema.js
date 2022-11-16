@@ -144,7 +144,7 @@ export const resolvers = {
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
                         const [user] = await dataSources.db.Auth.getUser(input.username);
-                        if (user === undefined) {
+                        if (user === undefined && regexPw(input.password)) {
                             const hash = await bcrypt.hash(input.password, 10);
                             const userCreate = await dataSources.db.Auth.createUser(input.username, hash)
                             return userCreate;
@@ -156,7 +156,7 @@ export const resolvers = {
                     }
                 }
             } catch (error) {
-                throw new AuthenticationError(error ? error : 'You are not authorized')
+                throw new Error(error ? error : 'You are not authorized')
             }
         },
         userChangePassword: async (_, { input }, { user, dataSources }) => {
@@ -321,3 +321,103 @@ const getCuIdFromPermissions = (userObj) => {
     });
     return cuId;
 };
+
+const regexPw = (pw) => {
+    if (pw.length < 10) {
+        throw Error('Your password must have at least 10 characters.');
+    }
+    let matchClasses = 0;
+
+    const matchesLowerCaseChars = (pw) => {
+        let count = 0;
+        const regex = new RegExp(/[a-z]/);
+        pw.split('').forEach(l => {
+            if (regex.test(l)) {
+                count++
+            }
+        })
+        if (count >= 1) {
+            return true;
+        } else {
+            throw Error('Your password must contain at least one lowercase character, number, or special character.')
+        }
+    }
+
+    const matchesUpperCaseChars = (pw) => {
+        let count = 0;
+        const regex = new RegExp(/[A-Z]/);
+        pw.split('').forEach(l => {
+            if (regex.test(l)) {
+                count++
+            }
+        })
+        if (count >= 1) {
+            return true;
+        } else {
+            throw Error('Your password must contain at least one uppercase character, number, or special character.')
+        }
+    }
+
+    const matchesNumbers = (pw) => {
+        let count = 0;
+        const regex = new RegExp(/[0-9]/);
+        pw.split('').forEach(l => {
+            if (regex.test(l)) {
+                count++
+            }
+        })
+        if (count > 0) {
+            return true;
+        } else if (count === pw.length) {
+            throw Error('Your password must contain at least one lowercase character, uppercase character, or special character.');
+        }
+        else {
+            throw Error('Your password must contain at least one uppercase character, lowercase character, number, or special character.')
+        }
+    }
+
+    matchesNumbers(pw)
+
+    const matchesSpecialChars = (pw) => {
+        let count = 0;
+        const regex = new RegExp(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/);
+        pw.split('').forEach(l => {
+            if (regex.test(l)) {
+                count++;
+            }
+        })
+        if (count >= 1) {
+            return true;
+        } else if (count === pw.length) {
+            throw Error('Your password must contain at least one lowercase character, uppercase character, or number.')
+        }
+        else {
+            throw Error('Your password must contain at least one special character.')
+        }
+    }
+
+    matchesSpecialChars(pw)
+
+    if (matchesLowerCaseChars(pw)) {
+        matchClasses++;
+    }
+
+    if (matchesUpperCaseChars(pw)) {
+        matchClasses++;
+    }
+
+    if (matchClasses < 2 && matchesNumbers(pw)) {
+        matchClasses++;
+    }
+
+    if (matchClasses < 2 && matchesSpecialChars(pw)) {
+        matchClasses++;
+    }
+
+    if (matchClasses < 2) {
+        throw Error("Password needs to match at least 2 of: lowercase chars, uppercase chars, numbers, special chars.")
+    } else {
+        return true
+    }
+
+}
