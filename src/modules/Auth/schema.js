@@ -63,8 +63,8 @@ export const typeDefs = [gql`
         userCreate(input: UserInput): User
         userLogin(input: AuthInput!): UserPayload!
         userChangePassword(input: UpdatePassword!): User
-        userSetActiveFlag(input: UserSetActiveFlag): [User]
-        userDelete(filter: UserDelete): [User]
+        userSetActiveFlag(input: UserSetActiveFlag): User
+        userDelete(filter: UserDelete): User
     }
 `];
 
@@ -102,7 +102,7 @@ export const resolvers = {
     Mutation: {
         userLogin: async (_, { input }, { dataSources }) => {
             try {
-                const [user] = await dataSources.db.Auth.getUser(input.username)
+                const [user] = await dataSources.db.Auth.getUser('username', input.username)
                 if (user != undefined) {
                     const match = await bcrypt.compare(input.password, user.password);
                     if (match === true) {
@@ -110,8 +110,16 @@ export const resolvers = {
                             throw new Error('Account disabled. Reach admin for more info.')
                         }
                         const result = await dataSources.db.Auth.getUsers('id', user.id);
-                        const userObj = parseToSchemaUser(result)
-                        const cuId = getCuIdFromPermissions(userObj);
+                        let userObj;
+                        let cuId;
+                        // If user has assinged roles, parse to userObj
+                        if (result.length > 0) {
+                            userObj = parseToSchemaUser(result)
+                            cuId = getCuIdFromPermissions(userObj);
+
+                        } else {
+                            userObj = await dataSources.db.Auth.getUser('username', input.username)
+                        }
                         const token = jwt.sign(
                             { id: user.id, cuId, username: user.username },
                             process.env.SECRET,
@@ -137,13 +145,13 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
-                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    const [userObj] = await dataSources.db.Auth.getUser('username', user.username)
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
-                        const [user] = await dataSources.db.Auth.getUser(input.username);
+                        const [user] = await dataSources.db.Auth.getUser('username', input.username);
                         if (user === undefined && regexPw(input.password)) {
                             const hash = await bcrypt.hash(input.password, 10);
                             const userCreate = await dataSources.db.Auth.createUser(input.username, hash)
@@ -162,7 +170,7 @@ export const resolvers = {
         userChangePassword: async (_, { input }, { user, dataSources }) => {
             try {
                 if (user) {
-                    const [userObj] = await dataSources.db.Auth.getUser(input.username)
+                    const [userObj] = await dataSources.db.Auth.getUser('username', input.username)
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
@@ -171,12 +179,12 @@ export const resolvers = {
                         throw new Error('new password should not be as old password')
                     }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System');
-                    if (allowed[0].count > 0) {
+                    if (allowed[0].count > 0 && regexPw(input.newPassword)) {
                         const hash = await bcrypt.hash(input.newPassword, 10);
                         await dataSources.db.Auth.changeUserPassword(input.username, hash);
                         const result = await dataSources.db.Auth.getUsers('username', input.username);
                         if (result.length < 1) {
-                            const [user] = await dataSources.db.Auth.getUser(input.username)
+                            const [user] = await dataSources.db.Auth.getUser('username', input.username)
                             return user;
                         }
                         return parseToSchemaUser(result)[0];
@@ -184,10 +192,16 @@ export const resolvers = {
                         if (input.password !== '') {
                             const match = await bcrypt.compare(input.password, userObj.password);
                             if (match) {
-                                const hash = await bcrypt.hash(input.newPassword, 10);
-                                await dataSources.db.Auth.changeUserPassword(input.username, hash);
-                                const result = await dataSources.db.Auth.getUsers('username', input.username);
-                                return parseToSchemaUser(result)[0];
+                                if (regexPw(input.newPassword)) {
+                                    const hash = await bcrypt.hash(input.newPassword, 10);
+                                    await dataSources.db.Auth.changeUserPassword(input.username, hash);
+                                    const result = await dataSources.db.Auth.getUsers('username', input.username);
+                                    if (result.length < 1) {
+                                        const [user] = await dataSources.db.Auth.getUser('username', input.username)
+                                        return user;
+                                    }
+                                    return parseToSchemaUser(result)[0];
+                                }
                             } else {
                                 throw new Error('wrong old password')
                             }
@@ -205,7 +219,7 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
-                    const [userObj] = await dataSources.db.Auth.getUser(user.username)
+                    const [userObj] = await dataSources.db.Auth.getUser('username', user.username)
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
@@ -213,7 +227,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         await dataSources.db.Auth.setActiveFlag(input.id, input.active)
                         const result = await dataSources.db.Auth.getUsers('id', input.id);
-                        return parseToSchemaUser(result)
+                        return parseToSchemaUser(result[0])
                     }
                     else {
                         throw new AuthenticationError('You are not authorized to perform this query')
@@ -236,7 +250,9 @@ export const resolvers = {
                         console.log(`deleting user ${filter.id} as system manager`)
                         const result = await dataSources.db.Auth.getUsers('id', filter.id);
                         if (result.length < 1) {
-                            throw Error(`UserId:${filter.id} doesn't exists`)
+                            const [user] = await dataSources.db.Auth.getUser('id', filter.id)
+                            await dataSources.db.Auth.userDelete(filter.id)
+                            return user;
                         }
                         await dataSources.db.Auth.userDelete(filter.id)
                         return parseToSchemaUser(result)
@@ -244,10 +260,12 @@ export const resolvers = {
                         console.log(`deleting user ${user.id} as user`)
                         const result = await dataSources.db.Auth.getUsers('id', user.id);
                         if (result.length < 1) {
-                            throw Error(`UserId:${user.id} doesn't exists`)
+                            const [userFrobDB] = await dataSources.db.Auth.getUser('id', user.id)
+                            await dataSources.db.Auth.userDelete(user.id)
+                            return userFrobDB;
                         }
                         await dataSources.db.Auth.userDelete(user.id)
-                        return parseToSchemaUser(result)
+                        return parseToSchemaUser(result[0])
                     }
                 }
             } catch (error) {

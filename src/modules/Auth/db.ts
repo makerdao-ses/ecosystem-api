@@ -18,8 +18,8 @@ export class AuthModel {
         this.knex = knex;
     };
 
-    async getUser(username: string): Promise<User[]> {
-        return this.knex('User').where('username', username)
+    async getUser(paramName: string, paramValue: string | number | boolean): Promise<User[]> {
+        return this.knex('User').where(`${paramName}`, paramValue)
     };
 
     async getResourceId(userId: number) {

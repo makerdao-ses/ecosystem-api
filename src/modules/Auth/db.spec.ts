@@ -12,7 +12,7 @@ async function getAuthModel(): Promise<AuthModel> {
 
 it('returns user with username: exampleName', async () => {
     const model = await getAuthModel();
-    const entry = await model.getUser('exampleName');
+    const entry = await model.getUser('username', 'exampleName');
     expect(entry[0].username).toEqual('exampleName')
 });
 
