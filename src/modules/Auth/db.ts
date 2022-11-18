@@ -82,15 +82,15 @@ export class AuthModel {
             return await this.knex
                 .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
                 .from('User')
-                .join('UserRole', function () {
+                .leftJoin('UserRole', function () {
                     this
                         .on('UserRole.userId', '=', 'User.id')
                 })
-                .join('Role', function () {
+                .leftJoin('Role', function () {
                     this
                         .on('Role.id', '=', 'UserRole.roleId')
                 })
-                .join('RolePermission', function () {
+                .leftJoin('RolePermission', function () {
                     this
                         .on('RolePermission.roleId', '=', 'UserRole.roleId')
                         .andOn('UserRole.resource', '=', 'RolePermission.resource')
@@ -102,15 +102,15 @@ export class AuthModel {
             return await this.knex
                 .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
                 .from('User')
-                .join('UserRole', function () {
+                .leftJoin('UserRole', function () {
                     this
                         .on('UserRole.userId', '=', 'User.id')
                 })
-                .join('Role', function () {
+                .leftJoin('Role', function () {
                     this
                         .on('Role.id', '=', 'UserRole.roleId')
                 })
-                .join('RolePermission', function () {
+                .leftJoin('RolePermission', function () {
                     this
                         .on('RolePermission.roleId', '=', 'UserRole.roleId')
                         .andOn('UserRole.resource', '=', 'RolePermission.resource')
