@@ -227,7 +227,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         await dataSources.db.Auth.setActiveFlag(input.id, input.active)
                         const result = await dataSources.db.Auth.getUsers('id', input.id);
-                        return parseToSchemaUser(result[0])
+                        return parseToSchemaUser(result)[0]
                     }
                     else {
                         throw new AuthenticationError('You are not authorized to perform this query')
@@ -255,7 +255,7 @@ export const resolvers = {
                             return user;
                         }
                         await dataSources.db.Auth.userDelete(filter.id)
-                        return parseToSchemaUser(result)
+                        return parseToSchemaUser(result)[0]
                     } else {
                         console.log(`deleting user ${user.id} as user`)
                         const result = await dataSources.db.Auth.getUsers('id', user.id);
@@ -265,7 +265,7 @@ export const resolvers = {
                             return userFrobDB;
                         }
                         await dataSources.db.Auth.userDelete(user.id)
-                        return parseToSchemaUser(result[0])
+                        return parseToSchemaUser(result)[0]
                     }
                 }
             } catch (error) {
