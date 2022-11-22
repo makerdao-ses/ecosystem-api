@@ -23,7 +23,7 @@ export async function up(knex) {
     //Add the Auditor Role to the Auditor Table
     console.log("Adding the Auditor value to the Role table..")
     knex.insert({
-        roleName: 'Auditor'
+        roleName: 'CoreUnitAuditor'
     }).into('Role');
 
     //Add the CoreUnit/Audit permission to the RolePermission table
