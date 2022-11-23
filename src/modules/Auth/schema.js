@@ -239,14 +239,14 @@ export const resolvers = {
         },
         userDelete: async (_, { filter }, { user, auth, dataSources }) => {
             try {
+                if (filter == undefined) {
+                    throw Error('Specify which user to delete in filter')
+                }
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
                 } else {
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
                     if (allowed[0].count > 0) {
-                        if (filter == undefined) {
-                            throw Error('Specify which user to delete in filter')
-                        }
                         console.log(`deleting user ${filter.id} as system manager`)
                         const result = await dataSources.db.Auth.getUsers('id', filter.id);
                         if (result.length < 1) {
@@ -259,6 +259,9 @@ export const resolvers = {
                     } else {
                         console.log(`deleting user ${user.id} as user`)
                         const result = await dataSources.db.Auth.getUsers('id', user.id);
+                        if (parseFloat(filter.id) !== parseFloat(user.id)) {
+                            throw Error('Make sure user ID is correct')
+                        }
                         if (result.length < 1) {
                             const [userFrobDB] = await dataSources.db.Auth.getUser('id', user.id)
                             await dataSources.db.Auth.userDelete(user.id)
