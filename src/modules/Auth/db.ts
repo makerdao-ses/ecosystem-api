@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import { orderBy } from "lodash";
 
 export interface User {
     id: string
@@ -78,45 +77,28 @@ export class AuthModel {
     };
 
     async getUsers(paramName: string | undefined, paramValue: number | string | undefined): Promise<User[]> {
+        const baseQuery = this.knex
+            .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
+            .from('User')
+            .leftJoin('UserRole', function () {
+                this
+                    .on('UserRole.userId', '=', 'User.id')
+            })
+            .leftJoin('Role', function () {
+                this
+                    .on('Role.id', '=', 'UserRole.roleId')
+            })
+            .leftJoin('RolePermission', function () {
+                this
+                    .on('RolePermission.roleId', '=', 'UserRole.roleId')
+                    .andOn('UserRole.resource', '=', 'RolePermission.resource')
+            })
+            .orderBy('User.id', 'asc');
         if (paramName !== undefined && paramValue !== undefined) {
-            return await this.knex
-                .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
-                .from('User')
-                .leftJoin('UserRole', function () {
-                    this
-                        .on('UserRole.userId', '=', 'User.id')
-                })
-                .leftJoin('Role', function () {
-                    this
-                        .on('Role.id', '=', 'UserRole.roleId')
-                })
-                .leftJoin('RolePermission', function () {
-                    this
-                        .on('RolePermission.roleId', '=', 'UserRole.roleId')
-                        .andOn('UserRole.resource', '=', 'RolePermission.resource')
-                })
-                .orderBy('User.id', 'asc')
-                .where(paramName === 'id' ? 'User.id' : `${paramName}`, paramValue)
-
-        } else {
-            return await this.knex
-                .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
-                .from('User')
-                .leftJoin('UserRole', function () {
-                    this
-                        .on('UserRole.userId', '=', 'User.id')
-                })
-                .leftJoin('Role', function () {
-                    this
-                        .on('Role.id', '=', 'UserRole.roleId')
-                })
-                .leftJoin('RolePermission', function () {
-                    this
-                        .on('RolePermission.roleId', '=', 'UserRole.roleId')
-                        .andOn('UserRole.resource', '=', 'RolePermission.resource')
-                })
-                .orderBy('User.id', 'asc')
+            return await baseQuery.where(paramName === 'id' ? 'User.id' : `${paramName}`, paramValue);
         }
+
+        return await baseQuery;
     };
 
     async setActiveFlag(userId: number, active: boolean): Promise<any> {

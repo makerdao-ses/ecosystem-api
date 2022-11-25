@@ -278,56 +278,84 @@ export const resolvers = {
     }
 
 };
-
-const parseToSchemaUser = (result) => {
-    const usernames = result.map(user => user.username);
-    let userObj = { id: '', username: '', active: '', roles: [] }
-    const resultUsers = [];
-    usernames.forEach((username, index) => {
-        // If creating extra roles, we need to redo below 2 lines to automatically create role objects
-        let role = { id: '', name: '', permissions: [] };
-        let role2 = { id: '', name: '', permissions: [] };
-        if (userObj.username !== username) {
-            userObj.id = result[index].id
-            userObj.username = username;
-            userObj.active = result[index].active
-            userObj.roles = []
-            role.id = result[index].roleId
-            role.name = result[index].roleName
-            role.permissions = []
-            usernames.forEach((userName, i) => {
-                if (result[i].username === username && result[i].roleName === role.name) {
-                    let str = `${result[i].resource}/${result[i].permission}`
-                    if (result[i].resourceId !== null) {
-                        str = str.concat(`/${result[i].resourceId}`)
-                    }
-                    role.permissions.push(str);
-                } else if (result[i].username === username) {
-                    role2.id = result[i].roleId
-                    role2.name = result[i].roleName
-                    let str = `${result[i].resource}/${result[i].permission}`
-                    if (result[i].resourceId !== null) {
-                        str = str.concat(`/${result[i].resourceId}`)
-                    }
-                    role2.permissions.push(str);
-                }
-            })
-            userObj.roles.push(role)
-            if (role2.id !== '') {
-                userObj.roles.push(role2)
+const parseToSchemaUser = (rawData) => {
+    let previousUserId = null;
+    let groupedUserRows = [];
+    const result = [];
+    rawData.forEach(row => {
+        if (previousUserId === row.id) {
+            groupedUserRows.push(row);
+        } else {
+            if (groupedUserRows.length > 0) {
+                result.push(buildUserObjectFromGroupedRows(groupedUserRows));
             }
-
-            resultUsers.push({
-                id: userObj.id,
-                username: userObj.username,
-                active: userObj.active,
-                roles: userObj.roles
-            })
+            groupedUserRows = [];
+            groupedUserRows.push(row);
+            previousUserId = groupedUserRows[0].id
         }
-    });
-    return resultUsers
+    })
+    if (groupedUserRows.length > 0) {
+        result.push(buildUserObjectFromGroupedRows(groupedUserRows));
+    }
+    return result
 }
 
+const buildUserObjectFromGroupedRows = (rows) => {
+    const result = {
+        id: rows[0].id,
+        username: rows[0].username,
+        active: rows[0].active,
+        roles: []
+    }
+
+    if (rows[0].roleId !== null) {
+        let previousRoleId = null;
+        let groupedRoleRows = [];
+        rows.forEach(row => {
+            if (previousRoleId === row.roleId) {
+                groupedRoleRows.push(row)
+            } else {
+                if (groupedRoleRows.length > 0) {
+                    result.roles.push(buildRoleObjectFromGroupedRows(groupedRoleRows))
+                }
+                groupedRoleRows = [];
+                groupedRoleRows.push(row);
+                previousRoleId = groupedRoleRows[0].roleId;
+            }
+        })
+        if (groupedRoleRows.length > 0) {
+            result.roles.push(buildRoleObjectFromGroupedRows(groupedRoleRows))
+        }
+    }
+    return result;
+}
+
+const buildRoleObjectFromGroupedRows = (rows) => {
+    const result = {
+        id: rows[0].roleId,
+        name: rows[0].roleName,
+        permissions: rows.filter(row => row.resource !== null).map(row => {
+            if (row.permission === null) {
+                if (row.resourceId === null) {
+                    return row.resource
+                } else {
+                    return `${row.resource}//${row.resourceId}`
+                }
+
+            } else {
+                if (row.resourceId === null) {
+                    return `${row.resource}/${row.permission}`
+                } else {
+                    return `${row.resource}/${row.permission}/${row.resourceId}`
+                }
+            }
+        })
+    }
+    return result;
+}
+
+
+// construct from the permission
 const getCuIdFromPermissions = (userObj) => {
     const roles = userObj[0].roles.map(role => {
         return role.permissions;
