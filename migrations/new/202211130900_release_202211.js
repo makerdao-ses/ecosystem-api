@@ -22,13 +22,13 @@ export async function up(knex) {
 
     //Add the Auditor Role to the Auditor Table
     console.log("Adding the Auditor value to the Role table..")
-    knex.insert({
+    await knex.insert({
         roleName: 'CoreUnitAuditor'
     }).into('Role');
 
     //Add the CoreUnit/Audit permission to the RolePermission table
     console.log("Adding the CoreUnit/Audit value to the RolePermission table..")
-    knex.insert({
+    await knex.insert({
         roleId: 2,
         resource: 'CoreUnit',
         permission: 'Audit'
@@ -62,7 +62,7 @@ export async function down(knex) {
     
     console.log('Deleting Auditor role...');
 
-    knex('Role')
+    await knex('Role')
         .where({
             roleName: 'Auditor'
         })
@@ -70,7 +70,7 @@ export async function down(knex) {
 
     console.log('Deleting Audit permission...');
 
-    knex('RolePermission')
+    await knex('RolePermission')
         .where({
             permission: 'Audit'
         })
