@@ -262,6 +262,7 @@ export const typeDefs = [gql`
         budgetStatementId: ID!
         month: String!
         ftes: Float!
+        coreUnitId: Float
     }
 
     input BudgetStatementFTEUpdateInput {
@@ -269,6 +270,7 @@ export const typeDefs = [gql`
         budgetStatementId: ID!
         month: String!
         ftes: Float!
+        coreUnitId: Float
     }
 
     input LineItemsBatchUpdateInput {
@@ -669,7 +671,8 @@ export const resolvers = {
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
-                        console.log(`Adding ${input.ftes} ftes to CU ${user.cuId}`)
+                        console.log(`Adding ${input.ftes} ftes to CU ${input.coreUnitId}`)
+                        delete input.coreUnitId
                         return await dataSources.db.BudgetStatement.addBudgetStatementFTE(input);
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
@@ -690,7 +693,8 @@ export const resolvers = {
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
-                        console.log(`Updating ${input.ftes} ftes to CU ${user.cuId}`)
+                        console.log(`Updating ${input.ftes} ftes to CU ${input.coreUnitId}`);
+                        delete input.coreUnitId;
                         return await dataSources.db.BudgetStatement.updateBudgetStatementFTE(input);
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
