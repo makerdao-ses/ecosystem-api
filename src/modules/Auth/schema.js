@@ -36,7 +36,7 @@ export const typeDefs = [gql`
 
     input UpdatePassword {
         username: String!
-        password: String
+        password: String!
         newPassword: String!
     }
 
@@ -180,14 +180,20 @@ export const resolvers = {
                     }
                     const allowed = await dataSources.db.Auth.canManage(user.id, 'System');
                     if (allowed[0].count > 0 && regexPw(input.newPassword)) {
-                        const hash = await bcrypt.hash(input.newPassword, 10);
-                        await dataSources.db.Auth.changeUserPassword(input.username, hash);
-                        const result = await dataSources.db.Auth.getUsers('username', input.username);
-                        if (result.length < 1) {
-                            const [user] = await dataSources.db.Auth.getUser('username', input.username)
-                            return user;
+                        const [userObj] = await dataSources.db.Auth.getUser('username', user.username)
+                        const match = await bcrypt.compare(input.password, userObj.password);
+                        if(match) {
+                            const hash = await bcrypt.hash(input.newPassword, 10);
+                            await dataSources.db.Auth.changeUserPassword(input.username, hash);
+                            const result = await dataSources.db.Auth.getUsers('username', input.username);
+                            if (result.length < 1) {
+                                const [user] = await dataSources.db.Auth.getUser('username', input.username)
+                                return user;
+                            }
+                            return parseToSchemaUser(result)[0];
+                        } else {
+                            throw new Error('Wrong admin old password')
                         }
-                        return parseToSchemaUser(result)[0];
                     } else {
                         if (input.password !== '') {
                             const match = await bcrypt.compare(input.password, userObj.password);
