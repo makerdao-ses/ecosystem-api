@@ -287,6 +287,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        cuId: ID
     }
 
     input LineItemUpdateInput {
@@ -306,7 +307,7 @@ export const typeDefs = [gql`
     }
 
     input LineItemsBatchAddInput {
-        budgetStatementWalletId: ID!
+        budgetStatementWalletId: ID
         month: String
         position: Int
         group: String
@@ -318,6 +319,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        cuId: ID
     }
 
     input LineItemsBatchDeleteInput {
@@ -332,6 +334,7 @@ export const typeDefs = [gql`
         comments: String
         canonicalBudgetCategory: String
         headcountExpense: Boolean
+        cuId: ID
     }
 
     input BudgetStatementBatchAddInput {
@@ -343,12 +346,13 @@ export const typeDefs = [gql`
     }
 
     input BudgetStatementWalletBatchAddInput {
-        budgetStatementId: ID!
+        budgetStatementId: ID
         name: String
         address: String
         currentBalance: Float
         topupTransfer: Float
         comments: String
+        cuId: ID
     }
 
 `];
@@ -519,7 +523,7 @@ export const resolvers = {
                         if (input.length < 1) {
                             throw new Error('"No input data')
                         }
-                        console.log(`adding ${input.length} budgetStatements to CU ${user.cuId}`)
+                        console.log(`adding ${input.length} budgetStatements to CU ${input[0].cuId}`)
                         const result = await dataSources.db.BudgetStatement.addBatchBudgetStatements(input);
                         return result
                     } else {
@@ -544,12 +548,13 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
+                        const cuIdFromInput = input.pop()
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Adding lineItems
-                        console.log(`adding ${input.length} line items to CU ${user.cuId}`,)
+                        console.log(`adding ${input.length} line items to CU ${cuIdFromInput.cuId}`,)
                         const result = await dataSources.db.BudgetStatement.addBatchtLineItems(input)
                         return result;
                     } else {
@@ -601,12 +606,13 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
+                        const cuIdFromInput = input.pop()
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Updating lineItems
-                        console.log(`updating line items ${input.length} to CU ${user.cuId}`,)
+                        console.log(`updating line items ${input.length} to CU ${cuIdFromInput.cuId}`,)
                         const result = await dataSources.db.BudgetStatement.batchUpdateLineItems(input)
                         return result;
                     } else {
@@ -628,7 +634,8 @@ export const resolvers = {
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
-                        console.log(`deleting ${input.length} line items from CU ${user.cuId}`);
+                        const cuIdFromInput = input.pop()
+                        console.log(`deleting ${input.length} line items from CU ${cuIdFromInput.cuId}`);
                         return await dataSources.db.BudgetStatement.batchDeleteLineItems(input)
                     } else {
                         throw new AuthenticationError('You are not authorized to delete budgetLineItems')
@@ -650,7 +657,8 @@ export const resolvers = {
                     }
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
-                        console.log(`Adding ${input.length} wallets to CU ${user.cuId}`)
+                        const cuIdFromInput = input.pop()
+                        console.log(`Adding ${input.length} wallets to CU ${cuIdFromInput.cuId}`)
                         return await dataSources.db.BudgetStatement.addBudgetStatementWallets(input);
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
