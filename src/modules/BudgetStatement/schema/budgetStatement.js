@@ -12,7 +12,7 @@ export const typeDefs = [gql`
         "Status of the budgest statement (Draft/Final)"
         budgetStatus: BudgetStatus
         "Link to the complete publication of the budget statement"
-        publicationUrl: String
+        publicationUrl: String @deprecated(reason: "Moving this field to CoreUnit.legacyBudgetStamentUrl")
         "Core Unit code as defined with the Core Units' MIP39"
         cuCode: String!
         mkrProgramLength: Float
@@ -147,7 +147,6 @@ export const typeDefs = [gql`
         cuCode: String
         month: String
         budgetStatus: BudgetStatus
-        publicationUrl: String
     }
 
     input BudgetStatementFilter {
@@ -155,7 +154,6 @@ export const typeDefs = [gql`
         cuId: ID
         month: String
         budgetStatus: BudgetStatus
-        publicationUrl: String
         cuCode: String
         mkrProgramLength: Float
     }
@@ -341,7 +339,6 @@ export const typeDefs = [gql`
         cuId: ID
         month: String
         budgetStatus: BudgetStatus
-        publicationUrl: String
         cuCode: String
     }
 
