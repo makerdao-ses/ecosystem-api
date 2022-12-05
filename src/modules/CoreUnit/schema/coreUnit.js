@@ -16,7 +16,8 @@ export const typeDefs = gql`
         sentenceDescription: String
         paragraphDescription: String
         paragraphImage: String
-        shortCode: String        
+        shortCode: String
+        legacyBudgetStatementUrl: String        
         "Access details on the social media channels of a Core Unit"
         socialMediaChannels: [SocialMediaChannels]
         "Work basis of the FTE's within a Core Unit, use this field to access details of the FTE's contributing to a Core Unit"
