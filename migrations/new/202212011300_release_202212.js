@@ -4,6 +4,8 @@ import knex from "knex";
 //Up migration drops old enum, creates a new one and assigns it to the new column
 export async function up(knex) {
 
+    console.log('Creating new BudgetStatus ENUM values...')
+
     //Drop old budgetStatus ENUM type
     await knex.schema.raw(`DROP TYPE "BudgetStatus" CASCADE`)
 

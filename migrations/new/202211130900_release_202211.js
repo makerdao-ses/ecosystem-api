@@ -26,13 +26,18 @@ export async function up(knex) {
         roleName: 'CoreUnitAuditor'
     }).into('Role');
 
+    const AuditId = await knex
+    .select('id')
+    .from('Role')
+    .where({roleName: 'CoreUnitAuditor'});
+    
     //Add the CoreUnit/Audit permission to the RolePermission table
     console.log("Adding the CoreUnit/Audit value to the RolePermission table..")
     await knex.insert({
-        roleId: 2,
+        roleId: AuditId[0].id,
         resource: 'CoreUnit',
         permission: 'Audit'
-    }).into('RolePermission');
+    }).into('RolePermission');  
 
 
     //Add the active value to the current Users
