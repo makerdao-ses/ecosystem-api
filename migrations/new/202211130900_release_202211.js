@@ -27,17 +27,19 @@ export async function up(knex) {
     }).into('Role');
 
     const AuditId = await knex
-    .select('id')
-    .from('Role')
-    .where({roleName: 'CoreUnitAuditor'});
-    
+        .select('id')
+        .from('Role')
+        .where({
+            roleName: 'CoreUnitAuditor'
+        });
+
     //Add the CoreUnit/Audit permission to the RolePermission table
     console.log("Adding the CoreUnit/Audit value to the RolePermission table..")
     await knex.insert({
         roleId: AuditId[0].id,
         resource: 'CoreUnit',
         permission: 'Audit'
-    }).into('RolePermission');  
+    }).into('RolePermission');
 
 
     //Add the active value to the current Users
@@ -64,7 +66,7 @@ export async function up(knex) {
 
 
 export async function down(knex) {
-    
+
     console.log('Deleting Auditor role...');
 
     await knex('Role')
