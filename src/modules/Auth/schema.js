@@ -182,7 +182,7 @@ export const resolvers = {
                     if (allowed[0].count > 0 && regexPw(input.newPassword)) {
                         const [userObj] = await dataSources.db.Auth.getUser('username', user.username)
                         const match = await bcrypt.compare(input.password, userObj.password);
-                        if(match) {
+                        if (match) {
                             const hash = await bcrypt.hash(input.newPassword, 10);
                             await dataSources.db.Auth.changeUserPassword(input.username, hash);
                             const result = await dataSources.db.Auth.getUsers('username', input.username);
@@ -284,7 +284,7 @@ export const resolvers = {
     }
 
 };
-const parseToSchemaUser = (rawData) => {
+export const parseToSchemaUser = (rawData) => {
     let previousUserId = null;
     let groupedUserRows = [];
     const result = [];
@@ -362,16 +362,16 @@ const buildRoleObjectFromGroupedRows = (rows) => {
 
 
 // construct from the permission
-const getCuIdFromPermissions = (userObj) => {
+export const getCuIdFromPermissions = (userObj) => {
     const roles = userObj[0].roles.map(role => {
         return role.permissions;
     }).flat();
     let cuId = undefined;
     roles.forEach(role => {
-        const id = role.substring(role.length - 2);
-        const regex = /[0-9]{2}/;
-        if (regex.test(id)) {
-            cuId = id;
+        const regex = /[0-9]{1,}/;
+        const rgxOutput = role.match(regex);
+        if (rgxOutput !== null) {
+            cuId = rgxOutput[0]
         }
     });
     return cuId;

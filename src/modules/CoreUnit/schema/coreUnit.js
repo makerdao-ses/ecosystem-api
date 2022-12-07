@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-core';
+import { parseToSchemaUser, getCuIdFromPermissions } from '../../Auth/schema.js';
 
 export const typeDefs = gql`
 
@@ -17,7 +18,8 @@ export const typeDefs = gql`
         paragraphDescription: String
         paragraphImage: String
         shortCode: String
-        legacyBudgetStatementUrl: String        
+        legacyBudgetStatementUrl: String       
+        auditors: [User] 
         "Access details on the social media channels of a Core Unit"
         socialMediaChannels: [SocialMediaChannels]
         "Work basis of the FTE's within a Core Unit, use this field to access details of the FTE's contributing to a Core Unit"
@@ -149,6 +151,36 @@ export const resolvers = {
             const { id } = parent;
             const result = await dataSources.db.CoreUnit.getCuUpdates(id);
             return result;
+        },
+        auditors: async (parent, __, { dataSources }) => {
+            const { id } = parent;
+            const users = await dataSources.db.Auth.getUsers();
+            const parsedUsers = parseToSchemaUser(users)
+            const auditors = [];
+            parsedUsers.forEach(user => {
+                user.roles.forEach(role => {
+                    if (role.name === 'CoreUnitAuditor') {
+                        const userObj = [];
+                        userObj.push(user)
+                        let cuId = undefined;
+                        const regex = /[0-9]{1,}/;
+                        role.permissions.forEach(permission => {
+                            const rgxOutput = permission.match(regex);//permissions not role
+                            if (rgxOutput !== null) {
+                                cuId = rgxOutput[0]
+                                if (parseFloat(cuId) === id) {
+                                    auditors.push(user)
+                                }
+                            };
+                            if (permission === 'CoreUnit') {
+                                auditors.push(user)
+                            }
+                        })
+
+                    }
+                })
+            });
+            return auditors
         }
     }
 };
