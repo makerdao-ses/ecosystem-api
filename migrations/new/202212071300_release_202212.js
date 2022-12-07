@@ -32,8 +32,14 @@ export async function up(knex) {
     //Add status attribute to the BudgetStatementComment table and make comment field nullable
     console.log("Adding the BudgetStatementComment.status attribute...")
     await knex.schema.alterTable('BudgetStatementComment', function (table) {
-        table.enu('status', null, { useNative: true, existingType: true, enumName: 'BudgetStatus' }).defaultTo('Draft');
-        table.text('comment').alter({alterNullable : true});
+        table.enu('status', null, {
+            useNative: true,
+            existingType: true,
+            enumName: 'BudgetStatus'
+        }).defaultTo('Draft');
+        table.text('comment').alter({
+            alterNullable: true
+        });
     })
 
 
@@ -41,9 +47,10 @@ export async function up(knex) {
 
 
 
+
 //Down migration reverts the up migration change
 export async function down(knex) {
-    
+
     console.log("Dropping the ChangeTrackingEvents_Index table... ")
     await knex.schema.dropTable("ChangeTrackingEvents_Index")
 
@@ -51,5 +58,5 @@ export async function down(knex) {
     await knex.schema.alterTable('BudgetStatementComment', function (table) {
         table.dropColumn('status');
     });
-    
+
 };

@@ -13,9 +13,13 @@ export async function up(knex) {
     await knex.schema.raw(`CREATE TYPE "BudgetStatus" AS ENUM ('Draft', 'Review', 'Escalated', 'Final');`)
 
     await knex.schema.alterTable('BudgetStatement', function (table) {
-        table.enu('status', null, { useNative: true, existingType: true, enumName: 'BudgetStatus' }).defaultTo('Draft');
+        table.enu('status', null, {
+            useNative: true,
+            existingType: true,
+            enumName: 'BudgetStatus'
+        }).defaultTo('Draft');
     })
-    
+
 
 };
 
@@ -23,13 +27,17 @@ export async function up(knex) {
 
 //Down migration reverts the up migration change
 export async function down(knex) {
-    
+
     console.log('Reverting to old BudgetStatus ENUM...');
 
     await knex.schema.raw(`DROP TYPE "BudgetStatus" CASCADE`)
     await knex.schema.raw(`CREATE TYPE "BudgetStatus" AS ENUM ('Draft', 'SubmittedToAuditors', 'AwaitingCorrections', 'Final');`)
     await knex.schema.alterTable('BudgetStatement', function (table) {
-        table.enu('budgetStatus', null, { useNative: true, existingType: true, enumName: 'BudgetStatus' }).defaultTo('Draft');
+        table.enu('budgetStatus', null, {
+            useNative: true,
+            existingType: true,
+            enumName: 'BudgetStatus'
+        }).defaultTo('Draft');
     })
 
 };
