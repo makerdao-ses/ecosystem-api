@@ -165,14 +165,14 @@ export const resolvers = {
                         let cuId = undefined;
                         const regex = /[0-9]{1,}/;
                         role.permissions.forEach(permission => {
-                            const rgxOutput = permission.match(regex);//permissions not role
+                            const rgxOutput = permission.match(regex);
                             if (rgxOutput !== null) {
                                 cuId = rgxOutput[0]
                                 if (parseFloat(cuId) === id) {
                                     auditors.push(user)
                                 }
                             };
-                            if (permission === 'CoreUnit') {
+                            if (permission === 'CoreUnit/Audit') {
                                 auditors.push(user)
                             }
                         })
