@@ -43,6 +43,25 @@ export async function up(knex) {
         table.integer('authorId')
     })
 
+    //SQL to retrieve authorId's from the previous set up
+    const authorIds = await knex
+        .select('User.id').as('authorId')
+        .from('BudgetStatementComment')
+        .leftJoin('BudgetStatementComment_BudgetStatementCommentAuthor', 'BudgetStatementComment.id', 'BudgetStatementComment_BudgetStatementCommentAuthor.bsCommentId')
+        .leftJoin('BudgetStatementCommentAuthor', 'BudgetStatementComment_BudgetStatementCommentAuthor.bsCommentAuthorId', 'BudgetStatementCommentAuthor.id')
+        .leftJoin('User', 'BudgetStatementCommentAuthor.name', 'User.username')
+        .orderBy('BudgetStatementComment.id')
+
+
+    //Insert authorId's to new attribute
+    for (var i = 0; i < authorIds.length; i++) {
+        console.log(authorIds[i].id)
+        await knex('BudgetStatementComment')
+            .where('id', i + 1)
+            .update({
+                authorId: authorIds[i].id
+            })
+    }
 
 };
 
@@ -55,7 +74,7 @@ export async function down(knex) {
     console.log("Dropping the ChangeTrackingEvents_Index table... ")
     await knex.schema.dropTable("ChangeTrackingEvents_Index")
 
-    console.log("Dropping the Status attribute from the BudgetStatementComment table... ")
+    console.log("Dropping the status and authorId attributes from the BudgetStatementComment table... ")
     await knex.schema.alterTable('BudgetStatementComment', function (table) {
         table.dropColumn('status');
         table.dropColumn('authorId')
