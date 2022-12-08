@@ -40,6 +40,7 @@ export async function up(knex) {
         table.text('comment').alter({
             alterNullable: true
         });
+        table.integer('authorId')
     })
 
 
@@ -57,6 +58,7 @@ export async function down(knex) {
     console.log("Dropping the Status attribute from the BudgetStatementComment table... ")
     await knex.schema.alterTable('BudgetStatementComment', function (table) {
         table.dropColumn('status');
+        table.dropColumn('authorId')
     });
 
 };
