@@ -15,6 +15,7 @@ export interface UserFilter {
     username?: string
     active?: boolean
     rolesAndPermissions?: boolean
+    ids?: number[]
 }
 
 export class AuthModel {
@@ -104,6 +105,32 @@ export class AuthModel {
 
     };
 
+    async getSystemRoleMembers(roleName: string, resource: string, resourceId: number | null) {
+        const baseQuery = this.knex
+            .select('UserRole.userId')
+            .from('Role')
+            .leftJoin('UserRole', function () {
+                this
+                    .on('Role.id', '=', 'UserRole.roleId')
+            })
+            .where('system', true)
+            .where('roleName', roleName)
+            .where('resource', resource);
+        if (resourceId === null) {
+            return baseQuery.where('resourceId', null);
+        } else {
+            baseQuery.where(function () {
+                this.where('resourceId', null).orWhere('resourceId', resourceId)
+            })
+        }
+        const userIds = await baseQuery as { userId: number }[];
+        return this.getUsersFiltered({
+            ids: userIds.map(u => u.userId),
+            active: true,
+            rolesAndPermissions: false
+        })
+    }
+
     async getUsers(paramName: string | undefined, paramValue: number | string | undefined): Promise<User[]> {
         const baseQuery = this.knex
             .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
@@ -152,6 +179,8 @@ export class AuthModel {
                 baseQuery.where('User.id', filter.id);
             } else if (filter.username) {
                 baseQuery.where('username', filter.username);
+            } else if (filter.ids) {
+                baseQuery.whereIn('User.id', filter.ids)
             }
             if (filter.active) {
                 baseQuery.where('active', filter.active);
@@ -159,12 +188,14 @@ export class AuthModel {
             return baseQuery;
         } else {
             const baseQuery = this.knex
-                .select('*')
+                .select('id', 'username', 'active')
                 .from('User');
             if (filter.id) {
                 baseQuery.where('id', filter.id);
             } else if (filter.username) {
                 baseQuery.where('username', filter.username);
+            } else if (filter.ids) {
+                baseQuery.whereIn('User.id', filter.ids)
             }
             if (filter.active) {
                 baseQuery.where('active', filter.active);

@@ -154,33 +154,8 @@ export const resolvers = {
         },
         auditors: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const users = await dataSources.db.Auth.getUsers();
-            const parsedUsers = parseToSchemaUser(users)
-            const auditors = [];
-            parsedUsers.forEach(user => {
-                user.roles.forEach(role => {
-                    if (role.name === 'CoreUnitAuditor') {
-                        const userObj = [];
-                        userObj.push(user)
-                        let cuId = undefined;
-                        const regex = /[0-9]{1,}/;
-                        role.permissions.forEach(permission => {
-                            const rgxOutput = permission.match(regex);
-                            if (rgxOutput !== null) {
-                                cuId = rgxOutput[0]
-                                if (parseFloat(cuId) === id) {
-                                    auditors.push(user)
-                                }
-                            };
-                            if (permission === 'CoreUnit/Audit') {
-                                auditors.push(user)
-                            }
-                        })
-
-                    }
-                })
-            });
-            return auditors
+            const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', id);
+            return resourceUsers
         }
     }
 };

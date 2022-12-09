@@ -7,6 +7,7 @@ export const typeDefs = [gql`
         budgetStatementId: ID!
         timestamp: DateTime
         comment: String
+        status: BudgetStatus
         authorId: String
     }
 
