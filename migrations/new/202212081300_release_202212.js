@@ -30,8 +30,6 @@ export async function up(knex) {
 };
 
 
-
-
 //Down migration reverts the up migration change
 export async function down(knex) {
 
