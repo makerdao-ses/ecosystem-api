@@ -10,6 +10,13 @@ export interface count {
     count: number | string
 }
 
+export interface UserFilter {
+    id?: number
+    username?: string
+    active?: boolean
+    rolesAndPermissions?: boolean
+}
+
 export class AuthModel {
     knex: Knex;
 
@@ -43,6 +50,27 @@ export class AuthModel {
                 'RolePermission.resource': resourceType,
             })
             .orWhere({ "resourceId": resourceId || null })
+    };
+
+    async userCanManage(user: { id: number }, resourceType: string): Promise<Boolean> {
+        if (!user) {
+            return false;
+        }
+        const result = await this.knex
+            .count('*')
+            .from('UserRole')
+            .leftJoin('RolePermission', function () {
+                this
+                    .on('UserRole.roleId', '=', 'RolePermission.roleId')
+                    .andOn('UserRole.resource', '=', 'RolePermission.resource')
+            })
+            .where({
+                userId: user.id,
+                'RolePermission.permission': 'Manage',
+                'RolePermission.resource': resourceType,
+                resourceId: null
+            }) as any;
+        return parseFloat(result[0]['count']) > 0
     };
 
     async canManage(userId: number, resourceType: string): Promise<any> {
@@ -100,6 +128,50 @@ export class AuthModel {
 
         return await baseQuery;
     };
+
+    async getUsersFiltered(filter: UserFilter): Promise<User[]> {
+        if (filter.rolesAndPermissions) {
+            const baseQuery = this.knex
+                .select('User.id', 'username', 'active', 'roleName', 'UserRole.roleId', 'permission', 'UserRole.resource', 'UserRole.resourceId')
+                .from('User')
+                .leftJoin('UserRole', function () {
+                    this
+                        .on('UserRole.userId', '=', 'User.id')
+                })
+                .leftJoin('Role', function () {
+                    this
+                        .on('Role.id', '=', 'UserRole.roleId')
+                })
+                .leftJoin('RolePermission', function () {
+                    this
+                        .on('RolePermission.roleId', '=', 'UserRole.roleId')
+                        .andOn('UserRole.resource', '=', 'RolePermission.resource')
+                })
+                .orderBy('User.id', 'asc');
+            if (filter.id) {
+                baseQuery.where('User.id', filter.id);
+            } else if (filter.username) {
+                baseQuery.where('username', filter.username);
+            }
+            if (filter.active) {
+                baseQuery.where('active', filter.active);
+            }
+            return baseQuery;
+        } else {
+            const baseQuery = this.knex
+                .select('*')
+                .from('User');
+            if (filter.id) {
+                baseQuery.where('id', filter.id);
+            } else if (filter.username) {
+                baseQuery.where('username', filter.username);
+            }
+            if (filter.active) {
+                baseQuery.where('active', filter.active);
+            }
+            return baseQuery;
+        }
+    }
 
     async setActiveFlag(userId: number, active: boolean): Promise<any> {
         return this.knex('User').where('id', userId).update({ active });

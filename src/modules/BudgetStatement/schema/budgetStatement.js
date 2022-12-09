@@ -10,7 +10,7 @@ export const typeDefs = [gql`
         "Month of corresponding budget statement"
         month: String!
         "Status of the budgest statement (Draft/Final)"
-        budgetStatus: BudgetStatus
+        status: BudgetStatus
         "Link to the complete publication of the budget statement"
         publicationUrl: String @deprecated(reason: "Moving this field to CoreUnit.legacyBudgetStamentUrl")
         "Core Unit code as defined with the Core Units' MIP39"
@@ -26,10 +26,10 @@ export const typeDefs = [gql`
     }
 
     enum BudgetStatus {
-        Final
         Draft
-        SubmittedToAuditor
-        AwaitingCorrections
+        Review
+        Escalated
+        Final
     } 
 
     type AuditReport {
@@ -146,14 +146,14 @@ export const typeDefs = [gql`
         cuId: ID
         cuCode: String
         month: String
-        budgetStatus: BudgetStatus
+        status: BudgetStatus
     }
 
     input BudgetStatementFilter {
         id: ID
         cuId: ID
         month: String
-        budgetStatus: BudgetStatus
+        status: BudgetStatus
         cuCode: String
         mkrProgramLength: Float
     }
@@ -338,7 +338,7 @@ export const typeDefs = [gql`
     input BudgetStatementBatchAddInput {
         cuId: ID
         month: String
-        budgetStatus: BudgetStatus
+        status: BudgetStatus
         cuCode: String
     }
 

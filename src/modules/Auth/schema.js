@@ -2,6 +2,7 @@ import { gql, AuthenticationError } from "apollo-server-core";
 import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import { QueryParams } from "../../utils/QueryParams.js";
 dotenv.config()
 
 export const typeDefs = [gql`
@@ -72,28 +73,30 @@ export const resolvers = {
     Query: {
         users: async (_, { input }, { user, auth, dataSources }) => {
             try {
-                if (!user && !auth) {
-                    throw new AuthenticationError("Not authenticated, login!")
-                } else {
-                    let paramName;
-                    let paramValue;
-                    if (input) {
-                        const queryParams = Object.keys(input)
-                        if (queryParams.length > 1) {
-                            throw "Choose no more than 1 parameters"
-                        }
-                        paramName = queryParams[0];
-                        paramValue = input[queryParams[0]];
-                    }
-                    const allowed = await dataSources.db.Auth.canManage(user.id, 'System')
-                    if (allowed[0].count > 0) {
-                        const result = await dataSources.db.Auth.getUsers(paramName, paramValue);
-                        return parseToSchemaUser(result)
-                    } else {
-                        throw new AuthenticationError('You are not authorized to perform this query')
-                    }
-
+                const filter = new QueryParams(input);
+                const userFilter = { active: true, rolesAndPermissions: false };
+                // User with System/Manage permission can list the inactive users including roles and permissions
+                if (await dataSources.db.Auth.userCanManage(user, 'System')) {
+                    userFilter.active = false;
+                    userFilter.rolesAndPermissions = true;
                 }
+                // users without system/manage permission, can fetch only their own roles and permissions
+                else if (user && parseInt(filter.get('id')) === parseInt(user.id)) {
+                    userFilter.rolesAndPermissions = true;
+                } else if (user && filter.get('username') === user.username) {
+                    userFilter.rolesAndPermissions = true;
+                }
+                if (filter.has('id')) {
+                    userFilter.id = filter.get('id')
+                    if (filter.has('username')) {
+                        throw new Error('Filter can only have user id or username')
+                    }
+                } else if (filter.has('username')) {
+                    userFilter.username = filter.get('username')
+                }
+                const result = await dataSources.db.Auth.getUsersFiltered(userFilter);
+                return parseToSchemaUser(result)
+
             } catch (error) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to perform this query')
             }
@@ -314,7 +317,7 @@ const buildUserObjectFromGroupedRows = (rows) => {
         roles: []
     }
 
-    if (rows[0].roleId !== null) {
+    if (rows[0].roleId !== undefined && rows[0].roleId !== null) {
         let previousRoleId = null;
         let groupedRoleRows = [];
         rows.forEach(row => {

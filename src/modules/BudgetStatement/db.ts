@@ -353,8 +353,8 @@ export class BudgetStatementModel {
         return this.knex('BudgetStatementCommentAuthor').insert({ name }).returning('*');
     }
 
-    async addBudgetStatementComment(budgetStatementId: number, comment: string): Promise<BudgetStatementComment[]> {
-        return this.knex('BudgetStatementComment').insert({ budgetStatementId, timestamp: new Date().toISOString(), comment }).returning('*');
+    async addBudgetStatementComment(authorId: number, budgetStatementId: number, comment: string): Promise<BudgetStatementComment[]> {
+        return this.knex('BudgetStatementComment').insert({ authorId, budgetStatementId, timestamp: new Date().toISOString(), comment }).returning('*');
     }
 
     async addCommentAuthor(bsCommentId: number, bsCommentAuthorId: number) {
