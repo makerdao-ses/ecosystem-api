@@ -9,8 +9,22 @@ export const typeDefs = [gql`
         description: String!
     }
 
+    type UserActivity {
+        id: ID!
+        userId: ID!
+        collection: String
+        data: JSON
+        lastVisit: DateTime
+    }
+
+    input UserActivityFilter {
+        userId: ID
+        collection: String
+    }
+
     extend type Query {
-        activityFeed: [ChangeTrackingEvent]
+        activityFeed: [ChangeTrackingEvent],
+        userActivity(filter: UserActivityFilter): [UserActivity]
     }
 
     extend type CoreUnit {
@@ -24,6 +38,17 @@ export const resolvers = {
         activityFeed: async (_, __, { dataSources }) => {
             return dataSources.db.ChangeTracking.getActivityFeed();
         },
+        userActivity: async (_, { filter }, { dataSources }) => {
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                const paramName = queryParams[0];
+                const paramValue = filter[queryParams[0]];
+                const secondParamName = queryParams[1];
+                const secondParamValue = filter[queryParams[1]];
+                return dataSources.db.ChangeTracking.getUserActivity(paramName, paramValue, secondParamName, secondParamValue)
+            }
+            return dataSources.db.ChangeTracking.getUserActivity()
+        }
     },
     CoreUnit: {
         lastActivity: async (parent, _, { dataSources }) => {

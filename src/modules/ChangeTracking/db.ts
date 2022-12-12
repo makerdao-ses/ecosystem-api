@@ -8,6 +8,14 @@ export interface ChangeTrackingEvent {
     description: string;
 }
 
+export interface UserActivity {
+    id: string;
+    userId: string;
+    collection: string;
+    data: JSON;
+    lastVisit: string;
+}
+
 export class ChangeTrackingModel {
     knex: Knex;
     coreUnitModel: object;
@@ -20,11 +28,11 @@ export class ChangeTrackingModel {
     private toMonthName(monthNumber: number) {
         const date = new Date();
         date.setMonth(monthNumber - 1);
-      
+
         return date.toLocaleString('en-US', {
-          month: 'long',
+            month: 'long',
         });
-      }
+    }
 
     async getActivityFeed(): Promise<ChangeTrackingEvent[]> {
         return await this.knex.select('*')
@@ -73,6 +81,20 @@ export class ChangeTrackingModel {
 
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
         await this.knex('ChangeTrackingEvents_CoreUnits').insert({ event_id: result[0].id, coreunit_id: cuId })
+    }
+
+    async getUserActivity(
+        paramName: string | undefined,
+        paramValue: string | number | undefined,
+        secondParamName: string | undefined,
+        secondParamValue: string | undefined) {
+        if (paramName === undefined && paramValue === undefined && secondParamName === undefined && secondParamValue === undefined) {
+            return this.knex('UserActivity').orderBy('id', 'desc');
+        } else if (secondParamName == undefined && secondParamValue == undefined) {
+            return this.knex('UserActivity').where(`${paramName}`, paramValue);
+        } else {
+            return this.knex('UserActivity').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
+        }
     }
 }
 
