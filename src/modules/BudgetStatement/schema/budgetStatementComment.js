@@ -46,6 +46,7 @@ export const typeDefs = [gql`
         comment: String
         commentAuthorName: String @deprecated(reason: "use commentAuthorId to add userId")
         commentAuthorId: ID!
+        status: BudgetStatus
     }
 
     input BudgetStatementCommentDeleteInput {
@@ -92,7 +93,7 @@ export const resolvers = {
                         }
                         console.log(`adding comment to budgetStatement id: ${input.budgetStatementId}`);
                         // add comment
-                        const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment);
+                        const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                         return addedComment;
                     } else {
                         throw new AuthenticationError('You are not authorized to create budget statement comments')
