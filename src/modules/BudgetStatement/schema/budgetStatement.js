@@ -549,6 +549,9 @@ export const resolvers = {
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
+                            throw new Error(`Cannot update statement with status ${bStatement.status}`)
+                        }
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Adding lineItems
                         console.log(`adding ${input.length} line items to CU ${cuIdFromInput.cuId}`,)
@@ -577,6 +580,9 @@ export const resolvers = {
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input.budgetStatementWalletId)
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
+                            throw new Error(`Cannot update statement with status ${bStatement.status}`)
+                        }
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Updating lineItems
                         console.log(`updating line item ${input.id} to CU ${user.cuId}`,)
@@ -607,6 +613,9 @@ export const resolvers = {
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
+                            throw new Error(`Cannot update statement with status ${bStatement.status}`)
+                        }
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Updating lineItems
                         console.log(`updating line items ${input.length} to CU ${cuIdFromInput.cuId}`,)
@@ -632,6 +641,11 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         const cuIdFromInput = input.pop()
+                        const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
+                            throw new Error(`Cannot update statement with status ${bStatement.status}`)
+                        }
                         console.log(`deleting ${input.length} line items from CU ${cuIdFromInput.cuId}`);
                         return await dataSources.db.BudgetStatement.batchDeleteLineItems(input)
                     } else {

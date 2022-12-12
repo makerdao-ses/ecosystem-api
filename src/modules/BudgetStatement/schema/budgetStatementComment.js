@@ -86,10 +86,29 @@ export const resolvers = {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to create budget statment comments")
                 } else {
-                    const allowed = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
-                    if (allowed[0].count > 0) {
-                        if (input.length < 1) {
-                            throw new Error('"No input data')
+                    if (input.length < 1) {
+                        throw new Error('No input data')
+                    }
+                    const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
+                    const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
+                    if (canAudit.count > 0 && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
+                        console.log(`As an auditor, changing status to ${input.status}`)
+                        const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                        return addedComment;
+                    }
+                    else if (canUpdate[0].count > 0) {
+                        if (user.cuId !== undefined) {
+                            const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId);
+                            if (cuAuditors.length > 0 && (input.status === 'Draft' || input.status === 'Review')) {
+                                console.log('With auditors - changing budget statment status to :', input.status);
+                                const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                                return addedComment;
+                            }
+                            if (cuAuditors.length < 1 && (input.status === 'Draft' || input.status === 'Final')) {
+                                console.log('No auditors - changing budget statment status to :', input.status);
+                                const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                                return addedComment;
+                            }
                         }
                         console.log(`adding comment to budgetStatement id: ${input.budgetStatementId}`);
                         // add comment

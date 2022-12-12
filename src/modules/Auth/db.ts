@@ -91,6 +91,22 @@ export class AuthModel {
             });
     };
 
+    async can(userId: number, permission: string, resourceType: string): Promise<any> {
+        return this.knex
+            .count('*')
+            .from('UserRole')
+            .leftJoin('RolePermission', function () {
+                this
+                    .on('UserRole.roleId', '=', 'RolePermission.roleId')
+                    .andOn('UserRole.resource', '=', 'RolePermission.resource')
+            })
+            .where({
+                userId: userId,
+                'RolePermission.permission': permission,
+                'RolePermission.resource': resourceType
+            });
+    }
+
     async changeUserPassword(username: string, password: string): Promise<any> {
         return this.knex('User').where('username', username).update('password', password).returning('*')
     };
