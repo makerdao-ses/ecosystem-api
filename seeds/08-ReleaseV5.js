@@ -43,5 +43,19 @@ export async function seed(knex) {
       legacyBudgetStatementUrl: 'https://github.com/MakerOps/tech-001-transparency-reporting'
     })
 
+  await knex('UserActivity').insert([{
+    userId: 4,
+    collection: 'BudgetStatement(206).comments',
+    data: null,
+    lastVisit: '2022-12-13T15:08:46.841Z',
+  },
+  {
+    userId: 4,
+    collection: 'BudgetStatement(205).comments',
+    data: null,
+    lastVisit: '2022-11-01T12:08:46.841Z',
+  }
+])
+
 
 };
