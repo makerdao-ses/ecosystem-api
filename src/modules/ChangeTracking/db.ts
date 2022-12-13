@@ -95,6 +95,10 @@ export class ChangeTrackingModel {
         } else {
             return this.knex('UserActivity').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
         }
+    };
+
+    async userActivityCreate(input: {userId: string | undefined, collection: string, data: JSON | undefined, timestamp: string}){
+        return this.knex('UserActivity').insert({userId: input.userId, collection: input.collection, data: input.data, lastVisit: input.timestamp}).returning('*')
     }
 }
 
