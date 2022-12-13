@@ -8,7 +8,7 @@ export const typeDefs = [gql`
         timestamp: DateTime
         comment: String
         status: BudgetStatus
-        authorId: String
+        author: User
     }
 
     type BudgetStatementCommentAuthor {
@@ -59,7 +59,9 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         budgetStatementComments: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementComments()
+            const comments = await dataSources.db.BudgetStatement.getBudgetStatementComments()
+            const parsed = parseCommentOutput(comments, dataSources);
+            return parsed;
         },
         budgetStatementComment: async (_, { filter }, { dataSources }) => {
             const queryParams = Object.keys(filter);
@@ -70,14 +72,17 @@ export const resolvers = {
             const paramValue = filter[queryParams[0]];
             const secondParamName = queryParams[1];
             const secondParamValue = filter[queryParams[1]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementComment(paramName, paramValue, secondParamName, secondParamValue)
+            const comments = await dataSources.db.BudgetStatement.getBudgetStatementComment(paramName, paramValue, secondParamName, secondParamValue)
+            const parsed = parseCommentOutput(comments, dataSources);
+            return parsed;
         },
     },
     BudgetStatement: {
         comments: async (parent, __, { dataSources }) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementComments(id);
-            return result;
+            const comments = parseCommentOutput(result, dataSources);
+            return comments;
         },
     },
     Mutation: {
@@ -94,7 +99,8 @@ export const resolvers = {
                     if (canAudit.count > 0 && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
                         console.log(`As an auditor, changing status to ${input.status}`)
                         const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                        return addedComment;
+                        const parsed = parseCommentOutput(addedComment, dataSources);
+                        return parsed;
                     }
                     else if (canUpdate[0].count > 0) {
                         if (user.cuId !== undefined) {
@@ -102,18 +108,21 @@ export const resolvers = {
                             if (cuAuditors.length > 0 && (input.status === 'Draft' || input.status === 'Review')) {
                                 console.log('With auditors - changing budget statment status to :', input.status);
                                 const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                                return addedComment;
+                                const parsed = parseCommentOutput(addedComment, dataSources);
+                                return parsed;
                             }
                             if (cuAuditors.length < 1 && (input.status === 'Draft' || input.status === 'Final')) {
                                 console.log('No auditors - changing budget statment status to :', input.status);
                                 const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                                return addedComment;
+                                const parsed = parseCommentOutput(addedComment, dataSources);
+                                return parsed;
                             }
                         }
                         console.log(`adding comment to budgetStatement id: ${input.budgetStatementId}`);
                         // add comment
                         const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                        return addedComment;
+                        const parsed = parseCommentOutput(addedComment, dataSources);
+                        return parsed;
                     } else {
                         throw new AuthenticationError('You are not authorized to create budget statement comments')
                     }
@@ -133,7 +142,9 @@ export const resolvers = {
                             throw new Error('"No input data')
                         }
                         console.log(`deleting comment id: ${input.id}`);
-                        return await dataSources.db.BudgetStatement.budgetStatementCommentDelete(input.id)
+                        const deletedComment = await dataSources.db.BudgetStatement.budgetStatementCommentDelete(input.id);
+                        const parsed = parseCommentOutput(deletedComment, dataSources);
+                        return parsed;
                     } else {
                         throw new AuthenticationError('You are not authorized to create budget statement comments')
                     }
@@ -144,4 +155,14 @@ export const resolvers = {
         }
     }
 
+}
+
+const parseCommentOutput = (comments, dataSources) => {
+    const parsed = comments.map(async (comment) => {
+        const [user] = await dataSources.db.Auth.getUsersFiltered({ id: comment.authorId });
+        delete comment.authorId
+        comment.author = user
+        return comment;
+    });
+    return parsed;
 }
