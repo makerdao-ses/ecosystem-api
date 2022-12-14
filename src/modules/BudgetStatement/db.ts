@@ -349,10 +349,6 @@ export class BudgetStatementModel {
         return this.knex('BudgetStatementFtes').insert({ budgetStatementId: input.budgetStatementId, month: input.month, ftes: input.ftes }).returning('*')
     };
 
-    async addBudgetStatementCommentAuthor(name: string): Promise<BudgetStatementCommentAuthor[]> {
-        return this.knex('BudgetStatementCommentAuthor').insert({ name }).returning('*');
-    }
-
     async addBudgetStatementComment(authorId: number, budgetStatementId: number, comment: string, status: string | undefined | null): Promise<BudgetStatementComment[]> {
         const [statement] = await this.knex('BudgetStatement').where("id", budgetStatementId);
         if (status !== undefined && status !== null && status !== statement.status) {
@@ -363,9 +359,6 @@ export class BudgetStatementModel {
         }
     }
 
-    async addCommentAuthor(bsCommentId: number, bsCommentAuthorId: number) {
-        await this.knex('BudgetStatementComment_BudgetStatementCommentAuthor').insert({ bsCommentId, bsCommentAuthorId })
-    }
     // ------------------- Updating data --------------------------------
 
     async updateLineItem(lineItem: lineItem) {
@@ -419,8 +412,11 @@ export class BudgetStatementModel {
     };
 
     async budgetStatementCommentDelete(commentId: number) {
-        await this.knex("BudgetStatementComment_BudgetStatementCommentAuthor").where('bsCommentId', commentId).del();
         return await this.knex('BudgetStatementComment').where('id', commentId).del().returning('*');
+    }
+
+    async budgetStatementStatusUpdate(budgetStatementId: string, status: string) {
+        return await this.knex('BudgetStatement').where('id', budgetStatementId).update({ status }).returning('*');
     }
 };
 
