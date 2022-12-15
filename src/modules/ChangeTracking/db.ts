@@ -41,19 +41,18 @@ export class ChangeTrackingModel {
     }
 
     async getCoreUnitActivityFeed(cuId: string): Promise<ChangeTrackingEvent[]> {
-        return await this.knex('ChangeTrackingEvents_CoreUnits')
-            .where('coreunit_id', cuId)
-            .orderBy('event_id', 'desc')
-            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_CoreUnits.event_id', '=', 'ChangeTrackingEvents.id');
+        return await this.knex('ChangeTrackingEvents_Index')
+            .where('objectId', cuId)
+            .orderBy('eventId', 'desc')
+            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id');
     }
 
     async getCoreUnitLastActivity(cuId: string): Promise<ChangeTrackingEvent | null> {
-        const result = await this.knex('ChangeTrackingEvents_CoreUnits')
-            .where('coreunit_id', cuId)
-            .orderBy('created_at', 'desc')
-            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_CoreUnits.event_id', '=', 'ChangeTrackingEvents.id')
+        const result = await this.knex('ChangeTrackingEvents_Index')
+            .where('objectId', cuId)
+            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id')
+            .orderBy('ChangeTrackingEvents.created_at', 'desc')
             .limit(1);
-
         return result[0]
     }
 
@@ -67,7 +66,8 @@ export class ChangeTrackingModel {
         }
 
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
-        await this.knex('ChangeTrackingEvents_CoreUnits').insert({ event_id: result[0].id, coreunit_id: cuId })
+        let [lastIndex] = await this.knex('ChangeTrackingEvents_Index').select('id').orderBy('id', 'desc').limit(1);
+        await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
     }
 
     async coreUnitBudgetStatementUpdated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string) {
@@ -80,7 +80,8 @@ export class ChangeTrackingModel {
         }
 
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
-        await this.knex('ChangeTrackingEvents_CoreUnits').insert({ event_id: result[0].id, coreunit_id: cuId })
+        let [lastIndex] = await this.knex('ChangeTrackingEvents_Index').select('id').orderBy('id', 'desc').limit(1);
+        await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
     }
 
     async getUserActivity(
@@ -97,8 +98,8 @@ export class ChangeTrackingModel {
         }
     };
 
-    async userActivityCreate(input: {userId: string | undefined, collection: string, data: JSON | undefined, timestamp: string}){
-        return this.knex('UserActivity').insert({userId: input.userId, collection: input.collection, data: input.data, lastVisit: input.timestamp}).returning('*')
+    async userActivityCreate(input: { userId: string | undefined, collection: string, data: JSON | undefined, timestamp: string }) {
+        return this.knex('UserActivity').insert({ userId: input.userId, collection: input.collection, data: input.data, lastVisit: input.timestamp }).returning('*')
     }
 }
 
