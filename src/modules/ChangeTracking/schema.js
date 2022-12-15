@@ -2,23 +2,36 @@ import { gql, AuthenticationError } from "apollo-server-core";
 
 export const typeDefs = [gql`
     type ChangeTrackingEvent {
+        "Automatically generated ID"
         id: ID!
+        "Timestamp of the event"
         created_at: DateTime!,
+        "Type of event"
         event: String!,
+        "JSON object containing more context on the event"
         params: JSON!,
+        "Written description of the event"
         description: String!
     }
 
     type UserActivity {
+        "Automatically generated ID"
         id: ID!
+        "The ID of the relevant User"
         userId: ID!
+        "String containing details of the collection to which the user activity corresponds"
         collection: String
+        "Optional JSON object with providing further information on the user activity"
         data: JSON
+        "If applicable - reference information on the previous user activity"
         lastVisit: DateTime
     }
 
+    "Allows for filtering of the UserActivity object"
     input UserActivityFilter {
+        "Filter with for all activity of a specific user"
         userId: ID
+        "Filter with for all activity within a specific collection"
         collection: String
     }
 
