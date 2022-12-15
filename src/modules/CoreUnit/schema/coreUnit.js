@@ -12,13 +12,19 @@ export const typeDefs = gql`
         name: String
         "Logo image reference to swarm network. In case server is down, copy file reference and paste it in another swarm gateway link"
         image: String
-        "Type of core unit"
+        "Type of core unit - Technical, Business, Support etc"
         category: [CoreUnitCategory]
+        "A short description of the mandate covered by the Core Unit"
         sentenceDescription: String
+        "A more substantial description of the aims and the work to be performed by the Core Unit"
         paragraphDescription: String
+        "Optional image provided by the Core Unit to give further context on the descriptions"
         paragraphImage: String
+        "A shortened version of the Core Unit code"
         shortCode: String
+        "Link to the Legacy GitHub repository containing historical records of the Core Unit Budget Statement reports"
         legacyBudgetStatementUrl: String       
+        "Information on the Users that are this Core Units' auditors"
         auditors: [User] 
         "Access details on the social media channels of a Core Unit"
         socialMediaChannels: [SocialMediaChannels]
@@ -26,9 +32,11 @@ export const typeDefs = gql`
         contributorCommitment: [ContributorCommitment]
         "Access details on the relevant GitHub contributions of a Core Unit"
         cuGithubContribution: [CuGithubContribution]
+        "Object containing data relating to updates provided by the Core Unit"
         cuUpdates: [CuUpdate]
     }
 
+    "Possible values for Core Unit categoires - A Core Unit can be assigned more than one category"
     enum CoreUnitCategory {
         Technical
         Support
@@ -41,10 +49,15 @@ export const typeDefs = gql`
     }
 
     type CuUpdate {
+        "Automatically generated ID"
         id: ID!
+        "The ID of the relevant Core Unit"
         cuId: ID!
+        "The title of the update"
         updateTitle: String
+        "The date that the update was published"
         updateDate: String
+        "A relevant link to where the update is hosted"
         updateUrl: String
     }
 
@@ -62,11 +75,17 @@ export const typeDefs = gql`
         cuUpdate(filter: CuUpdateFilter): [CuUpdate]
     }
 
+    "Provid information of an update of a Core Unit"
     input CuUpdateFilter {
+        "Automatically generated ID"
         id: ID
+        "The ID of the relevant Core Unit"
         cuId: ID
+        "The title of the update"
         updateTitle: String
+        "The date that the update was published"
         updateDate: DateTime
+        "A relevant link to where the update is hosted"
         updateUrl: String
     }
 
@@ -76,9 +95,13 @@ export const typeDefs = gql`
     }
 
     input CoreUnitFilter {
+        "Use to filter on the automatically generated ID of a Core Unit"
         id: ID
+        "Use to filter on the full code of a Core Unit e.g. 'SES-001'"
         code: String
+        "Use to filter on the name of a Core Unit e.g. 'Sustainable Ecosystem Scaling'"
         name: String
+        "Use to filter on the short code of a Core Unit e.g. 'SES'"
         shortCode: String
     }
 `;

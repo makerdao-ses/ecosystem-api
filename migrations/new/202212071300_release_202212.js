@@ -29,6 +29,7 @@ export async function up(knex) {
 
     await knex.raw(`INSERT INTO public."ChangeTrackingEvents_Index"  (SELECT id, event_id as "eventId", 'CoreUnit' as "objectType", coreunit_id as "objectId" FROM public."ChangeTrackingEvents_CoreUnits")`)
 
+
     //Add status attribute to the BudgetStatementComment table and make comment field nullable
     console.log("Adding the BudgetStatementComment.status attribute...")
     await knex.schema.alterTable('BudgetStatementComment', function (table) {
@@ -55,7 +56,6 @@ export async function up(knex) {
 
     //Insert authorId's to new attribute
     for (var i = 0; i < authorIds.length; i++) {
-        console.log(authorIds[i].id)
         await knex('BudgetStatementComment')
             .where('id', i + 1)
             .update({
