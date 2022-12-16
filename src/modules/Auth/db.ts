@@ -93,7 +93,7 @@ export class AuthModel {
 
     async can(userId: number, permission: string, resourceType: string): Promise<any> {
         return this.knex
-            .count('*')
+            .select('resourceId')
             .from('UserRole')
             .leftJoin('RolePermission', function () {
                 this

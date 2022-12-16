@@ -84,6 +84,49 @@ export class ChangeTrackingModel {
         await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
     }
 
+    async budgetStatementCommentUpdate(
+        description: string,
+        cuId: string,
+        cuCode: string,
+        shortCode: string,
+        budgetStatementId: string,
+        month: string,
+        authorId: string,
+        username: string,
+        commentId: string,
+        oldStatus: string,
+        newStatus: string
+    ) {
+        const event = {
+            created_at: new Date().toISOString(),
+            event: 'CU_BUDGET_STATEMENT_COMMENT',
+            description: description,
+            params: JSON.stringify({
+                coreUnit: {
+                    id: cuId,
+                    code: cuCode,
+                    shortCode: shortCode
+                },
+                budgetStatementId: budgetStatementId,
+                month: month.substring(0, month.length -3),
+                author: {
+                    id: authorId,
+                    username: username,
+                },
+                commentId: commentId,
+                status: {
+                    old: oldStatus,
+                    new: newStatus
+                }
+            })
+        };
+        const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
+        let [lastIndex] = await this.knex('ChangeTrackingEvents_Index').select('id').orderBy('id', 'desc').limit(1);
+        await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'BudgetStatement', objectId: budgetStatementId })
+        await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 2, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
+    
+    }
+
     async getUserActivity(
         paramName: string | undefined,
         paramValue: string | number | undefined,
