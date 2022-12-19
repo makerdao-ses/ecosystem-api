@@ -113,23 +113,21 @@ export const resolvers = {
                         return parsed;
                     }
                     else if (cuAdmin) {
-                        if (user.cuId !== undefined) {
-                            if (withAuditors && (input.status === 'Draft' || input.status === 'Review')) {
-                                console.log('With auditors - changing budget statment status to :', input.status);
-                                const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
-                                const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                                const parsed = await parseCommentOutput(addedComment, dataSources);
-                                await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
-                                return parsed;
-                            }
-                            if (withAuditors === false && (input.status === 'Draft' || input.status === 'Final')) {
-                                console.log('No auditors - changing budget statment status to :', input.status);
-                                const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
-                                const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                                const parsed = await parseCommentOutput(addedComment, dataSources);
-                                await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
-                                return parsed;
-                            }
+                        if (withAuditors && (input.status === 'Draft' || input.status === 'Review')) {
+                            console.log('With auditors - changing budget statment status to :', input.status);
+                            const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
+                            const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                            const parsed = await parseCommentOutput(addedComment, dataSources);
+                            await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
+                            return parsed;
+                        }
+                        if (withAuditors === false && (input.status === 'Draft' || input.status === 'Final')) {
+                            console.log('No auditors - changing budget statment status to :', input.status);
+                            const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
+                            const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                            const parsed = await parseCommentOutput(addedComment, dataSources);
+                            await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
+                            return parsed;
                         }
                         const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
                         if (budgetStatement.status === input.status || input.status === undefined) {
