@@ -129,7 +129,7 @@ export const resolvers = {
                             }
                         }
                         const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
-                        if(budgetStatement.status === input.status || input.status === undefined) {
+                        if (budgetStatement.status === input.status || input.status === undefined) {
                             console.log(`no status change adding comment to budgetStatement id: ${input.budgetStatementId}`);
                             const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                             const parsed = await parseCommentOutput(addedComment, dataSources);
@@ -185,7 +185,7 @@ const parseCommentOutput = (comments, dataSources) => {
 const createBudgetStatementCommentEvent = async (dataSources, parsedComment, oldStatus, cuAdmin, auditor, withAuditors) => {
     const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', parsedComment.budgetStatementId)
     const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', budgetStatement.cuId);
-    const eventDescription = getEventDescription(cuAdmin, auditor, withAuditors, oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
+    const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
     dataSources.db.ChangeTracking.budgetStatementCommentUpdate(
         eventDescription,
         CU.id,
@@ -201,35 +201,35 @@ const createBudgetStatementCommentEvent = async (dataSources, parsedComment, old
     )
 }
 
-const getEventDescription = (cuAdmin, auditor, withAuditors, oldStatus, newStatus, CU, author, month) => {
+const getEventDescription = (oldStatus, newStatus, CU, author, month) => {
     if (oldStatus === newStatus) {
         return `${author.username} commented on the ${CU.code} ${month} Expense Report`
     }
-    if (auditor) {
-        if (oldStatus === 'Review' && newStatus === 'Final') {
-            return `${author.username} approved the ${CU.code} ${month} Expense Report`
-        }
-        if (oldStatus === 'Review' && newStatus === 'Escalated') {
-            return `${author.username} escalated the ${CU.code} ${month} Expense Report`
-        }
-        if (oldStatus === 'Final' && newStatus === 'Review') {
-            return `${author.username} reopened the ${CU.code} ${month} Expense Report`
-        }
+    // Initial status is Draft
+    if (oldStatus === 'Draft' && newStatus === 'Review') {
+        return `${author.username} submitted the ${CU.code} ${month} Expense Report for Review`
     }
-    if (cuAdmin && withAuditors) {
-        if (oldStatus === 'Draft' && newStatus === 'Review') {
-            return `${author.username} submitted the ${CU.code} ${month} Expense Report for Review`
-        }
-        if (oldStatus === 'Final' && newStatus === 'Draft') {
-            return `${author.username} reopened the ${CU.code} ${month} Expense Report`
-        }
+    if (oldStatus === 'Draft' && newStatus === 'Final') {
+        return `${author.username} marked the ${CU.code} ${month} Expense Report as final`
     }
-    if (cuAdmin && withAuditors == false) {
-        if (oldStatus === 'Draft' && newStatus === 'Final') {
-            return `${author.username} marked the ${CU.code} ${month} Expense Report as final`
-        }
-        if (oldStatus === 'Final' && newStatus === 'Draft') {
-            return `${author.username} reopened the ${CU.code} ${month} Expense Report`
-        }
+    // Initial status is Review
+    if (oldStatus === 'Review' && newStatus === 'Final') {
+        return `${author.username} approved the ${CU.code} ${month} Expense Report`
     }
+    if (oldStatus === 'Review' && newStatus === 'Escalated') {
+        return `${author.username} escalated the ${CU.code} ${month} Expense Report`
+    }
+    // Initial status is Final
+    if (oldStatus === 'Final' && newStatus === 'Review') {
+        return `${author.username} reopened the ${CU.code} ${month} Expense Report`
+    }
+    if (oldStatus === 'Final' && newStatus === 'Draft') {
+        return `${author.username} reopened the ${CU.code} ${month} Expense Report`
+    }
+    // Initial status is Escalated
+    if (oldStatus === 'Escalated' && newStatus === 'Review') {
+        return `${author.username} reopened the ${CU.code} ${month} Expense Report`
+    }
+    // Catch all for other transitions (this should never happen)
+    return `${author.username} changed the status of ${CU.code} ${month} Expense Report from ${oldStatus} to ${newStatus}`
 }
