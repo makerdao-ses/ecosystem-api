@@ -97,7 +97,7 @@ export const resolvers = {
                     const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId);
                     const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId);
                     const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
-                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId ? parseInt(user.cuId) : null);
+                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
                     const cuAdmin = (canUpdate[0].count > 0 && budgetStatement.cuId == user?.cuId) || user.cuId == null ? true : false;
                     let auditor = false;
                     if (canAudit !== undefined) {
