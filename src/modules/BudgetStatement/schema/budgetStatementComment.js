@@ -96,14 +96,13 @@ export const resolvers = {
                     }
                     const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
                     const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
-                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId ? user.cuId : null);
+                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', parseInt(user.cuId));
                     const cuAdmin = canUpdate[0].count > 0 ? true : false;
                     let auditor = false;
                     if (canAudit !== undefined) {
-                        auditor = canAudit.resourceId == user.cuId || canAudit.resourceId === null ? true : false;
+                        auditor = canAudit.resourceId == parseInt(user.cuId) || canAudit.resourceId === null ? true : false;
                     }
                     const withAuditors = cuAuditors.length > 0 ? true : false;
-
                     if (auditor && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
                         console.log(`As an auditor, changing status to ${input.status}`)
                         const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)

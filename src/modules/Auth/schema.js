@@ -366,17 +366,24 @@ const buildRoleObjectFromGroupedRows = (rows) => {
 
 // construct from the permission
 export const getCuIdFromPermissions = (userObj) => {
+    const rolesWithId = [];
     const roles = userObj[0].roles.map(role => {
+        rolesWithId.push({ name: role.name, cuId: null })
         return role.permissions;
     }).flat();
     let cuId = undefined;
-    roles.forEach(role => {
+    roles.forEach((role, index) => {
         const regex = /[0-9]{1,}/;
         const rgxOutput = role.match(regex);
         if (rgxOutput !== null) {
-            cuId = rgxOutput[0]
+            rolesWithId[index].cuId = rgxOutput[0]
         }
-    });
+    })
+    rolesWithId.map(role => {
+        if (role.name === 'CoreUnitFacilitator') {
+            cuId = role.cuId
+        }
+    })
     return cuId;
 };
 
