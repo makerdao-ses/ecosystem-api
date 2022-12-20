@@ -55,9 +55,14 @@ export const typeDefs = [gql`
         timestamp: DateTime
     }
 
+    input BudgetStatementEventsFilter {
+        budgetStatementId: ID
+    }
+
     extend type Query {
         activityFeed: [ChangeTrackingEvent],
         userActivity(filter: UserActivityFilter): [UserActivity]
+        budgetStatementEvents(filter: BudgetStatementEventsFilter): [ChangeTrackingEvent]
     }
 
     type Mutation {
@@ -85,6 +90,10 @@ export const resolvers = {
                 return dataSources.db.ChangeTracking.getUserActivity(paramName, paramValue, secondParamName, secondParamValue)
             }
             return dataSources.db.ChangeTracking.getUserActivity()
+        },
+        budgetStatementEvents: async (_, { filter }, { dataSources }) => {
+            const result = await dataSources.db.ChangeTracking.getBudgetStatementEvent(filter?.budgetStatementId);
+            return result
         }
     },
     Mutation: {

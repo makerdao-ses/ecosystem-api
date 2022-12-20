@@ -56,6 +56,18 @@ export class ChangeTrackingModel {
         return result[0]
     }
 
+    async getBudgetStatementEvent(budgetStatementId: string | number) {
+        const baseQuery = this.knex('ChangeTrackingEvents_Index')
+            .where('objectType', 'BudgetStatement')
+            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id')
+            .orderBy('ChangeTrackingEvents_Index.id', 'desc');
+        if (budgetStatementId !== undefined) {
+            return await baseQuery.andWhere('ChangeTrackingEvents_Index.objectId', budgetStatementId)
+        } else {
+            return await baseQuery;
+        }
+    }
+
     async coreUnitBudgetStatementCreated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string) {
         const monthDate = new Date(month);
         const event = {
@@ -108,7 +120,7 @@ export class ChangeTrackingModel {
                     shortCode: shortCode
                 },
                 budgetStatementId: budgetStatementId,
-                month: month.substring(0, month.length -3),
+                month: month.substring(0, month.length - 3),
                 author: {
                     id: authorId,
                     username: username,
@@ -124,7 +136,7 @@ export class ChangeTrackingModel {
         let [lastIndex] = await this.knex('ChangeTrackingEvents_Index').select('id').orderBy('id', 'desc').limit(1);
         await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'BudgetStatement', objectId: budgetStatementId })
         await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 2, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
-    
+
     }
 
     async getUserActivity(
