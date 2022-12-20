@@ -16,6 +16,7 @@ export const typeDefs = [gql`
         "Core Unit code as defined with the Core Units' MIP39"
         cuCode: String!
         mkrProgramLength: Float
+        activityFeed: [ChangeTrackingEvent]
         auditReport: [AuditReport]
         "Number of full-time employees in the corresponding budget statement"
         budgetStatementFTEs: [BudgetStatementFTEs]
@@ -473,6 +474,11 @@ export const resolvers = {
         },
     },
     BudgetStatement: {
+        activityFeed: async (parent, __, { dataSources }) => {
+            const { id } = parent;
+            const result = await dataSources.db.ChangeTracking.getBudgetStatementEvent(id);
+            return result
+        },
         auditReport: async (parent, __, { dataSources }) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getAuditReports(id);
