@@ -476,7 +476,7 @@ export const resolvers = {
     BudgetStatement: {
         activityFeed: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.ChangeTracking.getBudgetStatementEvent(id);
+            const result = await dataSources.db.ChangeTracking.getBsEvents(id)
             return result
         },
         auditReport: async (parent, __, { dataSources }) => {

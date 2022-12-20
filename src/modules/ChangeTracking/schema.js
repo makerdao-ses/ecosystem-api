@@ -92,7 +92,7 @@ export const resolvers = {
             return dataSources.db.ChangeTracking.getUserActivity()
         },
         budgetStatementEvents: async (_, { filter }, { dataSources }) => {
-            const result = await dataSources.db.ChangeTracking.getBudgetStatementEvent(filter?.budgetStatementId);
+            const result = await dataSources.db.ChangeTracking.getBsEvents(filter?.budgetStatementId);
             return result
         }
     },

@@ -56,16 +56,10 @@ export class ChangeTrackingModel {
         return result[0]
     }
 
-    async getBudgetStatementEvent(budgetStatementId: string | number) {
-        const baseQuery = this.knex('ChangeTrackingEvents_Index')
-            .where('objectType', 'BudgetStatement')
-            .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id')
-            .orderBy('ChangeTrackingEvents_Index.id', 'desc');
-        if (budgetStatementId !== undefined) {
-            return await baseQuery.andWhere('ChangeTrackingEvents_Index.objectId', budgetStatementId)
-        } else {
-            return await baseQuery;
-        }
+    async getBsEvents(bsId: string) {
+        return await this.knex.select('*').from('ChangeTrackingEvents')
+            .whereRaw('params->>? = ?', ['budgetStatementId', JSON.parse(bsId)])
+            .orderBy('ChangeTrackingEvents.id', 'desc');
     }
 
     async coreUnitBudgetStatementCreated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string) {
