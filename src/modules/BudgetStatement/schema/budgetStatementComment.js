@@ -96,7 +96,7 @@ export const resolvers = {
                     }
                     const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
                     const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
-                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', parseInt(user.cuId));
+                    const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId ? parseInt(user.cuId) : null);
                     const cuAdmin = canUpdate[0].count > 0 ? true : false;
                     let auditor = false;
                     if (canAudit !== undefined) {
