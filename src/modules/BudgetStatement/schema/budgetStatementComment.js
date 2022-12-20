@@ -94,18 +94,18 @@ export const resolvers = {
                     if (input.length < 1) {
                         throw new Error('No input data')
                     }
-                    const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
+                    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId);
+                    const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId);
                     const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
                     const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId ? parseInt(user.cuId) : null);
-                    const cuAdmin = canUpdate[0].count > 0 ? true : false;
+                    const cuAdmin = canUpdate[0].count > 0 && budgetStatement.cuId == user?.cuId ? true : false;
                     let auditor = false;
                     if (canAudit !== undefined) {
-                        auditor = canAudit.resourceId == parseInt(user.cuId) || canAudit.resourceId === null ? true : false;
+                        auditor = canAudit.resourceId == budgetStatement.cuId || canAudit.resourceId === null ? true : false;
                     }
                     const withAuditors = cuAuditors.length > 0 ? true : false;
                     if (auditor && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
                         console.log(`As an auditor, changing status to ${input.status}`)
-                        const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
                         const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                         const parsed = await parseCommentOutput(addedComment, dataSources);
                         await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
@@ -114,7 +114,6 @@ export const resolvers = {
                     else if (cuAdmin) {
                         if (withAuditors && (input.status === 'Draft' || input.status === 'Review')) {
                             console.log('With auditors - changing budget statment status to :', input.status);
-                            const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
                             const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                             const parsed = await parseCommentOutput(addedComment, dataSources);
                             await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
@@ -122,13 +121,11 @@ export const resolvers = {
                         }
                         if (withAuditors === false && (input.status === 'Draft' || input.status === 'Final')) {
                             console.log('No auditors - changing budget statment status to :', input.status);
-                            const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
                             const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                             const parsed = await parseCommentOutput(addedComment, dataSources);
                             await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
                             return parsed;
                         }
-                        const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId)
                         if (budgetStatement.status === input.status || input.status === undefined) {
                             console.log(`no status change adding comment to budgetStatement id: ${input.budgetStatementId}`);
                             const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
