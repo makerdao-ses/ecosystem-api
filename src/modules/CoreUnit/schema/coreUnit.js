@@ -36,7 +36,7 @@ export const typeDefs = gql`
         cuUpdates: [CuUpdate]
     }
 
-    "Possible values for Core Unit categoires - A Core Unit can be assigned more than one category"
+    "Possible values for Core Unit categories - A Core Unit can be assigned to more than one category"
     enum CoreUnitCategory {
         Technical
         Support

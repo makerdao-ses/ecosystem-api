@@ -4,8 +4,6 @@
  */
 export async function seed(knex) {
 
-
-
   await knex('CoreUnit')
     .where('shortCode', 'SES')
     .update({
@@ -43,19 +41,95 @@ export async function seed(knex) {
       legacyBudgetStatementUrl: 'https://github.com/MakerOps/tech-001-transparency-reporting'
     })
 
-  await knex('UserActivity').insert([{
-    userId: 4,
-    collection: 'BudgetStatement(206).comments',
-    data: null,
-    lastVisit: '2022-12-13T15:08:46.841Z',
-  },
-  {
-    userId: 4,
-    collection: 'BudgetStatement(205).comments',
-    data: null,
-    lastVisit: '2022-11-01T12:08:46.841Z',
-  }
-])
+  await knex('CoreUnit')
+  .where('shortCode', 'CES')
+  .update({
+    legacyBudgetStatementUrl: 'https://github.com/monkeyirish/ces-core-unit/tree/master/reporting/budget-monthly'
+  })
+
+  const claudia = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'claudia'});
+
+  const prose = await knex
+  .select('id')
+  .from('User')
+  .where({username: 'prose'});
+
+  const DUX = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'DUX'});
+
+    const IS = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'IS'});
+
+    const SAS = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'SAS'});
+
+    const TECH = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'TECH'});
+
+    const DECO = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'DECO'});
+
+    const SES = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'SES'});
+
+    const auditId = await knex
+    .select('id')
+    .from('Role')
+    .where({roleName: 'CoreUnitAuditor'});
+
+
+    await knex('UserRole').insert([{
+      userId: claudia[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: DUX[0].id,
+    },
+    {
+      userId: claudia[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: IS[0].id,
+    },
+    {
+      userId: claudia[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: SAS[0].id,
+    },
+    {
+      userId: claudia[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: TECH[0].id,
+    },
+    {
+      userId: claudia[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: DECO[0].id,
+    },
+    {
+      userId: prose[0].id,
+      roleId: auditId[0].id,
+      resource: 'CoreUnit',
+      resourceId: SES[0].id,
+    }
+  ])
 
 
 };

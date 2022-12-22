@@ -39,11 +39,17 @@ export const typeDefs = [gql`
 
     "Current status of the MIP - RFC, Accepted, Rejected etc"
     enum CuMipStatus {
+        "Request For Comments"
         RFC
+        "MIP has been formally submitted to Maker Governance for approval"
         Formal Submission
+        "MIP was accepted by Maker Governance"
         Accepted
+        "MIP was rejected by Maker Governance"
         Rejected
+        "MIP was made obsolete"
         Obsolete
+        "MIP was withdrawn from submission"
         Withdrawn
     }
 
@@ -118,6 +124,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
     }
 
+    "Enum holding the values of the Canonical Budget Category - As defined in the Strategic Finance Chart of Accounts"
     enum CanonicalBudgetCategory {
         CompensationAndBenefits
         AdminExpense
@@ -168,18 +175,29 @@ export const typeDefs = [gql`
         replacedMip: ID
     }
 
+    "Used to filter the CuMip table response"
     input CuMipFilter {
+        "Automatically generated ID"
         id: ID
+        "Full code assigned to MIP"
         mipCode: String
+        "ID referencing to the corresponding entry in the Core Unit table"
         cuId: ID
+        "Date that MIP was put in to RFC status"
         rfc: String
+        "Date that MIP was put in to formal submission status"
         formalSubmission: String
+        "Date that MIP was put in to accepted status"
         accepted: String
+        "Date that MIP was put in to rejected status"
         rejected: String
+        "Date that MIP was made obsolete"
         obsolete: String
+        "Current status of the MIP"
         mipStatus: CuMipStatus
     }
 
+    "Used to filter the Mip39 table response"
     input Mip39Filter {
         id: ID
         mipId: ID
@@ -190,6 +208,7 @@ export const typeDefs = [gql`
         paragraphSummary: String
     }
 
+    "Used to filter the Mip40 table response"
     input Mip40Filter {
         id: ID
         cuMipId: ID
@@ -198,6 +217,7 @@ export const typeDefs = [gql`
         mkrProgramLength: Float
     }
 
+    "Used to filter the Mip40BudgetPeriod table response"
     input Mip40BudgetPeriodFilter {
         id: ID
         mip40Id: ID
@@ -206,6 +226,7 @@ export const typeDefs = [gql`
         ftes: Int
     }
 
+    "Used to filter the Mip40BudgetLineItem table response"
     input Mip40BudgetLineItemFilter {
         id: ID
         mip40WalletId: ID
@@ -218,6 +239,7 @@ export const typeDefs = [gql`
         mip40BudgetLineItem: [Mip40BudgetLineItemFilter]
     }
 
+    "Used to filter the Mip40Wallet table response"
     input Mip40WalletFilter{
         id: ID
         mip40Id: ID
@@ -228,6 +250,7 @@ export const typeDefs = [gql`
         clawbackLimit: Float
     }
 
+    "Used to filter the Mip41 table response"
     input Mip41Filter {
         id: ID
         cuMipId: ID
