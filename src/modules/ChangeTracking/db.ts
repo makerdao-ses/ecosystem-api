@@ -139,11 +139,11 @@ export class ChangeTrackingModel {
         secondParamName: string | undefined,
         secondParamValue: string | undefined) {
         if (paramName === undefined && paramValue === undefined && secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('UserActivity').orderBy('id', 'desc');
+            return this.knex('UserActivity').orderBy('id', 'desc').limit(1);
         } else if (secondParamName == undefined && secondParamValue == undefined) {
-            return this.knex('UserActivity').where(`${paramName}`, paramValue);
+            return this.knex('UserActivity').where(`${paramName}`, paramValue).orderBy('id', 'desc').limit(1);
         } else {
-            return this.knex('UserActivity').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
+            return this.knex('UserActivity').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue).orderBy('id', 'desc').limit(1);
         }
     };
 
