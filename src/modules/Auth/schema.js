@@ -368,7 +368,9 @@ const buildRoleObjectFromGroupedRows = (rows) => {
 export const getCuIdFromPermissions = (userObj) => {
     const rolesWithId = [];
     const roles = userObj[0].roles.map(role => {
-        rolesWithId.push({ name: role.name, cuId: null })
+        role.permissions.forEach(permission => {
+            rolesWithId.push({ name: role.name, cuId: null })
+        })
         return role.permissions;
     }).flat();
     let cuId = undefined;
