@@ -8,15 +8,22 @@ dotenv.config()
 export const typeDefs = [gql`
 
     type User {
+        "Automatically generated ID"
         id: ID
+        "Username"
         username: String
+        "Boolean value describing whether a user is active"
         active: Boolean
+        "Object containing further details on the roles assigned to a user"
         roles: [Role]
     }
 
     type Role {
+        "Automatically generated ID"
         id: ID
+        "Name of the role"
         name: String
+        "Object containing further information on the permissions available to role"
         permissions: [String]
     }
 
@@ -26,7 +33,9 @@ export const typeDefs = [gql`
     }
 
     input UserInput {
+        "Input username of the account you wish to login to"
         username: String!
+        "Input password of the account you wish to login to"
         password: String!
     }
 
@@ -36,8 +45,11 @@ export const typeDefs = [gql`
     }
 
     input UpdatePassword {
+        "Username of the account you wish to change the password of"
         username: String!
+        "The old password value you wish to change"
         password: String!
+        "The new password value you wish to set"
         newPassword: String!
     }
 
@@ -61,10 +73,14 @@ export const typeDefs = [gql`
     }
 
     type Mutation {
+        "Used to create new users - requires authentication"
         userCreate(input: UserInput): User
+        "Used to login to the API"
         userLogin(input: AuthInput!): UserPayload!
+        "Used to change the password of the currently logged in user"
         userChangePassword(input: UpdatePassword!): User
         userSetActiveFlag(input: UserSetActiveFlag): User
+        "Used to delete the account of the currently logged in user"
         userDelete(filter: UserDelete): User
     }
 `];
