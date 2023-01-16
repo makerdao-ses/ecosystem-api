@@ -1,4 +1,4 @@
-import { gql, AuthenticationError } from 'apollo-server-core';
+import { gql, AuthenticationError, ForbiddenError } from 'apollo-server-core';
 
 export const typeDefs = [gql`
 
@@ -95,48 +95,101 @@ export const resolvers = {
                         throw new Error('No input data')
                     }
                     const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId);
-                    const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId);
-                    const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
+                    const canUpdate = await dataSources.db.Auth.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
+                    const canAudit = await dataSources.db.Auth.canAudit(user.id);
                     const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
-                    const cuAdmin = (canUpdate[0].count > 0 && budgetStatement.cuId == user?.cuId) || user.cuId == null ? true : false;
-                    let auditor = false;
-                    if (canAudit !== undefined) {
-                        auditor = canAudit.resourceId == budgetStatement.cuId || canAudit.resourceId === null ? true : false;
-                    }
+                    const cuAdmin = (parseInt(canUpdate[0].count) > 0 && budgetStatement.cuId == user?.cuId) || user.cuId == null ? true : false;
                     const withAuditors = cuAuditors.length > 0 ? true : false;
-                    if (auditor && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
-                        console.log(`As an auditor, changing status to ${input.status}`)
+                    const coreUnitHasAuditors = () => {
+                        return cuAuditors.length > 0 ? true : false;
+                    }
+                    const userHasUpdatePermission = () => {
+                        return parseInt(canUpdate[0].count) > 0
+                    }
+                    const userHasAuditPermission = () => {
+                        let auditor = false;
+                        canAudit.forEach(obj => {
+                            if (obj.resourceId === budgetStatement.cuId || obj.resourceId === null) {
+                                auditor = true
+                            }
+                        })
+                        return auditor;
+                    }
+                    /**
+                    *    Handle status transition
+                    */
+                    const oldStatus = budgetStatement.status;
+                    const newStatus = input.status;
+                    if (oldStatus != newStatus) {
+                        const isAllowed = {
+                            Draft: {
+                                Review: false,
+                                Final: false,
+                                Escalated: false
+                            },
+                            Review: {
+                                Draft: false,
+                                Final: false,
+                                Escalated: false
+                            },
+                            Final: {
+                                Draft: false,
+                                Review: false,
+                                Escalated: false
+                            },
+                            Escalated: {
+                                Draft: false,
+                                Review: false,
+                                Final: false,
+                            }
+                        }
+
+                        if (!coreUnitHasAuditors()) {
+                            if (userHasUpdatePermission()) {
+                                isAllowed.Draft.Final = true;
+                                isAllowed.Final.Draft = true;
+                            }
+                        }
+
+                        if (coreUnitHasAuditors()) {
+                            if (userHasUpdatePermission()) {
+                                isAllowed.Draft.Review = true;
+                                isAllowed.Final.Draft = true;
+                            }
+
+                            if (userHasAuditPermission()) {
+                                isAllowed.Review.Final = true;
+                                isAllowed.Review.Escalated = true;
+                                isAllowed.Final.Review = true;
+                                isAllowed.Escalated.Review = true;
+                            }
+                        }
+
+                        if (!isAllowed[oldStatus][newStatus]) {
+                            throw new ForbiddenError(`You are not authorized to move the expense report status from ${oldStatus} to ${newStatus}.`);
+                        }
+
                         const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                         const parsed = await parseCommentOutput(addedComment, dataSources);
-                        await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
+                        await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, userHasAuditPermission(), withAuditors)
                         return parsed;
                     }
-                    else if (cuAdmin) {
-                        if (withAuditors && (input.status === 'Draft' || input.status === 'Review')) {
-                            console.log('With auditors - changing budget statment status to :', input.status);
-                            const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                            const parsed = await parseCommentOutput(addedComment, dataSources);
-                            await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
-                            return parsed;
+
+                    /**
+                    *    Handle comment submission
+                    */
+
+                    if (input.comment != null || input.comment != undefined) {
+                        const canComment = userHasUpdatePermission() || userHasAuditPermission();
+
+                        if (!canComment) {
+                            throw new ForbiddenError("You are not authorized to add a comment to this expense report.");
                         }
-                        if (withAuditors === false && (input.status === 'Draft' || input.status === 'Final')) {
-                            console.log('No auditors - changing budget statment status to :', input.status);
-                            const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                            const parsed = await parseCommentOutput(addedComment, dataSources);
-                            await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
-                            return parsed;
-                        }
-                        if (budgetStatement.status === input.status || input.status === undefined) {
-                            console.log(`no status change adding comment to budgetStatement id: ${input.budgetStatementId}`);
-                            const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                            const parsed = await parseCommentOutput(addedComment, dataSources);
-                            await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, auditor, withAuditors)
-                            return parsed;
-                        } else {
-                            throw new Error(`Choose different status than ${input.status}`)
-                        }
-                    } else {
-                        throw new AuthenticationError('You are not authorized to create budget statement comments')
+
+                        const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                        const parsed = await parseCommentOutput(addedComment, dataSources);
+                        await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status, cuAdmin, userHasAuditPermission(), withAuditors)
+                        return parsed;
                     }
                 }
             } catch (error) {

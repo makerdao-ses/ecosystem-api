@@ -53,6 +53,27 @@ export class AuthModel {
             .orWhere({ "resourceId": resourceId || null })
     };
 
+    async canUpdateCoreUnit(userId: number, resourceType: string, resourceId: number): Promise<any> {
+        return this.knex
+            .count('*')
+            .from('UserRole')
+            .leftJoin('RolePermission', function () {
+                this
+                    .on('UserRole.roleId', '=', 'RolePermission.roleId')
+                    .andOn('UserRole.resource', '=', 'RolePermission.resource')
+            })
+            .where({
+                userId: userId,
+                'RolePermission.permission': 'Update',
+                'RolePermission.resource': resourceType,
+                "UserRole.resourceId": resourceId
+            })
+            .orWhere({
+                userId,
+                "UserRole.resourceId": null
+            })
+    };
+
     async userCanManage(user: { id: number }, resourceType: string): Promise<Boolean> {
         if (!user) {
             return false;
@@ -104,7 +125,29 @@ export class AuthModel {
                 userId: userId,
                 'RolePermission.permission': permission,
                 'RolePermission.resource': resourceType
-            });
+            })
+    }
+
+    async canAudit(userId: number): Promise<any> {
+        return this.knex
+            .select('resourceId')
+            .from('UserRole')
+            .leftJoin('RolePermission', function () {
+                this
+                    .on('UserRole.roleId', '=', 'RolePermission.roleId')
+                    .andOn('UserRole.resource', '=', 'RolePermission.resource')
+            })
+            .where({
+                userId: userId,
+                'RolePermission.permission': 'Audit',
+                'RolePermission.resource': "CoreUnit"
+            })
+            .orWhere({
+                userId: userId,
+                'RolePermission.permission': "Manage",
+                'RolePermission.resource': "System"
+            })
+
     }
 
     async changeUserPassword(username: string, password: string): Promise<any> {
