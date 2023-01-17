@@ -159,30 +159,6 @@ export const typeDefs = [gql`
         mkrProgramLength: Float
     }
 
-    input AuditReportFilter {
-        id: ID
-        budgetStatementId: ID
-        auditStatus: AuditStatus
-        reportUrl: String
-        timestamp: Timestamp
-    }
-
-    input BudgetStatementFTEsFilter {
-        id: ID
-        budgetStatementId: ID
-        month: String
-        ftes: Float
-    }
-
-    input BudgetStatementMKRVestFilter {
-        id: ID
-        budgetStatementId: ID
-        vestingDate: String
-        mkrAmount: Float
-        mkrAmountOld: Float
-        comments: String
-    }
-
     input BudgetStatementWalletFilter {
         id: ID
         budgetStatementId: ID
@@ -191,12 +167,6 @@ export const typeDefs = [gql`
         currentBalance: Float
         topupTransfer: Float
         comments: String
-    }
-
-    input BudgetStatementTransferRequestFilter {
-        budgetStatementWalletId: ID!
-        budgetStatementPaymentId: ID
-        requestAmount: Float
     }
 
     input BudgetStatementLineItemFilter {
@@ -225,20 +195,12 @@ export const typeDefs = [gql`
     extend type Query {
         budgetStatement(filter: BudgetStatementFilter): [BudgetStatement]
         budgetStatements(limit: Int, offset: Int): [BudgetStatement!]
-        auditReport(filter: AuditReportFilter): [AuditReport]
-        auditReports: [AuditReport]
-        budgetStatementFTEs: [BudgetStatementFTEs]
-        budgetStatementFTE(filter: BudgetStatementFTEsFilter): [BudgetStatementFTEs]
-        budgetStatementMKRVests: [BudgetStatementMKRVest]
-        budgetStatementMKRVest(filter: BudgetStatementMKRVestFilter): [BudgetStatementMKRVest]
         budgetStatementWallets: [BudgetStatementWallet]
         budgetStatementWallet(filter: BudgetStatementWalletFilter): [BudgetStatementWallet]
         budgetStatementLineItems(limit: Int, offset: Int): [BudgetStatementLineItem]
         budgetStatementLineItem(filter: BudgetStatementLineItemFilter): [BudgetStatementLineItem]
-        budgetStatementPayments: [BudgetStatementPayment]
-        budgetStatementPayment(filter: BudgetStatementPaymentFilter): [BudgetStatementPayment]
-        budgetStatementTransferRequests: [BudgetStatementTransferRequest]
-        budgetStatementTransferRequest(filter: BudgetStatementTransferRequestFilter): [BudgetStatementTransferRequest]
+        # budgetStatementPayments: [BudgetStatementPayment]
+        # budgetStatementPayment(filter: BudgetStatementPaymentFilter): [BudgetStatementPayment]
     }
 
     extend type CoreUnit {
@@ -378,42 +340,6 @@ export const resolvers = {
             const secondParamValue = filter[queryParams[1]];
             return await dataSources.db.BudgetStatement.getBudgetStatement(paramName, paramValue, secondParamName, secondParamValue)
         },
-        auditReports: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getAuditReports();
-        },
-        auditReport: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getAuditReport(paramName, paramValue)
-        },
-        budgetStatementFTEs: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementFTEs();
-        },
-        budgetStatementFTE: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementFTE(paramName, paramValue)
-        },
-        budgetStatementMKRVests: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementMKRVests();
-        },
-        budgetStatementMKRVest: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementMKRVest(paramName, paramValue)
-        },
         budgetStatementWallets: async (_, __, { dataSources }) => {
             return await dataSources.db.BudgetStatement.getBudgetStatementWallets();
         },
@@ -440,31 +366,18 @@ export const resolvers = {
             const secondParamValue = filter[queryParams[1]];
             return await dataSources.db.BudgetStatement.getBudgetStatementLineItem(paramName, paramValue, secondParamName, secondParamValue)
         },
-        budgetStatementPayments: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementPayments();
-        },
-        budgetStatementPayment: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementPayment(paramName, paramValue)
-        },
-        budgetStatementTransferRequests: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests()
-        },
-        budgetStatementTransferRequest: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementTransferRequest(paramName, paramValue)
-        }
-
+        // budgetStatementPayments: async (_, __, { dataSources }) => {
+        //     return await dataSources.db.BudgetStatement.getBudgetStatementPayments();
+        // },
+        // budgetStatementPayment: async (_, { filter }, { dataSources }) => {
+        //     const queryParams = Object.keys(filter);
+        //     if (queryParams.length > 1) {
+        //         throw "Choose one parameter only"
+        //     }
+        //     const paramName = queryParams[0];
+        //     const paramValue = filter[queryParams[0]];
+        //     return await dataSources.db.BudgetStatement.getBudgetStatementPayment(paramName, paramValue)
+        // }
     },
     CoreUnit: {
         budgetStatements: async (parent, __, { dataSources }) => {
