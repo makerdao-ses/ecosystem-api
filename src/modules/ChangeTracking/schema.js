@@ -60,7 +60,7 @@ export const typeDefs = [gql`
     }
 
     extend type Query {
-        activityFeed: [ChangeTrackingEvent],
+        activityFeed(offset: Int, limit: Int): [ChangeTrackingEvent],
         userActivity(filter: UserActivityFilter): [UserActivity]
         budgetStatementEvents(filter: BudgetStatementEventsFilter): [ChangeTrackingEvent]
     }
@@ -71,14 +71,14 @@ export const typeDefs = [gql`
 
     extend type CoreUnit {
         lastActivity: ChangeTrackingEvent
-        activityFeed: [ChangeTrackingEvent]
+        activityFeed(limit: Int, offset: Int): [ChangeTrackingEvent]
     }
 `];
 
 export const resolvers = {
     Query: {
-        activityFeed: async (_, __, { dataSources }) => {
-            return dataSources.db.ChangeTracking.getActivityFeed();
+        activityFeed: async (_, filter, { dataSources }) => {
+            return dataSources.db.ChangeTracking.getActivityFeed(filter.limit, filter.offset);
         },
         userActivity: async (_, { filter }, { dataSources }) => {
             if (filter !== undefined) {

@@ -34,10 +34,19 @@ export class ChangeTrackingModel {
         });
     }
 
-    async getActivityFeed(): Promise<ChangeTrackingEvent[]> {
-        return await this.knex.select('*')
-            .from('ChangeTrackingEvents')
-            .orderBy('id', 'desc');
+    async getActivityFeed(limit: number | undefined, offset: number | undefined): Promise<ChangeTrackingEvent[]> {
+        if (offset != undefined && limit != undefined) {
+            return await this.knex.select('*')
+                .from('ChangeTrackingEvents')
+                .limit(limit)
+                .offset(offset)
+                .orderBy('id', 'desc');
+        } else {
+            return await this.knex.select('*')
+                .from('ChangeTrackingEvents')
+                .orderBy('id', 'desc');
+        }
+
     }
 
     async getCoreUnitActivityFeed(cuId: string): Promise<ChangeTrackingEvent[]> {
