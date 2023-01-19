@@ -71,8 +71,7 @@ export const typeDefs = gql`
     type Query {
         cuGithubContributions(filter: CuGithubContributionFilter): [CuGithubContribution]
         githubOrgs(filter: GithubOrgFilter): [GithubOrg]
-        githubRepos: [GithubRepo]
-        githubRepo(filter: GithubRepoFilter): [GithubRepo]
+        githubRepos(filter: GithubRepoFilter): [GithubRepo]
         makerGithubEcosystemAll: [MakerGithubEcosystem]
         makerGithubEcosystem(filter: MakerGithubEcosystemFilter): [MakerGithubEcosystem]
 
@@ -88,17 +87,8 @@ export const resolvers = {
         githubOrgs: async (_, { filter }, { dataSources }) => {
             return dataSources.db.CoreUnit.getGithubOrgs(filter)
         },
-        githubRepos: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getGithubRepos()
-        },
-        githubRepo: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getGithubRepo(paramName, paramValue)
+        githubRepos: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getGithubRepos(filter)
         },
         makerGithubEcosystemAll: async (_, __, { dataSources }) => {
             return await dataSources.db.CoreUnit.getMakerGithubEcosystemAll()
@@ -121,7 +111,7 @@ export const resolvers = {
         },
         githubRepo: async (parent, __, { dataSources }) => {
             const { repoId } = parent;
-            const result = await dataSources.db.CoreUnit.getGithubRepos(repoId);
+            const result = await dataSources.db.CoreUnit.getGithubRepos({ id: repoId });
             return result;
         }
     }

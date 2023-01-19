@@ -143,6 +143,12 @@ export interface GithubOrgFilter {
     githubUrl?: string
 }
 
+export interface GithubRepoFilter {
+    id?: number | string
+    repo?: string
+    githubUrl?: string
+}
+
 
 export class CoreUnitModel {
     knex: Knex;
@@ -330,14 +336,19 @@ export class CoreUnitModel {
         return this.knex('GithubOrg').where(`${paramName}`, paramValue)
     };
 
-    async getGithubRepos(id: string | undefined): Promise<GithubRepo[]> {
-        if (id === undefined) {
-            return this.knex
-                .select('*')
-                .from('GithubRepo')
-                .orderBy('id')
+    async getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('GithubRepo')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.repo !== undefined) {
+            return baseQuery.where('repo', filter.repo)
+        } else if (filter?.githubUrl !== undefined) {
+            return baseQuery.where('githubUrl', filter.githubUrl)
         } else {
-            return this.knex('GithubRepo').where('id', id)
+            return baseQuery;
         }
     };
 
