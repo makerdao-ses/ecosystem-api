@@ -119,6 +119,15 @@ export interface BudgetStatementCommentAuthor {
     name: string
 }
 
+export interface BudgetStatementFilter {
+    id?: number
+    cuId?: number
+    month?: string
+    status?: string
+    cuCode?: string
+    mkrProgramLength?: number
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -130,19 +139,28 @@ export class BudgetStatementModel {
         this.authModel = authModel;
     };
 
-    async getBudgetStatements(limit: number | undefined, offset: number | undefined): Promise<BudgetStatement[]> {
-        if (limit !== undefined && offset !== undefined) {
-            return this.knex
-                .select()
-                .from('BudgetStatement')
-                .limit(limit)
-                .offset(offset)
-                .orderBy('month', 'desc')
+    async getBudgetStatements(filter: { limit?: number, offset?: number, filter?: BudgetStatementFilter }): Promise<BudgetStatement[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatement')
+            .orderBy('month', 'desc');
+
+        if (filter?.limit !== undefined && filter?.offset !== undefined) {
+            return baseQuery.limit(filter.limit).offset(filter.offset);
+        } else if (filter.filter?.id !== undefined) {
+            return baseQuery.where('id', filter.filter.id)
+        } else if (filter.filter?.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.filter.cuId)
+        } else if (filter.filter?.month !== undefined) {
+            return baseQuery.where('month', filter.filter.month)
+        } else if (filter.filter?.status !== undefined) {
+            return baseQuery.where('status', filter.filter.status)
+        } else if (filter.filter?.cuCode !== undefined) {
+            return baseQuery.where('cuCode', filter.filter.cuCode)
+        } else if (filter.filter?.mkrProgramLength !== undefined) {
+            return baseQuery.where('mkrProgramLength', filter.filter.mkrProgramLength)
         } else {
-            return this.knex
-                .select('*')
-                .from('BudgetStatement')
-                .orderBy('month', 'desc')
+            return baseQuery;
         }
     };
 

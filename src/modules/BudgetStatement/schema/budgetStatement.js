@@ -193,8 +193,7 @@ export const typeDefs = [gql`
     }
 
     extend type Query {
-        budgetStatement(filter: BudgetStatementFilter): [BudgetStatement]
-        budgetStatements(limit: Int, offset: Int): [BudgetStatement!]
+        budgetStatements(limit: Int, offset: Int, filter: BudgetStatementFilter): [BudgetStatement!]
         budgetStatementWallets: [BudgetStatementWallet]
         budgetStatementWallet(filter: BudgetStatementWalletFilter): [BudgetStatementWallet]
         budgetStatementLineItems(limit: Int, offset: Int): [BudgetStatementLineItem]
@@ -327,18 +326,7 @@ export const resolvers = {
     Query: {
         // coreUnits: (parent, args, context, info) => {}
         budgetStatements: async (_, filter, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatements(filter.limit, filter.offset)
-        },
-        budgetStatement: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 2) {
-                throw "Choose no more than 2 parameters"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            const secondParamName = queryParams[1];
-            const secondParamValue = filter[queryParams[1]];
-            return await dataSources.db.BudgetStatement.getBudgetStatement(paramName, paramValue, secondParamName, secondParamValue)
+            return await dataSources.db.BudgetStatement.getBudgetStatements(filter)
         },
         budgetStatementWallets: async (_, __, { dataSources }) => {
             return await dataSources.db.BudgetStatement.getBudgetStatementWallets();
@@ -382,7 +370,7 @@ export const resolvers = {
     CoreUnit: {
         budgetStatements: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatement('cuId', id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { cuId: id } });
             return result;
         },
     },
@@ -473,7 +461,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -504,7 +492,7 @@ export const resolvers = {
                         //Tacking Change
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input.budgetStatementWalletId)
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -537,7 +525,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -567,7 +555,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         const cuIdFromInput = input.pop()
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallet('id', input[0].budgetStatementWalletId)
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', wallet.budgetStatementId)
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }

@@ -14,8 +14,8 @@ async function getBudgetStatementModel(): Promise<BudgetStatementModel> {
 
 it('returns list of budgetStatements with limit offset and undefined', async () => {
     const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatements(undefined, undefined);
-    const entry1 = await model.getBudgetStatements(10, 1);
+    const entry = await model.getBudgetStatements({});
+    const entry1 = await model.getBudgetStatements({ offset: 10, limit: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
