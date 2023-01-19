@@ -58,7 +58,7 @@ it('returns contributor commitment with cu Id 1', async () => {
 it('returns list of cuGithubContributions with cuId and undefined params', async () => {
     const model = await getCoreUnitModel();
     const entry = await model.getCuGithubContributions(undefined);
-    const entry1 = await model.getCuGithubContributions('1');
+    const entry1 = await model.getCuGithubContributions({ cuId: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

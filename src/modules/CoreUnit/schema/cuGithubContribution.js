@@ -37,7 +37,7 @@ export const typeDefs = gql`
     }
 
     input CuGithubContributionFilter {
-        id: ID!
+        id: ID
         cuId: ID
         orgId: ID
         repoId: ID
@@ -69,8 +69,7 @@ export const typeDefs = gql`
     }
 
     type Query {
-        cuGithubContributions: [CuGithubContribution]
-        cuGithubContribution(filter: CuGithubContributionFilter): [CuGithubContribution]
+        cuGithubContributions(filter: CuGithubContributionFilter): [CuGithubContribution]
         githubOrgs: [GithubOrg]
         githubOrg(filter: GithubOrgFilter): [GithubOrg]
         githubRepos: [GithubRepo]
@@ -84,17 +83,8 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        cuGithubContributions: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getCuGithubContributions()
-        },
-        cuGithubContribution: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getCuGithubContribution(paramName, paramValue)
+        cuGithubContributions: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getCuGithubContributions(filter)
         },
         githubOrgs: async (_, __, { dataSources }) => {
             return dataSources.db.CoreUnit.getGithubOrgs()

@@ -130,6 +130,13 @@ export interface ContributorFilter {
     email?: string
 }
 
+export interface CuGithubContributionFilter {
+    id?: number
+    cuId?: number
+    orgId?: number
+    repoId?: number
+}
+
 
 export class CoreUnitModel {
     knex: Knex;
@@ -247,14 +254,21 @@ export class CoreUnitModel {
         return this.knex('ContributorCommitment').where(`${paramName}`, paramValue)
     };
 
-    async getCuGithubContributions(cuId: string | undefined): Promise<CuGithubContribution[]> {
-        if (cuId === undefined) {
-            return this.knex
-                .select('*')
-                .from('CuGithubContribution')
-                .orderBy('id');
+    async getCuGithubContributions(filter?: CuGithubContributionFilter): Promise<CuGithubContribution[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('CuGithubContribution')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.cuId)
+        } else if (filter?.orgId !== undefined) {
+            return baseQuery.where('orgId', filter.orgId)
+        } else if (filter?.repoId !== undefined) {
+            return baseQuery.where('repoId', filter.repoId)
         } else {
-            return this.knex('CuGithubContribution').where('cuId', cuId)
+            return baseQuery;
         }
     };
 
