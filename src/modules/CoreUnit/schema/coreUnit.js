@@ -67,10 +67,8 @@ export const typeDefs = gql`
     }
 
     extend type Query {
-        "Use this query to retrieve information about ALL Core Units"
-        coreUnits(limit: Int, offset: Int): [CoreUnit],
-        "Use this query to retrieve information about a single Core Unit, use arguments to filter."
-        coreUnit(filter: CoreUnitFilter): [CoreUnit],
+        "Use this query to retrieve information about ALL Core Units or one Core Unit by using filter arguments."
+        coreUnits(filter: CoreUnitFilter, limit: Int, offset: Int): [CoreUnit],
         cuUpdates: [CuUpdate],
         cuUpdate(filter: CuUpdateFilter): [CuUpdate]
     }
@@ -110,26 +108,7 @@ export const resolvers = {
     Query: {
         // coreUnits: (parent, args, context, info) => {}
         coreUnits: async (_, filter, { dataSources }) => {
-            const result = await dataSources.db.CoreUnit.getCoreUnits(filter.limit, filter.offset)
-            const parsedResult = result.map(cu => {
-                if (cu.category !== null) {
-                    const cleanCategory = cu.category.slice(1, cu.category.length - 1)
-                    cu.category = cleanCategory.split(',');
-                    return cu;
-                } else {
-                    return cu;
-                }
-            })
-            return parsedResult;
-        },
-        coreUnit: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            const result = await dataSources.db.CoreUnit.getCoreUnit(paramName, paramValue)
+            const result = await dataSources.db.CoreUnit.getCoreUnits(filter)
             const parsedResult = result.map(cu => {
                 if (cu.category !== null) {
                     const cleanCategory = cu.category.slice(1, cu.category.length - 1)

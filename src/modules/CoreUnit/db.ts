@@ -92,6 +92,13 @@ export interface MakerGithubEcosystem {
     totalStars: number
 }
 
+export interface CoreUnitFilter {
+    id: number,
+    code: string,
+    name: string,
+    shortCode: string
+}
+
 export class CoreUnitModel {
     knex: Knex;
 
@@ -99,19 +106,24 @@ export class CoreUnitModel {
         this.knex = knex;
     };
 
-    async getCoreUnits(limit: number | undefined, offset: number | undefined): Promise<CoreUnit[]> {
-        if (limit !== undefined && offset !== undefined) {
-            return this.knex
-                .select('')
-                .from('CoreUnit')
-                .limit(limit)
-                .offset(offset)
-                .orderBy('id');
-        } else {
-            return this.knex
-                .select('*')
-                .from('CoreUnit')
-                .orderBy('id');
+    async getCoreUnits(filter: { limit?: number, offset?: number, filter?: CoreUnitFilter }): Promise<CoreUnit[]> {
+        const baseQuery = this.knex
+            .select('')
+            .from('CoreUnit')
+            .orderBy('id');
+        if (filter.limit !== undefined && filter.offset !== undefined) {
+            return baseQuery.limit(filter.limit).offset(filter.offset);
+        } else if (filter.filter?.id !== undefined) {
+            return baseQuery.where('id', filter.filter.id)
+        } else if (filter.filter?.code !== undefined) {
+            return baseQuery.where('code', filter.filter.code)
+        } else if (filter.filter?.name !== undefined) {
+            return baseQuery.where('name', filter.filter.name)
+        } else if (filter.filter?.shortCode !== undefined) {
+            return baseQuery.where('shortCode', filter.filter.shortCode)
+        }
+        else {
+            return baseQuery;
         }
     };
 
