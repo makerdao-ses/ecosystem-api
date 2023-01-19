@@ -131,14 +131,23 @@ export class CoreUnitModel {
         return this.knex('CoreUnit').where(`${paramName}`, paramValue)
     };
 
-    async getCuUpdates(cuId: string | undefined): Promise<CuUpdate[]> {
-        if (cuId === undefined) {
-            return this.knex
-                .select('*')
-                .from('CuUpdate')
-                .orderBy('id');
+    async getCuUpdates(filter: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('CuUpdate')
+            .orderBy('id');
+        if (filter.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.cuId)
+        } else if (filter.updateTitle !== undefined) {
+            return baseQuery.where('updateTitle', filter.updateTitle)
+        } else if (filter.updateDate !== undefined) {
+            return baseQuery.where('updateDate', filter.updateDate)
+        } else if (filter.updateUrl !== undefined) {
+            return baseQuery.where('updateUrl', filter.updateUrl)
         } else {
-            return this.knex('CuUpdate').where('cuId', cuId)
+            return baseQuery;
         }
     };
 

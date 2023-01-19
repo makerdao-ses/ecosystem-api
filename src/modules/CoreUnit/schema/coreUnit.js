@@ -69,8 +69,7 @@ export const typeDefs = gql`
     extend type Query {
         "Use this query to retrieve information about ALL Core Units or one Core Unit by using filter arguments."
         coreUnits(filter: CoreUnitFilter, limit: Int, offset: Int): [CoreUnit],
-        cuUpdates: [CuUpdate],
-        cuUpdate(filter: CuUpdateFilter): [CuUpdate]
+        cuUpdates(filter: CuUpdateFilter): [CuUpdate],
     }
 
     "Provid information of an update of a Core Unit"
@@ -120,17 +119,8 @@ export const resolvers = {
             })
             return parsedResult;
         },
-        cuUpdates: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getCuUpdates();
-        },
-        cuUpdate: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getCuUpdate(paramName, paramValue)
+        cuUpdates: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getCuUpdates(filter);
         }
     },
     CoreUnit: {
@@ -151,7 +141,7 @@ export const resolvers = {
         },
         cuUpdates: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.CoreUnit.getCuUpdates(id);
+            const result = await dataSources.db.CoreUnit.getCuUpdates({ cuId: id });
             return result;
         },
         auditors: async (parent, __, { dataSources }) => {

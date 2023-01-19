@@ -12,7 +12,7 @@ async function getCoreUnitModel(): Promise<CoreUnitModel> {
 
 it('returns list of CUs with limit offset and undefined params', async () => {
     const model = await getCoreUnitModel();
-    const filter = {limit: 10, offset: 1}
+    const filter = { limit: 10, offset: 1 }
     const entry = await model.getCoreUnits(filter);
     const entry1 = await model.getCoreUnits({});
     expect(entry.length).toEqual(10);
@@ -27,8 +27,8 @@ it('return a coreUnit with shortCode SES', async () => {
 
 it('returns list of CuUpdates with cuId and undefined param', async () => {
     const model = await getCoreUnitModel();
-    const entry = await model.getCuUpdates(undefined);
-    const entry1 = await model.getCuUpdates('39');
+    const entry = await model.getCuUpdates({});
+    const entry1 = await model.getCuUpdates({ cuId: 39 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
