@@ -72,8 +72,7 @@ export const typeDefs = gql`
         cuGithubContributions(filter: CuGithubContributionFilter): [CuGithubContribution]
         githubOrgs(filter: GithubOrgFilter): [GithubOrg]
         githubRepos(filter: GithubRepoFilter): [GithubRepo]
-        makerGithubEcosystemAll: [MakerGithubEcosystem]
-        makerGithubEcosystem(filter: MakerGithubEcosystemFilter): [MakerGithubEcosystem]
+        makerGithubEcosystemAll(filter: MakerGithubEcosystemFilter): [MakerGithubEcosystem]
 
     }
 
@@ -90,17 +89,8 @@ export const resolvers = {
         githubRepos: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.CoreUnit.getGithubRepos(filter)
         },
-        makerGithubEcosystemAll: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getMakerGithubEcosystemAll()
-        },
-        makerGithubEcosystem: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getMakerGithubEcosystem(paramName, paramValue)
+        makerGithubEcosystemAll: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getMakerGithubEcosystemAll(filter)
         }
     },
     CuGithubContribution: {

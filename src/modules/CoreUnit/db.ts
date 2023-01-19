@@ -149,6 +149,19 @@ export interface GithubRepoFilter {
     githubUrl?: string
 }
 
+export interface MakerGithubEcosystemFilter {
+    id?: number | string
+    makerRepoId?: number | string
+    cuGithubRepoId?: number | string
+    date?: string
+    url?: string
+    org?: number
+    repo?: number
+    uniqueContributors?: number
+    commits4w?: number
+    totalStars?: number
+}
+
 
 export class CoreUnitModel {
     knex: Knex;
@@ -356,11 +369,34 @@ export class CoreUnitModel {
         return this.knex('GithubRepo').where(`${paramName}`, paramValue)
     };
 
-    async getMakerGithubEcosystemAll(): Promise<MakerGithubEcosystem[]> {
-        return this.knex
+    async getMakerGithubEcosystemAll(filter?: MakerGithubEcosystemFilter): Promise<MakerGithubEcosystem[]> {
+        const baseQuery = this.knex
             .select('*')
             .from('MakerGithubEcosystem')
             .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.makerRepoId !== undefined) {
+            return baseQuery.where('makerRepoId', filter.makerRepoId)
+        } else if (filter?.cuGithubRepoId !== undefined) {
+            return baseQuery.where('cuGithubRepoId', filter.cuGithubRepoId)
+        } else if (filter?.date !== undefined) {
+            return baseQuery.where('date', filter.date)
+        } else if (filter?.url !== undefined) {
+            return baseQuery.where('url', filter.url)
+        } else if (filter?.org !== undefined) {
+            return baseQuery.where('org', filter.org)
+        } else if (filter?.repo !== undefined) {
+            return baseQuery.where('repo', filter.repo)
+        } else if (filter?.uniqueContributors !== undefined) {
+            return baseQuery.where('uniqueContributors', filter.uniqueContributors)
+        } else if (filter?.commits4w !== undefined) {
+            return baseQuery.where('commits4w', filter.commits4w)
+        } else if (filter?.totalStars !== undefined) {
+            return baseQuery.where('totalStars', filter.totalStars)
+        } else {
+            return baseQuery;
+        }
     };
 
     async getMakerGithubEcosystem(paramName: string, paramValue: number | string): Promise<MakerGithubEcosystem[]> {
