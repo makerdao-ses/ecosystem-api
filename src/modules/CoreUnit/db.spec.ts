@@ -71,8 +71,8 @@ it('returns list of cuGithubContributions with orgId 0', async () => {
 
 it('returns list of contributors with limit offset and undefined params', async () => {
     const model = await getCoreUnitModel();
-    const entry = await model.getContributors(undefined, undefined);
-    const entry1 = await model.getContributors(10, 1);
+    const entry = await model.getContributors({});
+    const entry1 = await model.getContributors({ limit: 10, offset: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

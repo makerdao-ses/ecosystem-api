@@ -53,8 +53,7 @@ export const typeDefs = gql`
 
     type Query {
         contributorCommitments(filter: ContributorCommitmentFilter): [ContributorCommitment]
-        contributors(limit: Int, offset: Int): [Contributor]
-        contributor(filter: ContributorFilter): [Contributor]
+        contributors(limit: Int, offset: Int, filter: ContributorFilter): [Contributor]
     }
 
     extend type Mip41 {
@@ -69,29 +68,20 @@ export const resolvers = {
             return await dataSources.db.CoreUnit.getContributorCommitments(filter);
         },
         contributors: async (_, filter, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getContributors(filter.limit, filter.offset)
-        },
-        contributor: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getContributor(paramName, paramValue)
+            return await dataSources.db.CoreUnit.getContributors(filter)
         }
     },
     ContributorCommitment: {
         contributor: async (parent, __, { dataSources }) => {
             const { contributorId } = parent;
-            const result = await dataSources.db.CoreUnit.getContributor('id', contributorId);
+            const result = await dataSources.db.CoreUnit.getContributors({ filter: { id: contributorId } });
             return result;
         }
     },
     Mip41: {
         contributor: async (parent, __, { dataSources }) => {
             const { contributorId } = parent;
-            const result = await dataSources.db.CoreUnit.getContributor('id', contributorId);
+            const result = await dataSources.db.CoreUnit.getContributors({ filter: { id: contributorId } });
             return result;
         }
     }

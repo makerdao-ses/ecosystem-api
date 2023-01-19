@@ -121,6 +121,16 @@ export interface ContributorCommitmentsFilter {
     jobTitle?: string
 }
 
+export interface ContributorFilter {
+    id?: number
+    name?: string
+    forumHandle?: string
+    discordHandle?: string
+    twitterHandle?: string
+    email?: string
+}
+
+
 export class CoreUnitModel {
     knex: Knex;
 
@@ -153,20 +163,20 @@ export class CoreUnitModel {
         return this.knex('CoreUnit').where(`${paramName}`, paramValue)
     };
 
-    async getCuUpdates(filter: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
+    async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
         const baseQuery = this.knex
             .select('*')
             .from('CuUpdate')
             .orderBy('id');
-        if (filter.id !== undefined) {
+        if (filter?.id !== undefined) {
             return baseQuery.where('id', filter.id)
-        } else if (filter.cuId !== undefined) {
+        } else if (filter?.cuId !== undefined) {
             return baseQuery.where('cuId', filter.cuId)
-        } else if (filter.updateTitle !== undefined) {
+        } else if (filter?.updateTitle !== undefined) {
             return baseQuery.where('updateTitle', filter.updateTitle)
-        } else if (filter.updateDate !== undefined) {
+        } else if (filter?.updateDate !== undefined) {
             return baseQuery.where('updateDate', filter.updateDate)
-        } else if (filter.updateUrl !== undefined) {
+        } else if (filter?.updateUrl !== undefined) {
             return baseQuery.where('updateUrl', filter.updateUrl)
         } else {
             return baseQuery;
@@ -177,28 +187,28 @@ export class CoreUnitModel {
         return this.knex('CuUpdate').where(`${paramName}`, paramValue)
     };
 
-    async getSocialMediaChannels(filter: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
+    async getSocialMediaChannels(filter?: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
         const baseQuery = this.knex
             .select('*')
             .from('SocialMediaChannels')
             .orderBy('id');
-        if (filter.id !== undefined) {
+        if (filter?.id !== undefined) {
             return baseQuery.where('id', filter.id)
-        } else if (filter.cuId !== undefined) {
+        } else if (filter?.cuId !== undefined) {
             return baseQuery.where('cuId', filter.cuId)
-        } else if (filter.forumTag !== undefined) {
+        } else if (filter?.forumTag !== undefined) {
             return baseQuery.where('forumTag', filter.forumTag)
-        } else if (filter.twitter !== undefined) {
+        } else if (filter?.twitter !== undefined) {
             return baseQuery.where('twitter', filter.twitter)
-        } else if (filter.youtube !== undefined) {
+        } else if (filter?.youtube !== undefined) {
             return baseQuery.where('youtube', filter.youtube)
-        } else if (filter.discord !== undefined) {
+        } else if (filter?.discord !== undefined) {
             return baseQuery.where('dicord', filter.discord)
-        } else if (filter.linkedIn !== undefined) {
+        } else if (filter?.linkedIn !== undefined) {
             return baseQuery.where('linkedIn', filter.linkedIn)
-        } else if (filter.website !== undefined) {
+        } else if (filter?.website !== undefined) {
             return baseQuery.where('website', filter.website)
-        } else if (filter.github !== undefined) {
+        } else if (filter?.github !== undefined) {
             return baseQuery.where('github', filter.github)
         } else {
             return baseQuery;
@@ -209,24 +219,24 @@ export class CoreUnitModel {
         return this.knex('SocialMediaChannels').where(`${paramName}`, paramValue)
     };
 
-    async getContributorCommitments(filter: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
+    async getContributorCommitments(filter?: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
         const baseQuery = this.knex
             .select('*')
             .from('ContributorCommitment')
             .orderBy('id');
-        if (filter.id !== undefined) {
+        if (filter?.id !== undefined) {
             return baseQuery.where('id', filter.id)
-        } else if (filter.cuId !== undefined) {
+        } else if (filter?.cuId !== undefined) {
             return baseQuery.where('cuId', filter.cuId)
-        } else if (filter.contributorId !== undefined) {
+        } else if (filter?.contributorId !== undefined) {
             return baseQuery.where('contributorId', filter.contributorId)
-        } else if (filter.startDate !== undefined) {
+        } else if (filter?.startDate !== undefined) {
             return baseQuery.where('startDate', filter.startDate)
-        } else if (filter.commitment !== undefined) {
+        } else if (filter?.commitment !== undefined) {
             return baseQuery.where('commitment', filter.commitment)
-        } else if (filter.cuCode !== undefined) {
+        } else if (filter?.cuCode !== undefined) {
             return baseQuery.where('cuCode', filter.cuCode)
-        } else if (filter.jobTitle !== undefined) {
+        } else if (filter?.jobTitle !== undefined) {
             return baseQuery.where('jobTitle', filter.jobTitle)
         } else {
             return baseQuery
@@ -252,19 +262,27 @@ export class CoreUnitModel {
         return this.knex('CuGithubContribution').where(`${paramName}`, paramValue)
     };
 
-    async getContributors(limit: number | undefined, offset: number | undefined): Promise<Contributor[]> {
-        if (limit !== undefined && offset !== undefined) {
-            return this.knex
-                .select()
-                .from('Contributor')
-                .limit(limit)
-                .offset(offset)
-                .orderBy('id');
+    async getContributors(filter: { limit?: number, offset?: number, filter?: ContributorFilter }): Promise<Contributor[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Contributor')
+            .orderBy('id');
+        if (filter.limit !== undefined && filter.offset !== undefined) {
+            return baseQuery.limit(filter.limit).offset(filter.offset);
+        } else if (filter.filter?.id !== undefined) {
+            return baseQuery.where('id', filter.filter.id)
+        } else if (filter.filter?.name !== undefined) {
+            return baseQuery.where('name', filter.filter.name)
+        } else if (filter.filter?.forumHandle !== undefined) {
+            return baseQuery.where('forumHandle', filter.filter.forumHandle)
+        } else if (filter.filter?.discordHandle !== undefined) {
+            return baseQuery.where('discordHandle', filter.filter.discordHandle)
+        } else if (filter.filter?.twitterHandle !== undefined) {
+            return baseQuery.where('twitterHandle', filter.filter.twitterHandle)
+        } else if (filter.filter?.email !== undefined) {
+            return baseQuery.where('email', filter.filter.email)
         } else {
-            return this.knex
-                .select('*')
-                .from('Contributor')
-                .orderBy('id');
+            return baseQuery;
         }
     };
 
