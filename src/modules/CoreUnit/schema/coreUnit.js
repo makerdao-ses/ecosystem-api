@@ -131,7 +131,7 @@ export const resolvers = {
         },
         contributorCommitment: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.CoreUnit.getContributorCommitments(id);
+            const result = await dataSources.db.CoreUnit.getContributorCommitments({ cuCode: id });
             return result;
         },
         cuGithubContribution: async (parent, __, { dataSources }) => {

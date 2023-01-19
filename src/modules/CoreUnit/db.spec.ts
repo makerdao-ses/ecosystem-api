@@ -43,8 +43,8 @@ it('returns list of socialMediaChannels with cuId or undefined params', async ()
 
 it('returns list of contributor commitments widh cuId and undefined params', async () => {
     const model = await getCoreUnitModel();
-    const entry = await model.getContributorCommitments(undefined);
-    const entry1 = await model.getContributorCommitments('1')
+    const entry = await model.getContributorCommitments({});
+    const entry1 = await model.getContributorCommitments({ cuCode: "1" })
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

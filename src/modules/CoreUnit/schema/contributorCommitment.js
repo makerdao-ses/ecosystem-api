@@ -52,8 +52,7 @@ export const typeDefs = gql`
     }
 
     type Query {
-        contributorCommitments: [ContributorCommitment]
-        contributorCommitment(filter: ContributorCommitmentFilter): [ContributorCommitment]
+        contributorCommitments(filter: ContributorCommitmentFilter): [ContributorCommitment]
         contributors(limit: Int, offset: Int): [Contributor]
         contributor(filter: ContributorFilter): [Contributor]
     }
@@ -66,17 +65,8 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        contributorCommitments: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getContributorCommitments();
-        },
-        contributorCommitment: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getContributorCommitment(paramName, paramValue)
+        contributorCommitments: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getContributorCommitments(filter);
         },
         contributors: async (_, filter, { dataSources }) => {
             return await dataSources.db.CoreUnit.getContributors(filter.limit, filter.offset)

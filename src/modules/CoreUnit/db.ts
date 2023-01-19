@@ -111,6 +111,16 @@ export interface SocialMediaChannelsFilter {
     github?: string
 }
 
+export interface ContributorCommitmentsFilter {
+    id?: number
+    cuId?: number
+    contributorId?: number
+    startDate?: string
+    commitment?: string
+    cuCode?: string
+    jobTitle?: string
+}
+
 export class CoreUnitModel {
     knex: Knex;
 
@@ -199,14 +209,27 @@ export class CoreUnitModel {
         return this.knex('SocialMediaChannels').where(`${paramName}`, paramValue)
     };
 
-    async getContributorCommitments(cuId: string | undefined): Promise<ContributorCommitment[]> {
-        if (cuId === undefined) {
-            return this.knex
-                .select('*')
-                .from('ContributorCommitment')
-                .orderBy('id');
+    async getContributorCommitments(filter: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('ContributorCommitment')
+            .orderBy('id');
+        if (filter.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.cuId)
+        } else if (filter.contributorId !== undefined) {
+            return baseQuery.where('contributorId', filter.contributorId)
+        } else if (filter.startDate !== undefined) {
+            return baseQuery.where('startDate', filter.startDate)
+        } else if (filter.commitment !== undefined) {
+            return baseQuery.where('commitment', filter.commitment)
+        } else if (filter.cuCode !== undefined) {
+            return baseQuery.where('cuCode', filter.cuCode)
+        } else if (filter.jobTitle !== undefined) {
+            return baseQuery.where('jobTitle', filter.jobTitle)
         } else {
-            return this.knex('ContributorCommitment').where('cuId', cuId)
+            return baseQuery
         }
     };
 
