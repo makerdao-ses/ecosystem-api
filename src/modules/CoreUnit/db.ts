@@ -99,6 +99,18 @@ export interface CoreUnitFilter {
     shortCode: string
 }
 
+export interface SocialMediaChannelsFilter {
+    id?: number | string
+    cuId?: string | number
+    forumTag?: string
+    twitter?: string
+    youtube?: string
+    discord?: string
+    linkedIn?: string
+    website?: string
+    github?: string
+}
+
 export class CoreUnitModel {
     knex: Knex;
 
@@ -155,14 +167,31 @@ export class CoreUnitModel {
         return this.knex('CuUpdate').where(`${paramName}`, paramValue)
     };
 
-    async getSocialMediaChannels(cuId: string | undefined): Promise<SocialMediaChannels[]> {
-        if (cuId === undefined) {
-            return this.knex
-                .select('*')
-                .from('SocialMediaChannels')
-                .orderBy('id');
+    async getSocialMediaChannels(filter: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('SocialMediaChannels')
+            .orderBy('id');
+        if (filter.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.cuId)
+        } else if (filter.forumTag !== undefined) {
+            return baseQuery.where('forumTag', filter.forumTag)
+        } else if (filter.twitter !== undefined) {
+            return baseQuery.where('twitter', filter.twitter)
+        } else if (filter.youtube !== undefined) {
+            return baseQuery.where('youtube', filter.youtube)
+        } else if (filter.discord !== undefined) {
+            return baseQuery.where('dicord', filter.discord)
+        } else if (filter.linkedIn !== undefined) {
+            return baseQuery.where('linkedIn', filter.linkedIn)
+        } else if (filter.website !== undefined) {
+            return baseQuery.where('website', filter.website)
+        } else if (filter.github !== undefined) {
+            return baseQuery.where('github', filter.github)
         } else {
-            return this.knex('SocialMediaChannels').where('cuId', cuId)
+            return baseQuery;
         }
     };
 

@@ -43,25 +43,15 @@ export const typeDefs = gql`
     }
 
     extend type Query {
-        socialMediaChannels: [SocialMediaChannels],
-        socialMediaChannel(filter: SocialMediaChannelsFilter): [SocialMediaChannels]
+        socialMediaChannels(filter: SocialMediaChannelsFilter): [SocialMediaChannels]
     }
 
 `;
 
 export const resolvers = {
     Query: {
-        socialMediaChannels: async (_, __, { dataSources }) => {
-            return await dataSources.db.CoreUnit.getSocialMediaChannels()
-        },
-        socialMediaChannel: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getSocialMediaChannel(paramName, paramValue)
+        socialMediaChannels: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.CoreUnit.getSocialMediaChannels(filter)
         }
     }
 }

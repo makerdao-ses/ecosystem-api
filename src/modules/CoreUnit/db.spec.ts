@@ -35,8 +35,8 @@ it('returns list of CuUpdates with cuId and undefined param', async () => {
 
 it('returns list of socialMediaChannels with cuId or undefined params', async () => {
     const model = await getCoreUnitModel();
-    const entry = await model.getSocialMediaChannels(undefined);
-    const entry1 = await model.getSocialMediaChannels('1');
+    const entry = await model.getSocialMediaChannels({});
+    const entry1 = await model.getSocialMediaChannels({ cuId: "1" });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

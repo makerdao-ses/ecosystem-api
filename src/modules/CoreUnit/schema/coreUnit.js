@@ -126,7 +126,7 @@ export const resolvers = {
     CoreUnit: {
         socialMediaChannels: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.CoreUnit.getSocialMediaChannels(id);
+            const result = await dataSources.db.CoreUnit.getSocialMediaChannels({ cuId: id });
             return result;
         },
         contributorCommitment: async (parent, __, { dataSources }) => {
