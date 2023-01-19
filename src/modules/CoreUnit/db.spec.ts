@@ -85,8 +85,8 @@ it('returns contributor with name Jack', async () => {
 
 it('returns list of githubOrgs with id and undefined params', async () => {
     const model = await getCoreUnitModel();
-    const entry = await model.getGithubOrgs(undefined);
-    const entry1 = await model.getGithubOrgs('0');
+    const entry = await model.getGithubOrgs({});
+    const entry1 = await model.getGithubOrgs({id: 0});
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

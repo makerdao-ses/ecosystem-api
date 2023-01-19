@@ -137,6 +137,12 @@ export interface CuGithubContributionFilter {
     repoId?: number
 }
 
+export interface GithubOrgFilter {
+    id?: number | string
+    org?: string
+    githubUrl?: string
+}
+
 
 export class CoreUnitModel {
     knex: Knex;
@@ -304,14 +310,19 @@ export class CoreUnitModel {
         return this.knex('Contributor').where(`${paramName}`, paramValue)
     };
 
-    async getGithubOrgs(id: string | undefined): Promise<GithubOrg[]> {
-        if (id === undefined) {
-            return this.knex
-                .select('*')
-                .from('GithubOrg')
-                .orderBy('id');
+    async getGithubOrgs(filter: GithubOrgFilter): Promise<GithubOrg[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('GithubOrg')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.org !== undefined) {
+            return baseQuery.where('org', filter.org)
+        } else if (filter?.githubUrl !== undefined) {
+            return baseQuery.where('githubUrl', filter.githubUrl)
         } else {
-            return this.knex('GithubOrg').where('id', id)
+            return baseQuery;
         }
     };
 

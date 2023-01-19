@@ -70,8 +70,7 @@ export const typeDefs = gql`
 
     type Query {
         cuGithubContributions(filter: CuGithubContributionFilter): [CuGithubContribution]
-        githubOrgs: [GithubOrg]
-        githubOrg(filter: GithubOrgFilter): [GithubOrg]
+        githubOrgs(filter: GithubOrgFilter): [GithubOrg]
         githubRepos: [GithubRepo]
         githubRepo(filter: GithubRepoFilter): [GithubRepo]
         makerGithubEcosystemAll: [MakerGithubEcosystem]
@@ -86,17 +85,8 @@ export const resolvers = {
         cuGithubContributions: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.CoreUnit.getCuGithubContributions(filter)
         },
-        githubOrgs: async (_, __, { dataSources }) => {
-            return dataSources.db.CoreUnit.getGithubOrgs()
-        },
-        githubOrg: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.CoreUnit.getGithubOrg(paramName, paramValue)
+        githubOrgs: async (_, { filter }, { dataSources }) => {
+            return dataSources.db.CoreUnit.getGithubOrgs(filter)
         },
         githubRepos: async (_, __, { dataSources }) => {
             return await dataSources.db.CoreUnit.getGithubRepos()
@@ -126,7 +116,7 @@ export const resolvers = {
     CuGithubContribution: {
         githubOrg: async (parent, __, { dataSources }) => {
             const { orgId } = parent;
-            const result = await dataSources.db.CoreUnit.getGithubOrgs(orgId);
+            const result = await dataSources.db.CoreUnit.getGithubOrgs({ id: orgId });
             return result
         },
         githubRepo: async (parent, __, { dataSources }) => {
