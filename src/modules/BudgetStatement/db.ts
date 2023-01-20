@@ -328,14 +328,22 @@ export class BudgetStatementModel {
         return this.knex('BudgetStatementTransferRequest').where(`${paramName}`, paramValue)
     };
 
-    async getBudgetStatementComments(budgetStatementId: string | undefined): Promise<BudgetStatementComment[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementComment')
-                .orderBy('id')
+    async getBudgetStatementComments(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined,
+        secondParamName?: string | undefined,
+        secondParamValue?: string | number | boolean | undefined
+    ): Promise<BudgetStatementComment[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementComment')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined && secondParamName === undefined && secondParamValue === undefined) {
+            return baseQuery.where(`${paramName}`, paramValue);
+        } else if (paramName !== undefined && paramValue !== undefined && secondParamName !== undefined && secondParamValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
         } else {
-            return this.knex('BudgetStatementComment').where('budgetStatementId', budgetStatementId)
+            return baseQuery;
         }
     };
 

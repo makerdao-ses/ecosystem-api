@@ -91,7 +91,7 @@ it('returns budgetSTatementWallet with topUp 0', async () => {
 
 it('returns lineItems with offset limit and undefined params', async () => {
     const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementLineItems(undefined, undefined);
+    const entry = await model.getBudgetStatementLineItems();
     const entry1 = await model.getBudgetStatementLineItems(10, 1);
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);

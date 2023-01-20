@@ -32,8 +32,7 @@ export const typeDefs = [gql`
     }
 
     extend type Query {
-        budgetStatementComments: [BudgetStatementComment]
-        budgetStatementComment(filter: BudgetStatementCommentFilter): [BudgetStatementComment]
+        budgetStatementComments(filter: BudgetStatementCommentFilter): [BudgetStatementComment]
     }
 
     type Mutation {
@@ -58,24 +57,31 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        budgetStatementComments: async (_, __, { dataSources }) => {
-            const comments = await dataSources.db.BudgetStatement.getBudgetStatementComments()
-            const parsed = parseCommentOutput(comments, dataSources);
-            return parsed;
-        },
-        budgetStatementComment: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 2) {
-                throw "Choose no more than 2 parameters"
+        budgetStatementComments: async (_, { filter }, { dataSources }) => {
+            let queryParams = undefined;
+            let paramName = undefined;
+            let paramValue = undefined;
+            let secondParamName = undefined;
+            let secondParamValue = undefined;
+            if (filter !== undefined) {
+                queryParams = Object.keys(filter);
+                if (queryParams.length > 2) {
+                    throw "Choose no more than 2 parameters"
+                }
+                paramName = queryParams[0]
+                paramValue = filter[queryParams[0]];
+                secondParamName = queryParams[1];
+                secondParamValue = filter[queryParams[1]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            const secondParamName = queryParams[1];
-            const secondParamValue = filter[queryParams[1]];
-            const comments = await dataSources.db.BudgetStatement.getBudgetStatementComment(paramName, paramValue, secondParamName, secondParamValue)
+            const comments = await dataSources.db.BudgetStatement.getBudgetStatementComments(
+                paramName,
+                paramValue,
+                secondParamName,
+                secondParamValue
+            );
             const parsed = parseCommentOutput(comments, dataSources);
             return parsed;
-        },
+        }
     },
     BudgetStatement: {
         comments: async (parent, __, { dataSources }) => {
