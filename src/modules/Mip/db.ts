@@ -109,6 +109,14 @@ export interface Mip39Filter {
     paragraphSummary?: string
 }
 
+export interface Mip40Filter {
+    id?: number
+    cuMipId?: number
+    mip40Spn?: string
+    mkrOnly?: boolean
+    mkrProgramLength?: number
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -198,14 +206,23 @@ export class MipModel {
         return this.knex('Mip39').where(`${paramName}`, paramValue)
     };
 
-    async getMip40s(cuMipId: string | undefined): Promise<Mip40[]> {
-        if (cuMipId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip40')
-                .orderBy('id');
+    async getMip40s(filter?: Mip40Filter): Promise<Mip40[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip40')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.cuMipId !== undefined) {
+            return baseQuery.where('cuMipId', filter.cuMipId)
+        } else if (filter?.mip40Spn !== undefined) {
+            return baseQuery.where('mip40Spn', filter.mip40Spn)
+        } else if (filter?.mkrOnly !== undefined) {
+            return baseQuery.where('mkrOnly', filter.mkrOnly)
+        } else if (filter?.mkrProgramLength !== undefined) {
+            return baseQuery.where('mkrProgramLength', filter.mkrProgramLength)
         } else {
-            return this.knex('Mip40').where('cuMipId', cuMipId)
+            return baseQuery;
         }
     };
 

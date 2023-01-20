@@ -56,7 +56,7 @@ it('returns Mip39 with mip39Spn 10', async () => {
 it('returns list of Mip40s with mipId or undefined params', async () => {
     const model = await getMipModel();
     const entry = await model.getMip40s(undefined);
-    const entry1 = await model.getMip40s('1');
+    const entry1 = await model.getMip40s({ cuMipId: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

@@ -267,8 +267,7 @@ export const typeDefs = [gql`
         cuMips(filter: CuMipFilter): [CuMip]
         mipReplaces(filter: MipReplaceFilter): [MipReplaces]
         mip39s(filter: Mip39Filter): [Mip39]
-        mip40s: [Mip40]
-        mip40(filter: Mip40Filter): [Mip40]
+        mip40s(filter: Mip40Filter): [Mip40]
         mip40BudgetPeriods: [Mip40BudgetPeriod]
         mip40BudgetPeriod(filter: Mip40BudgetPeriodFilter): [Mip40BudgetPeriod]
         mip40BudgetLineItems: [Mip40BudgetLineItem]
@@ -297,17 +296,8 @@ export const resolvers = {
         mip39s: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.Mip.getMip39s(filter)
         },
-        mip40s: async (_, __, { dataSources }) => {
-            return dataSources.db.Mip.getMip40s()
-        },
-        mip40: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip40(paramName, paramValue)
+        mip40s: async (_, { filter }, { dataSources }) => {
+            return dataSources.db.Mip.getMip40s(filter)
         },
         mip40BudgetPeriods: async (_, __, { dataSources }) => {
             return dataSources.db.Mip.getMip40BudgetPeriods()
@@ -379,7 +369,7 @@ export const resolvers = {
         },
         mip40: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMip40s(id);
+            const result = await dataSources.db.Mip.getMip40s({ cuMipId: id });
             return result;
         },
         mip41: async (parent, __, { dataSources }) => {
