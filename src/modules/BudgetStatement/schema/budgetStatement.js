@@ -195,8 +195,7 @@ export const typeDefs = [gql`
     extend type Query {
         budgetStatements(limit: Int, offset: Int, filter: BudgetStatementFilter): [BudgetStatement!]
         budgetStatementWallets(filter: BudgetStatementWalletFilter): [BudgetStatementWallet]
-        budgetStatementLineItems(limit: Int, offset: Int): [BudgetStatementLineItem]
-        budgetStatementLineItem(filter: BudgetStatementLineItemFilter): [BudgetStatementLineItem]
+        budgetStatementLineItems(limit: Int, offset: Int, filter: BudgetStatementLineItemFilter): [BudgetStatementLineItem]
         # budgetStatementPayments: [BudgetStatementPayment]
         # budgetStatementPayment(filter: BudgetStatementPaymentFilter): [BudgetStatementPayment]
     }
@@ -330,28 +329,30 @@ export const resolvers = {
         budgetStatementWallets: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.BudgetStatement.getBudgetStatementWallets(filter);
         },
-        // budgetStatementWallet: async (_, { filter }, { dataSources }) => {
-        //     const queryParams = Object.keys(filter);
-        //     if (queryParams.length > 1) {
-        //         throw "Choose one parameter only"
-        //     }
-        //     const paramName = queryParams[0];
-        //     const paramValue = filter[queryParams[0]];
-        //     return await dataSources.db.BudgetStatement.getBudgetStatementWallet(paramName, paramValue)
-        // },
         budgetStatementLineItems: async (_, filter, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(filter.limit, filter.offset);
-        },
-        budgetStatementLineItem: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 2) {
-                throw "Choose no more than 2 parameters"
+            let queryParams = undefined;
+            let paramName = undefined;
+            let paramValue = undefined;
+            let secondParamName = undefined;
+            let secondParamValue = undefined;
+            if (filter.filter !== undefined) {
+                queryParams = Object.keys(filter.filter);
+                if (queryParams.length > 2) {
+                    throw "Choose no more than 2 parameters"
+                }
+                paramName = queryParams[0]
+                paramValue = filter?.filter[queryParams[0]];
+                secondParamName = queryParams[1];
+                secondParamValue = filter?.filter[queryParams[1]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            const secondParamName = queryParams[1];
-            const secondParamValue = filter[queryParams[1]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementLineItem(paramName, paramValue, secondParamName, secondParamValue)
+            return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(
+                filter?.limit,
+                filter?.offset,
+                paramName,
+                paramValue,
+                secondParamName,
+                secondParamValue
+            );
         },
         // budgetStatementPayments: async (_, __, { dataSources }) => {
         //     return await dataSources.db.BudgetStatement.getBudgetStatementPayments();

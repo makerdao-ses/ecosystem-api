@@ -261,19 +261,26 @@ export class BudgetStatementModel {
         return this.knex('BudgetStatementWallet').where(`${paramName}`, paramValue)
     };
 
-    async getBudgetStatementLineItems(limit: number | undefined, offset: number | undefined): Promise<BudgetStatementLineItem[]> {
+    async getBudgetStatementLineItems(
+        limit?: number | undefined,
+        offset?: number | undefined,
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined,
+        secondParamName?: string | undefined,
+        secondParamValue?: string | number | boolean | undefined
+    ): Promise<BudgetStatementLineItem[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementLineItem')
+            .orderBy('month', 'desc');
         if (offset != undefined && limit != undefined) {
-            return this.knex
-                .select()
-                .from('BudgetStatementLineItem')
-                .limit(limit)
-                .offset(offset)
-                .orderBy('month', 'desc')
+            return baseQuery.limit(limit).offset(offset);
+        } else if (paramName !== undefined && paramValue !== undefined && secondParamName === undefined && secondParamValue === undefined) {
+            return baseQuery.where(`${paramName}`, paramValue);
+        } else if (paramName !== undefined && paramValue !== undefined && secondParamName !== undefined && secondParamValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
         } else {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementLineItem')
-                .orderBy('month', 'desc')
+            return baseQuery;
         }
     };
 
