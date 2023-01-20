@@ -13,8 +13,8 @@ async function getMipModel(): Promise<MipModel> {
 
 it('returns list of CuMips with CuId or undefined params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMips(undefined);
-    const entry1 = await model.getMips('1');
+    const entry = await model.getMips({});
+    const entry1 = await model.getMips({ id: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

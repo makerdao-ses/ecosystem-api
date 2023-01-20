@@ -263,10 +263,8 @@ export const typeDefs = [gql`
     }
 
     extend type Query {
-        "Used to retrieve all Core Unit Mips in the database"
-        cuMips: [CuMip]
-        "Used to retrieve specifc Core Unit Mips in the database using a filter"
-        cuMip(filter: CuMipFilter): [CuMip]
+        "Used to retrieve all Core Unit Mips in the database or a specific one using a filter"
+        cuMips(filter: CuMipFilter): [CuMip]
         mipReplaces: [MipReplaces]
         mipReplace(filter: MipReplaceFilter): [MipReplaces]
         mip39s: [Mip39]
@@ -292,17 +290,8 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         // name: (parent, args, context, info) => {}
-        cuMips: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMips()
-        },
-        cuMip: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip(paramName, paramValue)
+        cuMips: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMips(filter)
         },
         mipReplaces: async (_, __, { dataSources }) => {
             return await dataSources.db.Mip.getMipReplaces();
@@ -393,7 +382,7 @@ export const resolvers = {
     CoreUnit: {
         cuMip: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMips(id);
+            const result = await dataSources.db.Mip.getMips({ cuId: id });
             return result;
         },
     },

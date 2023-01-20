@@ -81,6 +81,18 @@ export interface Mip41 {
     contributorId: string
 }
 
+export interface CuMipFilter {
+    id?: number
+    mipCode?: string
+    cuId?: number
+    rfc?: string
+    formalSubmission?: string
+    accepted?: string
+    rejected?: string
+    obsolete?: string
+    mipStatus?: string
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -90,14 +102,31 @@ export class MipModel {
         this.coreUnitModel = coreUnitModel;
     }
 
-    async getMips(cuId: string | undefined): Promise<CuMip[]> {
-        if (cuId === undefined) {
-            return this.knex
-                .select('*')
-                .from('CuMip')
-                .orderBy('id');
+    async getMips(filter?: CuMipFilter): Promise<CuMip[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('CuMip')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.mipCode !== undefined) {
+            return baseQuery.where('mipCode', filter.mipCode)
+        } else if (filter?.cuId !== undefined) {
+            return baseQuery.where('cuId', filter.cuId)
+        } else if (filter?.rfc !== undefined) {
+            return baseQuery.where('rfc', filter.rfc)
+        } else if (filter?.formalSubmission !== undefined) {
+            return baseQuery.where('formalSubmission', filter.formalSubmission)
+        } else if (filter?.accepted !== undefined) {
+            return baseQuery.where('accepted', filter.accepted)
+        } else if (filter?.rejected !== undefined) {
+            return baseQuery.where('rejected', filter.rejected)
+        } else if (filter?.obsolete !== undefined) {
+            return baseQuery.where('obsolete', filter.obsolete)
+        } else if (filter?.mipStatus !== undefined) {
+            return baseQuery.where('mipStatus', filter.mipStatus)
         } else {
-            return this.knex('CuMip').where('cuId', cuId)
+            return baseQuery;
         }
     };
 
