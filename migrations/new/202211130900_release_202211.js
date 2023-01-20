@@ -6,22 +6,22 @@ export async function up(knex) {
     console.log("Adding the CoreUnit.legacyBudgetStatementUrl attribute...");
     await knex.schema.alterTable('CoreUnit', function (table) {
         table.string('legacyBudgetStatementUrl');
-    })
+    });
 
     //Add System to the Role table
     console.log("Adding the Role.system attribute...");
     await knex.schema.alterTable('Role', function (table) {
         table.boolean('system');
-    })
+    });
 
     //Add active attribute the Core Unit table
-    console.log("Adding the User.active attribute...")
+    console.log("Adding the User.active attribute...");
     await knex.schema.alterTable('User', function (table) {
         table.boolean('active');
-    })
+    });
 
     //Add the Auditor Role to the Auditor Table
-    console.log("Adding the Auditor value to the Role table..")
+    console.log("Adding the Auditor value to the Role table..");
     await knex.insert({
         roleName: 'CoreUnitAuditor'
     }).into('Role');
@@ -34,7 +34,7 @@ export async function up(knex) {
         });
 
     //Add the CoreUnit/Audit permission to the RolePermission table
-    console.log("Adding the CoreUnit/Audit value to the RolePermission table..")
+    console.log("Adding the CoreUnit/Audit value to the RolePermission table..");
     await knex.insert({
         roleId: AuditId[0].id,
         resource: 'CoreUnit',
@@ -45,7 +45,7 @@ export async function up(knex) {
     //Add the active value to the current Users
     const users = await knex
         .select('id')
-        .from('User')
+        .from('User');
 
     console.log('Changing ' + users.length + ' current users to active...');
 
@@ -56,11 +56,11 @@ export async function up(knex) {
             })
             .update({
                 active: true
-            })
+            });
 
     }
 
-};
+}
 
 
 
@@ -95,10 +95,10 @@ export async function down(knex) {
         table.dropColumn('system');
     });
 
-    console.log('Deleting CoreUnit.legacyBudgetStatementUrl attribute...')
+    console.log('Deleting CoreUnit.legacyBudgetStatementUrl attribute...');
 
     await knex.schema.alterTable('CoreUnit', function (table) {
         table.dropColumn('legacyBudgetStatementUrl');
     });
 
-};
+}

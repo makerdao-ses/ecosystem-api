@@ -6,9 +6,9 @@ export async function up(knex) {
 
     await knex('Role')
     .where('roleName', 'CoreUnitAuditor')
-    .update({system: true})
+    .update({system: true});
 
-};
+}
 
 
 //Down migration reverts the up migration change
@@ -16,6 +16,6 @@ export async function down(knex) {
 
     await knex('Role')
     .where('roleName', 'CoreUnitAuditor')
-    .update({system: null})
+    .update({system: null});
 
-};
+}
