@@ -194,8 +194,7 @@ export const typeDefs = [gql`
 
     extend type Query {
         budgetStatements(limit: Int, offset: Int, filter: BudgetStatementFilter): [BudgetStatement!]
-        budgetStatementWallets: [BudgetStatementWallet]
-        budgetStatementWallet(filter: BudgetStatementWalletFilter): [BudgetStatementWallet]
+        budgetStatementWallets(filter: BudgetStatementWalletFilter): [BudgetStatementWallet]
         budgetStatementLineItems(limit: Int, offset: Int): [BudgetStatementLineItem]
         budgetStatementLineItem(filter: BudgetStatementLineItemFilter): [BudgetStatementLineItem]
         # budgetStatementPayments: [BudgetStatementPayment]
@@ -328,18 +327,18 @@ export const resolvers = {
         budgetStatements: async (_, filter, { dataSources }) => {
             return await dataSources.db.BudgetStatement.getBudgetStatements(filter)
         },
-        budgetStatementWallets: async (_, __, { dataSources }) => {
-            return await dataSources.db.BudgetStatement.getBudgetStatementWallets();
+        budgetStatementWallets: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.BudgetStatement.getBudgetStatementWallets(filter);
         },
-        budgetStatementWallet: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.BudgetStatement.getBudgetStatementWallet(paramName, paramValue)
-        },
+        // budgetStatementWallet: async (_, { filter }, { dataSources }) => {
+        //     const queryParams = Object.keys(filter);
+        //     if (queryParams.length > 1) {
+        //         throw "Choose one parameter only"
+        //     }
+        //     const paramName = queryParams[0];
+        //     const paramValue = filter[queryParams[0]];
+        //     return await dataSources.db.BudgetStatement.getBudgetStatementWallet(paramName, paramValue)
+        // },
         budgetStatementLineItems: async (_, filter, { dataSources }) => {
             return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(filter.limit, filter.offset);
         },
@@ -397,7 +396,7 @@ export const resolvers = {
         },
         budgetStatementWallet: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementWallets(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ budgetStatementId: id });
             return result;
         }
     },

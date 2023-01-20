@@ -128,6 +128,16 @@ export interface BudgetStatementFilter {
     mkrProgramLength?: number
 }
 
+export interface BudgetStatementWalletFilter {
+    id?: number
+    budgetStatementId?: number
+    name?: string
+    address?: string
+    currentBalance?: number
+    topupTransfer?: number
+    comments?: string
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -222,14 +232,28 @@ export class BudgetStatementModel {
         return this.knex('BudgetStatementMkrVest').where(`${paramName}`, paramValue)
     };
 
-    async getBudgetStatementWallets(budgetStatementId: string | undefined): Promise<BudgetStatementWallet[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementWallet')
-                .orderBy('id')
+    async getBudgetStatementWallets(filter?: BudgetStatementWalletFilter): Promise<BudgetStatementWallet[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementWallet')
+            .orderBy('id');
+
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.name !== undefined) {
+            return baseQuery.where('name', filter.name)
+        } else if (filter?.address !== undefined) {
+            return baseQuery.where('address', filter.address)
+        } else if (filter?.currentBalance !== undefined) {
+            return baseQuery.where('currentBalance', filter.currentBalance)
+        } else if (filter?.topupTransfer !== undefined) {
+            return baseQuery.where('topupTransfer', filter.topupTransfer)
+        } else if (filter?.comments !== undefined) {
+            return baseQuery.where('comments', filter.comments)
         } else {
-            return this.knex('BudgetStatementWallet').where('budgetStatementId', budgetStatementId)
+            return baseQuery;
         }
     }
 

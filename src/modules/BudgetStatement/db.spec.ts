@@ -78,7 +78,7 @@ it('returns mkrVest statement with mkrAmount 100', async () => {
 it('returns list of budgetStatemntWallets with bstatementid or undefined as params', async () => {
     const model = await getBudgetStatementModel();
     const entry = await model.getBudgetStatementWallets(undefined);
-    const entry1 = await model.getBudgetStatementWallets('399')
+    const entry1 = await model.getBudgetStatementWallets({ budgetStatementId: 399 })
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
