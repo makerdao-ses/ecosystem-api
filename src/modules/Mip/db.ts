@@ -99,6 +99,16 @@ export interface MipReplaceFilter {
     replacedMip?: number
 }
 
+export interface Mip39Filter {
+    id?: number
+    mipId?: number
+    mip39Spn?: number
+    mipCode?: string
+    cuName?: string
+    sentenceSummary?: string
+    paragraphSummary?: string
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -160,14 +170,27 @@ export class MipModel {
         return this.knex('MipReplaces').where(`${paramName}`, paramValue);
     };
 
-    async getMip39s(mipId: string | undefined): Promise<Mip39[]> {
-        if (mipId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip39')
-                .orderBy('id');
+    async getMip39s(filter?: Mip39Filter): Promise<Mip39[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip39')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.mipId !== undefined) {
+            return baseQuery.where('mipId', filter.mipId)
+        } else if (filter?.mip39Spn !== undefined) {
+            return baseQuery.where('mip39Spn', filter.mip39Spn)
+        } else if (filter?.mipCode !== undefined) {
+            return baseQuery.where('mipCode', filter.mipCode)
+        } else if (filter?.cuName !== undefined) {
+            return baseQuery.where('cuName', filter.cuName)
+        } else if (filter?.sentenceSummary !== undefined) {
+            return baseQuery.where('sentenceSummary', filter.sentenceSummary)
+        } else if (filter?.paragraphSummary !== undefined) {
+            return baseQuery.where('paragraphSummary', filter.paragraphSummary)
         } else {
-            return this.knex('Mip39').where('mipId', mipId)
+            return baseQuery;
         }
     };
 

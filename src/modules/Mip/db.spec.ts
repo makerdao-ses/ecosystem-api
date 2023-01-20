@@ -41,8 +41,8 @@ it('returns MipReplaces with ReplaceMip 41', async () => {
 
 it('returns list of Mip39s with mipId or undefined params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMip39s(undefined);
-    const entry1 = await model.getMip39s('0');
+    const entry = await model.getMip39s({});
+    const entry1 = await model.getMip39s({ mipId: 0 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

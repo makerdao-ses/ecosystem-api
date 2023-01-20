@@ -266,8 +266,7 @@ export const typeDefs = [gql`
         "Used to retrieve all Core Unit Mips in the database or a specific one using a filter"
         cuMips(filter: CuMipFilter): [CuMip]
         mipReplaces(filter: MipReplaceFilter): [MipReplaces]
-        mip39s: [Mip39]
-        mip39(filter: Mip39Filter): [Mip39]
+        mip39s(filter: Mip39Filter): [Mip39]
         mip40s: [Mip40]
         mip40(filter: Mip40Filter): [Mip40]
         mip40BudgetPeriods: [Mip40BudgetPeriod]
@@ -295,26 +294,8 @@ export const resolvers = {
         mipReplaces: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.Mip.getMipReplaces(filter);
         },
-        // mipReplace: async (_, { filter }, { dataSources }) => {
-        //     const queryParams = Object.keys(filter);
-        //     if (queryParams.length > 1) {
-        //         throw "Choose only one parameter"
-        //     }
-        //     const paramName = queryParams[0];
-        //     const paramValue = filter[queryParams[0]];
-        //     return await dataSources.db.Mip.getMipReplace(paramName, paramValue)
-        // },
-        mip39s: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMip39s()
-        },
-        mip39: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip39(paramName, paramValue)
+        mip39s: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMip39s(filter)
         },
         mip40s: async (_, __, { dataSources }) => {
             return dataSources.db.Mip.getMip40s()
@@ -393,7 +374,7 @@ export const resolvers = {
         },
         mip39: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMip39s(id);
+            const result = await dataSources.db.Mip.getMip39s({ mipId: id });
             return result;
         },
         mip40: async (parent, __, { dataSources }) => {
