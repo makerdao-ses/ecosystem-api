@@ -265,8 +265,7 @@ export const typeDefs = [gql`
     extend type Query {
         "Used to retrieve all Core Unit Mips in the database or a specific one using a filter"
         cuMips(filter: CuMipFilter): [CuMip]
-        mipReplaces: [MipReplaces]
-        mipReplace(filter: MipReplaceFilter): [MipReplaces]
+        mipReplaces(filter: MipReplaceFilter): [MipReplaces]
         mip39s: [Mip39]
         mip39(filter: Mip39Filter): [Mip39]
         mip40s: [Mip40]
@@ -293,18 +292,18 @@ export const resolvers = {
         cuMips: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.Mip.getMips(filter)
         },
-        mipReplaces: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMipReplaces();
+        mipReplaces: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMipReplaces(filter);
         },
-        mipReplace: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMipReplace(paramName, paramValue)
-        },
+        // mipReplace: async (_, { filter }, { dataSources }) => {
+        //     const queryParams = Object.keys(filter);
+        //     if (queryParams.length > 1) {
+        //         throw "Choose only one parameter"
+        //     }
+        //     const paramName = queryParams[0];
+        //     const paramValue = filter[queryParams[0]];
+        //     return await dataSources.db.Mip.getMipReplace(paramName, paramValue)
+        // },
         mip39s: async (_, __, { dataSources }) => {
             return await dataSources.db.Mip.getMip39s()
         },
@@ -389,7 +388,7 @@ export const resolvers = {
     CuMip: {
         mipReplaces: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMipReplaces(id);
+            const result = await dataSources.db.Mip.getMipReplaces({ newMip: id });
             return result;
         },
         mip39: async (parent, __, { dataSources }) => {

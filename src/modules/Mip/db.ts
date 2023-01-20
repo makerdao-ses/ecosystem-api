@@ -93,6 +93,12 @@ export interface CuMipFilter {
     mipStatus?: string
 }
 
+export interface MipReplaceFilter {
+    id?: number
+    newMip?: number
+    replacedMip?: number
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -134,14 +140,19 @@ export class MipModel {
         return this.knex('CuMip').where(`${paramName}`, paramValue)
     };
 
-    async getMipReplaces(newMip: string | undefined): Promise<MipReplaces[]> {
-        if (newMip === undefined) {
-            return this.knex
-                .select('*')
-                .from('MipReplaces')
-                .orderBy('id');
+    async getMipReplaces(filter?: MipReplaceFilter): Promise<MipReplaces[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('MipReplaces')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.newMip !== undefined) {
+            return baseQuery.where('newMip', filter.newMip)
+        } else if (filter?.replacedMip !== undefined) {
+            return baseQuery.where('replacedMip', filter.replacedMip)
         } else {
-            return this.knex('MipReplaces').where('newMip', newMip)
+            return baseQuery;
         }
     };
 

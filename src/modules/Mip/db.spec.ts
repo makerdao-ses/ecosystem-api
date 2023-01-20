@@ -27,8 +27,8 @@ it('returns CuMips with MipStatus Accepted', async () => {
 
 it('returns list of MipReplaces with newMip or undefined params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMipReplaces(undefined);
-    const entry1 = await model.getMipReplaces('1');
+    const entry = await model.getMipReplaces({});
+    const entry1 = await model.getMipReplaces({ newMip: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
