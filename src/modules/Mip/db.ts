@@ -117,6 +117,14 @@ export interface Mip40Filter {
     mkrProgramLength?: number
 }
 
+export interface Mip40BudgetPeriodFilter {
+    id?: number
+    mip40Id?: number
+    budgetPeriodStart?: string
+    budgetPeriodEnd?: string
+    ftes?: number
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -230,14 +238,23 @@ export class MipModel {
         return this.knex('Mip40').where(`${paramName}`, paramValue)
     };
 
-    async getMip40BudgetPeriods(mip40Id: string | undefined): Promise<Mip40BudgetPeriod[]> {
-        if (mip40Id === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip40BudgetPeriod')
-                .orderBy('id');
+    async getMip40BudgetPeriods(filter: Mip40BudgetPeriodFilter): Promise<Mip40BudgetPeriod[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip40BudgetPeriod')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.mip40Id !== undefined) {
+            return baseQuery.where('mip40Id', filter.mip40Id);
+        } else if (filter?.budgetPeriodStart !== undefined) {
+            return baseQuery.where('budgetPeriodStart', filter.budgetPeriodStart)
+        } else if (filter?.budgetPeriodEnd !== undefined) {
+            return baseQuery.where('budgetPeriodEnd', filter.budgetPeriodEnd)
+        } else if (filter?.ftes !== undefined) {
+            return baseQuery.where('ftes', filter.ftes)
         } else {
-            return this.knex('Mip40BudgetPeriod').where('mip40Id', mip40Id)
+            return baseQuery;
         }
     };
 

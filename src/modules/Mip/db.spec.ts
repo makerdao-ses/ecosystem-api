@@ -69,8 +69,8 @@ it('returns list of Mip40s with mkrOnly true', async () => {
 
 it('returns list of Mip40BudgetPeriods with mip40Id or undefined params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMip40BudgetPeriods(undefined);
-    const entry1 = await model.getMip40BudgetPeriods('0');
+    const entry = await model.getMip40BudgetPeriods({});
+    const entry1 = await model.getMip40BudgetPeriods({ id: 0 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
