@@ -236,7 +236,6 @@ export const typeDefs = [gql`
         canonicalBudgetCategory: String
         group: String
         headcountExpense: Boolean
-        mip40BudgetLineItem: [Mip40BudgetLineItemFilter]
     }
 
     "Used to filter the Mip40Wallet table response"
@@ -269,8 +268,7 @@ export const typeDefs = [gql`
         mip39s(filter: Mip39Filter): [Mip39]
         mip40s(filter: Mip40Filter): [Mip40]
         mip40BudgetPeriods(filter: Mip40BudgetPeriodFilter): [Mip40BudgetPeriod]
-        mip40BudgetLineItems: [Mip40BudgetLineItem]
-        mip40BudgetLineItem(filter: Mip40BudgetLineItemFilter): [Mip40BudgetLineItem]
+        mip40BudgetLineItems(filter: Mip40BudgetLineItemFilter): [Mip40BudgetLineItem]
         mip40Wallets: [Mip40Wallet]
         mip40Wallet(filter: Mip40WalletFilter): [Mip40Wallet]
         mip41s: [Mip41],
@@ -301,26 +299,8 @@ export const resolvers = {
         mip40BudgetPeriods: async (_, { filter }, { dataSources }) => {
             return dataSources.db.Mip.getMip40BudgetPeriods(filter)
         },
-        // mip40BudgetPeriod: async (_, { filter }, { dataSources }) => {
-        //     const queryParams = Object.keys(filter);
-        //     if (queryParams.length > 1) {
-        //         throw "Choose only one parameter"
-        //     }
-        //     const paramName = queryParams[0];
-        //     const paramValue = filter[queryParams[0]];
-        //     return await dataSources.db.Mip.getMip40BudgetPeriod(paramName, paramValue)
-        // },
-        mip40BudgetLineItems: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMip40BudgetLineItems()
-        },
-        mip40BudgetLineItem: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip40BudgetLineItem(paramName, paramValue)
+        mip40BudgetLineItems: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMip40BudgetLineItems(filter)
         },
         mip40Wallets: async (_, __, { dataSources }) => {
             return await dataSources.db.Mip.getMip40Wallets()
@@ -393,7 +373,7 @@ export const resolvers = {
     Mip40Wallet: {
         mip40BudgetLineItem: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMip40BudgetLineItems(id)
+            const result = await dataSources.db.Mip.getMip40BudgetLineItems({ mip40WalletId: id })
             return result;
         }
     }

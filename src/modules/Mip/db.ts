@@ -125,6 +125,17 @@ export interface Mip40BudgetPeriodFilter {
     ftes?: number
 }
 
+export interface Mip40BudgetLineItemFilter {
+    id?: number
+    mip40WalletId?: number
+    position?: number
+    budgetCategory?: string
+    budgetCap?: number
+    canonicalBudgetCategory?: string
+    group?: string
+    headcountExpense?: boolean
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -277,14 +288,29 @@ export class MipModel {
         return this.knex('Mip40Wallet').where(`${paramName}`, paramValue)
     };
 
-    async getMip40BudgetLineItems(mip40WalletId: string | undefined): Promise<Mip40BudgetLineItem[]> {
-        if (mip40WalletId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip40BudgetLineItem')
-                .orderBy('id');
+    async getMip40BudgetLineItems(filter?: Mip40BudgetLineItemFilter): Promise<Mip40BudgetLineItem[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip40BudgetLineItem')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.mip40WalletId !== undefined) {
+            return baseQuery.where('mip40WalletId', filter.mip40WalletId)
+        } else if (filter?.position !== undefined) {
+            return baseQuery.where('position', filter.position)
+        } else if (filter?.budgetCategory !== undefined) {
+            return baseQuery.where('budgetCategory', filter.budgetCategory)
+        } else if (filter?.budgetCap !== undefined) {
+            return baseQuery.where('budgetCap', filter.budgetCap)
+        } else if (filter?.canonicalBudgetCategory !== undefined) {
+            return baseQuery.where('canonicalBudgetCategory', filter.canonicalBudgetCategory)
+        } else if (filter?.group !== undefined) {
+            return baseQuery.where('group', filter.group)
+        } else if (filter?.headcountExpense !== undefined) {
+            return baseQuery.where("headcountExpense", filter.headcountExpense)
         } else {
-            return this.knex('Mip40BudgetLineItem').where('mip40WalletId', mip40WalletId)
+            return baseQuery;
         }
     };
 

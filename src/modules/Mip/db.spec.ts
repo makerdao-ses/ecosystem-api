@@ -97,8 +97,8 @@ it('returns Mip40Wallet with signersRequired 2', async () => {
 
 it('returns list of Mip40BudgetLineItem with mip40WalletId or undefined as params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMip40BudgetLineItems(undefined);
-    const entry1 = await model.getMip40BudgetLineItems('1');
+    const entry = await model.getMip40BudgetLineItems({});
+    const entry1 = await model.getMip40BudgetLineItems({ id: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
