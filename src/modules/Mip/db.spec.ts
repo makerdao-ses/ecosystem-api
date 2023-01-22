@@ -83,8 +83,8 @@ it('returns Mip40BudgetPeriod with ftes 11.5', async () => {
 
 it('returns list of Mip40Wallets with mip40Id or undefined params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMip40Wallets(undefined);
-    const entry1 = await model.getMip40Wallets('0');
+    const entry = await model.getMip40Wallets({});
+    const entry1 = await model.getMip40Wallets({ id: 0 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
@@ -111,8 +111,8 @@ it('returns list of Mip40BudgetLineItems with headcountExpense true', async () =
 
 it('returns list of mip41s with cuMipId or undefined as params', async () => {
     const model = await getMipModel();
-    const entry = await model.getMip41s(undefined);
-    const entry1 = await model.getMip41s('2');
+    const entry = await model.getMip41s({});
+    const entry1 = await model.getMip41s({ id: 2 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });

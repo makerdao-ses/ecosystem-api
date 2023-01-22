@@ -269,10 +269,8 @@ export const typeDefs = [gql`
         mip40s(filter: Mip40Filter): [Mip40]
         mip40BudgetPeriods(filter: Mip40BudgetPeriodFilter): [Mip40BudgetPeriod]
         mip40BudgetLineItems(filter: Mip40BudgetLineItemFilter): [Mip40BudgetLineItem]
-        mip40Wallets: [Mip40Wallet]
-        mip40Wallet(filter: Mip40WalletFilter): [Mip40Wallet]
-        mip41s: [Mip41],
-        mip41(filter: Mip41Filter): [Mip41]
+        mip40Wallets(filter: Mip40WalletFilter): [Mip40Wallet]
+        mip41s(filter: Mip41Filter): [Mip41],
     }
 
     extend type CoreUnit {
@@ -302,31 +300,12 @@ export const resolvers = {
         mip40BudgetLineItems: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.Mip.getMip40BudgetLineItems(filter)
         },
-        mip40Wallets: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMip40Wallets()
+        mip40Wallets: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMip40Wallets(filter)
         },
-        mip40Wallet: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip40Wallet(paramName, paramValue)
-        },
-        mip41s: async (_, __, { dataSources }) => {
-            return await dataSources.db.Mip.getMip41s()
-        },
-        mip41: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose only one parameter"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Mip.getMip41(paramName, paramValue)
+        mip41s: async (_, { filter }, { dataSources }) => {
+            return await dataSources.db.Mip.getMip41s(filter)
         }
-
     },
     CoreUnit: {
         cuMip: async (parent, __, { dataSources }) => {
@@ -353,7 +332,7 @@ export const resolvers = {
         },
         mip41: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMip41s(id);
+            const result = await dataSources.db.Mip.getMip41s({ cuMipId: id });
             return result;
 
         }

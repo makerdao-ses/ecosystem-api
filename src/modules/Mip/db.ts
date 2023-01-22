@@ -136,6 +136,27 @@ export interface Mip40BudgetLineItemFilter {
     headcountExpense?: boolean
 }
 
+export interface Mip40WalletFilter {
+    id?: number
+    mip40Id?: number
+    address?: string
+    name?: string
+    signersTotal?: number
+    signersRequired?: number
+    clawbackLimit?: number
+}
+
+export interface Mip41Filter {
+    id?: number
+    cuMipId?: number
+    contributorId?: number
+    facilitatorName?: string
+    discordHandle?: string
+    twitterHandle?: string
+    forumHandle?: string
+    githubAccount?: string
+}
+
 export class MipModel {
     knex: Knex;
     coreUnitModel: object;
@@ -273,14 +294,27 @@ export class MipModel {
         return this.knex('Mip40BudgetPeriod').where(`${paramName}`, paramValue)
     };
 
-    async getMip40Wallets(mip40Id: string | undefined): Promise<Mip40Wallet[]> {
-        if (mip40Id === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip40Wallet')
-                .orderBy('id');
+    async getMip40Wallets(filter?: Mip40WalletFilter): Promise<Mip40Wallet[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip40Wallet')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.mip40Id !== undefined) {
+            return baseQuery.where('mip40Id', filter.mip40Id)
+        } else if (filter?.address !== undefined) {
+            return baseQuery.where('address', filter.address)
+        } else if (filter?.name !== undefined) {
+            return baseQuery.where('name', filter.name)
+        } else if (filter?.signersTotal !== undefined) {
+            return baseQuery.where('signersTotal', filter.signersTotal)
+        } else if (filter?.signersRequired !== undefined) {
+            return baseQuery.where('signersRequired', filter.signersRequired)
+        } else if (filter?.clawbackLimit !== undefined) {
+            return baseQuery.where('clawbackLimit', filter.clawbackLimit)
         } else {
-            return this.knex('Mip40Wallet').where('mip40Id', mip40Id)
+            return baseQuery;
         }
     };
 
@@ -318,14 +352,29 @@ export class MipModel {
         return this.knex('Mip40BudgetLineItem').where(`${paramName}`, paramValue)
     };
 
-    async getMip41s(cuMipId: string | undefined): Promise<Mip41[]> {
-        if (cuMipId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Mip41')
-                .orderBy('id');
+    async getMip41s(filter?: Mip41Filter): Promise<Mip41[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Mip41')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.cuMipId !== undefined) {
+            return baseQuery.where('cuMipId', filter.cuMipId)
+        } else if (filter?.contributorId !== undefined) {
+            return baseQuery.where('contributorId', filter.contributorId)
+        } else if (filter?.facilitatorName !== undefined) {
+            return baseQuery.where('facilitatorName', filter.facilitatorName)
+        } else if (filter?.discordHandle !== undefined) {
+            return baseQuery.where('discordHandle', filter.discordHandle)
+        } else if (filter?.twitterHandle !== undefined) {
+            return baseQuery.where('twitterHandle', filter.twitterHandle)
+        } else if (filter?.forumHandle !== undefined) {
+            return baseQuery.where('forumHandle', filter.forumHandle)
+        } else if (filter?.githubAccount !== undefined) {
+            return baseQuery.where('githubAccount', filter.githubAccount)
         } else {
-            return this.knex('Mip41').where('cuMipId', cuMipId)
+            return baseQuery;
         }
     };
 
