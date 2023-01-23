@@ -92,6 +92,7 @@ export const typeDefs = [gql`
         budgetStatementPaymentId: ID
         requestAmount: Float
         comments: String
+        walletBalance: Float
     }
 
     type BudgetStatementLineItem {
