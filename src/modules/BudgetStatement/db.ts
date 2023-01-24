@@ -340,10 +340,6 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBsComment_BsAuthor(bsCommentId: string): Promise<any> {
-        return this.knex('BudgetStatementComment_BudgetStatementCommentAuthor').where('bsCommentId', bsCommentId);
-    }
-
     // ------------------- Adding data --------------------------------
 
     async addBatchtLineItems(rows: object[]) {

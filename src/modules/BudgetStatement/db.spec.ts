@@ -109,9 +109,3 @@ it('returns budgetStatementPayment with walletId 741', async () => {
     const entry = await model.getBudgetStatementPayment('budgetStatementWalletId', '741');
     expect(entry).toBeInstanceOf(Array);
 });
-
-it('returns bsComment_bsCommentAuthor with bsCommentId 13', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBsComment_BsAuthor('13');
-    expect(entry[0].bsCommentAuthorId).toEqual(1)
-})
