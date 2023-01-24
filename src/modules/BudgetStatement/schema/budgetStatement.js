@@ -405,7 +405,7 @@ export const resolvers = {
     BudgetStatementWallet: {
         budgetStatementLineItem: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementLineItem('budgetStatementWalletId', id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementLineItems(undefined, undefined, 'budgetStatementWalletId', id);
             return result;
         },
         budgetStatementPayment: async (parent, __, { dataSources }) => {

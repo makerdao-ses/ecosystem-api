@@ -92,7 +92,7 @@ it('returns lineItems with offset limit and undefined params', async () => {
 
 it('returns lineItems with headCountexpense true', async () => {
     const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementLineItem('headcountExpense', true, undefined, undefined);
+    const entry = await model.getBudgetStatementLineItems(undefined, undefined, 'headcountExpense', true);
     expect(entry).toBeInstanceOf(Array);
 });
 

@@ -268,19 +268,6 @@ export class BudgetStatementModel {
         }
     };
 
-
-    async getBudgetStatementLineItem(
-        paramName: string,
-        paramValue: string | number | boolean,
-        secondParamName: string | undefined,
-        secondParamValue: string | number | boolean | undefined): Promise<BudgetStatementLineItem[]> {
-        if (secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('BudgetStatementLineItem').where(`${paramName}`, paramValue).orderBy('month', 'desc')
-        } else {
-            return this.knex('BudgetStatementLineItem').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue)
-        }
-    };
-
     async getBudgetStatementPayments(budgetStatementWalletId: string | undefined): Promise<BudgetStatementPayment[]> {
         if (budgetStatementWalletId === undefined) {
             return this.knex
