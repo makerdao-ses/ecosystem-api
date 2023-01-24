@@ -174,18 +174,6 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatement(
-        paramName: string,
-        paramValue: number | string,
-        secondParamName: string | undefined,
-        secondParamValue: number | string | undefined): Promise<BudgetStatement[]> {
-        if (secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('BudgetStatement').where(`${paramName}`, paramValue);
-        } else {
-            return this.knex('BudgetStatement').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue)
-        }
-    };
-
     async getAuditReports(budgetStatementId: string | undefined): Promise<AuditReport[]> {
         if (budgetStatementId === undefined) {
             return this.knex

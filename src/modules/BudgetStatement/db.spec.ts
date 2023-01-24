@@ -22,15 +22,8 @@ it('returns list of budgetStatements with limit offset and undefined', async () 
 
 it('returns budgetStatements with cuId 39', async () => {
     const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatement('cuId', '39', undefined, undefined);
+    const entry = await model.getBudgetStatements({ filter: { cuId: 39 } });
     expect(entry[0].cuId).toEqual(39);
-});
-
-it('returns budgetStatements with cuId 39 and month 2022-05-01', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatement('cuId', '39', 'month', '2022-05-01');
-    expect(entry[0].cuId).toEqual(39);
-    expect(entry[0].month).toEqual('2022-05-01');
 });
 
 it('returns list of auditReports with budgetStatmentId or undefined params', async () => {

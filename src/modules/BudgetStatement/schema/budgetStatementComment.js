@@ -100,7 +100,7 @@ export const resolvers = {
                     if (input.length < 1) {
                         throw new Error('No input data')
                     }
-                    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', input.budgetStatementId);
+                    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ id: input.budgetStatementId });
                     const canUpdate = await dataSources.db.Auth.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
                     const canAudit = await dataSources.db.Auth.canAudit(user.id);
                     const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
@@ -239,7 +239,7 @@ const parseCommentOutput = (comments, dataSources) => {
 };
 
 const createBudgetStatementCommentEvent = async (dataSources, parsedComment, oldStatus, cuAdmin, auditor, withAuditors) => {
-    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatement('id', parsedComment.budgetStatementId)
+    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ id: parsedComment.budgetStatementId })
     const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', budgetStatement.cuId);
     const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
     dataSources.db.ChangeTracking.budgetStatementCommentUpdate(
