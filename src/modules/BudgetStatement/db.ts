@@ -318,18 +318,6 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementComment(
-        paramName: string,
-        paramValue: number | string,
-        secondParamName: string | undefined,
-        secondParamValue: number | string | undefined): Promise<BudgetStatementComment[]> {
-        if (secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('BudgetStatementComment').where(`${paramName}`, paramValue);
-        } else {
-            return this.knex('BudgetStatementComment').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue)
-        }
-    };
-
     async getBudgetStatementCommentAuthors(bsCommentId: string | undefined): Promise<BudgetStatementCommentAuthor[]> {
         if (bsCommentId === undefined) {
             return this.knex
