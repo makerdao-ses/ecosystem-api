@@ -245,10 +245,6 @@ export class BudgetStatementModel {
         }
     }
 
-    async getBudgetStatementWallet(paramName: string, paramValue: string | number) {
-        return this.knex('BudgetStatementWallet').where(`${paramName}`, paramValue)
-    };
-
     async getBudgetStatementLineItems(
         limit?: number | undefined,
         offset?: number | undefined,

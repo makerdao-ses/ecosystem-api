@@ -78,7 +78,7 @@ it('returns list of budgetStatemntWallets with bstatementid or undefined as para
 
 it('returns budgetSTatementWallet with topUp 0', async () => {
     const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementWallet('topupTransfer', 0);
+    const entry = await model.getBudgetStatementWallets({ topupTransfer: 0 });
     expect(entry).toBeInstanceOf(Array);
 });
 
