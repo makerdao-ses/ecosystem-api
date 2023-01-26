@@ -345,7 +345,7 @@ export const resolvers = {
         },
         mip40Wallet: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Mip.getMip40Wallets(id);
+            const result = await dataSources.db.Mip.getMip40Wallets({mip40Id: id});
             return result;
         }
     },
