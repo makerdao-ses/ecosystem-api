@@ -34,19 +34,28 @@ export class ChangeTrackingModel {
         });
     }
 
-    async getActivityFeed(limit: number | undefined, offset: number | undefined): Promise<ChangeTrackingEvent[]> {
+    async getActivityFeed(limit: number | undefined, offset: number | undefined, filter?: { objectType: string, objectId: number } | undefined): Promise<ChangeTrackingEvent[]> {
+        const baseQuery = this.knex.select('*')
+            .from('ChangeTrackingEvents')
+            .orderBy('id', 'desc');
         if (offset != undefined && limit != undefined) {
-            return await this.knex.select('*')
-                .from('ChangeTrackingEvents')
-                .limit(limit)
-                .offset(offset)
-                .orderBy('id', 'desc');
+            return baseQuery.limit(limit).offset(offset);
+        } else if (filter?.objectType !== undefined && filter?.objectId !== undefined) {
+            const index = await this.getChangeTrackingIndex(filter.objectType, filter.objectId);
+            const eventIds = index.map(obj => obj.eventId);
+            return baseQuery.whereIn('id', eventIds)
         } else {
-            return await this.knex.select('*')
-                .from('ChangeTrackingEvents')
-                .orderBy('id', 'desc');
+            return baseQuery;
         }
 
+    }
+
+    async getChangeTrackingIndex(objectType: string, objectId: number) {
+        return this.knex
+            .select('*')
+            .from('ChangeTrackingEvents_Index')
+            .where('objectType', objectType)
+            .andWhere('objectId', objectId)
     }
 
     async getCoreUnitActivityFeed(cuId: string): Promise<ChangeTrackingEvent[]> {

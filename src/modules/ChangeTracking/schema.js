@@ -59,8 +59,13 @@ export const typeDefs = [gql`
         budgetStatementId: ID
     }
 
+    input ActivityFeedFilter {
+        objectType: String!, 
+        objectId: ID!
+    }
+
     extend type Query {
-        activityFeed(offset: Int, limit: Int): [ChangeTrackingEvent],
+        activityFeed(offset: Int, limit: Int, filter: ActivityFeedFilter): [ChangeTrackingEvent],
         userActivity(filter: UserActivityFilter): [UserActivity]
         budgetStatementEvents(filter: BudgetStatementEventsFilter): [ChangeTrackingEvent]
     }
@@ -78,7 +83,7 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         activityFeed: async (_, filter, { dataSources }) => {
-            return dataSources.db.ChangeTracking.getActivityFeed(filter.limit, filter.offset);
+            return dataSources.db.ChangeTracking.getActivityFeed(filter.limit, filter.offset, filter.filter);
         },
         userActivity: async (_, { filter }, { dataSources }) => {
             if (filter !== undefined) {
