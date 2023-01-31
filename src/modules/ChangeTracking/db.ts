@@ -38,8 +38,10 @@ export class ChangeTrackingModel {
         const baseQuery = this.knex.select('*')
             .from('ChangeTrackingEvents')
             .orderBy('id', 'desc');
-        if (offset != undefined && limit != undefined) {
-            return baseQuery.limit(limit).offset(offset);
+        if (offset != undefined && limit != undefined && filter?.objectType !== undefined && filter?.objectId !== undefined) {
+            const index = await this.getChangeTrackingIndex(filter.objectType, filter.objectId);
+            const eventIds = index.map(obj => obj.eventId);
+            return baseQuery.limit(limit).offset(offset).whereIn('id', eventIds);
         } else if (filter?.objectType !== undefined && filter?.objectId !== undefined) {
             const index = await this.getChangeTrackingIndex(filter.objectType, filter.objectId);
             const eventIds = index.map(obj => obj.eventId);
