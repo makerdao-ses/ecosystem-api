@@ -1,111 +1,99 @@
 import initApi from "../../initApi";
 import { BudgetStatementModel } from "./db";
 
-async function getBudgetStatementModel(): Promise<BudgetStatementModel> {
+let authModel: BudgetStatementModel;
+
+beforeAll(async () => {
     const apiModules = await initApi({
-        BudgetStatement: { enabled: true, require: ['CoreUnit', 'Auth'] },
+        BudgetStatement: { enabled: true, require: ['Auth', 'CoreUnit'] },
         CoreUnit: { enabled: true },
         Auth: { enabled: true }
     });
+    authModel = apiModules.datasource.module<BudgetStatementModel>("BudgetStatement")
+})
 
-    const db = apiModules.datasource;
-    return db.module<BudgetStatementModel>('BudgetStatement')
-};
+afterAll(async () => { await authModel.knex.destroy() })
 
 it('returns list of budgetStatements with limit offset and undefined', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatements({});
-    const entry1 = await model.getBudgetStatements({ offset: 10, limit: 1 });
+    const entry = await authModel.getBudgetStatements({});
+    const entry1 = await authModel.getBudgetStatements({ offset: 10, limit: 1 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns budgetStatements with cuId 39', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatements({ filter: { cuId: 39 } });
-    expect(entry[0].cuId).toEqual(39);
+    const entry = await authModel.getBudgetStatements({ filter: { cuId: 38 } });
+    expect(entry[0].cuId).toEqual(38);
 });
 
 it('returns list of auditReports with budgetStatmentId or undefined params', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getAuditReports(undefined);
-    const entry1 = await model.getAuditReports('399');
+    const entry = await authModel.getAuditReports(undefined);
+    const entry1 = await authModel.getAuditReports('199');
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns auditReport with AuditStatus Approved', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getAuditReport('auditStatus', 'Approved');
+    const entry = await authModel.getAuditReport('auditStatus', 'Approved');
     expect(entry[0].auditStatus).toEqual('Approved');
 });
 
 it('returns list of ftes with budgetStatementId or undefined params', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementFTEs('409');
-    const entry1 = await model.getBudgetStatementFTEs(undefined);
+    const entry = await authModel.getBudgetStatementFTEs('409');
+    const entry1 = await authModel.getBudgetStatementFTEs(undefined);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns list of BudgetStatementFtes with fte number 10', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementFTE('ftes', 10);
-    expect(entry[0].ftes).toEqual('10');
+    const entry = await authModel.getBudgetStatementFTE('ftes', 8);
+    expect(entry[0].ftes).toEqual('8');
 });
 
 it('returns list of bstatementMKRVest with bstatemntID or undefined as params', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementMKRVests(undefined);
-    const entry1 = await model.getBudgetStatementMKRVests('300');
+    const entry = await authModel.getBudgetStatementMKRVests(undefined);
+    const entry1 = await authModel.getBudgetStatementMKRVests('300');
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
 
 it('returns mkrVest statement with mkrAmount 100', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementMKRVest('mkrAmount', 100);
+    const entry = await authModel.getBudgetStatementMKRVest('mkrAmount', 100);
     expect(entry).toBeInstanceOf(Array);
 });
 
 it('returns list of budgetStatemntWallets with bstatementid or undefined as params', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementWallets(undefined);
-    const entry1 = await model.getBudgetStatementWallets({ budgetStatementId: 399 })
+    const entry = await authModel.getBudgetStatementWallets(undefined);
+    const entry1 = await authModel.getBudgetStatementWallets({ budgetStatementId: 399 })
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
 
 it('returns budgetSTatementWallet with topUp 0', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementWallets({ topupTransfer: 0 });
+    const entry = await authModel.getBudgetStatementWallets({ topupTransfer: 0 });
     expect(entry).toBeInstanceOf(Array);
 });
 
 it('returns lineItems with offset limit and undefined params', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementLineItems();
-    const entry1 = await model.getBudgetStatementLineItems(10, 1);
+    const entry = await authModel.getBudgetStatementLineItems();
+    const entry1 = await authModel.getBudgetStatementLineItems(10, 1);
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
 
 it('returns lineItems with headCountexpense true', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementLineItems(undefined, undefined, 'headcountExpense', true);
+    const entry = await authModel.getBudgetStatementLineItems(undefined, undefined, 'headcountExpense', true);
     expect(entry).toBeInstanceOf(Array);
 });
 
 it('returns list of budgetSTatementPayments', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementPayments(undefined);
-    const entry1 = await model.getBudgetStatementPayments('741');
+    const entry = await authModel.getBudgetStatementPayments(undefined);
+    const entry1 = await authModel.getBudgetStatementPayments('741');
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
 
 it('returns budgetStatementPayment with walletId 741', async () => {
-    const model = await getBudgetStatementModel();
-    const entry = await model.getBudgetStatementPayment('budgetStatementWalletId', '741');
+    const entry = await authModel.getBudgetStatementPayment('budgetStatementWalletId', '741');
     expect(entry).toBeInstanceOf(Array);
 });

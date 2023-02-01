@@ -1,23 +1,23 @@
 import initApi from "../../initApi";
 import { ClientVersionModel } from "./db";
 
-async function getClientVersionModel(): Promise<ClientVersionModel> {
-    const apiModule = await initApi({
-        ClientVersion: {enabled: true}
-    });
+let authModel: ClientVersionModel;
 
-    const db = apiModule.datasource;
-    return db.module<ClientVersionModel>("ClientVersion");
-}
+beforeAll(async () => {
+    const apiModules = await initApi({
+        ClientVersion: { enabled: true }
+    });
+    authModel = apiModules.datasource.module<ClientVersionModel>("ClientVersion")
+})
+
+afterAll(async () => { await authModel.knex.destroy() })
 
 it('returns the last budget tool version', async () => {
-    const model = await getClientVersionModel();
-    const entry = await model.getLatestBudgetToolVersion();
+    const entry = await authModel.getLatestBudgetToolVersion();
     expect(entry[0]['version'].length).toBe(5);
 });
 
 it('returns an array of budget tool version objects', async () => {
-    const model = await getClientVersionModel();
-    const entry = await model.getBudgetToolVersions();
+    const entry = await authModel.getBudgetToolVersions();
     expect(entry.length).toBeGreaterThan(0)
 })
