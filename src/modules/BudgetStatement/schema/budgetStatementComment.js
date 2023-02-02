@@ -98,9 +98,14 @@ export const resolvers = {
                     throw new AuthenticationError("Not authenticated, login to create budget statment comments")
                 } else {
                     if (input.length < 1) {
-                        throw new Error('No input data')
+                        throw new ForbiddenError('No input data')
                     }
                     const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: input.budgetStatementId } });
+
+                    // returning error if no comment or same status
+                    if (input.comment === null || input.comment === '' && budgetStatement.status === input.status) {
+                        throw new ForbiddenError('Need to add a comment or change status')
+                    }
                     const canUpdate = await dataSources.db.Auth.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
                     const canAudit = await dataSources.db.Auth.canAudit(user.id);
                     const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
