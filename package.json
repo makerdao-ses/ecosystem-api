@@ -12,8 +12,8 @@
     "migrate:latest": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:latest",
     "migrate:up": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:up",
     "migrate:down": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:down",
-    "test": "jest -c ./config/jest.config.js",
-    "test:watch": "jest -c ./config/jest.config.js --watchAll"
+    "test": "jest -c ./jest.config.js",
+    "test:watch": "jest -c ./jest.config.js --watchAll"
   },
   "author": "",
   "license": "ISC",
