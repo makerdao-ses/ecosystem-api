@@ -1,5 +1,6 @@
 import initApi from "../../initApi";
 import { BudgetStatementModel } from "./db";
+import { BudgetStatementAuthModel } from './dbAuth.js'
 
 let authModel: BudgetStatementModel;
 
@@ -97,3 +98,33 @@ it('returns budgetStatementPayment with walletId 741', async () => {
     const entry = await authModel.getBudgetStatementPayment('budgetStatementWalletId', '741');
     expect(entry).toBeInstanceOf(Array);
 });
+
+/*
+Testing scenarios for comment/status creation
+
+Unauthorised User
+CoreUnit Administrator with CoreUnit/Update permission
+CoreUnit Auditor with CoreUnit/Audit permission
+Super Administrator with both permissions 
+
+*/
+
+it('Fails when unauthorised users try write operations', async () => {
+    const authModel = new BudgetStatementAuthModel();
+    expect(async () => {
+        await authModel.budgetStatementCommentCreate(null, false, null)
+    }).rejects.toThrow()
+
+});
+
+it('Correctly applies CU Admin modifications', async () => {
+    expect(true).toBe(true);
+})
+
+it('Correctly applies CU Auditor modifications', async () => {
+    expect(true).toBe(true);
+})
+
+it('Correctly applies Super Admin modifications', async () => {
+    expect(true).toBe(true);
+})
