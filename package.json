@@ -44,6 +44,7 @@
     "@types/jsonwebtoken": "^8.5.9",
     "@types/lodash": "^4.14.185",
     "@types/pg": "^8.6.5",
+    "node-fetch": "^3.3.0",
     "nodemon": "^2.0.16",
     "ts-jest": "^29.0.2",
     "tsc-watch": "^5.0.3",
