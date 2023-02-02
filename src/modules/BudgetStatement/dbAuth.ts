@@ -1,11 +1,20 @@
 import { BudgetStatementModel } from "./db";
+import { AuthModel } from '../Auth/db'
+import { CoreUnitModel } from '../CoreUnit/db'
+import { ChangeTrackingModel } from '../ChangeTracking/db'
 import { gql, AuthenticationError, ForbiddenError } from 'apollo-server-core';
 
 export class BudgetStatementAuthModel {
-    private model: BudgetStatementModel | undefined;
+    private bsModel: BudgetStatementModel;
+    private authModel: AuthModel;
+    private cuModel: CoreUnitModel;
+    private ctModel: ChangeTrackingModel;
 
-    constructor(model?: BudgetStatementModel) {
-        this.model = model;
+    constructor(bsModel: BudgetStatementModel, authModel: AuthModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel) {
+        this.bsModel = bsModel;
+        this.authModel = authModel;
+        this.cuModel = cuModel;
+        this.ctModel = ctModel;
     }
 
     async budgetStatementCommentCreate(input: any, user: any, dataSources: any) {
@@ -16,17 +25,15 @@ export class BudgetStatementAuthModel {
                 if (input.length < 1) {
                     throw new ForbiddenError('No input data')
                 }
-                const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: input.budgetStatementId } });
+                const [budgetStatement] = await this.bsModel.getBudgetStatements({ filter: { id: input.budgetStatementId } });
 
                 // returning error if no comment or same status
                 if (input.comment === null || input.comment === '' && budgetStatement.status === input.status) {
                     throw new ForbiddenError('Need to add a comment or change status')
                 }
-                const canUpdate = await dataSources.db.Auth.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
-                const canAudit = await dataSources.db.Auth.canAudit(user.id);
-                const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
-                const cuAdmin = (parseInt(canUpdate[0].count) > 0 && budgetStatement.cuId == user?.cuId) || user.cuId == null ? true : false;
-                const withAuditors = cuAuditors.length > 0 ? true : false;
+                const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
+                const canAudit = await this.authModel.canAudit(user.id);
+                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
                 const coreUnitHasAuditors = () => {
                     return cuAuditors.length > 0 ? true : false;
                 }
@@ -96,9 +103,9 @@ export class BudgetStatementAuthModel {
                         throw new ForbiddenError(`You are not authorized to move the expense report status from ${oldStatus} to ${newStatus}.`);
                     }
 
-                    const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                    const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, dataSources);
-                    await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status)
                     return parsed;
                 }
 
@@ -113,9 +120,9 @@ export class BudgetStatementAuthModel {
                         throw new ForbiddenError("You are not authorized to add a comment to this expense report.");
                     }
 
-                    const addedComment = await dataSources.db.BudgetStatement.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
+                    const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, dataSources);
-                    await createBudgetStatementCommentEvent(dataSources, parsed[0], budgetStatement.status)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status)
                     return parsed;
                 }
             }
@@ -135,11 +142,11 @@ const parseCommentOutput = (comments: any, dataSources: any) => {
     return Promise.all(parsed);
 };
 
-const createBudgetStatementCommentEvent = async (dataSources: any, parsedComment: any, oldStatus: any) => {
-    const [budgetStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId } })
-    const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', budgetStatement.cuId);
+const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any) => {
+    const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId } })
+    const [CU] = await cuModel.getCoreUnit('id', budgetStatement.cuId);
     const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
-    dataSources.db.ChangeTracking.budgetStatementCommentUpdate(
+    ctModel.budgetStatementCommentUpdate(
         eventDescription,
         CU.id,
         CU.code,

@@ -2,11 +2,12 @@ import { Knex } from "knex";
 
 export interface BudgetStatement {
     id: string
-    cuId: string
+    cuId: number
     month: string
     budgetStatus: string
     publicationUrl: string
     cuCode: string
+    status: string
     mkrProgramLength: number
     auditReport: object
     budgetStatementFTEs: object

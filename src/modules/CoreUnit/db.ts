@@ -191,7 +191,7 @@ export class CoreUnitModel {
         }
     };
 
-    async getCoreUnit(paramName: string, paramValue: string): Promise<CoreUnit[]> {
+    async getCoreUnit(paramName: string, paramValue: string | number): Promise<CoreUnit[]> {
         return this.knex('CoreUnit').where(`${paramName}`, paramValue)
     };
 
