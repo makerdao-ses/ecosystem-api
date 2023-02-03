@@ -139,6 +139,14 @@ export interface BudgetStatementWalletFilter {
     comments?: string
 }
 
+export interface AuditReportFilter {
+    id?: number
+    budgetStatementId?: number
+    auditStatus?: string
+    reportUrl?: string
+    timestamp?: string
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -175,19 +183,24 @@ export class BudgetStatementModel {
         }
     };
 
-    async getAuditReports(budgetStatementId: string | undefined): Promise<AuditReport[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('AuditReport')
-                .orderBy('id')
+    async getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('AuditReport')
+            .orderBy('id')
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.auditStatus !== undefined) {
+            return baseQuery.where('auditStatus', filter.auditStatus)
+        } else if (filter?.reportUrl !== undefined) {
+            return baseQuery.where('reportUrl', filter.reportUrl)
+        } else if (filter?.timestamp !== undefined) {
+            return baseQuery.where('timestamp', filter.timestamp)
         } else {
-            return this.knex('AuditReport').where(`budgetStatementId`, budgetStatementId)
+            return baseQuery;
         }
-    };
-
-    async getAuditReport(paramName: string, paramValue: string) {
-        return this.knex('AuditReport').where(`${paramName}`, paramValue)
     };
 
     async getBudgetStatementFTEs(budgetStatementId: string | undefined): Promise<BudgetStatementFTEs[]> {

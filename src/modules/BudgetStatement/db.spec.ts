@@ -44,13 +44,13 @@ it('returns budgetStatements with cuId 39', async () => {
 
 it('returns list of auditReports with budgetStatmentId or undefined params', async () => {
     const entry = await bsModel.getAuditReports(undefined);
-    const entry1 = await bsModel.getAuditReports('199');
+    const entry1 = await bsModel.getAuditReports({ budgetStatementId: 199 });
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns auditReport with AuditStatus Approved', async () => {
-    const entry = await bsModel.getAuditReport('auditStatus', 'Approved');
+    const entry = await bsModel.getAuditReports({ auditStatus: 'Approved' });
     expect(entry[0].auditStatus).toEqual('Approved');
 });
 

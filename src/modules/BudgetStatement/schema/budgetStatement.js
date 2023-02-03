@@ -383,7 +383,7 @@ export const resolvers = {
         },
         auditReport: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getAuditReports(id);
+            const result = await dataSources.db.BudgetStatement.getAuditReports({ budgetStatementId: id });
             return result;
         },
         budgetStatementFTEs: async (parent, __, { dataSources }) => {
