@@ -460,7 +460,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         //Tacking Change
                         const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
@@ -491,7 +491,7 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: user.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input.budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
@@ -524,7 +524,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         //Tacking Change
                         const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {

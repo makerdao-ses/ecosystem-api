@@ -21,7 +21,7 @@ it('returns list of CUs with limit offset and undefined params', async () => {
 });
 
 it('return a coreUnit with shortCode SES', async () => {
-    const entry = await authModel.getCoreUnit('shortCode', "SES");
+    const entry = await authModel.getCoreUnits({ filter: { shortCode: "SES" } });
     expect(entry[0].shortCode).toEqual('SES');
 });
 

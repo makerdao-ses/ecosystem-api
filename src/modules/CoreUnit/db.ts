@@ -93,10 +93,10 @@ export interface MakerGithubEcosystem {
 }
 
 export interface CoreUnitFilter {
-    id: number,
-    code: string,
-    name: string,
-    shortCode: string
+    id?: number,
+    code?: string,
+    name?: string,
+    shortCode?: string
 }
 
 export interface SocialMediaChannelsFilter {
@@ -189,10 +189,6 @@ export class CoreUnitModel {
         else {
             return baseQuery;
         }
-    };
-
-    async getCoreUnit(paramName: string, paramValue: string | number): Promise<CoreUnit[]> {
-        return this.knex('CoreUnit').where(`${paramName}`, paramValue)
     };
 
     async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {

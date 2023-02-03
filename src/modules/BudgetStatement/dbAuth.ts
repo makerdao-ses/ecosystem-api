@@ -144,7 +144,7 @@ const parseCommentOutput = (comments: any, dataSources: any) => {
 
 const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any) => {
     const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId } })
-    const [CU] = await cuModel.getCoreUnit('id', budgetStatement.cuId);
+    const [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.cuId } });
     const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
     ctModel.budgetStatementCommentUpdate(
         eventDescription,
