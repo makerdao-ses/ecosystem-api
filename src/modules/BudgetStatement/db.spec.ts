@@ -55,14 +55,14 @@ it('returns auditReport with AuditStatus Approved', async () => {
 });
 
 it('returns list of ftes with budgetStatementId or undefined params', async () => {
-    const entry = await bsModel.getBudgetStatementFTEs('409');
+    const entry = await bsModel.getBudgetStatementFTEs({ budgetStatementId: 409 });
     const entry1 = await bsModel.getBudgetStatementFTEs(undefined);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns list of BudgetStatementFtes with fte number 10', async () => {
-    const entry = await bsModel.getBudgetStatementFTE('ftes', 8);
+    const entry = await bsModel.getBudgetStatementFTEs({ ftes: 8 });
     expect(entry[0].ftes).toEqual('8');
 });
 

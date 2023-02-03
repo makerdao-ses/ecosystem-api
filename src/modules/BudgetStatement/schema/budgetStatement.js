@@ -388,7 +388,7 @@ export const resolvers = {
         },
         budgetStatementFTEs: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementFTEs(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementFTEs({ budgetStatementId: id });
             return result
         },
         budgetStatementMKRVest: async (parent, __, { dataSources }) => {

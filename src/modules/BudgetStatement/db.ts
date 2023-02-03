@@ -147,6 +147,13 @@ export interface AuditReportFilter {
     timestamp?: string
 }
 
+export interface BudgetStatementFteFilter {
+    id?: number
+    budgetStatementId?: number
+    month?: string
+    ftes?: number
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -203,21 +210,23 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementFTEs(budgetStatementId: string | undefined): Promise<BudgetStatementFTEs[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementFtes')
-                .orderBy('id')
+    async getBudgetStatementFTEs(filter?: BudgetStatementFteFilter): Promise<BudgetStatementFTEs[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementFtes')
+            .orderBy('id')
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.month !== undefined) {
+            return baseQuery.where('month', filter.month)
+        } else if (filter?.ftes !== undefined) {
+            return baseQuery.where('ftes', filter.ftes)
         } else {
-            return this.knex('BudgetStatementFtes').where(`budgetStatementId`, budgetStatementId)
+            return baseQuery;
         }
     };
-
-    async getBudgetStatementFTE(paramName: string, paramValue: string | number) {
-        return this.knex('BudgetStatementFtes').where(`${paramName}`, paramValue)
-    };
-
 
     async getBudgetStatementMKRVests(budgetStatementId: string | undefined): Promise<BudgetStatementMKRVest[]> {
         if (budgetStatementId === undefined) {
