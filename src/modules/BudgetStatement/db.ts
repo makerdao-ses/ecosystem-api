@@ -387,28 +387,6 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementCommentAuthors(bsCommentId: string | undefined): Promise<BudgetStatementCommentAuthor[]> {
-        if (bsCommentId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementCommentAuthor')
-                .orderBy('id')
-        } else {
-            return this.knex('BudgetStatementCommentAuthor').where('bsCommentId', bsCommentId)
-        }
-    };
-
-    async getBudgetStatementCommentAuthor(paramName: string,
-        paramValue: number | string,
-        secondParamName: string | undefined,
-        secondParamValue: number | string | undefined): Promise<BudgetStatementCommentAuthor[]> {
-        if (secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('BudgetStatementCommentAuthor').where(`${paramName}`, paramValue);
-        } else {
-            return this.knex('BudgetStatementCommentAuthor').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue)
-        }
-    };
-
     // ------------------- Adding data --------------------------------
 
     async addBatchtLineItems(rows: object[]) {
