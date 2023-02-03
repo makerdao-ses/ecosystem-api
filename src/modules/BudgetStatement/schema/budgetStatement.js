@@ -393,7 +393,7 @@ export const resolvers = {
         },
         budgetStatementMKRVest: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementMKRVests(id)
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementMKRVests({ budgetStatementId: id })
             return result;
         },
         budgetStatementWallet: async (parent, __, { dataSources }) => {

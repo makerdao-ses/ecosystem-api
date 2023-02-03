@@ -154,6 +154,15 @@ export interface BudgetStatementFteFilter {
     ftes?: number
 }
 
+export interface BudgetStatementMKRVEstFilter {
+    id?: number
+    budgetStatementId?: number
+    vestingDate?: string
+    mkrAmount?: number
+    mkrAmountOld?: number
+    comments?: string
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -228,19 +237,26 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementMKRVests(budgetStatementId: string | undefined): Promise<BudgetStatementMKRVest[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementMkrVest')
-                .orderBy('id');
+    async getBudgetStatementMKRVests(filter?: BudgetStatementMKRVEstFilter): Promise<BudgetStatementMKRVest[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementMkrVest')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.vestingDate !== undefined) {
+            return baseQuery.where('vestingDate', filter.vestingDate)
+        } else if (filter?.mkrAmount !== undefined) {
+            return baseQuery.where('mkrAmount', filter.mkrAmount)
+        } else if (filter?.mkrAmountOld !== undefined) {
+            return baseQuery.where('mkrAmountOld', filter.mkrAmountOld)
+        } else if (filter?.comments !== undefined) {
+            return baseQuery.where('comments', filter.comments)
         } else {
-            return this.knex('BudgetStatementMkrVest').where('budgetStatementId', budgetStatementId)
+            return baseQuery;
         }
-    };
-
-    async getBudgetStatementMKRVest(paramName: string, paramValue: string | number): Promise<BudgetStatementMKRVest[]> {
-        return this.knex('BudgetStatementMkrVest').where(`${paramName}`, paramValue)
     };
 
     async getBudgetStatementWallets(filter?: BudgetStatementWalletFilter): Promise<BudgetStatementWallet[]> {

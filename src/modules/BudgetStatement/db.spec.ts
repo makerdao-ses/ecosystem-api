@@ -68,13 +68,13 @@ it('returns list of BudgetStatementFtes with fte number 10', async () => {
 
 it('returns list of bstatementMKRVest with bstatemntID or undefined as params', async () => {
     const entry = await bsModel.getBudgetStatementMKRVests(undefined);
-    const entry1 = await bsModel.getBudgetStatementMKRVests('300');
+    const entry1 = await bsModel.getBudgetStatementMKRVests({ budgetStatementId: 300 });
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
 });
 
 it('returns mkrVest statement with mkrAmount 100', async () => {
-    const entry = await bsModel.getBudgetStatementMKRVest('mkrAmount', 100);
+    const entry = await bsModel.getBudgetStatementMKRVests({ mkrAmount: 100 });
     expect(entry).toBeInstanceOf(Array);
 });
 
