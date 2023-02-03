@@ -163,6 +163,15 @@ export interface BudgetStatementMKRVEstFilter {
     comments?: string
 }
 
+export interface BudgetStatementPaymentFilter {
+    id?: number
+    budgetStatementWalletId?: number
+    transactionDate?: string
+    transactionId?: string
+    budgetStatementLineItemId?: number
+    comments?: string
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -307,20 +316,28 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementPayments(budgetStatementWalletId: string | undefined): Promise<BudgetStatementPayment[]> {
-        if (budgetStatementWalletId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementPayment')
-                .orderBy('id');
+    async getBudgetStatementPayments(filter?: BudgetStatementPaymentFilter): Promise<BudgetStatementPayment[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementPayment')
+            .orderBy('id');
+
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementWalletId !== undefined) {
+            return baseQuery.where('budgetStatementWalletId', filter.budgetStatementWalletId)
+        } else if (filter?.transactionDate !== undefined) {
+            return baseQuery.where('transactionDate', filter.transactionDate)
+        } else if (filter?.transactionId !== undefined) {
+            return baseQuery.where('transactionId', filter.transactionId)
+        } else if (filter?.budgetStatementLineItemId !== undefined) {
+            return baseQuery.where('budgetStatementLineItemId', filter.budgetStatementLineItemId)
+        } else if (filter?.comments !== undefined) {
+            return baseQuery.where('comments', filter.comments)
         } else {
-            return this.knex('BudgetStatementPayment').where('budgetStatementWalletId', budgetStatementWalletId)
+            return baseQuery;
         }
 
-    };
-
-    async getBudgetStatementPayment(paramName: string, paramValue: string | number): Promise<BudgetStatementPayment[]> {
-        return this.knex('BudgetStatementPayment').where(`${paramName}`, paramValue)
     };
 
     async getBudgetStatementTransferRequests(budgetStatementWalletId: string | undefined): Promise<BudgetStatementTransferRequest[]> {

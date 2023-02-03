@@ -410,7 +410,7 @@ export const resolvers = {
         },
         budgetStatementPayment: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementPayments(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementPayments({ budgetStatementWalletId: id });
             return result;
         },
         budgetStatementTransferRequest: async (parent, __, { dataSources }) => {

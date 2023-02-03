@@ -104,14 +104,9 @@ it('returns lineItems with headCountexpense true', async () => {
 
 it('returns list of budgetSTatementPayments', async () => {
     const entry = await bsModel.getBudgetStatementPayments(undefined);
-    const entry1 = await bsModel.getBudgetStatementPayments('741');
+    const entry1 = await bsModel.getBudgetStatementPayments({ budgetStatementWalletId: 741 });
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
-});
-
-it('returns budgetStatementPayment with walletId 741', async () => {
-    const entry = await bsModel.getBudgetStatementPayment('budgetStatementWalletId', '741');
-    expect(entry).toBeInstanceOf(Array);
 });
 
 /*
