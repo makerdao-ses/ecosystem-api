@@ -211,10 +211,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getCuUpdate(paramName: string, paramValue: string): Promise<CuUpdate[]> {
-        return this.knex('CuUpdate').where(`${paramName}`, paramValue)
-    };
-
     async getSocialMediaChannels(filter?: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
         const baseQuery = this.knex
             .select('*')
