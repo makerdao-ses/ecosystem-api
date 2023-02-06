@@ -239,10 +239,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getSocialMediaChannel(paramName: string, paramValue: string): Promise<SocialMediaChannels[]> {
-        return this.knex('SocialMediaChannels').where(`${paramName}`, paramValue)
-    };
-
     async getContributorCommitments(filter?: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
         const baseQuery = this.knex
             .select('*')
