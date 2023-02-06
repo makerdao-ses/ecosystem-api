@@ -337,10 +337,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getGithubRepo(paramName: string, paramValue: string): Promise<GithubRepo[]> {
-        return this.knex('GithubRepo').where(`${paramName}`, paramValue)
-    };
-
     async getMakerGithubEcosystemAll(filter?: MakerGithubEcosystemFilter): Promise<MakerGithubEcosystem[]> {
         const baseQuery = this.knex
             .select('*')

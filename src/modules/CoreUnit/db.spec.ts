@@ -93,7 +93,7 @@ it('returns list of githubRepos with id and undefined params', async () => {
 });
 
 it('returns githubRepo with name spreadsheet-to-md', async () => {
-    const entry = await authModel.getGithubRepo('repo', 'spreadsheet-to-md');
+    const entry = await authModel.getGithubRepos({ repo: 'spreadsheet-to-md' });
     expect(entry[0].repo).toEqual('spreadsheet-to-md');
 });
 
