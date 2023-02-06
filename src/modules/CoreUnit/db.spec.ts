@@ -45,7 +45,7 @@ it('returns list of contributor commitments widh cuId and undefined params', asy
 });
 
 it('returns contributor commitment with cu Id 1', async () => {
-    const entry = await authModel.getContributorCommitment('cuId', '1');
+    const entry = await authModel.getContributorCommitments({ cuId: 1 });
     expect(entry[0].cuId).toEqual(1)
 });
 
