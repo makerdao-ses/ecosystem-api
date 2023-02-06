@@ -15,22 +15,6 @@ export class BudgetReportPeriod {
     private _quarter: number | null = null;
     private _month: number | null = null;
     
-    public constructor(year: number, quarter?: number, month?: number) {
-        this._initAsYear(year);
-
-        if (quarter !== undefined) {
-            this._initAsQuarter(quarter);
-        }
-
-        if (month !== undefined) {
-            this._initAsMonth(month);
-        }
-    }
-
-    public equals(period: BudgetReportPeriod | string): boolean {
-        return this.toString() === (typeof period === 'string' ? period : period.toString()); 
-    }
-
     public static fromString(period:string): BudgetReportPeriod {
         let result:BudgetReportPeriod;
 
@@ -60,6 +44,22 @@ export class BudgetReportPeriod {
         }
 
         return result;
+    }
+
+    public constructor(year: number, quarter?: number, month?: number) {
+        this._initAsYear(year);
+
+        if (quarter !== undefined) {
+            this._initAsQuarter(quarter);
+        }
+
+        if (month !== undefined) {
+            this._initAsMonth(month);
+        }
+    }
+
+    public equals(period: BudgetReportPeriod | string): boolean {
+        return this.toString() === (typeof period === 'string' ? period : period.toString()); 
     }
 
     public toString():string {
