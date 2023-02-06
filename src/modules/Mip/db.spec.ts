@@ -81,7 +81,7 @@ it('returns list of Mip40Wallets with mip40Id or undefined params', async () => 
 });
 
 it('returns Mip40Wallet with signersRequired 2', async () => {
-    const entry = await authModel.getMip40Wallet('signersRequired', 2);
+    const entry = await authModel.getMip40Wallets({ signersRequired: 2 });
     expect(entry[0].signersRequired).toEqual(2);
 });
 
@@ -93,7 +93,7 @@ it('returns list of Mip40BudgetLineItem with mip40WalletId or undefined as param
 });
 
 it('returns list of Mip40BudgetLineItems with headcountExpense true', async () => {
-    const entry = await authModel.getMip40BudgetLineItem('headcountExpense', true);
+    const entry = await authModel.getMip40BudgetLineItems({ headcountExpense: true });
     expect(entry[0].headcountExpense).toEqual(true);
 });
 

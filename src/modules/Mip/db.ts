@@ -298,10 +298,6 @@ export class MipModel {
         }
     };
 
-    async getMip40Wallet(paramName: string, paramValue: string | number | object): Promise<Mip40Wallet[]> {
-        return this.knex('Mip40Wallet').where(`${paramName}`, paramValue)
-    };
-
     async getMip40BudgetLineItems(filter?: Mip40BudgetLineItemFilter): Promise<Mip40BudgetLineItem[]> {
         const baseQuery = this.knex
             .select('*')
@@ -326,10 +322,6 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
-
-    async getMip40BudgetLineItem(paramName: string, paramValue: number | string | boolean) {
-        return this.knex('Mip40BudgetLineItem').where(`${paramName}`, paramValue)
     };
 
     async getMip41s(filter?: Mip41Filter): Promise<Mip41[]> {
