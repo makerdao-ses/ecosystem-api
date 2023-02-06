@@ -69,7 +69,7 @@ it('returns list of Mip40BudgetPeriods with mip40Id or undefined params', async 
 });
 
 it('returns Mip40BudgetPeriod with ftes 11.5', async () => {
-    const entry = await authModel.getMip40BudgetPeriod('ftes', 11.5);
+    const entry = await authModel.getMip40BudgetPeriods({ ftes: 11.5 });
     expect(entry[0].ftes).toEqual("11.5")
 });
 
