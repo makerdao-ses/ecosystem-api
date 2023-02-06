@@ -57,7 +57,7 @@ it('returns list of Mip40s with mipId or undefined params', async () => {
 });
 
 it('returns list of Mip40s with mkrOnly true', async () => {
-    const entry = await authModel.getMip40('mkrOnly', true);
+    const entry = await authModel.getMip40s({ mkrOnly: true });
     expect(entry[0].mkrOnly).toEqual(true);
 });
 

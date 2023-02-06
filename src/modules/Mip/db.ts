@@ -254,10 +254,6 @@ export class MipModel {
         }
     };
 
-    async getMip40(paramName: string, paramValue: string | number | boolean | object): Promise<Mip40[]> {
-        return this.knex('Mip40').where(`${paramName}`, paramValue)
-    };
-
     async getMip40BudgetPeriods(filter: Mip40BudgetPeriodFilter): Promise<Mip40BudgetPeriod[]> {
         const baseQuery = this.knex
             .select('*')
