@@ -45,7 +45,7 @@ it('returns list of Mip39s with mipId or undefined params', async () => {
 });
 
 it('returns Mip39 with mip39Spn 10', async () => {
-    const entry = await authModel.getMip39('mip39Spn', '10');
+    const entry = await authModel.getMip39s({ mip39Spn: 10 });
     expect(entry[0].mip39Spn).toEqual(10);
 });
 

@@ -234,10 +234,6 @@ export class MipModel {
         }
     };
 
-    async getMip39(paramName: string, paramValue: number | string) {
-        return this.knex('Mip39').where(`${paramName}`, paramValue)
-    };
-
     async getMip40s(filter?: Mip40Filter): Promise<Mip40[]> {
         const baseQuery = this.knex
             .select('*')
