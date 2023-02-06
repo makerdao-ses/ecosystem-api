@@ -57,7 +57,7 @@ it('returns list of cuGithubContributions with cuId and undefined params', async
 });
 
 it('returns list of cuGithubContributions with orgId 0', async () => {
-    const entry = await authModel.getCuGithubContribution('orgId', '0');
+    const entry = await authModel.getCuGithubContributions({ orgId: 0 });
     expect(entry.length).toBeGreaterThan(0);
 });
 

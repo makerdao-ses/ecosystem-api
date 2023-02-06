@@ -281,10 +281,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getCuGithubContribution(paramName: string, paramValue: string): Promise<CuGithubContribution[]> {
-        return this.knex('CuGithubContribution').where(`${paramName}`, paramValue)
-    };
-
     async getContributors(filter: { limit?: number, offset?: number, filter?: ContributorFilter }): Promise<Contributor[]> {
         const baseQuery = this.knex
             .select('*')
