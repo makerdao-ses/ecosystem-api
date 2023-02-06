@@ -105,6 +105,6 @@ it('returns list of mip41s with cuMipId or undefined as params', async () => {
 });
 
 it('returns mip41 with contributorId 4', async () => {
-    const entry = await authModel.getMip41('contributorId', "4");
+    const entry = await authModel.getMip41s({ contributorId: 4 });
     expect(entry[0].contributorId).toEqual(4);
 });

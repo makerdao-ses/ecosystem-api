@@ -350,10 +350,6 @@ export class MipModel {
         }
     };
 
-    async getMip41(paramName: string, paramValue: string): Promise<Mip41[]> {
-        return this.knex('Mip41').where(`${paramName}`, paramValue)
-    };
-
 };
 
 export default (knex: Knex, deps: { [key: string]: object }) => new MipModel(knex, deps['CoreUnit']);
