@@ -1,14 +1,27 @@
-import { BudgetReportPathSegment } from "./BudgetReportPath";
+import { BudgetReportPath, BudgetReportPathSegment } from "./BudgetReportPath";
 
-it ('correctly parses segment filters and groups', () => {
-    const
-        // Unescaped test string
-        raw = "@@abc@@@:/,\\",
-        // Escaped input test string (with unnecessary escaping of the first character) 
-        escI = "\\@@abc@@@\\:\\/\\,\\\\",
-        // Escaped expected output string (without unnecessary escaping of the first character)
-        escO = "@@abc@@@\\:\\/\\,\\\\";
+const
+    // Unescaped test string
+    raw = "@@abc@@@:/,\\",
+    // Escaped input test string (with unnecessary escaping of the first character) 
+    escI = "\\@@abc@@@\\:\\/\\,\\\\",
+    // Escaped expected output string (without unnecessary escaping of the first character)
+    escO = "@@abc@@@\\:\\/\\,\\\\";
 
+it ('correctly parses paths into segments', () => {
+    const paths:any = [
+        ['makerdao/core-units/SES-001/*/*:discontinued', 5],
+        [`${escO},${escO}:${escO},${escO}/${escO},${escO}:${escO},${escO}`, 2]
+    ];
+
+    paths.forEach((p:any) => {
+        const path = BudgetReportPath.fromString(p[0]);
+        expect(path.segments.length).toBe(p[1]);
+        expect(path.toString()).toEqual(p[0]);
+    });
+});
+
+it ('correctly parses path segment filters and groups', () => {
     const segments: any = [
         // Filters without grouping (implicit)
         ['*', '*', null, []],
@@ -56,4 +69,7 @@ it ('correctly parses segment filters and groups', () => {
         expect(segment.filters).toEqual(s[2]);
         expect(segment.groups).toEqual(s[3]);
     });
+
+    // Test constructor default args
+    expect(new BudgetReportPathSegment().toString()).toEqual('*');
 });
