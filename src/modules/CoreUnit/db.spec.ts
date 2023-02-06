@@ -69,7 +69,7 @@ it('returns list of contributors with limit offset and undefined params', async 
 });
 
 it('returns contributor with name Jack', async () => {
-    const entry = await authModel.getContributor('name', "Jack");
+    const entry = await authModel.getContributors({ filter: { name: "Jack" } });
     expect(entry[0].name).toEqual('Jack');
 });
 
