@@ -194,10 +194,6 @@ export class MipModel {
         }
     };
 
-    async getMip(paramName: string, paramValue: string): Promise<CuMip[]> {
-        return this.knex('CuMip').where(`${paramName}`, paramValue)
-    };
-
     async getMipReplaces(filter?: MipReplaceFilter): Promise<MipReplaces[]> {
         const baseQuery = this.knex
             .select('*')

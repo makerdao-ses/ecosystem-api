@@ -21,7 +21,7 @@ it('returns list of CuMips with CuId or undefined params', async () => {
 });
 
 it('returns CuMips with MipStatus Accepted', async () => {
-    const entry = await authModel.getMip('mipStatus', 'Accepted');
+    const entry = await authModel.getMips({ mipStatus: 'Accepted' });
     expect(entry[0].mipStatus).toEqual('Accepted');
 });
 
