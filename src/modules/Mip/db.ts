@@ -210,10 +210,6 @@ export class MipModel {
         }
     };
 
-    async getMipReplace(paramName: string, paramValue: string): Promise<MipReplaces[]> {
-        return this.knex('MipReplaces').where(`${paramName}`, paramValue);
-    };
-
     async getMip39s(filter?: Mip39Filter): Promise<Mip39[]> {
         const baseQuery = this.knex
             .select('*')

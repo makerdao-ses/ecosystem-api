@@ -33,7 +33,7 @@ it('returns list of MipReplaces with newMip or undefined params', async () => {
 });
 
 it('returns MipReplaces with ReplaceMip 41', async () => {
-    const entry = await authModel.getMipReplace('replacedMip', '41');
+    const entry = await authModel.getMipReplaces({ replacedMip: 41 });
     expect(entry[0].replacedMip).toEqual(41);
 });
 
