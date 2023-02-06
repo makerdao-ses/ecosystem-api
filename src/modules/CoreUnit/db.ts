@@ -367,9 +367,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getMakerGithubEcosystem(paramName: string, paramValue: number | string): Promise<MakerGithubEcosystem[]> {
-        return this.knex('MakerGithubEcosystem').where(`${paramName}`, paramValue)
-    };
 }
 
 export default (knex: Knex) => new CoreUnitModel(knex);
