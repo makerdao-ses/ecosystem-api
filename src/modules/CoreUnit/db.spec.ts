@@ -81,7 +81,7 @@ it('returns list of githubOrgs with id and undefined params', async () => {
 });
 
 it('returns githubOrg with org: makerdao-ses', async () => {
-    const entry = await authModel.getGithubOrg('org', 'makerdao-ses');
+    const entry = await authModel.getGithubOrgs({ org: 'makerdao-ses' });
     expect(entry[0].org).toEqual('makerdao-ses');
 });
 

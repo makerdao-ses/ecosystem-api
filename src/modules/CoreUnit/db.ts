@@ -321,10 +321,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getGithubOrg(paramName: string, paramValue: string): Promise<GithubOrg[]> {
-        return this.knex('GithubOrg').where(`${paramName}`, paramValue)
-    };
-
     async getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
         const baseQuery = this.knex
             .select('*')
