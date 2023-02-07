@@ -1,10 +1,10 @@
 import { Knex } from "knex";
 import { LineItemFetcher } from "./BudgetReportFetcher";
-import { BudgetReportPath, BudgetReportPathSegment } from "./BudgetReportPath";
+import { BudgetReportPath } from "./BudgetReportPath";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
 import { BudgetReportQuery, BudgetReportPeriodInput } from "./BudgetReportQuery";
 
-interface BudgetReportResolverBase {
+interface NamedResolver {
     readonly name: string;
 }
 
@@ -14,9 +14,42 @@ export interface ResolverData {
     categoryPath: BudgetReportPath
 }
 
-export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends BudgetReportResolverBase {
-    execute(query:TInput): Promise<Record<string, TOutput[]>>;
-    executeBatch(queries:TInput[]): Promise<Record<string, TOutput[]>>;
+export interface BudgetReportOutputRow {
+    actuals: number
+}
+
+export interface ResolverOutput<TOutput> {
+    nextResolversData: Record<string, TOutput[]>,
+    output: BudgetReportOutputRow[]
+}
+
+export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends NamedResolver {
+    execute(query:TInput): Promise<ResolverOutput<TOutput>>;
+    executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>>;
+}
+
+export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOutput extends ResolverData> 
+    implements BudgetReportResolver<TInput, TOutput>
+{
+    abstract readonly name: string;
+    abstract execute(query:TInput): Promise<ResolverOutput<TOutput>>;
+
+    public async executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>> {
+        const result = { nextResolversData: {}, output: [] } as ResolverOutput<TOutput>;
+
+        queries.forEach(async (resolverData) => {
+            const queryOutput = await this.execute(resolverData);
+            
+            result.nextResolversData = {
+                ...result.nextResolversData,
+                ...queryOutput.nextResolversData
+            }
+            
+            result.output = queryOutput.output.concat(result.output);
+        });
+
+        return result;
+    }
 }
 
 export class BudgetReportQueryEngine {
@@ -24,10 +57,10 @@ export class BudgetReportQueryEngine {
     get resolvers() { return Object.values(this._resolvers); }
 
     private _lineItemFetcher: LineItemFetcher;
-    private _resolvers: Record<string, BudgetReportResolverBase>;
+    private _resolvers: Record<string, NamedResolver>;
     private _rootResolver: string;
 
-    constructor(knex:Knex, resolvers:BudgetReportResolverBase[], rootResolver:string) {
+    constructor(knex:Knex, resolvers:NamedResolver[], rootResolver:string) {
         this._lineItemFetcher = new LineItemFetcher(knex);
         this._resolvers = {};
         resolvers.forEach(r => this._resolvers[r.name] = r);
@@ -51,8 +84,28 @@ export class BudgetReportQueryEngine {
     }
 
     private async _callResolvers(initialInput: ResolverData) {
-        const result = this.rootResolver.execute(initialInput);
-        return result;
+        const input: Record<string, ResolverData[]> = {};
+        input[this.rootResolver.name] = [ initialInput ];
+        
+        let collectedOutput = [] as BudgetReportOutputRow[];
+        const queue: Record<string, ResolverData[]>[] = [ input ];
+        
+        while (queue.length > 0) {
+            const nextResolverInputMap = queue.shift() as Record<string, ResolverData[]>;
+
+            for (const name of Object.keys(nextResolverInputMap)) {
+                const nextResolver = this._resolvers[name] as BudgetReportResolver<ResolverData, ResolverData>; 
+                const output:ResolverOutput<ResolverData> = await nextResolver.executeBatch(nextResolverInputMap[name]);
+
+                if (Object.keys(output.nextResolversData).length > 0) {
+                    queue.push(output.nextResolversData);
+                }
+                
+                collectedOutput = output.output.concat(collectedOutput);
+            };
+        }
+
+        return collectedOutput;
     }
 
     private async _resolvePeriodRange(start:BudgetReportPeriodInput, end:BudgetReportPeriodInput): Promise<BudgetReportPeriod[]> {

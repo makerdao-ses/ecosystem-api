@@ -1,20 +1,16 @@
-import { BudgetReportResolver, ResolverData } from "../BudgetReportQueryEngine";
+import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
 
-export class AccountsResolver implements BudgetReportResolver<ResolverData, ResolverData> {
+export class AccountsResolver extends BudgetReportResolverBase<ResolverData, ResolverData> {
     readonly name = 'AccountsResolver';
 
-    public async execute(query:ResolverData): Promise<Record<string, ResolverData[]>> {
+    public async execute(query:ResolverData): Promise<ResolverOutput<ResolverData>> {
         console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
-        return {};
-    }
-
-    public async executeBatch(queries:ResolverData[]): Promise<Record<string, ResolverData[]>> {
-        let result = {};
-        queries.forEach(async (resolverData) => {
-            const obj = await this.execute(resolverData);
-            result = {...result, ...obj};
-        });
-        
-        return result;
+        return {
+            nextResolversData: {},
+            output: [
+                { actuals: 100.00 },
+                { actuals: 200.00 },
+            ]
+        };
     }
 }

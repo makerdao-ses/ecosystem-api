@@ -16,7 +16,7 @@ afterAll(async () => {
     knex.destroy();
 });
 
-it ('Configures the resolvers correctly', async () => {
+it ('Configures the resolvers correctly and returns concatenated output.', async () => {
     const resolvers = [ 
         new DaoResolver(),
         new CoreUnitsResolver(),
@@ -37,5 +37,11 @@ it ('Configures the resolvers correctly', async () => {
         categories: '*'
     };
 
-    await engine.execute(query);
+    const output = await engine.execute(query);
+    expect(output).toEqual([
+        { actuals: 100.00 },
+        { actuals: 200.00 },
+        { actuals: 300.00 },
+        { actuals: 400.00 }
+    ]);
 });
