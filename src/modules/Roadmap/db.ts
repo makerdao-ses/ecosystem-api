@@ -198,14 +198,18 @@ export class RoadmapModel {
         }
     };
 
-    async getMilestones(roadmapId: string | undefined): Promise<Milestone[]> {
-        if (roadmapId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Milestone')
-                .orderBy('id');
+    async getMilestones(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Milestone[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Milestone')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return this.knex('Milestone').where('roadmapId', roadmapId)
+            return baseQuery;
         }
     };
 

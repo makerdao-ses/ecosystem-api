@@ -81,14 +81,9 @@ it('returns list of outputTypes with ID or undefined params', async () => {
 
 it('returns list of milestones with id or undefined param', async () => {
     const entry = await authModel.getMilestones(undefined);
-    const entry1 = await authModel.getMilestones('0');
+    const entry1 = await authModel.getMilestones('roadmapId', 0);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
-});
-
-it('returns list of milestones where roadmapId is 0', async () => {
-    const entry = await authModel.getMilestone('roadmapId', '0');
-    expect(entry.length).toBeGreaterThan(0);
 });
 
 it('returns list of tasks with ID or undefined param', async () => {
