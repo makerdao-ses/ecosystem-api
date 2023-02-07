@@ -74,14 +74,9 @@ it('returns list of outputs with id or undefined param', async () => {
 
 it('returns list of outputTypes with ID or undefined params', async () => {
     const entry = await authModel.getOutputTypes(undefined);
-    const entry1 = await authModel.getOutputTypes('0');
+    const entry1 = await authModel.getOutputTypes('id', 0);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
-});
-
-it('returns list of outputTypes with outputType param', async () => {
-    const entry = await authModel.getOutputType('outputType', 'Video');
-    expect(entry.length).toBeGreaterThan(0);
 });
 
 it('returns list of milestones with id or undefined param', async () => {
