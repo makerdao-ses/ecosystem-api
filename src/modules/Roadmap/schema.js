@@ -208,8 +208,7 @@ export const typeDefs = [gql`
     }
 
     extend type Query {
-        roadmaps: [Roadmap]
-        roadmap(filter: RoadmapFilter): [Roadmap]
+        roadmaps(filter: RoadmapFilter): [Roadmap]
         roadmapStakeholders: [RoadmapStakeholder]
         roadmapStakeholder(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
         stakeholders: [Stakeholder]
@@ -238,17 +237,8 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        roadmaps: async (_, __, { dataSources }) => {
+        roadmaps: async (_, { filter }, { dataSources }) => {
             return await dataSources.db.Roadmap.getRoadmaps()
-        },
-        roadmap: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
-            }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getRoadmap(paramName, paramValue);
         },
         roadmapStakeholders: async (_, __, { dataSources }) => {
             return await dataSources.db.Roadmap.getRoadmapStakeholders()
@@ -426,7 +416,7 @@ export const resolvers = {
     CoreUnit: {
         roadMap: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmaps(id);
+            const result = await dataSources.db.Roadmap.getRoadmaps('ownerCuId', id);
             return result;
         },
     }

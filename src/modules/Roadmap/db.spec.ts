@@ -20,19 +20,9 @@ it('return a list of roadmaps', async () => {
 });
 
 it('returns a list of roadmaps under a coreUnit id', async () => {
-    const entry = await authModel.getRoadmaps(1);
+    const entry = await authModel.getRoadmaps('ownerCuId', 1);
     expect(entry.length).toBeGreaterThan(0);
 })
-
-it('return a list of roadmaps with roadmapStatus InProgress', async () => {
-    const entry = await authModel.getRoadmap('roadmapStatus', 'InProgress');
-    expect(entry[0].roadmapStatus).toEqual('InProgress')
-})
-
-it('return a list of roadmaps with strategicInitiative true', async () => {
-    const entry = await authModel.getRoadmap('strategicInitiative', true);
-    expect(entry[0].strategicInitiative).toEqual(true)
-});
 
 it('returns a list of roadmapStakeholders', async () => {
     const entry = await authModel.getRoadmapStakeholders(undefined);

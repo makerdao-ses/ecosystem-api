@@ -94,19 +94,19 @@ export class RoadmapModel {
         this.coreUnitModel = coreUnitModel;
     };
 
-    async getRoadmaps(ownerCuId: number | undefined): Promise<Roadmap[]> {
-        if (ownerCuId === undefined) {
-            return await this.knex
-                .select('*')
-                .from('Roadmap')
-                .orderBy('id');
+    async getRoadmaps(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Roadmap[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Roadmap')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return await this.knex('Roadmap').where('ownerCuId', ownerCuId);
+            return baseQuery;
         }
-    };
-
-    async getRoadmap(paramName: string, paramValue: string | boolean): Promise<Roadmap[]> {
-        return await this.knex('Roadmap').where(`${paramName}`, paramValue)
     };
 
     async getRoadmapStakeholders(roadmapId: string | undefined): Promise<RoadmapStakeholder[]> {
