@@ -21,6 +21,20 @@ export class LineItemFetcher {
         this._knex = knex;
     }
 
+    public async getAvailableMonthsRange() {
+        const result = await this
+            ._knex('public.BudgetStatementLineItem as BSLI')
+            .select(this._knex.raw('CURRENT_DATE as "now"'))
+            .min('BSLI.month as first')
+            .max('BSLI.month as last');
+
+        return {
+            first: this._parseDateStringAsMonthPeriod(result[0].first),
+            now: this._parseDateStringAsMonthPeriod(result[0].now),
+            last: this._parseDateStringAsMonthPeriod(result[0].last)
+        };
+    }
+
     public buildQuery(account:string, month:string) {
         return this._knex
             .select(
@@ -53,8 +67,8 @@ export class LineItemFetcher {
         
         return result.map((r:any) => ({
             account: r.account,
-            report: BudgetReportPeriod.fromString(r.report.slice(0,4) + '/' + r.report.slice(5,7)),
-            month: BudgetReportPeriod.fromString(r.month.slice(0,4) + '/' + r.month.slice(5,7)),
+            report: this._parseDateStringAsMonthPeriod(r.report),
+            month: this._parseDateStringAsMonthPeriod(r.month),
             group: (r.group == null || r.group.length < 1 ? null : r.group),
             headcountExpense: r.headcountExpense,
             category: r.category,
@@ -63,5 +77,9 @@ export class LineItemFetcher {
             budgetCap: Number.parseFloat(r.budgetCap),
             payment: Number.parseFloat(r.payment)
         }));
+    }
+
+    private _parseDateStringAsMonthPeriod(date: string): BudgetReportPeriod {
+        return BudgetReportPeriod.fromString(date.slice(0,4) + '/' + date.slice(5,7));
     }
 }

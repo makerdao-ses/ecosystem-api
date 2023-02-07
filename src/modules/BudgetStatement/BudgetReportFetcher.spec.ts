@@ -12,6 +12,15 @@ afterAll(async () => {
     knex.destroy();
 });
 
+it ('correctly fetches available months range', async() => {
+    const fetcher = new LineItemFetcher(knex);
+    const monthsRange = await fetcher.getAvailableMonthsRange();
+    expect(monthsRange.last.comesAfter(monthsRange.first)).toBe(true);
+    expect(monthsRange.now.comesAfter(monthsRange.last)).toBe(false);
+    expect(monthsRange.now.comesBefore(monthsRange.first)).toBe(false);
+    expect(monthsRange.first.toString()).toEqual('2021/06');
+});
+
 it ('fetches reasonable line items', async () => {
     const fetcher = new LineItemFetcher(knex);
     const account = '0x7c09Ff9b59BAAebfd721cbDA3676826aA6d7BaE8'.toLowerCase();
