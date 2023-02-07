@@ -14,7 +14,7 @@ const db = knex({
 //Retreive the data from the MIP API
 const getData = async () => {
 
-    var data = await db.select('mipCode', 'cuId', 'id', 'mipTitle', 'mipStatus').from('CuMip');
+    var data = await db.select('mipCode', 'cuId', 'id', 'mipTitle', 'mipStatus', 'accepted').from('CuMip');
 
     //Pass CU MIP table data to the functions
     await checkChildTables(data);
@@ -93,12 +93,20 @@ const checkMipReplacesMip39 = async (data) => {
         var mipCode = data[i].mipCode;
         var newMipId = data[i].id;
         var status = data[i].mipStatus;
+        var accepted = data[i].accepted;
 
         if (mipCode.includes('MIP39c3') && status == 'Accepted') {
 
             //use CU ID of offboarded CU to find old MIP
             var result = await db.raw(`SELECT * FROM public."CuMip" WHERE "cuId" = ` + cuId + ` AND "mipCode" LIKE '%MIP39c2%'`);
             var oldMipId = result["rows"][0]["id"];
+            
+
+            await db('CuMip').where({id: oldMipId})
+            .update({
+                mipStatus: 'Obsolete',
+                obsolete: accepted
+            });
 
             var output = [];
 
@@ -111,7 +119,6 @@ const checkMipReplacesMip39 = async (data) => {
             });
 
             console.table(output, ["cuId", "mipCode", "status", "newMipId", "oldMipId"]);
-
 
             await db.raw(`INSERT INTO public."MipReplaces"(
             "newMip", "replacedMip")
