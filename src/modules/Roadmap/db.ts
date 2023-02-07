@@ -153,19 +153,19 @@ export class RoadmapModel {
         }
     };
 
-    async getRoadmapOutputs(roadmapId: string | undefined): Promise<RoadmapOutput[]> {
-        if (roadmapId === undefined) {
-            return this.knex
-                .select('*')
-                .from('RoadmapOutput')
-                .orderBy('id');
+    async getRoadmapOutputs(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<RoadmapOutput[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('RoadmapOutput')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return this.knex('RoadmapOutput').where('roadmapId', roadmapId)
+            return baseQuery;
         }
-    };
-
-    async getRoadmapOutput(paramName: string, paramValue: string): Promise<RoadmapOutput[]> {
-        return await this.knex('RoadmapOutput').where(`${paramName}`, paramValue)
     };
 
     async getOutputs(

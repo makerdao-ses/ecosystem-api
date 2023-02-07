@@ -55,14 +55,9 @@ it('returns list of stakeholders with and without ID param', async () => {
 
 it('returns list of roadmapOutputs with ID and undefined param', async () => {
     const entry = await authModel.getRoadmapOutputs(undefined);
-    const entry1 = await authModel.getRoadmapOutputs('0');
+    const entry1 = await authModel.getRoadmapOutputs('roadmapId', 0);
     expect(entry.length).toBeGreaterThan(0)
     expect(entry1.length).toBeGreaterThan(0)
-});
-
-it('returns list of roadmapOutputs with outputId', async () => {
-    const entry = await authModel.getRoadmapOutput('outputId', '0');
-    expect(entry.length).toBeGreaterThan(0);
 });
 
 it('returns list of outputs with id or undefined param', async () => {

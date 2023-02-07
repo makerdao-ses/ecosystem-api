@@ -217,8 +217,7 @@ export const typeDefs = [gql`
         milestones(filter: MilestoneFilter): [Milestone]
         tasks(filter: TaskFilter): [Task],
         reviews(filter: ReviewFilter): [Review]
-        roadmapOutputs: [RoadmapOutput]
-        roadmapOutput(filter: RoadmapOutputFilter): [RoadmapOutput]
+        roadmapOutputs(filter: RoadmapOutputFilter): [RoadmapOutput]
     }
 
     extend type CoreUnit {
@@ -281,17 +280,18 @@ export const resolvers = {
             }
             return dataSources.db.Roadmap.getStakeholderRoles(paramName, paramValue)
         },
-        roadmapOutputs: async (_, __, { dataSources }) => {
-            return await dataSources.db.Roadmap.getRoadmapOutputs();
-        },
-        roadmapOutput: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
+        roadmapOutputs: async (_, { filter }, { dataSources }) => {
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getRoadmapOutput(paramName, paramValue);
+            return await dataSources.db.Roadmap.getRoadmapOutputs(paramName, paramValue);
         },
         outputs: async (_, { filter }, { dataSources }) => {
             let paramName = undefined;
@@ -367,7 +367,7 @@ export const resolvers = {
         },
         roadmapOutput: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapOutputs(id)
+            const result = await dataSources.db.Roadmap.getRoadmapOutputs('roadmapId', id)
             return result
         },
         milestone: async (parent, __, { dataSources }) => {
