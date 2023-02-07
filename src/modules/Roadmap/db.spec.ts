@@ -30,13 +30,8 @@ it('returns a list of roadmapStakeholders', async () => {
 });
 
 it('returns a list of roadmapStakeholders with roadmapId', async () => {
-    const entry = await authModel.getRoadmapStakeholders('0');
+    const entry = await authModel.getRoadmapStakeholders('roadmapId', 0);
     expect(entry.length).toBeGreaterThan(0);
-});
-
-it('returns a list of roadmapStakeholders with stakeholderId', async () => {
-    const entry = await authModel.getRoadmapStakeholder('stakeholderId', '1');
-    expect(entry.length).toBeGreaterThan(0)
 });
 
 it('returns a list of stakeholderRoles', async () => {

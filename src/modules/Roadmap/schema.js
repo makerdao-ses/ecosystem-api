@@ -209,8 +209,7 @@ export const typeDefs = [gql`
 
     extend type Query {
         roadmaps(filter: RoadmapFilter): [Roadmap]
-        roadmapStakeholders: [RoadmapStakeholder]
-        roadmapStakeholder(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
+        roadmapStakeholders(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
         stakeholders: [Stakeholder]
         stakeholder(filter: StakeholderFilter): [Stakeholder]
         stakeholderRoles: [StakeholderRole]
@@ -238,19 +237,30 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         roadmaps: async (_, { filter }, { dataSources }) => {
-            return await dataSources.db.Roadmap.getRoadmaps()
-        },
-        roadmapStakeholders: async (_, __, { dataSources }) => {
-            return await dataSources.db.Roadmap.getRoadmapStakeholders()
-        },
-        roadmapStakeholder: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getRoadmapStakeholder(paramName, paramValue);
+            return await dataSources.db.Roadmap.getRoadmaps(paramName, paramValue)
+        },
+        roadmapStakeholders: async (_, { filter }, { dataSources }) => {
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
+            }
+            return await dataSources.db.Roadmap.getRoadmapStakeholders(paramName, paramValue)
         },
         stakeholders: async (_, __, { dataSources }) => {
             return await dataSources.db.Roadmap.getStakeholders()
@@ -354,7 +364,7 @@ export const resolvers = {
     Roadmap: {
         roadmapStakeholder: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapStakeholders(id)
+            const result = await dataSources.db.Roadmap.getRoadmapStakeholders('roadmapId', id)
             return result
         },
         roadmapOutput: async (parent, __, { dataSources }) => {
@@ -383,7 +393,7 @@ export const resolvers = {
     Stakeholder: {
         roadmapStakeholder: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapStakeholder('stakeholderId', id)
+            const result = await dataSources.db.Roadmap.getRoadmapStakeholders('stakeholderId', id)
             return result
         }
     },
