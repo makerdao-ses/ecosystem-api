@@ -217,19 +217,19 @@ export class RoadmapModel {
         return this.knex('Milestone').where(`${paramName}`, paramValue)
     };
 
-    async getTasks(id: string | undefined): Promise<Task[]> {
-        if (id === undefined) {
-            return this.knex
-                .select('*')
-                .from('Task')
-                .orderBy('id');
+    async getTasks(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Task[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Task')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return this.knex('Task').where('id', id)
+            return baseQuery;
         }
-    };
-
-    async getTask(paramName: string, paramValue: string | number): Promise<Task[]> {
-        return this.knex('Task').where(`${paramName}`, paramValue)
     };
 
     async getReviews(taskId: string | undefined): Promise<Review[]> {

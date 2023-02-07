@@ -215,8 +215,7 @@ export const typeDefs = [gql`
         outputs(filter: OutputFilter): [Output]
         outputTypes(filter: OutputTypeFilter): [OutputType]
         milestones(filter: MilestoneFilter): [Milestone]
-        tasks: [Task],
-        task(filter: TaskFilter): [Task]
+        tasks(filter: TaskFilter): [Task],
         reviews: [Review]
         review(filter: ReviewFilter): [Review]
         roadmapOutputs: [RoadmapOutput]
@@ -334,17 +333,18 @@ export const resolvers = {
             }
             return dataSources.db.Roadmap.getMilestones(paramName, paramValue)
         },
-        tasks: async (_, __, { dataSources }) => {
-            return await dataSources.db.Roadmap.getTasks();
-        },
-        task: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
+        tasks: async (_, { filter }, { dataSources }) => {
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getTask(paramName, paramValue);
+            return await dataSources.db.Roadmap.getTasks(paramName, paramValue);
         },
         reviews: async (_, __, { dataSources }) => {
             return dataSources.db.Roadmap.getReviews()
@@ -412,7 +412,7 @@ export const resolvers = {
     Milestone: {
         task: async (parent, __, { dataSources }) => {
             const { taskId } = parent;
-            const result = await dataSources.db.Roadmap.getTasks(taskId)
+            const result = await dataSources.db.Roadmap.getTasks('id', taskId)
             return result;
         }
     },

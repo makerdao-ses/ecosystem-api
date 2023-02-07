@@ -88,13 +88,13 @@ it('returns list of milestones with id or undefined param', async () => {
 
 it('returns list of tasks with ID or undefined param', async () => {
     const entry = await authModel.getTasks(undefined);
-    const entry1 = await authModel.getTasks('0');
+    const entry1 = await authModel.getTasks('id', 0);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
 });
 
 it('returns list of tasks with completedPercentage 100', async () => {
-    const entry = await authModel.getTask('completedPercentage', 100);
+    const entry = await authModel.getTasks('completedPercentage', 100);
     expect(entry[0].completedPercentage).toEqual("100");
 });
 
