@@ -1,5 +1,121 @@
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
 
+it ('Correctly generates the range between periods with the same granularity', () => {
+    const validRanges = [
+        [['2022', '2022'], ['2022']],
+        [['2022', '2023'], ['2022', '2023']],
+        [['2022', '2026'], ['2022', '2023', '2024', '2025', '2026']],
+        [['2026', '2022'], ['2022', '2023', '2024', '2025', '2026']],
+        [['2022/Q2', '2022/Q2'], ['2022/Q2']],
+        [['2022/Q2', '2023/Q1'], ['2022/Q2', '2022/Q3', '2022/Q4', '2023/Q1']],
+        [['2023/Q1', '2022/Q2'], ['2022/Q2', '2022/Q3', '2022/Q4', '2023/Q1']],
+        [['2023/09', '2024/02'], ['2023/09', '2023/10', '2023/11', '2023/12', '2024/01', '2024/02']],
+    ];
+
+    validRanges.forEach(r => {
+        const range = BudgetReportPeriod.fillRange(r[0][0], r[0][1]).map(o => o.toString());
+        expect(range).toEqual(r[1]);
+    });
+
+    expect(() => BudgetReportPeriod.fillRange(BudgetReportPeriod.fromString('2022/Q3'), BudgetReportPeriod.fromString('2023')))
+        .toThrowError('Cannot fill range of different type periods 2022/Q3 and 2023.');
+});
+
+it ('Correctly performs period calculations', () => {
+    const examples = [
+        ['2022',    '2022/01', '2022/12',    '2021',    '2023'],
+        ['2022/Q1', '2022/01', '2022/03', '2021/Q4', '2022/Q2'],
+        ['2022/Q4', '2022/10', '2022/12', '2022/Q3', '2023/Q1'],
+        ['2022/01', '2022/01', '2022/01', '2021/12', '2022/02'],
+        ['2022/12', '2022/12', '2022/12', '2022/11', '2023/01']
+    ];
+
+    examples.forEach(e => {
+        const p = BudgetReportPeriod.fromString(e[0]);
+        expect(p.firstMonth().toString()).toEqual(e[1]);
+        expect(p.lastMonth().toString()).toEqual(e[2]);
+        expect(p.previousPeriod().toString()).toEqual(e[3]);
+        expect(p.nextPeriod().toString()).toEqual(e[4]);
+        expect(p.previousPeriod().comesAfter(p)).toBe(false);
+        expect(p.previousPeriod().comesBefore(p)).toBe(true);
+        expect(p.nextPeriod().comesAfter(p)).toBe(true);
+        expect(p.nextPeriod().comesBefore(p)).toBe(false);
+    });
+});
+
+it ('Correctly compares periods of different granularity', () => {
+    const timeline = [
+        ['2022/01'],
+        ['2022/02', '2022/02'],
+        ['2022/Q2', '2022/04'],
+        ['2022/Q3', '2022/07'],
+        ['2022/Q4', '2022/10'],
+        ['2023', '2023/01'],
+        ['2024/Q1', '2024/01'],
+        ['2024/04', '2024/04']
+    ];
+
+    for (let i=1; i<timeline.length; i++) {
+        const p = BudgetReportPeriod.fromString(timeline[i][0]);
+        expect(p.comesAfter(BudgetReportPeriod.fromString(timeline[i-1][0]))).toBe(true);
+        expect(p.comesAfter(BudgetReportPeriod.fromString(timeline[i][1]))).toBe(false);
+    }
+
+    const containers = [
+        [['2022']],
+        [['2022/Q1', '2022/Q2', '2022/Q4'], ['2021/Q4', '2023/Q1']],
+        [['2022/01', '2022/02', '2022/03'], ['2021/12', '2022/04']]
+    ]
+
+    for (let i=1; i<containers.length; i++) {
+        const p = BudgetReportPeriod.fromString(containers[i-1][0][0]);
+        expect(p.contains(p)).toBe(true);
+        
+        containers[i][0].forEach(contained => {
+            expect(p.contains(BudgetReportPeriod.fromString(contained))).toBe(true);
+        });
+        
+        containers[i][1].forEach(notContained => {
+            expect(p.contains(BudgetReportPeriod.fromString(notContained))).toBe(false);
+        });
+    }
+});
+
+it ('Correctly normalizes out of band y/q/m numbers', () => {
+    const quarterExamples = [
+        [2022,  1, '2022/Q1'],
+        [2022,  4, '2022/Q4'],
+        [2022,  5, '2023/Q1'],
+        [2022, 10, '2024/Q2'],
+        [2022,  0, '2021/Q4'],
+        [2022, -1, '2021/Q3'],
+        [2022, -5, '2020/Q3']
+    ];
+
+    quarterExamples.forEach((e:any) => {
+        const [y, q, m] = BudgetReportPeriod.normalizeQuarters(e[0], e[1]);
+        const period = new BudgetReportPeriod(y, q, m || undefined);
+        expect(period.toString()).toEqual(e[2]);
+    });
+
+    const monthExamples = [
+        [2022,  1, '2022/01'],
+        [2022, 12, '2022/12'],
+        [2022, 13, '2023/01'],
+        [2022, 26, '2024/02'],
+        [2022,  0, '2021/12'],
+        [2022, -1, '2021/11'],
+        [2022, -13, '2020/11']
+    ];
+
+    monthExamples.forEach((e:any) => {
+        const [y, q, m] = BudgetReportPeriod.normalizeMonths(e[0], e[1]);
+        const period = new BudgetReportPeriod(y, q || undefined, m || undefined);
+        expect(period.toString()).toEqual(e[2]);
+    });
+
+});
+
 it ('Correctly parses valid periods', () => {
     const periods = [
         new BudgetReportPeriod(1970),
