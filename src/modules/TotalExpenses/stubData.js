@@ -61,6 +61,48 @@ export const monthlyExpenses = [
         prediction: 13512500.00,
         actuals: 12465122.00,
         discontinued: 15132650.00,
+    },{
+        period: "2022-01",
+        budget: "/makerdao/core-units",
+        prediction: 17912500.00,
+        actuals: 16965122.00,
+        discontinued: 12132650.00,
+    },{
+        period: "2022-02",
+        budget: "/makerdao/core-units",
+        prediction: 23912500.00,
+        actuals: 18965122.00,
+        discontinued: 17132650.00,
+    },{
+        period: "2022-03",
+        budget: "/makerdao/core-units",
+        prediction: 16212500.00,
+        actuals: 15465122.00,
+        discontinued: 14132650.00,
+    },{
+        period: "2022-04",
+        budget: "/makerdao/core-units",
+        prediction: 16912500.00,
+        actuals: 15965122.00,
+        discontinued: 14132650.00,
+    },{
+        period: "2022-05",
+        budget: "/makerdao/core-units",
+        prediction: 15212500.00,
+        actuals: 15965122.00,
+        discontinued: 14232650.00,
+    },{
+        period: "2022-06",
+        budget: "/makerdao/core-units",
+        prediction: 16912500.00,
+        actuals: 17965122.00,
+        discontinued: 10132650.00,
+    },{
+        period: "2022-07",
+        budget: "/makerdao/core-units",
+        prediction: 16912500.00,
+        actuals: 16965122.00,
+        discontinued: 16132650.00,
     }, {
         period: "2022-08",
         budget: "/makerdao/core-units",
