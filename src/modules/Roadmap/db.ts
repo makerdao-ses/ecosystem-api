@@ -138,19 +138,19 @@ export class RoadmapModel {
         return await this.knex('StakeholderRole').where(`${paramName}`, paramValue)
     };
 
-    async getStakeholders(id: string | undefined): Promise<Stakeholder[]> {
-        if (id === undefined) {
-            return await this.knex
-                .select('*')
-                .from('Stakeholder')
-                .orderBy('id');
+    async getStakeholders(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Stakeholder[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Stakeholder')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return await this.knex('Stakeholder').where('id', id)
+            return baseQuery;
         }
-    };
-
-    async getStakeholder(paramName: string, paramValue: string): Promise<Stakeholder[]> {
-        return await this.knex('Stakeholder').where(`${paramName}`, paramValue)
     };
 
     async getRoadmapOutputs(roadmapId: string | undefined): Promise<RoadmapOutput[]> {

@@ -48,14 +48,9 @@ it('returns stakeholder role searched by ID or by name', async () => {
 
 it('returns list of stakeholders with and without ID param', async () => {
     const entry = await authModel.getStakeholders(undefined);
-    const entry1 = await authModel.getStakeholders('1');
+    const entry1 = await authModel.getStakeholders('id', 1);
     expect(entry.length).toBeGreaterThan(0)
     expect(entry1.length).toBeGreaterThan(0)
-});
-
-it('returns list of stakeholders with stakeholderCuCode param', async () => {
-    const entry = await authModel.getStakeholder('stakeholderCuCode', "SES-001");
-    expect(entry.length).toBeGreaterThan(0);
 });
 
 it('returns list of roadmapOutputs with ID and undefined param', async () => {

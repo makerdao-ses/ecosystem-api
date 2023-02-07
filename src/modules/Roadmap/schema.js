@@ -210,8 +210,7 @@ export const typeDefs = [gql`
     extend type Query {
         roadmaps(filter: RoadmapFilter): [Roadmap]
         roadmapStakeholders(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
-        stakeholders: [Stakeholder]
-        stakeholder(filter: StakeholderFilter): [Stakeholder]
+        stakeholders(filter: StakeholderFilter): [Stakeholder]
         stakeholderRoles: [StakeholderRole]
         stakeholderRole(filter: StakeholderRoleFilter): [StakeholderRole]
         outputs: [Output]
@@ -262,17 +261,18 @@ export const resolvers = {
             }
             return await dataSources.db.Roadmap.getRoadmapStakeholders(paramName, paramValue)
         },
-        stakeholders: async (_, __, { dataSources }) => {
-            return await dataSources.db.Roadmap.getStakeholders()
-        },
-        stakeholder: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
+        stakeholders: async (_, { filter }, { dataSources }) => {
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getStakeholder(paramName, paramValue);
+            return await dataSources.db.Roadmap.getStakeholders(paramName, paramValue)
         },
         stakeholderRoles: async (_, __, { dataSources }) => {
             return dataSources.db.Roadmap.getStakeholderRoles()
@@ -386,7 +386,7 @@ export const resolvers = {
         },
         stakeholder: async (parent, __, { dataSources }) => {
             const { stakeholderId } = parent;
-            const result = await dataSources.db.Roadmap.getStakeholders(stakeholderId);
+            const result = await dataSources.db.Roadmap.getStakeholders('id', stakeholderId);
             return result;
         }
     },
