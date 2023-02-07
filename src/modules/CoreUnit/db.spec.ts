@@ -21,7 +21,7 @@ it('returns list of CUs with limit offset and undefined params', async () => {
 });
 
 it('return a coreUnit with shortCode SES', async () => {
-    const entry = await authModel.getCoreUnit('shortCode', "SES");
+    const entry = await authModel.getCoreUnits({ filter: { shortCode: "SES" } });
     expect(entry[0].shortCode).toEqual('SES');
 });
 
@@ -45,7 +45,7 @@ it('returns list of contributor commitments widh cuId and undefined params', asy
 });
 
 it('returns contributor commitment with cu Id 1', async () => {
-    const entry = await authModel.getContributorCommitment('cuId', '1');
+    const entry = await authModel.getContributorCommitments({ cuId: 1 });
     expect(entry[0].cuId).toEqual(1)
 });
 
@@ -57,7 +57,7 @@ it('returns list of cuGithubContributions with cuId and undefined params', async
 });
 
 it('returns list of cuGithubContributions with orgId 0', async () => {
-    const entry = await authModel.getCuGithubContribution('orgId', '0');
+    const entry = await authModel.getCuGithubContributions({ orgId: 0 });
     expect(entry.length).toBeGreaterThan(0);
 });
 
@@ -69,7 +69,7 @@ it('returns list of contributors with limit offset and undefined params', async 
 });
 
 it('returns contributor with name Jack', async () => {
-    const entry = await authModel.getContributor('name', "Jack");
+    const entry = await authModel.getContributors({ filter: { name: "Jack" } });
     expect(entry[0].name).toEqual('Jack');
 });
 
@@ -81,7 +81,7 @@ it('returns list of githubOrgs with id and undefined params', async () => {
 });
 
 it('returns githubOrg with org: makerdao-ses', async () => {
-    const entry = await authModel.getGithubOrg('org', 'makerdao-ses');
+    const entry = await authModel.getGithubOrgs({ org: 'makerdao-ses' });
     expect(entry[0].org).toEqual('makerdao-ses');
 });
 
@@ -93,7 +93,7 @@ it('returns list of githubRepos with id and undefined params', async () => {
 });
 
 it('returns githubRepo with name spreadsheet-to-md', async () => {
-    const entry = await authModel.getGithubRepo('repo', 'spreadsheet-to-md');
+    const entry = await authModel.getGithubRepos({ repo: 'spreadsheet-to-md' });
     expect(entry[0].repo).toEqual('spreadsheet-to-md');
 });
 

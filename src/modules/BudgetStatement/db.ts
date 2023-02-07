@@ -2,11 +2,12 @@ import { Knex } from "knex";
 
 export interface BudgetStatement {
     id: string
-    cuId: string
+    cuId: number
     month: string
     budgetStatus: string
     publicationUrl: string
     cuCode: string
+    status: string
     mkrProgramLength: number
     auditReport: object
     budgetStatementFTEs: object
@@ -138,6 +139,47 @@ export interface BudgetStatementWalletFilter {
     comments?: string
 }
 
+export interface AuditReportFilter {
+    id?: number
+    budgetStatementId?: number
+    auditStatus?: string
+    reportUrl?: string
+    timestamp?: string
+}
+
+export interface BudgetStatementFteFilter {
+    id?: number
+    budgetStatementId?: number
+    month?: string
+    ftes?: number
+}
+
+export interface BudgetStatementMKRVEstFilter {
+    id?: number
+    budgetStatementId?: number
+    vestingDate?: string
+    mkrAmount?: number
+    mkrAmountOld?: number
+    comments?: string
+}
+
+export interface BudgetStatementPaymentFilter {
+    id?: number
+    budgetStatementWalletId?: number
+    transactionDate?: string
+    transactionId?: string
+    budgetStatementLineItemId?: number
+    comments?: string
+}
+
+export interface BudgetStatementTransferRequestFilter {
+    id?: number
+    budgetStatementWalletId?: number
+    budgetStatementPaymentId?: number
+    requestAmount?: number
+    walletBalance?: number
+}
+
 export class BudgetStatementModel {
     knex: Knex;
     coreUnitModel: object;
@@ -174,50 +216,64 @@ export class BudgetStatementModel {
         }
     };
 
-    async getAuditReports(budgetStatementId: string | undefined): Promise<AuditReport[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('AuditReport')
-                .orderBy('id')
+    async getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('AuditReport')
+            .orderBy('id')
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.auditStatus !== undefined) {
+            return baseQuery.where('auditStatus', filter.auditStatus)
+        } else if (filter?.reportUrl !== undefined) {
+            return baseQuery.where('reportUrl', filter.reportUrl)
+        } else if (filter?.timestamp !== undefined) {
+            return baseQuery.where('timestamp', filter.timestamp)
         } else {
-            return this.knex('AuditReport').where(`budgetStatementId`, budgetStatementId)
+            return baseQuery;
         }
     };
 
-    async getAuditReport(paramName: string, paramValue: string) {
-        return this.knex('AuditReport').where(`${paramName}`, paramValue)
-    };
-
-    async getBudgetStatementFTEs(budgetStatementId: string | undefined): Promise<BudgetStatementFTEs[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementFtes')
-                .orderBy('id')
+    async getBudgetStatementFTEs(filter?: BudgetStatementFteFilter): Promise<BudgetStatementFTEs[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementFtes')
+            .orderBy('id')
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.month !== undefined) {
+            return baseQuery.where('month', filter.month)
+        } else if (filter?.ftes !== undefined) {
+            return baseQuery.where('ftes', filter.ftes)
         } else {
-            return this.knex('BudgetStatementFtes').where(`budgetStatementId`, budgetStatementId)
+            return baseQuery;
         }
     };
 
-    async getBudgetStatementFTE(paramName: string, paramValue: string | number) {
-        return this.knex('BudgetStatementFtes').where(`${paramName}`, paramValue)
-    };
-
-
-    async getBudgetStatementMKRVests(budgetStatementId: string | undefined): Promise<BudgetStatementMKRVest[]> {
-        if (budgetStatementId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementMkrVest')
-                .orderBy('id');
+    async getBudgetStatementMKRVests(filter?: BudgetStatementMKRVEstFilter): Promise<BudgetStatementMKRVest[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementMkrVest')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementId !== undefined) {
+            return baseQuery.where('budgetStatementId', filter.budgetStatementId)
+        } else if (filter?.vestingDate !== undefined) {
+            return baseQuery.where('vestingDate', filter.vestingDate)
+        } else if (filter?.mkrAmount !== undefined) {
+            return baseQuery.where('mkrAmount', filter.mkrAmount)
+        } else if (filter?.mkrAmountOld !== undefined) {
+            return baseQuery.where('mkrAmountOld', filter.mkrAmountOld)
+        } else if (filter?.comments !== undefined) {
+            return baseQuery.where('comments', filter.comments)
         } else {
-            return this.knex('BudgetStatementMkrVest').where('budgetStatementId', budgetStatementId)
+            return baseQuery;
         }
-    };
-
-    async getBudgetStatementMKRVest(paramName: string, paramValue: string | number): Promise<BudgetStatementMKRVest[]> {
-        return this.knex('BudgetStatementMkrVest').where(`${paramName}`, paramValue)
     };
 
     async getBudgetStatementWallets(filter?: BudgetStatementWalletFilter): Promise<BudgetStatementWallet[]> {
@@ -268,35 +324,48 @@ export class BudgetStatementModel {
         }
     };
 
-    async getBudgetStatementPayments(budgetStatementWalletId: string | undefined): Promise<BudgetStatementPayment[]> {
-        if (budgetStatementWalletId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementPayment')
-                .orderBy('id');
+    async getBudgetStatementPayments(filter?: BudgetStatementPaymentFilter): Promise<BudgetStatementPayment[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementPayment')
+            .orderBy('id');
+
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementWalletId !== undefined) {
+            return baseQuery.where('budgetStatementWalletId', filter.budgetStatementWalletId)
+        } else if (filter?.transactionDate !== undefined) {
+            return baseQuery.where('transactionDate', filter.transactionDate)
+        } else if (filter?.transactionId !== undefined) {
+            return baseQuery.where('transactionId', filter.transactionId)
+        } else if (filter?.budgetStatementLineItemId !== undefined) {
+            return baseQuery.where('budgetStatementLineItemId', filter.budgetStatementLineItemId)
+        } else if (filter?.comments !== undefined) {
+            return baseQuery.where('comments', filter.comments)
         } else {
-            return this.knex('BudgetStatementPayment').where('budgetStatementWalletId', budgetStatementWalletId)
+            return baseQuery;
         }
 
     };
 
-    async getBudgetStatementPayment(paramName: string, paramValue: string | number): Promise<BudgetStatementPayment[]> {
-        return this.knex('BudgetStatementPayment').where(`${paramName}`, paramValue)
-    };
-
-    async getBudgetStatementTransferRequests(budgetStatementWalletId: string | undefined): Promise<BudgetStatementTransferRequest[]> {
-        if (budgetStatementWalletId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementTransferRequest')
-                .orderBy('id')
+    async getBudgetStatementTransferRequests(filter?: BudgetStatementTransferRequestFilter): Promise<BudgetStatementTransferRequest[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('BudgetStatementTransferRequest')
+            .orderBy('id');
+        if (filter?.id !== undefined) {
+            return baseQuery.where('id', filter.id)
+        } else if (filter?.budgetStatementWalletId !== undefined) {
+            return baseQuery.where('budgetStatementWalletId', filter.budgetStatementWalletId)
+        } else if (filter?.budgetStatementPaymentId !== undefined) {
+            return baseQuery.where('budgetStatementPaymentId', filter.budgetStatementPaymentId)
+        } else if (filter?.requestAmount !== undefined) {
+            return baseQuery.where('requestAmount', filter.requestAmount)
+        } else if (filter?.walletBalance !== undefined) {
+            return baseQuery.where('walletBalance', filter.walletBalance)
         } else {
-            return this.knex('BudgetStatementTransferRequest').where('budgetStatementWalletId', budgetStatementWalletId)
+            return baseQuery;
         }
-    };
-
-    async getBudgetStatementTransferRequest(paramName: string, paramValue: string | number): Promise<BudgetStatementTransferRequest[]> {
-        return this.knex('BudgetStatementTransferRequest').where(`${paramName}`, paramValue)
     };
 
     async getBudgetStatementComments(
@@ -315,28 +384,6 @@ export class BudgetStatementModel {
             return baseQuery.where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue);
         } else {
             return baseQuery;
-        }
-    };
-
-    async getBudgetStatementCommentAuthors(bsCommentId: string | undefined): Promise<BudgetStatementCommentAuthor[]> {
-        if (bsCommentId === undefined) {
-            return this.knex
-                .select('*')
-                .from('BudgetStatementCommentAuthor')
-                .orderBy('id')
-        } else {
-            return this.knex('BudgetStatementCommentAuthor').where('bsCommentId', bsCommentId)
-        }
-    };
-
-    async getBudgetStatementCommentAuthor(paramName: string,
-        paramValue: number | string,
-        secondParamName: string | undefined,
-        secondParamValue: number | string | undefined): Promise<BudgetStatementCommentAuthor[]> {
-        if (secondParamName === undefined && secondParamValue === undefined) {
-            return this.knex('BudgetStatementCommentAuthor').where(`${paramName}`, paramValue);
-        } else {
-            return this.knex('BudgetStatementCommentAuthor').where(`${paramName}`, paramValue).andWhere(`${secondParamName}`, secondParamValue)
         }
     };
 

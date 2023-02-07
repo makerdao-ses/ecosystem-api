@@ -383,17 +383,17 @@ export const resolvers = {
         },
         auditReport: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getAuditReports(id);
+            const result = await dataSources.db.BudgetStatement.getAuditReports({ budgetStatementId: id });
             return result;
         },
         budgetStatementFTEs: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementFTEs(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementFTEs({ budgetStatementId: id });
             return result
         },
         budgetStatementMKRVest: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementMKRVests(id)
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementMKRVests({ budgetStatementId: id })
             return result;
         },
         budgetStatementWallet: async (parent, __, { dataSources }) => {
@@ -410,12 +410,12 @@ export const resolvers = {
         },
         budgetStatementPayment: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementPayments(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementPayments({ budgetStatementWalletId: id });
             return result;
         },
         budgetStatementTransferRequest: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests(id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests({ budgetStatementWalletId: id });
             return result;
         }
     },
@@ -460,7 +460,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         //Tacking Change
                         const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
@@ -491,7 +491,7 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', user.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: user.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input.budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
@@ -524,7 +524,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         //Tacking Change
                         const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnit('id', cuIdFromInput.cuId);
+                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {

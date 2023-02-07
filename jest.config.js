@@ -4,14 +4,14 @@
 export default {
     "verbose": true,
     "roots": [
-        "../src/"
+        "./src/"
     ],
     "moduleDirectories": [
         "node_modules"
     ],
     "transform": {
         '\\.[jt]sx?$': [
-            'ts-jest', 
+            'ts-jest',
             {
                 tsconfig: './config/tsconfig.json',
                 compiler: 'typescript'
@@ -22,4 +22,7 @@ export default {
     "moduleNameMapper": {
         "(.+)\\.js": "$1"
     },
+    "collectCoverage": true,
+    "coverageDirectory": "coverage",
+    // "coverageReporters": ['json', 'lcov', 'clover']
 };

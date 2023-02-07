@@ -93,10 +93,10 @@ export interface MakerGithubEcosystem {
 }
 
 export interface CoreUnitFilter {
-    id: number,
-    code: string,
-    name: string,
-    shortCode: string
+    id?: number,
+    code?: string,
+    name?: string,
+    shortCode?: string
 }
 
 export interface SocialMediaChannelsFilter {
@@ -191,10 +191,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getCoreUnit(paramName: string, paramValue: string): Promise<CoreUnit[]> {
-        return this.knex('CoreUnit').where(`${paramName}`, paramValue)
-    };
-
     async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
         const baseQuery = this.knex
             .select('*')
@@ -213,10 +209,6 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
-
-    async getCuUpdate(paramName: string, paramValue: string): Promise<CuUpdate[]> {
-        return this.knex('CuUpdate').where(`${paramName}`, paramValue)
     };
 
     async getSocialMediaChannels(filter?: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
@@ -247,10 +239,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getSocialMediaChannel(paramName: string, paramValue: string): Promise<SocialMediaChannels[]> {
-        return this.knex('SocialMediaChannels').where(`${paramName}`, paramValue)
-    };
-
     async getContributorCommitments(filter?: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
         const baseQuery = this.knex
             .select('*')
@@ -275,10 +263,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getContributorCommitment(paramName: string, paramValue: string): Promise<ContributorCommitment[]> {
-        return this.knex('ContributorCommitment').where(`${paramName}`, paramValue)
-    };
-
     async getCuGithubContributions(filter?: CuGithubContributionFilter): Promise<CuGithubContribution[]> {
         const baseQuery = this.knex
             .select('*')
@@ -295,10 +279,6 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
-
-    async getCuGithubContribution(paramName: string, paramValue: string): Promise<CuGithubContribution[]> {
-        return this.knex('CuGithubContribution').where(`${paramName}`, paramValue)
     };
 
     async getContributors(filter: { limit?: number, offset?: number, filter?: ContributorFilter }): Promise<Contributor[]> {
@@ -325,10 +305,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getContributor(paramName: string, paramValue: string): Promise<Contributor[]> {
-        return this.knex('Contributor').where(`${paramName}`, paramValue)
-    };
-
     async getGithubOrgs(filter: GithubOrgFilter): Promise<GithubOrg[]> {
         const baseQuery = this.knex
             .select('*')
@@ -345,10 +321,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getGithubOrg(paramName: string, paramValue: string): Promise<GithubOrg[]> {
-        return this.knex('GithubOrg').where(`${paramName}`, paramValue)
-    };
-
     async getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
         const baseQuery = this.knex
             .select('*')
@@ -363,10 +335,6 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
-
-    async getGithubRepo(paramName: string, paramValue: string): Promise<GithubRepo[]> {
-        return this.knex('GithubRepo').where(`${paramName}`, paramValue)
     };
 
     async getMakerGithubEcosystemAll(filter?: MakerGithubEcosystemFilter): Promise<MakerGithubEcosystem[]> {
@@ -399,9 +367,6 @@ export class CoreUnitModel {
         }
     };
 
-    async getMakerGithubEcosystem(paramName: string, paramValue: number | string): Promise<MakerGithubEcosystem[]> {
-        return this.knex('MakerGithubEcosystem').where(`${paramName}`, paramValue)
-    };
 }
 
 export default (knex: Knex) => new CoreUnitModel(knex);

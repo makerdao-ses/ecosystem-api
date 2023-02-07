@@ -21,7 +21,7 @@ it('returns list of CuMips with CuId or undefined params', async () => {
 });
 
 it('returns CuMips with MipStatus Accepted', async () => {
-    const entry = await authModel.getMip('mipStatus', 'Accepted');
+    const entry = await authModel.getMips({ mipStatus: 'Accepted' });
     expect(entry[0].mipStatus).toEqual('Accepted');
 });
 
@@ -33,7 +33,7 @@ it('returns list of MipReplaces with newMip or undefined params', async () => {
 });
 
 it('returns MipReplaces with ReplaceMip 41', async () => {
-    const entry = await authModel.getMipReplace('replacedMip', '41');
+    const entry = await authModel.getMipReplaces({ replacedMip: 41 });
     expect(entry[0].replacedMip).toEqual(41);
 });
 
@@ -45,7 +45,7 @@ it('returns list of Mip39s with mipId or undefined params', async () => {
 });
 
 it('returns Mip39 with mip39Spn 10', async () => {
-    const entry = await authModel.getMip39('mip39Spn', '10');
+    const entry = await authModel.getMip39s({ mip39Spn: 10 });
     expect(entry[0].mip39Spn).toEqual(10);
 });
 
@@ -57,7 +57,7 @@ it('returns list of Mip40s with mipId or undefined params', async () => {
 });
 
 it('returns list of Mip40s with mkrOnly true', async () => {
-    const entry = await authModel.getMip40('mkrOnly', true);
+    const entry = await authModel.getMip40s({ mkrOnly: true });
     expect(entry[0].mkrOnly).toEqual(true);
 });
 
@@ -69,7 +69,7 @@ it('returns list of Mip40BudgetPeriods with mip40Id or undefined params', async 
 });
 
 it('returns Mip40BudgetPeriod with ftes 11.5', async () => {
-    const entry = await authModel.getMip40BudgetPeriod('ftes', 11.5);
+    const entry = await authModel.getMip40BudgetPeriods({ ftes: 11.5 });
     expect(entry[0].ftes).toEqual("11.5")
 });
 
@@ -81,7 +81,7 @@ it('returns list of Mip40Wallets with mip40Id or undefined params', async () => 
 });
 
 it('returns Mip40Wallet with signersRequired 2', async () => {
-    const entry = await authModel.getMip40Wallet('signersRequired', 2);
+    const entry = await authModel.getMip40Wallets({ signersRequired: 2 });
     expect(entry[0].signersRequired).toEqual(2);
 });
 
@@ -93,7 +93,7 @@ it('returns list of Mip40BudgetLineItem with mip40WalletId or undefined as param
 });
 
 it('returns list of Mip40BudgetLineItems with headcountExpense true', async () => {
-    const entry = await authModel.getMip40BudgetLineItem('headcountExpense', true);
+    const entry = await authModel.getMip40BudgetLineItems({ headcountExpense: true });
     expect(entry[0].headcountExpense).toEqual(true);
 });
 
@@ -105,6 +105,6 @@ it('returns list of mip41s with cuMipId or undefined as params', async () => {
 });
 
 it('returns mip41 with contributorId 4', async () => {
-    const entry = await authModel.getMip41('contributorId', "4");
+    const entry = await authModel.getMip41s({ contributorId: 4 });
     expect(entry[0].contributorId).toEqual(4);
 });
