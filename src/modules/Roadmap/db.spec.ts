@@ -40,8 +40,8 @@ it('returns a list of stakeholderRoles', async () => {
 });
 
 it('returns stakeholder role searched by ID or by name', async () => {
-    const entry = await authModel.getStakeholderRole('id', '0');
-    const entry1 = await authModel.getStakeholderRole('stakeholderRoleName', 'Facilitator');
+    const entry = await authModel.getStakeholderRoles('id', 0);
+    const entry1 = await authModel.getStakeholderRoles('stakeholderRoleName', 'Facilitator');
     expect(entry.length).toBeGreaterThan(0)
     expect(entry1.length).toBeGreaterThan(0)
 });

@@ -211,8 +211,7 @@ export const typeDefs = [gql`
         roadmaps(filter: RoadmapFilter): [Roadmap]
         roadmapStakeholders(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
         stakeholders(filter: StakeholderFilter): [Stakeholder]
-        stakeholderRoles: [StakeholderRole]
-        stakeholderRole(filter: StakeholderRoleFilter): [StakeholderRole]
+        stakeholderRoles(filter: StakeholderRoleFilter): [StakeholderRole]
         outputs: [Output]
         output(filter: OutputFilter): [Output]
         outputTypes: [OutputType]
@@ -274,17 +273,18 @@ export const resolvers = {
             }
             return await dataSources.db.Roadmap.getStakeholders(paramName, paramValue)
         },
-        stakeholderRoles: async (_, __, { dataSources }) => {
-            return dataSources.db.Roadmap.getStakeholderRoles()
-        },
-        stakeholderRole: async (_, { filter }, { dataSources }) => {
-            const queryParams = Object.keys(filter);
-            if (queryParams.length > 1) {
-                throw "Choose one parameter only"
+        stakeholderRoles: async (_, { filter }, { dataSources }) => {
+            let paramName = undefined;
+            let paramValue = undefined;
+            if (filter !== undefined) {
+                const queryParams = Object.keys(filter);
+                if (queryParams.length > 1) {
+                    throw "Choose one parameter only"
+                }
+                paramName = queryParams[0];
+                paramValue = filter[queryParams[0]];
             }
-            const paramName = queryParams[0];
-            const paramValue = filter[queryParams[0]];
-            return await dataSources.db.Roadmap.getStakeholderRole(paramName, paramValue);
+            return dataSources.db.Roadmap.getStakeholderRoles(paramName, paramValue)
         },
         roadmapOutputs: async (_, __, { dataSources }) => {
             return await dataSources.db.Roadmap.getRoadmapOutputs();
