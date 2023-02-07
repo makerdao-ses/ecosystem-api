@@ -232,19 +232,19 @@ export class RoadmapModel {
         }
     };
 
-    async getReviews(taskId: string | undefined): Promise<Review[]> {
-        if (taskId === undefined) {
-            return this.knex
-                .select('*')
-                .from('Review')
-                .orderBy('id');
+    async getReviews(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Review[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Review')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return this.knex('Review').where('taskId', taskId)
+            return baseQuery;
         }
-    };
-
-    async getReview(paramName: string, paramValue: string): Promise<Review[]> {
-        return this.knex('Review').where(`${paramName}`, paramValue)
     };
 }
 

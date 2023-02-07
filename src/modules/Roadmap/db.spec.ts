@@ -100,12 +100,7 @@ it('returns list of tasks with completedPercentage 100', async () => {
 
 it('returns list of reviews with taskId or undefined params', async () => {
     const entry = await authModel.getReviews(undefined);
-    const entry1 = await authModel.getReviews('0');
+    const entry1 = await authModel.getReviews('taskId', 0);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
-});
-
-it('returns a review by reviewOutcome green', async () => {
-    const entry = await authModel.getReview('reviewOutcome', 'Green');
-    expect(entry[0].reviewOutcome).toEqual("Green");
 });
