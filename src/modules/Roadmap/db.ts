@@ -168,19 +168,19 @@ export class RoadmapModel {
         return await this.knex('RoadmapOutput').where(`${paramName}`, paramValue)
     };
 
-    async getOutputs(id: string | undefined): Promise<Output[]> {
-        if (id === undefined) {
-            return this.knex
-                .select('*')
-                .from('Output')
-                .orderBy('id');
+    async getOutputs(
+        paramName?: string | undefined,
+        paramValue?: string | number | boolean | undefined
+    ): Promise<Output[]> {
+        const baseQuery = this.knex
+            .select('*')
+            .from('Output')
+            .orderBy('id');
+        if (paramName !== undefined && paramValue !== undefined) {
+            return baseQuery.where(`${paramName}`, paramValue)
         } else {
-            return this.knex('Output').where('id', id)
+            return baseQuery;
         }
-    };
-
-    async getOutput(paramName: string, paramValue: string): Promise<Output[]> {
-        return await this.knex('Output').where(`${paramName}`, paramValue);
     };
 
     async getOutputTypes(id: string | undefined): Promise<OutputType[]> {

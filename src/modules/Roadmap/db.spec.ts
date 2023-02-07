@@ -67,14 +67,9 @@ it('returns list of roadmapOutputs with outputId', async () => {
 
 it('returns list of outputs with id or undefined param', async () => {
     const entry = await authModel.getOutputs(undefined);
-    const entry1 = await authModel.getOutputs('0');
+    const entry1 = await authModel.getOutputs('id', 0);
     expect(entry.length).toBeGreaterThan(0);
     expect(entry1.length).toBeGreaterThan(0);
-});
-
-it('returns output with outputDate filter', async () => {
-    const entry = await authModel.getOutput('outputDate', '2022-03-14');
-    expect(entry.length).toBeGreaterThan(0)
 });
 
 it('returns list of outputTypes with ID or undefined params', async () => {
