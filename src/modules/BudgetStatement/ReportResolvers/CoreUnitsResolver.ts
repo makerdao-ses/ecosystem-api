@@ -9,7 +9,9 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
 
         const enhancedQuery = {
             account: '0x7c09ff9b59baaebfd721cbda3676826aa6d7bae8',
-            ...query
+            periodRange: query.periodRange,
+            categoryPath: query.categoryPath,
+            budgetPath: query.budgetPath.reduce()
         }
         
         return {

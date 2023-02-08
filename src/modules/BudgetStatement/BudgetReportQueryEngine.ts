@@ -24,6 +24,7 @@ export interface ResolverOutput<TOutput> {
 export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends NamedResolver {
     execute(query:TInput): Promise<ResolverOutput<TOutput>>;
     executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>>;
+    processOutput(output:BudgetReportOutputRow[]): BudgetReportOutputRow[];
 }
 
 export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOutput extends ResolverData> 
@@ -47,6 +48,11 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
         }
 
         return result;
+    }
+
+    public processOutput(output:BudgetReportOutputRow[]): BudgetReportOutputRow[] {
+        console.log(`${this.name} is processing ${output.length} output row(s).`);
+        return output;
     }
 }
 
@@ -87,6 +93,7 @@ export class BudgetReportQueryEngine {
         
         let collectedOutput = [] as BudgetReportOutputRow[];
         const queue: Record<string, ResolverData[]>[] = [ input ];
+        const resolverStack: string[] = [];
         
         while (queue.length > 0) {
             const nextResolverInputMap = queue.shift() as Record<string, ResolverData[]>;
@@ -98,9 +105,18 @@ export class BudgetReportQueryEngine {
                 if (Object.keys(output.nextResolversData).length > 0) {
                     queue.push(output.nextResolversData);
                 }
+
+                if (resolverStack.indexOf(name) < 0) {
+                    resolverStack.push(name);
+                }
                 
                 collectedOutput = output.output.concat(collectedOutput);
             };
+        }
+
+        while (resolverStack.length > 0) {
+            const resolver = this._resolvers[resolverStack.pop() as string] as BudgetReportResolver<ResolverData, ResolverData>;
+            collectedOutput = resolver.processOutput(collectedOutput);
         }
 
         return collectedOutput;

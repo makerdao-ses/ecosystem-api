@@ -8,6 +8,24 @@ const
     // Escaped expected output string (without unnecessary escaping of the first character)
     escO = "@@abc@@@\\:\\/\\,\\\\";
 
+
+it ('correctly reduces paths', () => {
+    let p = BudgetReportPath.fromString('makerdao/core-units/SES-001/*:1,2,3').reduce();
+    expect(p.toString()).toEqual('core-units/SES-001/*:1,2,3');
+    
+    p = p.reduce();
+    expect(p.toString()).toEqual('SES-001/*:1,2,3');
+    
+    p = p.reduce();
+    expect(p.toString()).toEqual('*:1,2,3');
+
+    p = p.reduce();
+    expect(p.toString()).toEqual('*');
+
+    p = p.reduce();
+    expect(p.toString()).toEqual('*');
+});
+
 it ('correctly parses paths into segments', () => {
     const paths:any = [
         ['makerdao/core-units/SES-001/*/*:discontinued', 5],

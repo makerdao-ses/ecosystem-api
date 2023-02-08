@@ -7,7 +7,11 @@ export class DaoResolver extends BudgetReportResolverBase<ResolverData, Resolver
         console.log(`DaoResolver is resolving ${query.budgetPath.toString()}`);
         return {
             nextResolversData: {
-                CoreUnitsResolver: [query]
+                CoreUnitsResolver: [{
+                    periodRange: query.periodRange,
+                    categoryPath: query.categoryPath,
+                    budgetPath: query.budgetPath.reduce()
+                }]
             },
             output: []
         };

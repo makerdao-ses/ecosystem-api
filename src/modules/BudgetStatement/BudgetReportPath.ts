@@ -18,6 +18,16 @@ export class BudgetReportPath {
     public toString():string {
         return this._segments.map(s => s.toString()).join('/');
     }
+
+    public reduce(): BudgetReportPath {
+        const result = this._segments.slice(1);
+        
+        if (result.length < 1) {
+            result.push(new BudgetReportPathSegment())
+        }
+
+        return new BudgetReportPath(result);
+    }
 }
 
 export class BudgetReportPathSegment {

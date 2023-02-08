@@ -5,6 +5,7 @@ import { BudgetReportQueryEngine } from "./BudgetReportQueryEngine";
 import { DaoResolver } from "./ReportResolvers/DaoResolver.js";
 import { CoreUnitsResolver } from "./ReportResolvers/CoreUnitsResolver.js";
 import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
+import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
 
 let knex:Knex;
 
@@ -18,16 +19,17 @@ afterAll(async () => {
 
 it ('Configures the resolvers correctly and returns concatenated output.', async () => {
     const resolvers = [ 
+        new PeriodResolver(),
         new DaoResolver(),
         new CoreUnitsResolver(),
         new AccountsResolver(knex)
     ];
 
-    const engine = new BudgetReportQueryEngine(knex, resolvers, 'DaoResolver');
+    const engine = new BudgetReportQueryEngine(knex, resolvers, 'PeriodResolver');
     
-    expect(engine.rootResolver.name).toEqual('DaoResolver');
+    expect(engine.rootResolver.name).toEqual('PeriodResolver');
     expect(engine.resolvers.map(r => r.name))
-        .toEqual(['DaoResolver', 'CoreUnitsResolver', 'AccountsResolver']);
+        .toEqual(['PeriodResolver', 'DaoResolver', 'CoreUnitsResolver', 'AccountsResolver']);
 
     const query:BudgetReportQuery = {
         start: null,
