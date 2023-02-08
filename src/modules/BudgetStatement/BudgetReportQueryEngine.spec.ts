@@ -20,7 +20,7 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     const resolvers = [ 
         new DaoResolver(),
         new CoreUnitsResolver(),
-        new AccountsResolver()
+        new AccountsResolver(knex)
     ];
 
     const engine = new BudgetReportQueryEngine(knex, resolvers, 'DaoResolver');
@@ -37,11 +37,6 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
         categories: '*'
     };
 
-    const output = await engine.execute(query);
-    expect(output).toEqual([
-        { actuals: 100.00 },
-        { actuals: 200.00 },
-        { actuals: 300.00 },
-        { actuals: 400.00 }
-    ]);
+    const output = await engine.execute(query);    
+    expect(output.length).toBeGreaterThan(570);
 });

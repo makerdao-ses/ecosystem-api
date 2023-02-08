@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { LineItemFetcher } from "./BudgetReportFetcher";
+import { LineItemFetcher, LineItemRecord } from "./BudgetReportFetcher";
 import { BudgetReportPath } from "./BudgetReportPath";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
 import { BudgetReportQuery, BudgetReportPeriodInput } from "./BudgetReportQuery";
@@ -14,9 +14,7 @@ export interface ResolverData {
     categoryPath: BudgetReportPath
 }
 
-export interface BudgetReportOutputRow {
-    actuals: number
-}
+export interface BudgetReportOutputRow extends LineItemRecord {}
 
 export interface ResolverOutput<TOutput> {
     nextResolversData: Record<string, TOutput[]>,
@@ -37,7 +35,7 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
     public async executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>> {
         const result = { nextResolversData: {}, output: [] } as ResolverOutput<TOutput>;
 
-        queries.forEach(async (resolverData) => {
+        for (const resolverData of queries) {
             const queryOutput = await this.execute(resolverData);
             
             result.nextResolversData = {
@@ -46,7 +44,7 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
             }
             
             result.output = queryOutput.output.concat(result.output);
-        });
+        }
 
         return result;
     }

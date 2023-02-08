@@ -9,9 +9,7 @@ export class DaoResolver extends BudgetReportResolverBase<ResolverData, Resolver
             nextResolversData: {
                 CoreUnitsResolver: [query]
             },
-            output: [
-                { actuals: 400.00 }
-            ]
+            output: []
         };
     }
 }
