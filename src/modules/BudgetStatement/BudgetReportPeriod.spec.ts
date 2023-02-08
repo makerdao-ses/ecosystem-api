@@ -151,6 +151,15 @@ it ('Correctly parses valid periods', () => {
         "2100/01", "2100/03", "2100/10", "2100/12",
     ];
 
+    const sqlStrings = [
+        "1970-01-01", "2100-01-01", 
+        "1970-01-01", "1970-10-01", "2100-01-01", "2100-10-01",
+        "1970-01-01", "1970-03-01", "1970-10-01", "1970-12-01",
+        "2100-01-01", "2100-03-01", "2100-10-01", "2100-12-01",
+        "1970-01-01", "1970-03-01", "1970-10-01", "1970-12-01",
+        "2100-01-01", "2100-03-01", "2100-10-01", "2100-12-01",
+    ];
+
     // First two examples are years
     expect(periods[0].year).toBe(1970);
     expect(periods[1].year).toBe(2100);
@@ -178,13 +187,18 @@ it ('Correctly parses valid periods', () => {
     }
 
     // Check that they produce the expected output string
-    periods.forEach((p, i) => expect(p.toString()).toBe(strings[i]));
+    periods.forEach((p, i) => {
+        expect(p.toString()).toBe(strings[i]);
+        expect(p.startAsSqlDate()).toBe(sqlStrings[i]);
+    });
 
     // Check that the output strings are correctly parsed into objects
     strings.forEach((s, i) => expect(BudgetReportPeriod.fromString(s).equals(periods[i])).toBe(true));
 
     // Check equality comparison to strings
     [0, 2, 9].forEach(i => expect(periods[i].equals(strings[i])).toBe(true));
+
+    
 });
 
 it ('Correctly rejects invalid period strings', () => {

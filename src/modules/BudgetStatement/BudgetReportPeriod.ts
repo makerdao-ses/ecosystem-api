@@ -115,6 +115,27 @@ export class BudgetReportPeriod {
         return result;
     }
 
+    public startAsSqlDate():string {
+        let result = this._year + '-';
+
+        switch(this._type) {
+            case BudgetReportPeriodType.Month:
+                result += (this._month as number < 10 ? '0' : '') + this.month;
+                break;
+            
+            case BudgetReportPeriodType.Quarter:
+                const firstMonth = (this._quarter as number - 1) * 3 + 1;
+                result += (firstMonth as number < 10 ? '0' : '') + firstMonth;
+                break;
+            
+            case BudgetReportPeriodType.Year:
+                result += '01';
+                break;
+        }
+        
+        return result + '-01';
+    }
+
     public comesAfter(period:BudgetReportPeriod): boolean {
         return this._start() > period._end();
     }
