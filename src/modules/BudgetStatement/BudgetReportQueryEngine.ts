@@ -15,17 +15,23 @@ export interface ResolverData {
     granularity: BudgetReportGranularity
 }
 
+export interface BudgetReportOutputGroup {
+    keys: Record<string, any>;
+    rows: BudgetReportOutputRow[];
+}
+
 export interface BudgetReportOutputRow extends LineItemRecord {}
 
 export interface ResolverOutput<TOutput> {
     nextResolversData: Record<string, TOutput[]>,
-    output: BudgetReportOutputRow[]
+    output: BudgetReportOutputGroup[]
 }
 
 export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends NamedResolver {
     execute(query:TInput): Promise<ResolverOutput<TOutput>>;
     executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>>;
-    processOutput(output:BudgetReportOutputRow[]): BudgetReportOutputRow[];
+    processOutputRows(rows:BudgetReportOutputRow[], groupKeys:Record<string, any>): BudgetReportOutputRow[];
+    processOutputGroups(output:BudgetReportOutputGroup[]): BudgetReportOutputGroup[];
 }
 
 export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOutput extends ResolverData> 
@@ -51,9 +57,17 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
         return result;
     }
 
-    public processOutput(output:BudgetReportOutputRow[]): BudgetReportOutputRow[] {
-        console.log(`${this.name} is processing ${output.length} output row(s).`);
-        return output;
+    public processOutputRows(rows: BudgetReportOutputRow[], groupKeys:Record<string, any>): BudgetReportOutputRow[] {
+        console.log(`${this.name} is processing ${rows.length} output rows(s).`);
+        return rows;
+    }
+
+    public processOutputGroups(groups:BudgetReportOutputGroup[]): BudgetReportOutputGroup[] {
+        groups.forEach(g => {
+            g.rows = this.processOutputRows(g.rows, g.keys);
+        });
+
+        return groups;
     }
 }
 
@@ -92,7 +106,7 @@ export class BudgetReportQueryEngine {
         const input: Record<string, ResolverData[]> = {};
         input[this.rootResolver.name] = [ initialInput ];
         
-        let collectedOutput = [] as BudgetReportOutputRow[];
+        let collectedOutput:BudgetReportOutputGroup[] = [];
         const queue: Record<string, ResolverData[]>[] = [ input ];
         const resolverStack: string[] = [];
         
@@ -117,7 +131,7 @@ export class BudgetReportQueryEngine {
 
         while (resolverStack.length > 0) {
             const resolver = this._resolvers[resolverStack.pop() as string] as BudgetReportResolver<ResolverData, ResolverData>;
-            collectedOutput = resolver.processOutput(collectedOutput);
+            collectedOutput = resolver.processOutputGroups(collectedOutput);
         }
 
         return collectedOutput;

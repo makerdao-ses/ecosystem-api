@@ -33,7 +33,8 @@ it ('works', async () => {
     const result = await resolver.execute(query);
 
     expect(Object.keys(result.nextResolversData)).toEqual([]);
-    result.output.forEach(r => {
+
+    result.output[0].rows.forEach(r => {
         expect(r.account.toLowerCase()).toBe(query.account.toLowerCase());
         expect(period).toContain(r.month.toString())
     });

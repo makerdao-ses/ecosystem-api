@@ -39,6 +39,11 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
         categories: '*'
     };
 
-    const output = await engine.execute(query);    
-    expect(output.length).toBeGreaterThan(570);
+    const output = await engine.execute(query);
+
+    expect(output.length).toBeGreaterThan(5);
+    output.forEach(group => {
+        expect(group.rows.length).toBeGreaterThan(40);
+        expect(['SES-001','SH-001','DUX-001']).toContain(group.keys.owner);
+    });
 });

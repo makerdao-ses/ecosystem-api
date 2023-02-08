@@ -14,17 +14,24 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
     public async execute(query:AccountsResolverData): Promise<ResolverOutput<ResolverData>> {
         console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
 
-        const result = {
+        const result:ResolverOutput<ResolverData> = {
             nextResolversData: {},
-            output: []
-        } as ResolverOutput<ResolverData>;
+            output: [{
+                keys: {
+                    owner: query.owner,
+                    account: query.account,
+                    discontinued: query.discontinued
+                },
+                rows: []
+            }]
+        };
 
         for (const month of query.periodRange) {
             const records = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
-            result.output = result.output.concat(records);
+            result.output[0].rows = result.output[0].rows.concat(records);
         }
 
-        console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning ${result.output.length} record(s).`);
+        console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
         return result;
     }
 }
