@@ -10,7 +10,8 @@ export class DaoResolver extends BudgetReportResolverBase<ResolverData, Resolver
                 CoreUnitsResolver: [{
                     periodRange: query.periodRange,
                     categoryPath: query.categoryPath,
-                    budgetPath: query.budgetPath.reduce()
+                    budgetPath: query.budgetPath.reduce().reduce(),
+                    granularity: query.granularity
                 }]
             },
             output: []

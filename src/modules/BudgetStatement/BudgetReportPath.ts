@@ -19,6 +19,10 @@ export class BudgetReportPath {
         return this._segments.map(s => s.toString()).join('/');
     }
 
+    public nextSegment(): BudgetReportPathSegment {
+        return (this._segments.length > 0) ? this._segments[0] : new BudgetReportPathSegment();
+    }
+
     public reduce(): BudgetReportPath {
         const result = this._segments.slice(1);
         

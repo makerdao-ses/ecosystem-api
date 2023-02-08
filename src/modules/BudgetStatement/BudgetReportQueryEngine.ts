@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import { LineItemFetcher, LineItemRecord } from "./BudgetReportFetcher";
 import { BudgetReportPath } from "./BudgetReportPath";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
-import { BudgetReportQuery, BudgetReportPeriodInput } from "./BudgetReportQuery";
+import { BudgetReportQuery, BudgetReportPeriodInput, BudgetReportGranularity } from "./BudgetReportQuery";
 
 interface NamedResolver {
     readonly name: string;
@@ -11,7 +11,8 @@ interface NamedResolver {
 export interface ResolverData {
     periodRange: BudgetReportPeriod[],
     budgetPath: BudgetReportPath,
-    categoryPath: BudgetReportPath
+    categoryPath: BudgetReportPath,
+    granularity: BudgetReportGranularity
 }
 
 export interface BudgetReportOutputRow extends LineItemRecord {}
@@ -84,7 +85,7 @@ export class BudgetReportQueryEngine {
         const budgetPath = typeof query.budgets == 'string' ? BudgetReportPath.fromString(query.budgets) : query.budgets;
         const categoryPath = typeof query.categories == 'string' ? BudgetReportPath.fromString(query.categories) : query.categories;
 
-        return this._callResolvers({periodRange, budgetPath, categoryPath});
+        return this._callResolvers({periodRange, budgetPath, categoryPath, granularity:query.granularity});
     }
 
     private async _callResolvers(initialInput: ResolverData) {
