@@ -18,50 +18,50 @@ export const quarterlyExpenses = [
     {
         "period": "2021-Q4",
         "budget": "/makerdao/core-units",
-        "prediction": 2727760.48,
-        "actuals": 2435264.25,
+        "prediction": 3237327.31,
+        "actuals": 2711181.66,
         "discontinued": 586256.23,
         "budgetCap": 445424.63
     },
     {
         "period": "2022-Q1",
         "budget": "/makerdao/core-units",
-        "prediction": 5074002.05,
-        "actuals": 4676781.25,
+        "prediction": 5664596.5,
+        "actuals": 5265375.7,
         "discontinued": 1300742.64,
         "budgetCap": 623749.83
     },
     {
         "period": "2022-Q2",
         "budget": "/makerdao/core-units",
-        "prediction": 7535206,
-        "actuals": 6617231.27,
+        "prediction": 8110786,
+        "actuals": 7192811.27,
         "discontinued": 1137850.38,
         "budgetCap": 780515.89
     },
     {
         "period": "2022-Q3",
         "budget": "/makerdao/core-units",
-        "prediction": 8835848.07,
-        "actuals": 8835848.07,
-        "discontinued": 1474803.65,
-        "budgetCap": 1951623.76
+        "prediction": 9087797.65,
+        "actuals": 9087797.65,
+        "discontinued": 1495556.35,
+        "budgetCap": 1864623.76
     },
     {
         "period": "2022-Q4",
         "budget": "/makerdao/core-units",
-        "prediction": 5021360.65,
-        "actuals": 4778243.69,
-        "discontinued": 667466.31,
-        "budgetCap": 608834.27
+        "prediction": 8500009.32,
+        "actuals": 8500009.32,
+        "discontinued": 656670.63,
+        "budgetCap": 718781.77
     },
     {
         "period": "2023-Q1",
         "budget": "/makerdao/core-units",
-        "prediction": 119025.75,
-        "actuals": 0,
-        "discontinued": 0,
-        "budgetCap": 0
+        "prediction": 2043193.07,
+        "actuals": 1802595.07,
+        "discontinued": 128136.32,
+        "budgetCap": 102105
     }
 ]
 
@@ -101,81 +101,81 @@ export const monthlyExpenses = [
     {
         "period": "2021-10",
         "budget": "/makerdao/core-units",
-        "prediction": 934780.13,
-        "actuals": 824442.44,
+        "prediction": 1076007.23,
+        "actuals": 833346.54,
         "discontinued": 273093.82,
         "budgetCap": 121170.71
     },
     {
         "period": "2021-11",
         "budget": "/makerdao/core-units",
-        "prediction": 653987.25,
-        "actuals": 653987.25,
+        "prediction": 860549.71,
+        "actuals": 845908.31,
         "discontinued": 136142.82,
         "budgetCap": 121170.71
     },
     {
         "period": "2021-12",
         "budget": "/makerdao/core-units",
-        "prediction": 1072580.3,
-        "actuals": 956834.56,
+        "prediction": 1228005.47,
+        "actuals": 1031926.81,
         "discontinued": 177019.59,
         "budgetCap": 203083.21
     },
     {
         "period": "2022-01",
         "budget": "/makerdao/core-units",
-        "prediction": 1539868.2,
-        "actuals": 1539868.2,
+        "prediction": 1667771.06,
+        "actuals": 1667771.06,
         "discontinued": 516871.59,
         "budgetCap": 207916.61
     },
     {
         "period": "2022-02",
         "budget": "/makerdao/core-units",
-        "prediction": 1497343.51,
-        "actuals": 1472527.75,
+        "prediction": 1654514.02,
+        "actuals": 1607763.21,
         "discontinued": 374446.72,
         "budgetCap": 207916.61
     },
     {
         "period": "2022-03",
         "budget": "/makerdao/core-units",
-        "prediction": 1885316.45,
-        "actuals": 1664385.3,
+        "prediction": 2210772.58,
+        "actuals": 1989841.43,
         "discontinued": 409424.33,
         "budgetCap": 207916.61
     },
     {
         "period": "2022-04",
         "budget": "/makerdao/core-units",
-        "prediction": 2117959.28,
-        "actuals": 1716026.3,
+        "prediction": 2313649.28,
+        "actuals": 1911716.3,
         "discontinued": 353182.58,
         "budgetCap": 207916.61
     },
     {
         "period": "2022-05",
         "budget": "/makerdao/core-units",
-        "prediction": 2746653.91,
-        "actuals": 2384621.81,
+        "prediction": 2935613.91,
+        "actuals": 2573581.81,
         "discontinued": 444789.99,
         "budgetCap": 316474.64
     },
     {
         "period": "2022-06",
         "budget": "/makerdao/core-units",
-        "prediction": 2670592.81,
-        "actuals": 2516583.16,
+        "prediction": 2861522.81,
+        "actuals": 2707513.16,
         "discontinued": 339877.81,
         "budgetCap": 256124.64
     },
     {
         "period": "2022-07",
         "budget": "/makerdao/core-units",
-        "prediction": 2588309,
-        "actuals": 2588309,
-        "discontinued": 435900.11,
+        "prediction": 2846074.4,
+        "actuals": 2846074.4,
+        "discontinued": 456652.81,
         "budgetCap": 632193.31
     },
     {
@@ -184,46 +184,62 @@ export const monthlyExpenses = [
         "prediction": 3095747.48,
         "actuals": 3095747.48,
         "discontinued": 475109.57,
-        "budgetCap": 741014.64
+        "budgetCap": 654014.64
     },
     {
         "period": "2022-09",
         "budget": "/makerdao/core-units",
-        "prediction": 3151791.59,
-        "actuals": 3151791.59,
+        "prediction": 3145975.77,
+        "actuals": 3145975.77,
         "discontinued": 563793.97,
         "budgetCap": 578415.81
     },
     {
         "period": "2022-10",
         "budget": "/makerdao/core-units",
-        "prediction": 2150594.88,
-        "actuals": 2150594.88,
+        "prediction": 3036773.35,
+        "actuals": 3036773.35,
         "discontinued": 365442.46,
         "budgetCap": 268438.81
     },
     {
         "period": "2022-11",
         "budget": "/makerdao/core-units",
-        "prediction": 2001137.87,
-        "actuals": 2001137.87,
+        "prediction": 3089704.42,
+        "actuals": 3089704.42,
         "discontinued": 177506.36,
         "budgetCap": 228171.48
     },
     {
         "period": "2022-12",
         "budget": "/makerdao/core-units",
-        "prediction": 1152526.7,
-        "actuals": 626510.94,
-        "discontinued": 124517.49,
-        "budgetCap": 112223.98
+        "prediction": 2417713.74,
+        "actuals": 2373531.55,
+        "discontinued": 113721.81,
+        "budgetCap": 222171.48
     },
     {
         "period": "2023-01",
         "budget": "/makerdao/core-units",
-        "prediction": 119025.75,
+        "prediction": 1547462.41,
+        "actuals": 1492178.41,
+        "discontinued": 128136.32,
+        "budgetCap": 34035
+    },
+    {
+        "period": "2023-02",
+        "budget": "/makerdao/core-units",
+        "prediction": 362291.66,
+        "actuals": 310416.66,
+        "discontinued": 0,
+        "budgetCap": 34035
+    },
+    {
+        "period": "2023-03",
+        "budget": "/makerdao/core-units",
+        "prediction": 133439,
         "actuals": 0,
         "discontinued": 0,
-        "budgetCap": 0
+        "budgetCap": 34035
     }
 ]
