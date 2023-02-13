@@ -87,7 +87,7 @@ export const resolvers = {
     BudgetStatement: {
         comments: async (parent, __, { dataSources }) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatementComments('id', id);
+            const result = await dataSources.db.BudgetStatement.getBudgetStatementComments('budgetStatementId', id);
             const comments = parseCommentOutput(result, dataSources);
             return comments;
         },
