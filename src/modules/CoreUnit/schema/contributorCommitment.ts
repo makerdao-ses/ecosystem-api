@@ -64,22 +64,22 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        contributorCommitments: async (_, { filter }, { dataSources }) => {
+        contributorCommitments: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getContributorCommitments(filter);
         },
-        contributors: async (_, filter, { dataSources }) => {
+        contributors: async (_: any, filter: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getContributors(filter)
         }
     },
     ContributorCommitment: {
-        contributor: async (parent, __, { dataSources }) => {
+        contributor: async (parent: any, __: any, { dataSources }: any) => {
             const { contributorId } = parent;
             const result = await dataSources.db.CoreUnit.getContributors({ filter: { id: contributorId } });
             return result;
         }
     },
     Mip41: {
-        contributor: async (parent, __, { dataSources }) => {
+        contributor: async (parent: any, __: any, { dataSources }: any) => {
             const { contributorId } = parent;
             const result = await dataSources.db.CoreUnit.getContributors({ filter: { id: contributorId } });
             return result;
