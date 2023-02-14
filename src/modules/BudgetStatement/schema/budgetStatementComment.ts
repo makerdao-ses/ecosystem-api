@@ -58,12 +58,12 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        budgetStatementComments: async (_, { filter }, { dataSources }) => {
-            let queryParams = undefined;
-            let paramName = undefined;
-            let paramValue = undefined;
-            let secondParamName = undefined;
-            let secondParamValue = undefined;
+        budgetStatementComments: async (_: any, { filter }: any, { dataSources }: any) => {
+            let queryParams: string[] | undefined = undefined;
+            let paramName: string | undefined = undefined;
+            let paramValue: string[] | undefined = undefined;
+            let secondParamName: string | undefined = undefined;
+            let secondParamValue: string[] | undefined = undefined;
             if (filter !== undefined) {
                 queryParams = Object.keys(filter);
                 if (queryParams.length > 2) {
@@ -85,7 +85,7 @@ export const resolvers = {
         }
     },
     BudgetStatement: {
-        comments: async (parent, __, { dataSources }) => {
+        comments: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementComments('budgetStatementId', id);
             const comments = parseCommentOutput(result, dataSources);
@@ -93,11 +93,11 @@ export const resolvers = {
         },
     },
     Mutation: {
-        budgetStatementCommentCreate: async (_, { input }, { user, dataSources }) => {
+        budgetStatementCommentCreate: async (_: any, { input }: any, { user, dataSources }: any) => {
             const authModel = new BudgetStatementAuthModel(dataSources.db.BudgetStatement, dataSources.db.Auth, dataSources.db.CoreUnit, dataSources.db.ChangeTracking);
             return await authModel.budgetStatementCommentCreate(input, user, dataSources)
         },
-        budgetStatementCommentDelete: async (_, { input }, { user, auth, dataSources }) => {
+        budgetStatementCommentDelete: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to create budget statment comments")
@@ -115,7 +115,7 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to create budget statement comments')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatements')
             }
         }
@@ -123,8 +123,8 @@ export const resolvers = {
 
 }
 
-const parseCommentOutput = (comments, dataSources) => {
-    const parsed = comments.map(async (comment) => {
+const parseCommentOutput = (comments: any, dataSources: any) => {
+    const parsed = comments.map(async (comment: any) => {
         const [user] = await dataSources.db.Auth.getUsersFiltered({ id: comment.authorId });
         delete comment.authorId
         comment.author = user
