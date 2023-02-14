@@ -38,7 +38,7 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        totalQuarterlyExpenses: async (_, { filter }, { dataSources }) => {
+        totalQuarterlyExpenses: async (_: any, { filter }: any, { dataSources }: any) => {
             if (filter.granularity === 'monthly') {
                 const reports = {
                     expenses: monthlyExpenses
