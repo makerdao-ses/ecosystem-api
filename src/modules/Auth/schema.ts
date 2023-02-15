@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import { QueryParams } from "../../utils/QueryParams.js";
+import { env } from 'process';
 dotenv.config()
 
 export const typeDefs = [gql`
@@ -87,10 +88,10 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        users: async (_, { input }, { user, auth, dataSources }) => {
+        users: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
-                const filter = new QueryParams(input);
-                const userFilter = { active: true, rolesAndPermissions: false };
+                const filter = new QueryParams(input) as any;;
+                const userFilter = { active: true, rolesAndPermissions: false, id: undefined, username: undefined };
                 // User with System/Manage permission can list the inactive users including roles and permissions
                 if (await dataSources.db.Auth.userCanManage(user, 'System')) {
                     userFilter.active = false;
@@ -113,13 +114,13 @@ export const resolvers = {
                 const result = await dataSources.db.Auth.getUsersFiltered(userFilter);
                 return parseToSchemaUser(result)
 
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to perform this query')
             }
         }
     },
     Mutation: {
-        userLogin: async (_, { input }, { dataSources }) => {
+        userLogin: async (_: any, { input }: any, { dataSources }: any) => {
             try {
                 const [user] = await dataSources.db.Auth.getUser('username', input.username)
                 if (user != undefined) {
@@ -141,7 +142,7 @@ export const resolvers = {
                         }
                         const token = jwt.sign(
                             { id: user.id, cuId, username: user.username },
-                            process.env.SECRET,
+                            env.SECRET as string,
                             { algorithm: "HS256", subject: `${user.id}`, expiresIn: "7d" }
                         );
                         return {
@@ -154,12 +155,12 @@ export const resolvers = {
                 } else {
                     throw new Error('no such user')
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.log(error);
                 throw new AuthenticationError(error ? error : 'User not signed up')
             }
         },
-        userCreate: async (_, { input }, { user, auth, dataSources }) => {
+        userCreate: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
@@ -182,11 +183,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new Error(error ? error : 'You are not authorized')
             }
         },
-        userChangePassword: async (_, { input }, { user, dataSources }) => {
+        userChangePassword: async (_: any, { input }: any, { user, dataSources }: any) => {
             try {
                 if (user) {
                     const [userObj] = await dataSources.db.Auth.getUser('username', input.username)
@@ -235,11 +236,11 @@ export const resolvers = {
                 } else {
                     throw new Error('Gotta be logged in first no?')
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new Error(error ? error : 'password is incorrect')
             }
         },
-        userSetActiveFlag: async (_, { input }, { user, auth, dataSources }) => {
+        userSetActiveFlag: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
@@ -258,11 +259,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to perform this query')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'password is incorrect')
             }
         },
-        userDelete: async (_, { filter }, { user, auth, dataSources }) => {
+        userDelete: async (_: any, { filter }: any, { user, auth, dataSources }: any) => {
             try {
                 if (filter == undefined) {
                     throw Error('Specify which user to delete in filter')
@@ -296,18 +297,19 @@ export const resolvers = {
                         return parseToSchemaUser(result)[0]
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error)
             }
         }
     }
 
 };
-export const parseToSchemaUser = (rawData) => {
-    let previousUserId = null;
-    let groupedUserRows = [];
-    const result = [];
-    rawData.forEach(row => {
+
+export const parseToSchemaUser = (rawData: any) => {
+    let previousUserId: string | number | null = null;
+    let groupedUserRows: any[] = [];
+    const result: any[] = [];
+    rawData.forEach((row: any) => {
         if (previousUserId === row.id) {
             groupedUserRows.push(row);
         } else {
@@ -316,7 +318,7 @@ export const parseToSchemaUser = (rawData) => {
             }
             groupedUserRows = [];
             groupedUserRows.push(row);
-            previousUserId = groupedUserRows[0].id
+            previousUserId = groupedUserRows[0].id;
         }
     })
     if (groupedUserRows.length > 0) {
@@ -325,18 +327,18 @@ export const parseToSchemaUser = (rawData) => {
     return result
 }
 
-const buildUserObjectFromGroupedRows = (rows) => {
+const buildUserObjectFromGroupedRows = (rows: any) => {
     const result = {
         id: rows[0].id,
         username: rows[0].username,
         active: rows[0].active,
-        roles: []
+        roles: [] as object[]
     }
 
     if (rows[0].roleId !== undefined && rows[0].roleId !== null) {
-        let previousRoleId = null;
-        let groupedRoleRows = [];
-        rows.forEach(row => {
+        let previousRoleId: string | number | null = null;
+        let groupedRoleRows: any[] = [];
+        rows.forEach((row: any) => {
             if (previousRoleId === row.roleId) {
                 groupedRoleRows.push(row)
             } else {
@@ -355,11 +357,11 @@ const buildUserObjectFromGroupedRows = (rows) => {
     return result;
 }
 
-const buildRoleObjectFromGroupedRows = (rows) => {
+const buildRoleObjectFromGroupedRows = (rows: any) => {
     const result = {
         id: rows[0].roleId,
         name: rows[0].roleName,
-        permissions: rows.filter(row => row.resource !== null).map(row => {
+        permissions: rows.filter((row: any) => row.resource !== null).map((row: any) => {
             if (row.permission === null) {
                 if (row.resourceId === null) {
                     return row.resource
@@ -381,23 +383,23 @@ const buildRoleObjectFromGroupedRows = (rows) => {
 
 
 // construct from the permission
-export const getCuIdFromPermissions = (userObj) => {
-    const rolesWithId = [];
-    const roles = userObj[0].roles.map(role => {
-        role.permissions.forEach(permission => {
+export const getCuIdFromPermissions = (userObj: any) => {
+    const rolesWithId: any = [];
+    const roles = userObj[0].roles.map((role: any) => {
+        role.permissions.forEach((permission: any) => {
             rolesWithId.push({ name: role.name, cuId: null })
         })
         return role.permissions;
     }).flat();
     let cuId = undefined;
-    roles.forEach((role, index) => {
+    roles.forEach((role: any, index: number) => {
         const regex = /[0-9]{1,}/;
         const rgxOutput = role.match(regex);
         if (rgxOutput !== null) {
             rolesWithId[index].cuId = rgxOutput[0]
         }
     })
-    rolesWithId.map(role => {
+    rolesWithId.map((role: any) => {
         if (role.name === 'CoreUnitFacilitator') {
             cuId = role.cuId
         }
@@ -405,13 +407,13 @@ export const getCuIdFromPermissions = (userObj) => {
     return cuId;
 };
 
-const regexPw = (pw) => {
+const regexPw = (pw: string) => {
     if (pw.length < 10) {
         throw Error('Your password must have at least 10 characters.');
     }
     let matchClasses = 0;
 
-    const matchesLowerCaseChars = (pw) => {
+    const matchesLowerCaseChars = (pw: string) => {
         let count = 0;
         const regex = new RegExp(/[a-z]/);
         pw.split('').forEach(l => {
@@ -426,7 +428,7 @@ const regexPw = (pw) => {
         }
     }
 
-    const matchesUpperCaseChars = (pw) => {
+    const matchesUpperCaseChars = (pw: string) => {
         let count = 0;
         const regex = new RegExp(/[A-Z]/);
         pw.split('').forEach(l => {
@@ -441,7 +443,7 @@ const regexPw = (pw) => {
         }
     }
 
-    const matchesNumbers = (pw) => {
+    const matchesNumbers = (pw: string) => {
         let count = 0;
         const regex = new RegExp(/[0-9]/);
         pw.split('').forEach(l => {
@@ -461,7 +463,7 @@ const regexPw = (pw) => {
 
     matchesNumbers(pw)
 
-    const matchesSpecialChars = (pw) => {
+    const matchesSpecialChars = (pw: string) => {
         let count = 0;
         const regex = new RegExp(/[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/);
         pw.split('').forEach(l => {

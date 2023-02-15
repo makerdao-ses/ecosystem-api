@@ -50,7 +50,7 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        socialMediaChannels: async (_, { filter }, { dataSources }) => {
+        socialMediaChannels: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getSocialMediaChannels(filter)
         }
     }
