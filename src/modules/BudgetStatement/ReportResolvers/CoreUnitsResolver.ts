@@ -3,6 +3,8 @@ import { AccountsResolverData } from "./AccountsResolver.js";
 import { Knex } from "knex";
 import { BudgetReportPathSegment } from "../BudgetReportPath";
 
+const DEBUG_OUTPUT = false;
+
 export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, AccountsResolverData> {
     readonly name = 'CoreUnitsResolver';
 
@@ -14,7 +16,9 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
     }
 
     public async execute(query:ResolverData): Promise<ResolverOutput<AccountsResolverData>> {
-        console.log(`CoreUnitsResolver is resolving ${query.budgetPath.toString()}`);
+        if (DEBUG_OUTPUT) {
+            console.log(`CoreUnitsResolver is resolving ${query.budgetPath.toString()}`);
+        }
 
         const coreUnitWallets = await this._buildCoreUnitWalletQuery(query.budgetPath.nextSegment());
         

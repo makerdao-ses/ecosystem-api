@@ -4,6 +4,8 @@ import { BudgetReportPath } from "./BudgetReportPath";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
 import { BudgetReportQuery, BudgetReportPeriodInput, BudgetReportGranularity } from "./BudgetReportQuery";
 
+const DEBUG_OUTPUT = false;
+
 interface NamedResolver {
     readonly name: string;
 }
@@ -77,7 +79,10 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
     }
 
     public processOutputRows(rows: BudgetReportOutputRow[], groupKeys:Record<string, any>): BudgetReportOutputRow[] {
-        console.log(`${this.name} is processing ${rows.length} output rows(s).`);
+        if (DEBUG_OUTPUT) {
+            console.log(`${this.name} is processing ${rows.length} output rows(s).`);
+        }
+        
         return rows;
     }
 

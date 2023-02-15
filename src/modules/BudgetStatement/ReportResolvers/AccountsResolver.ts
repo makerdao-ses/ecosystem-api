@@ -1,6 +1,9 @@
 import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher";
+
+const DEBUG_OUTPUT = false;
+
 export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {
     readonly name = 'AccountsResolver';
 
@@ -12,8 +15,10 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
     }
 
     public async execute(query:AccountsResolverData): Promise<ResolverOutput<ResolverData>> {
-        console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
-
+        if (DEBUG_OUTPUT) {
+            console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
+        }
+        
         const result:ResolverOutput<ResolverData> = {
             nextResolversData: {},
             output: [{
@@ -59,7 +64,10 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
             result.output[0].rows = result.output[0].rows.concat(outputRows);
         }
 
-        console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
+        if (DEBUG_OUTPUT) {
+            console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
+        }
+        
         return result;
     }
 }
