@@ -1,5 +1,5 @@
 import { gql } from 'apollo-server-core';
-import { quarterlyExpenses, monthlyExpenses } from './stubData.js';
+import { BudgetReportGranularity, BudgetReportQuery } from '../BudgetStatement/BudgetReportQuery.js';
 
 export const typeDefs = [gql`
 
@@ -22,7 +22,9 @@ export const typeDefs = [gql`
 
     enum Granularity {
         monthly, 
-        quarterly
+        quarterly,
+        annual,
+        total
     }
 
     input AggregateExpensesFilter {
@@ -39,19 +41,54 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         totalQuarterlyExpenses: async (_: any, { filter }: any, { dataSources }: any) => {
-            if (filter.granularity === 'monthly') {
-                const reports = {
-                    expenses: monthlyExpenses
-                }
-                return { reports }
-            } else if (filter.granularity === 'quarterly') {
-                const reports = {
-                    expenses: quarterlyExpenses
-                }
-                return { reports }
+            filter.granularity = filter.granularity || 'monthly';
 
+            let granularity: BudgetReportGranularity;
+            switch(filter.granularity) {
+                case 'monthly':
+                    granularity = BudgetReportGranularity.Monthly;
+                    break;
+
+                case 'quarterly':
+                    granularity = BudgetReportGranularity.Quarterly;
+                    break;
+
+                case 'annual':
+                    granularity = BudgetReportGranularity.Annual;
+                    break;
+                
+                case 'total':
+                    granularity = BudgetReportGranularity.Total;
+                    break;
+
+                default:
+                    throw new Error('Invalid value for granularity: should be "monthly", "quarterly", "annual", or "total"'); 
             }
-            return null;
+
+            const query:BudgetReportQuery = {
+                start: null,
+                end: null,
+                granularity,
+                budgets: 'makerdao/core-units/*',
+                categories: '*'
+            };
+
+            const result = await dataSources.db.TotalExpenses.query(query);
+
+            const expenses = result
+                .map((group:any) => ({
+                    period: group.keys.period.replace('/', '-'),
+                    budget: "/makerdao/core-units",
+                    prediction: Math.round(group.rows[0].prediction * 100.00) / 100.00,
+                    actuals: Math.round(group.rows[0].actual * 100.00) / 100.00,
+                    discontinued: Math.round(group.rows[0].actualDiscontinued * 100.00) / 100.00,
+                    budgetCap: Math.round(group.rows[0].budgetCap * 100.00) / 100.00
+                }))
+                .sort((a:any,b:any) => (a.period > b.period) ? 1 : ((b.period > a.period) ? -1 : 0));
+
+            return {
+                reports: { expenses }
+            }
         },
 
     }

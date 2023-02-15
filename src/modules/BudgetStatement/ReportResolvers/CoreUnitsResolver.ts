@@ -1,7 +1,7 @@
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
+import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
 import { AccountsResolverData } from "./AccountsResolver.js";
 import { Knex } from "knex";
-import { BudgetReportPathSegment } from "../BudgetReportPath";
+import { BudgetReportPathSegment } from "../BudgetReportPath.js";
 
 const DEBUG_OUTPUT = false;
 

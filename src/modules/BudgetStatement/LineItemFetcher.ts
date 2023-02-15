@@ -1,6 +1,5 @@
 import { Knex } from "knex";
-import { slice } from "lodash";
-import { BudgetReportPeriod } from "./BudgetReportPeriod";
+import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
 
 export interface LineItemGroup {
     account: string,

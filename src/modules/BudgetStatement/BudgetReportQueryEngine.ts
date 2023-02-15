@@ -1,8 +1,8 @@
 import { Knex } from "knex";
-import { LineItemFetcher } from "./LineItemFetcher";
-import { BudgetReportPath } from "./BudgetReportPath";
-import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
-import { BudgetReportQuery, BudgetReportPeriodInput, BudgetReportGranularity } from "./BudgetReportQuery";
+import { LineItemFetcher } from "./LineItemFetcher.js";
+import { BudgetReportPath } from "./BudgetReportPath.js";
+import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod.js";
+import { BudgetReportQuery, BudgetReportPeriodInput, BudgetReportGranularity } from "./BudgetReportQuery.js";
 
 const DEBUG_OUTPUT = false;
 

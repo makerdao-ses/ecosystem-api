@@ -1,4 +1,4 @@
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
+import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
 
 const DEBUG_OUTPUT = false;
 

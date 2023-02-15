@@ -1,5 +1,5 @@
-import { BudgetReportGranularity } from "../BudgetReportQuery";
-import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
+import { BudgetReportGranularity } from "../BudgetReportQuery.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -55,7 +55,7 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Resol
     }
 
     private _getGroupName(row: BudgetReportOutputRow, keys: Record<string, any>): string {
-        let result = 'totals';
+        let result = 'total';
 
         if (this._granularity === BudgetReportGranularity.Annual) {
             result = '' + row.month.year;
