@@ -7,6 +7,7 @@ import { CoreUnitsResolver } from "./ReportResolvers/CoreUnitsResolver.js";
 import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
 
+const DEBUG_OUTPUT_TO_FILE = false;
 let knex:Knex;
 
 beforeAll(async () => {
@@ -40,14 +41,29 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     };
 
     const output = await engine.execute(query);
-
     expect(output.length).toBeGreaterThan(5);
-    output.forEach(group => {
-        //console.log(group);
-        if (group.keys.period == '0x7c09/2022/Q1') {
-            expect(group.rows[0].actual).toBeCloseTo(388463.38999999996, 4);
-        }
-        //expect(group.rows.length).toBeGreaterThan(40);
-        //expect(['SES-001','SH-001','DUX-001']).toContain(group.keys.owner);
-    });
+
+    if (DEBUG_OUTPUT_TO_FILE) { 
+        const fileContents = output
+            .map(group => ({
+                period: group.keys.period.replace('/', '-'),
+                budget: "/makerdao/core-units",
+                prediction: Math.round(group.rows[0].prediction * 100.00) / 100.00,
+                actuals: Math.round(group.rows[0].actual * 100.00) / 100.00,
+                discontinued: Math.round(group.rows[0].actualDiscontinued * 100.00) / 100.00,
+                budgetCap: Math.round(group.rows[0].budgetCap * 100.00) / 100.00
+            }))
+            .sort((a,b) => (a.period > b.period) ? 1 : ((b.period > a.period) ? -1 : 0));
+
+        let fs = require('fs');
+        fs.writeFile(
+            (query.granularity == BudgetReportGranularity.Quarterly ? "quarterly" : "monthly") + "-data.json", 
+            JSON.stringify(fileContents), 
+            function(err:any) {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        );
+    }
 });

@@ -68,12 +68,12 @@ export class LineItemFetcher {
             totals.payment += c.numbers.payment;
         });
 
-        result += LineItemFetcher._padString('-----', 60, true);
+        result += LineItemFetcher._padString('-----', 59, true);
         result += LineItemFetcher._padString('-----', 15, true);
         result += LineItemFetcher._padString('-----', 15, true);
         result += LineItemFetcher._padString('-----', 15, true) + '\n';
 
-        result += LineItemFetcher._padNumber(totals.actual, 60);
+        result += LineItemFetcher._padNumber(totals.actual, 59);
         result += LineItemFetcher._padNumber(totals.forecast, 15);
         result += LineItemFetcher._padNumber(totals.budgetCap, 15);
         result += LineItemFetcher._padNumber(totals.payment, 15) + '\n';

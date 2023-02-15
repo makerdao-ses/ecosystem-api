@@ -2,6 +2,7 @@ import initKnex from "../../initKnex.js";
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup, LineItemNumbers } from "./LineItemFetcher";
 
+const DEBUG_OUTPUT = false;
 let knex:Knex;
 
 beforeAll(async () => {
@@ -25,8 +26,11 @@ it ('fetches correct line items for permanent team wallet', async () => {
     const fetcher = new LineItemFetcher(knex);
     const account = '0xb5eb779ce300024edb3df9b6c007e312584f6f4f'.toLowerCase();
     const lineItems = await fetcher.getLineItems(account, '2022-10-01');
-
-    console.log(LineItemFetcher.lineItemGroupToString(lineItems));
+    
+    const lineItemsString = LineItemFetcher.lineItemGroupToString(lineItems);
+    if (DEBUG_OUTPUT) {
+        console.log(lineItemsString);
+    }
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2022/10');
@@ -49,7 +53,10 @@ it ('fetches correct line items for incubation program wallet', async () => {
     const account = '0x7c09Ff9b59BAAebfd721cbDA3676826aA6d7BaE8'.toLowerCase();
     const lineItems = await fetcher.getLineItems(account, '2022-10-01', false);
 
-    console.log(LineItemFetcher.lineItemGroupToString(lineItems));
+    const lineItemsString = LineItemFetcher.lineItemGroupToString(lineItems);
+    if (DEBUG_OUTPUT) {
+        console.log(lineItemsString);
+    }
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2022/10');
@@ -72,7 +79,10 @@ it ('fetches correct line items for grants program wallet', async () => {
     const account = '0xf95eB8eC63D6059bA62b0A8A7F843c7D92f41de2'.toLowerCase();
     const lineItems = await fetcher.getLineItems(account, '2022-10-01', true);
 
-    console.log(LineItemFetcher.lineItemGroupToString(lineItems));
+    const lineItemsString = LineItemFetcher.lineItemGroupToString(lineItems);
+    if (DEBUG_OUTPUT) {
+        console.log(lineItemsString);
+    }
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2022/10');
