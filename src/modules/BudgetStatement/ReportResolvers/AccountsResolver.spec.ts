@@ -4,7 +4,6 @@ import { AccountsResolver, AccountsResolverData } from "./AccountsResolver.js";
 import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 import { BudgetReportPath } from "../BudgetReportPath.js";
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";
-//import { LineItemFetcher } from "./BudgetReportFetcher";
 
 let knex:Knex;
 
@@ -33,7 +32,6 @@ it ('works', async () => {
     const result = await resolver.execute(query);
 
     expect(Object.keys(result.nextResolversData)).toEqual([]);
-
     result.output[0].rows.forEach(r => {
         expect(r.account.toLowerCase()).toBe(query.account.toLowerCase());
         expect(period).toContain(r.month.toString())

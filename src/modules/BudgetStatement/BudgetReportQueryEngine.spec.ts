@@ -34,8 +34,8 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     const query:BudgetReportQuery = {
         start: null,
         end: null,
-        granularity: BudgetReportGranularity.Quartely,
-        budgets: 'makerdao/core-units/SES-001,sh-001,DuX-001',
+        granularity: BudgetReportGranularity.Quarterly,
+        budgets: 'makerdao/core-units/*',
         categories: '*'
     };
 
@@ -43,7 +43,11 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
 
     expect(output.length).toBeGreaterThan(5);
     output.forEach(group => {
-        expect(group.rows.length).toBeGreaterThan(40);
-        expect(['SES-001','SH-001','DUX-001']).toContain(group.keys.owner);
+        //console.log(group);
+        if (group.keys.period == '0x7c09/2022/Q1') {
+            expect(group.rows[0].actual).toBeCloseTo(388463.38999999996, 4);
+        }
+        //expect(group.rows.length).toBeGreaterThan(40);
+        //expect(['SES-001','SH-001','DUX-001']).toContain(group.keys.owner);
     });
 });

@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import { LineItemFetcher, LineItemRecord } from "./BudgetReportFetcher";
+import { LineItemFetcher } from "./LineItemFetcher";
 import { BudgetReportPath } from "./BudgetReportPath";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod";
 import { BudgetReportQuery, BudgetReportPeriodInput, BudgetReportGranularity } from "./BudgetReportQuery";
@@ -20,7 +20,26 @@ export interface BudgetReportOutputGroup {
     rows: BudgetReportOutputRow[];
 }
 
-export interface BudgetReportOutputRow extends LineItemRecord {}
+export interface BudgetReportOutputRow {
+    account: string,
+    month: BudgetReportPeriod,
+    
+    group: string | null,
+    headcountExpense: boolean | null,
+    category: string | null,
+
+    actual: number,
+    forecast: number,
+    prediction: number,
+    budgetCap: number,
+    payment: number,
+    
+    actualDiscontinued: number,
+    forecastDiscontinued: number,
+    predictionDiscontinued: number,
+    budgetCapDiscontinued: number,
+    paymentDiscontinued: number,
+}
 
 export interface ResolverOutput<TOutput> {
     nextResolversData: Record<string, TOutput[]>,
