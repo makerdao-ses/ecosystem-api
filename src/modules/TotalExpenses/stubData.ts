@@ -50,8 +50,8 @@ export const quarterlyExpenses = [
     {
         "period": "2022-Q4",
         "budget": "/makerdao/core-units",
-        "prediction": 8711604.76,
-        "actuals": 8480794.34,
+        "prediction": 8711586.76,
+        "actuals": 8480776.34,
         "discontinued": 638212.9,
         "budgetCap": 798166.44
     },
@@ -59,7 +59,7 @@ export const quarterlyExpenses = [
         "period": "2023-Q1",
         "budget": "/makerdao/core-units",
         "prediction": 4944194.95,
-        "actuals": 2868297.67,
+        "actuals": 1802595.07,
         "discontinued": 128136.32,
         "budgetCap": 329842.5
     },
@@ -67,7 +67,7 @@ export const quarterlyExpenses = [
         "period": "2023-Q2",
         "budget": "/makerdao/core-units",
         "prediction": 1532068.57,
-        "actuals": 507851.3,
+        "actuals": 0,
         "discontinued": 0,
         "budgetCap": 102105
     },
@@ -213,24 +213,24 @@ export const monthlyExpenses = [
     {
         "period": "2022-10",
         "budget": "/makerdao/core-units",
-        "prediction": 3018321.62,
-        "actuals": 3018321.62,
+        "prediction": 3018315.62,
+        "actuals": 3018315.62,
         "discontinued": 346984.73,
         "budgetCap": 245438.81
     },
     {
         "period": "2022-11",
         "budget": "/makerdao/core-units",
-        "prediction": 3156686.09,
-        "actuals": 3089710.42,
+        "prediction": 3156680.09,
+        "actuals": 3089704.42,
         "discontinued": 177506.36,
         "budgetCap": 290047.15
     },
     {
         "period": "2022-12",
         "budget": "/makerdao/core-units",
-        "prediction": 2536597.05,
-        "actuals": 2372762.3,
+        "prediction": 2536591.05,
+        "actuals": 2372756.3,
         "discontinued": 113721.81,
         "budgetCap": 262680.48
     },
@@ -246,7 +246,7 @@ export const monthlyExpenses = [
         "period": "2023-02",
         "budget": "/makerdao/core-units",
         "prediction": 1655643.8,
-        "actuals": 818267.96,
+        "actuals": 310416.66,
         "discontinued": 0,
         "budgetCap": 109947.5
     },
@@ -254,7 +254,7 @@ export const monthlyExpenses = [
         "period": "2023-03",
         "budget": "/makerdao/core-units",
         "prediction": 1491298.49,
-        "actuals": 557851.3,
+        "actuals": 0,
         "discontinued": 0,
         "budgetCap": 109947.5
     },
@@ -262,7 +262,7 @@ export const monthlyExpenses = [
         "period": "2023-04",
         "budget": "/makerdao/core-units",
         "prediction": 1221651.91,
-        "actuals": 507851.3,
+        "actuals": 0,
         "discontinued": 0,
         "budgetCap": 34035
     },
@@ -281,5 +281,21 @@ export const monthlyExpenses = [
         "actuals": 0,
         "discontinued": 0,
         "budgetCap": 34035
+    },
+    {
+        "period": "2023-07",
+        "budget": "/makerdao/core-units",
+        "prediction": 0,
+        "actuals": 0,
+        "discontinued": 0,
+        "budgetCap": 0
+    },
+    {
+        "period": "2023-08",
+        "budget": "/makerdao/core-units",
+        "prediction": 0,
+        "actuals": 0,
+        "discontinued": 0,
+        "budgetCap": 0
     }
 ]

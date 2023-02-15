@@ -17,6 +17,7 @@ export interface LineItemCategory {
     numbers: LineItemNumbers,
     reports: Record<string, LineItemNumbers>,
     obsolete: boolean,
+    hasError: boolean
 }
 
 export interface LineItemNumbers {
@@ -41,7 +42,7 @@ export class LineItemFetcher {
             payment: 0.00
         };
 
-        result += '  ' + LineItemFetcher._padString('GROUP', 15) + ' '
+        result += '   ' + LineItemFetcher._padString('GROUP', 15) + ' '
             + LineItemFetcher._padString('CATEGORY', 24, true) + ' '
             + LineItemFetcher._padString('ACTUALS', 15, true) 
             + LineItemFetcher._padString('FORECAST', 15, true) 
@@ -50,7 +51,8 @@ export class LineItemFetcher {
             + '     REPORTS\n';
 
         lineItems.categories.forEach(c => {
-            result += c.obsolete ? '* ' : '  ';
+            result += c.obsolete ? '*' : ' ';
+            result += c.hasError ? 'F ' : '  ';
             result += LineItemFetcher._padString(c.group || '-', 15) + ' ' 
             result += LineItemFetcher._padString(c.category || '-', 24, true) + ' ';
             result += LineItemFetcher._padNumber(c.numbers.actual, 15);
@@ -66,12 +68,12 @@ export class LineItemFetcher {
             totals.payment += c.numbers.payment;
         });
 
-        result += LineItemFetcher._padString('-----', 58, true);
+        result += LineItemFetcher._padString('-----', 60, true);
         result += LineItemFetcher._padString('-----', 15, true);
         result += LineItemFetcher._padString('-----', 15, true);
         result += LineItemFetcher._padString('-----', 15, true) + '\n';
 
-        result += LineItemFetcher._padNumber(totals.actual, 58);
+        result += LineItemFetcher._padNumber(totals.actual, 60);
         result += LineItemFetcher._padNumber(totals.forecast, 15);
         result += LineItemFetcher._padNumber(totals.budgetCap, 15);
         result += LineItemFetcher._padNumber(totals.payment, 15) + '\n';
@@ -166,6 +168,7 @@ export class LineItemFetcher {
         const records = await this.buildQuery(account, month);
         records.forEach((r: any) => {
             const group = (r.group == null || r.group.length < 1 ? null : r.group);
+            const report = this._parseDateStringAsMonthPeriod(r.report);
 
             if (currentCategory === null 
                 || currentCategory.category !== r.category
@@ -182,20 +185,39 @@ export class LineItemFetcher {
                         payment: 0.00,
                     },
                     reports: {},
-                    obsolete: false
+                    obsolete: false,
+                    hasError: false
                 };
 
                 result.categories.push(currentCategory);
             }
 
-            currentCategory.numbers = {
-                actual: Number.parseFloat(r.actual) || 0.00,
-                forecast: Number.parseFloat(r.forecast) || 0.00,
-                budgetCap: Number.parseFloat(r.budgetCap) || 0.00,
-                payment: Number.parseFloat(r.payment) || 0.00
-            };
+            if (report.comesBefore(result.month)) {
+                // Disregard actuals and payments reported on future months
+                currentCategory.numbers = {
+                    actual: 0.00,
+                    forecast: Number.parseFloat(r.forecast) || 0.00,
+                    budgetCap: Number.parseFloat(r.budgetCap) || 0.00,
+                    payment: 0.00
+                };
 
-            const report = this._parseDateStringAsMonthPeriod(r.report);
+                if (r.actual && Number.parseFloat(r.actual) > 0.00) {
+                    currentCategory.hasError = true;
+                }
+
+                if (r.payment && Number.parseFloat(r.payment) > 0.00) {
+                    currentCategory.hasError = true;
+                }
+
+            } else {
+                currentCategory.numbers = {
+                    actual: Number.parseFloat(r.actual) || 0.00,
+                    forecast: Number.parseFloat(r.forecast) || 0.00,
+                    budgetCap: Number.parseFloat(r.budgetCap) || 0.00,
+                    payment: Number.parseFloat(r.payment) || 0.00
+                };
+            }
+
             currentCategory.reports[report.toString()] = currentCategory.numbers;
 
             if (result.latestReport === null || result.latestReport.comesBefore(report)) {
