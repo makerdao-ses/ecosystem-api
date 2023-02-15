@@ -47,7 +47,7 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
                 this._knex.raw('STRING_AGG(DISTINCT "BSW"."name", \';\' ORDER BY "BSW"."name" ASC) as "accountNames"')
             )
             .min('BS.month as firstReport')
-            .max('BS.month as secondReport')
+            .max('BS.month as latestReport')
 
             .from('public.CoreUnit as CU')
                 .leftJoin('public.BudgetStatement as BS', 'BS.cuId', 'CU.id')

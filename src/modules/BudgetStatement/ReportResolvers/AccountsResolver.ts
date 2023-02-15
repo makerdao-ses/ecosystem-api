@@ -1,6 +1,6 @@
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
+import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
 import { Knex } from "knex";
-import { LineItemFetcher } from "../BudgetReportFetcher";
+import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher";
 export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {
     readonly name = 'AccountsResolver';
 
@@ -27,8 +27,36 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         };
 
         for (const month of query.periodRange) {
-            const records = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
-            result.output[0].rows = result.output[0].rows.concat(records);
+            const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
+            const outputRows:BudgetReportOutputRow[] = lineItemGroup.categories.map(c => {
+                const actualsReported = lineItemGroup.hasActuals 
+                    || (lineItemGroup.latestReport !== null && lineItemGroup.latestReport.equals(lineItemGroup.month));
+                
+                const prediction = actualsReported ? c.numbers.actual : c.numbers.forecast;
+
+                return {
+                    account: lineItemGroup.account,
+                    month: lineItemGroup.month,
+
+                    group: c.group,
+                    headcountExpense: c.headcountExpense,
+                    category: c.category,
+                    
+                    actual: c.numbers.actual,
+                    forecast: c.numbers.forecast,
+                    prediction: prediction,
+                    budgetCap: c.numbers.budgetCap,
+                    payment: c.numbers.payment,
+
+                    actualDiscontinued: query.discontinued ? c.numbers.actual : 0.00,
+                    forecastDiscontinued: query.discontinued ? c.numbers.forecast : 0.00,
+                    predictionDiscontinued: query.discontinued ? prediction : 0.00,
+                    budgetCapDiscontinued: query.discontinued ? c.numbers.budgetCap : 0.00,
+                    paymentDiscontinued: query.discontinued ? c.numbers.payment : 0.00,
+                }
+            });
+
+            result.output[0].rows = result.output[0].rows.concat(outputRows);
         }
 
         console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);

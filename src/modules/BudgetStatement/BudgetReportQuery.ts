@@ -15,6 +15,6 @@ export type BudgetReportPathInput = BudgetReportPath | string;
 export enum BudgetReportGranularity {
     Total,
     Annual,
-    Quartely,
+    Quarterly,
     Monthly
 }
