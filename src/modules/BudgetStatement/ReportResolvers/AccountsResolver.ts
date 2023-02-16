@@ -31,11 +31,8 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         const result:ResolverOutput<ResolverData> = {
             nextResolversData: {},
             output: [{
-                keys: {
-                    owner: query.owner,
-                    account: query.account,
-                    discontinued: query.discontinued
-                },
+                keys: query.groupPath,
+                period: query.period,
                 rows: []
             }]
         };

@@ -8,16 +8,20 @@ export interface NamedResolver {
     readonly name: string;
 }
 
+export type SerializableKey = { toString():string };
+
 export interface ResolverData {
     start: BudgetReportPeriodInput,
     end: BudgetReportPeriodInput,
     budgetPath: BudgetReportPath,
     categoryPath: BudgetReportPath,
-    granularity: BudgetReportGranularity
+    granularity: BudgetReportGranularity,
+    groupPath: SerializableKey[],
 }
 
 export interface BudgetReportOutputGroup {
-    keys: Record<string, any>;
+    keys: SerializableKey[];
+    period: string;
     rows: BudgetReportOutputRow[];
 }
 
@@ -50,7 +54,7 @@ export interface ResolverOutput<TOutput> {
 export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends NamedResolver {
     execute(query:TInput): Promise<ResolverOutput<TOutput>>;
     executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>>;
-    processOutputRows(rows:BudgetReportOutputRow[], groupKeys:Record<string, any>): BudgetReportOutputRow[];
+    processOutputRows(rows:BudgetReportOutputRow[], groupKeys:Record<string, SerializableKey>): BudgetReportOutputRow[];
     processOutputGroups(output:BudgetReportOutputGroup[]): BudgetReportOutputGroup[];
 }
 

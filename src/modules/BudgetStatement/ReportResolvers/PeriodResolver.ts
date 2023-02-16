@@ -2,11 +2,13 @@ import { Knex } from "knex";
 import { LineItemFetcher } from "../LineItemFetcher.js";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "../BudgetReportPeriod.js";
 import { BudgetReportGranularity, BudgetReportPeriodInput } from "../BudgetReportQuery.js";
-import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
 
 const DEBUG_OUTPUT = false;
 
-export interface PeriodResolverData extends ResolverData {}
+export interface PeriodResolverData extends ResolverData {
+    period: string
+}
 
 export class PeriodResolver extends BudgetReportResolverBase<ResolverData, PeriodResolverData> {
     readonly name = 'PeriodResolver';
@@ -31,15 +33,16 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
 
         this._granularity = query.granularity;
 
-        const queries:PeriodResolverData[] = this
-            ._groupByGranularity(periodRange, query.granularity)
-            .map(periodRange => ({
-                start: periodRange[0],
-                end: periodRange[periodRange.length-1],
-                granularity: query.granularity,
-                budgetPath: query.budgetPath,
-                categoryPath: query.categoryPath
-            }));
+        const map = this._groupByGranularity(periodRange, query.granularity);
+        const queries:PeriodResolverData[] = Object.keys(map).map(period => ({
+            start: map[period][0],
+            end: map[period][map[period].length-1],
+            period: period,
+            granularity: query.granularity,
+            budgetPath: query.budgetPath,
+            categoryPath: query.categoryPath,
+            groupPath: []
+        }));
 
         return {
             nextResolversData: { DaoResolver: queries },
@@ -59,7 +62,8 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
                 const groupName = this._getGroupName(r, group.keys);
                 if (typeof result[groupName] == 'undefined') {
                     result[groupName] = {
-                        keys: { period: groupName },
+                        keys: group.keys,
+                        period: group.period,
                         rows: [{...r}]
                     }
 
@@ -82,7 +86,7 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
         return Object.values(result);
     }
 
-    private _groupByGranularity(range:BudgetReportPeriod[], granularity:BudgetReportGranularity): BudgetReportPeriod[][] {
+    private _groupByGranularity(range:BudgetReportPeriod[], granularity:BudgetReportGranularity): Record<string,BudgetReportPeriod[]> {
         const map: Record<string, BudgetReportPeriod[]> = {};
         
         let getKey: {(p:BudgetReportPeriod):string};
@@ -112,7 +116,7 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
             map[key].push(period);
         });
 
-        return Object.values(map);
+        return map;
     }
 
     private async _resolvePeriodRange(start:BudgetReportPeriodInput, end:BudgetReportPeriodInput): Promise<BudgetReportPeriod[]> {
@@ -139,15 +143,15 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
         return BudgetReportPeriod.fillRange(first, last);
     }
 
-    private _getGroupName(row: BudgetReportOutputRow, keys: Record<string, any>): string {
-        let result = 'total';
+    private _getGroupName(row: BudgetReportOutputRow, keys: SerializableKey[]): string {
+        let result = keys.join('/') + '/';
 
         if (this._granularity === BudgetReportGranularity.Annual) {
-            result = '' + row.month.year;
+            result += row.month.year;
         } else if (this._granularity === BudgetReportGranularity.Quarterly) {
-            result = row.month.year + '/Q' + row.month.quarter;
+            result += row.month.year + '/Q' + row.month.quarter;
         } else if (this._granularity === BudgetReportGranularity.Monthly) {
-            result = row.month.year + '/' + (row.month.month as number < 10 ? '0' : '') + row.month.month;
+            result += row.month.year + '/' + (row.month.month as number < 10 ? '0' : '') + row.month.month;
         }
 
         return result;

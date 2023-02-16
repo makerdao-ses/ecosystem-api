@@ -64,7 +64,7 @@ it ('Correctly does basic validation of its configuration', async () => {
         };
 
         const result = await engine.execute(query);
-        expect(result.filter(r => r.keys.period === '2022/Q1').length).toEqual(1);
+        expect(result.filter(r => r.period === '2022/Q1').length).toEqual(1);
     }
 });
 
@@ -96,7 +96,7 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     if (DEBUG_OUTPUT_TO_FILE) { 
         const fileContents = output
             .map(group => ({
-                period: group.keys.period.replace('/', '-'),
+                period: group.period.replace('/', '-'),
                 budget: "/makerdao/core-units",
                 prediction: Math.round(group.rows[0].prediction * 100.00) / 100.00,
                 actuals: Math.round(group.rows[0].actual * 100.00) / 100.00,

@@ -34,7 +34,8 @@ export class BudgetReportQueryEngine {
             end: query.end, 
             budgetPath, 
             categoryPath, 
-            granularity: query.granularity
+            granularity: query.granularity,
+            groupPath: []
         });
     }
 
@@ -83,7 +84,7 @@ export class BudgetReportQueryEngine {
             collectedOutput = resolver.processOutputGroups(collectedOutput);
 
             if (DEBUG_OUTPUT) {
-                console.log('>> QueryEngine processed output through ' + resolver.name + ': ', inputLength, '>', collectedOutput.length, 'group(s) such as (keys, rows[0]):', collectedOutput[0].keys, collectedOutput[0].rows[0]);
+                console.log('>> QueryEngine processed output through ' + resolver.name + ': ', inputLength, '>', collectedOutput.length, 'group(s) such as (keys, rows[0]):', collectedOutput[0].keys.join('/'), collectedOutput[0].rows[0]);
             }
         }
 

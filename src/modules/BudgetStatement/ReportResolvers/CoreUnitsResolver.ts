@@ -21,21 +21,44 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
             console.log(`CoreUnitsResolver is resolving ${query.budgetPath.toString()}`);
         }
 
-        const coreUnitWallets = await this._buildCoreUnitWalletQuery(query.budgetPath.nextSegment());
+        const pathInfo = {
+            coreUnitPath: query.budgetPath,
+            coreUnitSegment: query.budgetPath.nextSegment(),
+            walletSegment: query.budgetPath.reduce().nextSegment()
+        };
+
+        const attachCoreUnitPathSegment = (pathInfo.coreUnitSegment.groups === null);
+        const attachWalletPathSegment = (pathInfo.walletSegment.groups === null);
+
+        const coreUnitWallets = await this._buildCoreUnitWalletQuery(pathInfo.coreUnitSegment);
         const mip39c3s = await this._getMip39c3s();
         
-        const resolverInput: AccountsResolverData[] = coreUnitWallets.map(cuw => ({
-            owner: cuw.coreUnitCode,
-            account: cuw.account,
-            discontinued: (mip39c3s[cuw.coreUnitCode] ? true : false),
-            discontinuedSince: mip39c3s[cuw.coreUnitCode] || null, 
+        const resolverInput: AccountsResolverData[] = coreUnitWallets.map(cuw => {
+            const result = {
+                owner: cuw.coreUnitCode,
+                account: cuw.account,
+                discontinued: (mip39c3s[cuw.coreUnitCode] ? true : false),
+                discontinuedSince: mip39c3s[cuw.coreUnitCode] || null, 
+    
+                start: query.start,
+                end: query.end,
+                period: query.period,
+                categoryPath: query.categoryPath,
+                budgetPath: query.budgetPath.reduce(),
+                granularity: query.granularity,
+                groupPath: query.groupPath.concat()
+            };
 
-            start: query.start,
-            end: query.end,
-            categoryPath: query.categoryPath,
-            budgetPath: query.budgetPath.reduce(),
-            granularity: query.granularity
-        }));
+            if (attachCoreUnitPathSegment) {
+                result.groupPath.push(cuw.coreUnitCode);
+            }
+
+            if (attachWalletPathSegment) {
+                result.groupPath.push(cuw.account);
+            }
+
+            return result;
+        });
 
         if (DEBUG_OUTPUT) { 
             console.log(resolverInput);

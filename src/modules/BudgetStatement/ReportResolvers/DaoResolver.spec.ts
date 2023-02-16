@@ -22,9 +22,11 @@ it ('works', async () => {
     const query = {
         start: period[0],
         end: period[2],
+        period: '2021/Q4',
         budgetPath: BudgetReportPath.fromString('makerdao/core-units'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly,
+        groupPath: ['makerdao', 'core-units']
     };
 
     const result = await resolver.execute(query);

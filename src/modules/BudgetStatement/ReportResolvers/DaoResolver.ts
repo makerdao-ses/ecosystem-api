@@ -8,7 +8,7 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
 
     public async execute(query:PeriodResolverData): Promise<ResolverOutput<PeriodResolverData>> {
         let path = query.budgetPath;
-        
+
         const dao = path.nextSegment();
         if (dao.toString() != 'makerdao') {
             throw new Error('Only makerdao supported for now.');
@@ -31,9 +31,11 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
                 CoreUnitsResolver: [{
                     start: query.start,
                     end: query.end,
+                    period: query.period,
                     categoryPath: query.categoryPath,
                     budgetPath: path,
-                    granularity: query.granularity
+                    granularity: query.granularity,
+                    groupPath: [dao, budgetCategories]
                 }]
             },
             output: []
