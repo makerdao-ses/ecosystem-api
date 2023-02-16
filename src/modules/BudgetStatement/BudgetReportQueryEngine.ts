@@ -24,7 +24,7 @@ export class BudgetReportQueryEngine {
         }
     }
 
-    public async execute(query:BudgetReportQuery) {
+    public async execute(query:BudgetReportQuery): Promise<BudgetReportOutputGroup[]> {
         const periodRange = await this._resolvePeriodRange(query.start, query.end);
         if (periodRange[0].type !== BudgetReportPeriodType.Month) {
             throw new Error('Quarters and years are not allowed as query start or end values. Use the respective months instead.');

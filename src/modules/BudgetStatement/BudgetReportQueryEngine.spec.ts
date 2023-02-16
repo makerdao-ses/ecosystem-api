@@ -6,6 +6,9 @@ import { DaoResolver } from "./ReportResolvers/DaoResolver.js";
 import { CoreUnitsResolver } from "./ReportResolvers/CoreUnitsResolver.js";
 import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
+import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow } from "./BudgetReportResolver.js";
+import { BudgetReportPath } from "./BudgetReportPath.js";
 
 const DEBUG_OUTPUT_TO_FILE = false;
 let knex:Knex;
@@ -16,6 +19,54 @@ beforeAll(async () => {
 
 afterAll(async () => {
     knex.destroy();
+});
+
+it ('Correctly does basic validation of its configuration', async () => {
+    const resolvers = [ 
+        new PeriodResolver(),
+        new DaoResolver(),
+        new CoreUnitsResolver(knex),
+        new AccountsResolver(knex)
+    ];
+
+    expect(() => new BudgetReportQueryEngine(knex, resolvers, 'UnknownResolver'))
+        .toThrowError('Cannot find root resolver \'UnknownResolver\'');
+
+    const engine = new BudgetReportQueryEngine(knex, resolvers, 'PeriodResolver');
+    const badQuery:BudgetReportQuery = {
+        start: BudgetReportPeriod.fromString('2022/Q4'),
+        end: BudgetReportPeriod.fromString('2023/Q2'),
+        granularity: BudgetReportGranularity.Quarterly,
+        budgets: 'makerdao/core-units/*',
+        categories: '*'
+    };
+
+    await expect(() => engine.execute(badQuery)).rejects
+        .toThrow('Quarters and years are not allowed as query start or end values. Use the respective months instead.');
+
+    const rangeTests = [
+        [null, '2022/01'],
+        [null, BudgetReportPeriod.fromString('2022/01')],
+        ['2022/01', null],
+        ['2022/01', '2022/01'],
+        ['2022/01', BudgetReportPeriod.fromString('2022/01')],
+        [BudgetReportPeriod.fromString('2022/01'), null],
+        [BudgetReportPeriod.fromString('2022/01'), '2022/01'],
+        [BudgetReportPeriod.fromString('2022/01'), BudgetReportPeriod.fromString('2022/01')]
+    ];
+
+    for (const range of rangeTests) {
+        const query = {
+            start: range[0], 
+            end: range[1],
+            granularity: BudgetReportGranularity.Quarterly,
+            budgets: BudgetReportPath.fromString('makerdao/core-units/DECO-001'),
+            categories: BudgetReportPath.fromString('*')
+        };
+
+        const result = await engine.execute(query);
+        expect(result.filter(r => r.keys.period === '2022/Q1').length).toEqual(1);
+    }
 });
 
 it ('Configures the resolvers correctly and returns concatenated output.', async () => {
