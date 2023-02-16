@@ -23,6 +23,7 @@ it ('works', async () => {
         account: '0x7c09ff9b59baaebfd721cbda3676826aa6d7bae8',
         owner: 'SES-001',
         discontinued: false,
+        discontinuedSince: null,
         periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
         budgetPath: BudgetReportPath.fromString('*'),
         categoryPath: BudgetReportPath.fromString('*'),

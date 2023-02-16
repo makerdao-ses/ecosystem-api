@@ -76,4 +76,5 @@ export interface AccountsResolverData extends ResolverData {
     account: string;
     owner: string;
     discontinued: boolean;
+    discontinuedSince: string | null;
 }

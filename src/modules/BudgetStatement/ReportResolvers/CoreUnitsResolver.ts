@@ -21,12 +21,13 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
         }
 
         const coreUnitWallets = await this._buildCoreUnitWalletQuery(query.budgetPath.nextSegment());
+        const mip39c3s = await this._getMip39c3s();
         
         const resolverInput: AccountsResolverData[] = coreUnitWallets.map(cuw => ({
             owner: cuw.coreUnitCode,
             account: cuw.account,
-            // TODO: replace by the proper condition
-            discontinued: ['EVENTS-001', 'COM-001', 'RWF-001', 'SH-001'].indexOf(cuw.coreUnitCode) > -1,
+            discontinued: (mip39c3s[cuw.coreUnitCode] ? true : false),
+            discontinuedSince: mip39c3s[cuw.coreUnitCode] || null, 
 
             periodRange: query.periodRange,
             categoryPath: query.categoryPath,
@@ -34,12 +35,35 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
             granularity: query.granularity
         }));
 
+        if (DEBUG_OUTPUT) { 
+            console.log(resolverInput);
+        }
+
         return {
             nextResolversData: {
                 AccountsResolver: resolverInput
             },
             output: []
         };
+    }
+
+    private async _getMip39c3s(): Promise<Record<string, string>> {
+        const records = await this._knex
+            .select(
+                'CU.code as code',
+                'MIP.accepted as acceptedSince'
+            )
+            .from('public.CuMip as MIP')
+            .leftJoin('public.CoreUnit as CU', 'CU.id', 'MIP.cuId')
+            .whereRaw('"MIP"."mipCode" LIKE \'MIP39c3%\'')
+            .where('MIP.mipStatus', 'Accepted');
+
+        const result:Record<string, string> = {};
+        records.forEach((r:any) => {
+            result[r.code] = r.acceptedSince
+        });
+
+        return result;
     }
 
     private _buildCoreUnitWalletQuery(segment: BudgetReportPathSegment) {
