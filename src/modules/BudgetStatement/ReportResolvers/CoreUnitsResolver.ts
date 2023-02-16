@@ -32,7 +32,6 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
 
             start: query.start,
             end: query.end,
-            periodRange: query.periodRange,
             categoryPath: query.categoryPath,
             budgetPath: query.budgetPath.reduce(),
             granularity: query.granularity

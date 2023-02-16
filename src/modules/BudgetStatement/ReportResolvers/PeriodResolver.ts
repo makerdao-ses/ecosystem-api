@@ -6,9 +6,7 @@ import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBas
 
 const DEBUG_OUTPUT = false;
 
-export interface PeriodResolverData extends ResolverData {
-    periodRange: BudgetReportPeriod[]
-}
+export interface PeriodResolverData extends ResolverData {}
 
 export class PeriodResolver extends BudgetReportResolverBase<ResolverData, PeriodResolverData> {
     readonly name = 'PeriodResolver';
@@ -33,19 +31,28 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
 
         this._granularity = query.granularity;
 
+        const queries:PeriodResolverData[] = this
+            ._groupByGranularity(periodRange, query.granularity)
+            .map(periodRange => ({
+                start: periodRange[0],
+                end: periodRange[periodRange.length-1],
+                granularity: query.granularity,
+                budgetPath: query.budgetPath,
+                categoryPath: query.categoryPath
+            }));
+
         return {
-            nextResolversData: {
-                DaoResolver: [{
-                    ...query,
-                    periodRange
-                }]
-            },
+            nextResolversData: { DaoResolver: queries },
             output: []
         };
     }
 
     public processOutputGroups(groups: BudgetReportOutputGroup[]): BudgetReportOutputGroup[] {
         const result:Record<string, BudgetReportOutputGroup> = {};
+
+        if (DEBUG_OUTPUT) {
+            console.log('PeriodResolver is processing groups', groups);
+        }
 
         for (const group of groups) {
             group.rows.forEach(r => {
@@ -73,6 +80,39 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
         }        
         
         return Object.values(result);
+    }
+
+    private _groupByGranularity(range:BudgetReportPeriod[], granularity:BudgetReportGranularity): BudgetReportPeriod[][] {
+        const map: Record<string, BudgetReportPeriod[]> = {};
+        
+        let getKey: {(p:BudgetReportPeriod):string};
+        switch (granularity) {
+            case BudgetReportGranularity.Monthly:
+                getKey = (p:BudgetReportPeriod) => p.toString();
+                break; 
+
+            case BudgetReportGranularity.Quarterly:
+                getKey = (p:BudgetReportPeriod) => `${p.year}/Q${p.quarter}`;
+                break;
+
+            case BudgetReportGranularity.Annual:
+                getKey = (p:BudgetReportPeriod) => p.year.toString();
+                break;
+
+            case BudgetReportGranularity.Total:
+                getKey = () => 'total';
+                break;
+        }
+
+        range.forEach(period => {
+            const key = getKey(period);
+            if (!map[key]) {
+                map[key] = [];
+            }
+            map[key].push(period);
+        });
+
+        return Object.values(map);
     }
 
     private async _resolvePeriodRange(start:BudgetReportPeriodInput, end:BudgetReportPeriodInput): Promise<BudgetReportPeriod[]> {

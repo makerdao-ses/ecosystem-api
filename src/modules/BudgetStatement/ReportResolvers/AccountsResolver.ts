@@ -2,6 +2,7 @@ import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, Resolver
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
 import { PeriodResolverData } from "./PeriodResolver.js";
+import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -39,7 +40,12 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
             }]
         };
 
-        for (const month of query.periodRange) {
+        const range = BudgetReportPeriod.fillRange(
+            query.start as BudgetReportPeriod, 
+            query.end as BudgetReportPeriod
+        );
+
+        for (const month of range) {
             const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
             const outputRows:BudgetReportOutputRow[] = lineItemGroup.categories.map(c => {
                 const actualsReported = lineItemGroup.hasActuals 
@@ -73,7 +79,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         }
 
         if (DEBUG_OUTPUT) {
-            console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
+            console.log(`AccountsResolver fetched ${range.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
         }
         
         return result;

@@ -26,7 +26,6 @@ it ('works', async () => {
         discontinuedSince: null,
         start: period[0],
         end: period[2],
-        periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
         budgetPath: BudgetReportPath.fromString('*'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly

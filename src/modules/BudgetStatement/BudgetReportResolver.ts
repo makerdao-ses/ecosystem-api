@@ -64,16 +64,23 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
         const result = { nextResolversData: {}, output: [] } as ResolverOutput<TOutput>;
 
         for (const resolverData of queries) {
-            const queryOutput = await this.execute(resolverData);
+            const queryOutput: ResolverOutput<TOutput> = await this.execute(resolverData);
             
-            result.nextResolversData = {
-                ...result.nextResolversData,
-                ...queryOutput.nextResolversData
-            }
+            Object.keys(queryOutput.nextResolversData).forEach(k => {
+                if (!result.nextResolversData[k]) {
+                    result.nextResolversData[k] = [];
+                }
+
+                result.nextResolversData[k] = result.nextResolversData[k].concat(queryOutput.nextResolversData[k]);
+            });
             
             result.output = queryOutput.output.concat(result.output);
         }
 
+        if (DEBUG_OUTPUT) {
+            console.log('Concatenated results from ', queries.length, 'execute calls', result);
+        }
+        
         return result;
     }
 

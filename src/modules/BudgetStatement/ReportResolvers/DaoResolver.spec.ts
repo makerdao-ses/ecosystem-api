@@ -22,13 +22,11 @@ it ('works', async () => {
     const query = {
         start: period[0],
         end: period[2],
-        periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
-        budgetPath: BudgetReportPath.fromString('*'),
+        budgetPath: BudgetReportPath.fromString('makerdao/core-units'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly,
     };
 
     const result = await resolver.execute(query);
-
     expect(Object.keys(result.nextResolversData)).toEqual(['CoreUnitsResolver']);
 });

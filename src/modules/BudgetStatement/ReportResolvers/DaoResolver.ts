@@ -7,8 +7,23 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
     readonly name = 'DaoResolver';
 
     public async execute(query:PeriodResolverData): Promise<ResolverOutput<PeriodResolverData>> {
+        let path = query.budgetPath;
+        
+        const dao = path.nextSegment();
+        if (dao.toString() != 'makerdao') {
+            throw new Error('Only makerdao supported for now.');
+        }
+
+        path = path.reduce();        
+        const budgetCategories = path.nextSegment();
+        if (budgetCategories.toString() != 'core-units') {
+            throw new Error('Only budget category core-units supported for now.');
+        }
+
+        path = path.reduce();
+
         if (DEBUG_OUTPUT) {
-            console.log(`DaoResolver is resolving ${query.budgetPath.toString()}`);
+            console.log(`DaoResolver is resolving budgets '${path.toString()}' from ${query.start?.toString()}-${query.end?.toString()} (DAO:${dao}; budgetCategory:${budgetCategories})`);
         }
 
         return {
@@ -16,9 +31,8 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
                 CoreUnitsResolver: [{
                     start: query.start,
                     end: query.end,
-                    periodRange: query.periodRange,
                     categoryPath: query.categoryPath,
-                    budgetPath: query.budgetPath.reduce().reduce(),
+                    budgetPath: path,
                     granularity: query.granularity
                 }]
             },
