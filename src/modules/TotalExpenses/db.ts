@@ -16,13 +16,13 @@ export class TotalExpensesModel {
 
     async query(query:BudgetReportQuery) {
         const resolvers = [ 
-            new PeriodResolver(),
+            new PeriodResolver(this.knex),
             new DaoResolver(),
             new CoreUnitsResolver(this.knex),
             new AccountsResolver(this.knex)
         ];
     
-        const engine = new BudgetReportQueryEngine(this.knex, resolvers, 'PeriodResolver');
+        const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver');
 
         return engine.execute(query);
     }

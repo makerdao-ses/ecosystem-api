@@ -1,23 +1,44 @@
-import { BudgetReportGranularity } from "../BudgetReportQuery.js";
+import { Knex } from "knex";
+import { LineItemFetcher } from "../LineItemFetcher.js";
+import { BudgetReportPeriod, BudgetReportPeriodType } from "../BudgetReportPeriod.js";
+import { BudgetReportGranularity, BudgetReportPeriodInput } from "../BudgetReportQuery.js";
 import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
 
 const DEBUG_OUTPUT = false;
 
-export class PeriodResolver extends BudgetReportResolverBase<ResolverData, ResolverData> {
+export interface PeriodResolverData extends ResolverData {
+    periodRange: BudgetReportPeriod[]
+}
+
+export class PeriodResolver extends BudgetReportResolverBase<ResolverData, PeriodResolverData> {
     readonly name = 'PeriodResolver';
 
+    private _lineItemFetcher: LineItemFetcher;
     private _granularity = BudgetReportGranularity.Total; 
 
-    public async execute(query:ResolverData): Promise<ResolverOutput<ResolverData>> {
+    constructor(knex:Knex) {
+        super();
+        this._lineItemFetcher = new LineItemFetcher(knex);
+    }
+
+    public async execute(query:ResolverData): Promise<ResolverOutput<PeriodResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`PeriodResolver is resolving ${query.budgetPath.toString()}`);
         }
         
+        const periodRange = await this._resolvePeriodRange(query.start, query.end);
+        if (periodRange[0].type !== BudgetReportPeriodType.Month) {
+            throw new Error('Quarters and years are not allowed as query start or end values. Use the respective months instead.');
+        }
+
         this._granularity = query.granularity;
 
         return {
             nextResolversData: {
-                DaoResolver: [query]
+                DaoResolver: [{
+                    ...query,
+                    periodRange
+                }]
             },
             output: []
         };
@@ -52,6 +73,30 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Resol
         }        
         
         return Object.values(result);
+    }
+
+    private async _resolvePeriodRange(start:BudgetReportPeriodInput, end:BudgetReportPeriodInput): Promise<BudgetReportPeriod[]> {
+        let first: BudgetReportPeriod, last:BudgetReportPeriod;
+
+        if (start === null || end === null) {
+            const availableMonths = await this._lineItemFetcher.getAvailableMonthsRange();
+
+            first = availableMonths.first;
+            if (start !== null) {
+                first = (typeof start === 'string') ? BudgetReportPeriod.fromString(start) : start;
+            }
+            
+            last = availableMonths.last;
+            if (end !== null) {
+                last = (typeof end === 'string') ? BudgetReportPeriod.fromString(end) : end;
+            }
+
+        } else {
+            first = (typeof start === 'string') ? BudgetReportPeriod.fromString(start) : start;
+            last = (typeof end === 'string') ? BudgetReportPeriod.fromString(end) : end;
+        }
+
+        return BudgetReportPeriod.fillRange(first, last);
     }
 
     private _getGroupName(row: BudgetReportOutputRow, keys: Record<string, any>): string {

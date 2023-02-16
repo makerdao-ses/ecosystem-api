@@ -1,8 +1,16 @@
 import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
+import { PeriodResolverData } from "./PeriodResolver.js";
 
 const DEBUG_OUTPUT = false;
+
+export interface AccountsResolverData extends PeriodResolverData {
+    account: string;
+    owner: string;
+    discontinued: boolean;
+    discontinuedSince: string | null;
+}
 
 export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {
     readonly name = 'AccountsResolver';
@@ -70,11 +78,4 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         
         return result;
     }
-}
-
-export interface AccountsResolverData extends ResolverData {
-    account: string;
-    owner: string;
-    discontinued: boolean;
-    discontinuedSince: string | null;
 }

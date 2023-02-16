@@ -20,6 +20,8 @@ it ('works', async () => {
     const resolver = new DaoResolver();
     const period = ['2021/10', '2021/11', '2021/12'];
     const query = {
+        start: period[0],
+        end: period[2],
         periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
         budgetPath: BudgetReportPath.fromString('*'),
         categoryPath: BudgetReportPath.fromString('*'),

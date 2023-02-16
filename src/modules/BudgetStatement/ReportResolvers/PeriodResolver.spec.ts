@@ -1,6 +1,5 @@
 import initKnex from "../../../initKnex.js";
 import { Knex } from "knex";
-import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 import { BudgetReportPath } from "../BudgetReportPath.js";
 import { PeriodResolver } from "./PeriodResolver.js";
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";
@@ -16,11 +15,11 @@ afterAll(async () => {
 });
 
 it ('works', async () => {
-
-    const resolver = new PeriodResolver();
+    const resolver = new PeriodResolver(knex);
     const period = ['2021/10', '2021/11', '2021/12'];
     const query = {
-        periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
+        start: period[0],
+        end: period[2],
         budgetPath: BudgetReportPath.fromString('*'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly,

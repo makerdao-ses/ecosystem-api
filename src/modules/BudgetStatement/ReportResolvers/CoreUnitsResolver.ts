@@ -1,11 +1,12 @@
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
+import { BudgetReportResolverBase, ResolverOutput } from "../BudgetReportResolver.js";
 import { AccountsResolverData } from "./AccountsResolver.js";
 import { Knex } from "knex";
 import { BudgetReportPathSegment } from "../BudgetReportPath.js";
+import { PeriodResolverData } from "./PeriodResolver.js";
 
 const DEBUG_OUTPUT = false;
 
-export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, AccountsResolverData> {
+export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverData, AccountsResolverData> {
     readonly name = 'CoreUnitsResolver';
 
     private readonly _knex:Knex;
@@ -15,7 +16,7 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
         this._knex = knex;
     }
 
-    public async execute(query:ResolverData): Promise<ResolverOutput<AccountsResolverData>> {
+    public async execute(query:PeriodResolverData): Promise<ResolverOutput<AccountsResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`CoreUnitsResolver is resolving ${query.budgetPath.toString()}`);
         }
@@ -29,6 +30,8 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<ResolverData, Ac
             discontinued: (mip39c3s[cuw.coreUnitCode] ? true : false),
             discontinuedSince: mip39c3s[cuw.coreUnitCode] || null, 
 
+            start: query.start,
+            end: query.end,
             periodRange: query.periodRange,
             categoryPath: query.categoryPath,
             budgetPath: query.budgetPath.reduce(),

@@ -1,8 +1,5 @@
-import { Knex } from "knex";
-import { LineItemFetcher } from "./LineItemFetcher.js";
 import { BudgetReportPath } from "./BudgetReportPath.js";
-import { BudgetReportPeriod, BudgetReportPeriodType } from "./BudgetReportPeriod.js";
-import { BudgetReportQuery, BudgetReportPeriodInput } from "./BudgetReportQuery.js";
+import { BudgetReportQuery } from "./BudgetReportQuery.js";
 import { NamedResolver, ResolverData, BudgetReportResolver, BudgetReportOutputGroup, ResolverOutput } from "./BudgetReportResolver.js";
 
 const DEBUG_OUTPUT = false;
@@ -11,12 +8,10 @@ export class BudgetReportQueryEngine {
     get rootResolver() { return this._resolvers[this._rootResolver] as BudgetReportResolver<ResolverData, any>; }
     get resolvers() { return Object.values(this._resolvers); }
 
-    private _lineItemFetcher: LineItemFetcher;
     private _resolvers: Record<string, NamedResolver>;
     private _rootResolver: string;
 
-    constructor(knex:Knex, resolvers:NamedResolver[], rootResolver:string) {
-        this._lineItemFetcher = new LineItemFetcher(knex);
+    constructor(resolvers:NamedResolver[], rootResolver:string) {
         this._resolvers = {};
         resolvers.forEach(r => this._resolvers[r.name] = r);
 
@@ -27,11 +22,6 @@ export class BudgetReportQueryEngine {
     }
 
     public async execute(query:BudgetReportQuery): Promise<BudgetReportOutputGroup[]> {
-        const periodRange = await this._resolvePeriodRange(query.start, query.end);
-        if (periodRange[0].type !== BudgetReportPeriodType.Month) {
-            throw new Error('Quarters and years are not allowed as query start or end values. Use the respective months instead.');
-        }
-
         const budgetPath = typeof query.budgets == 'string' ? BudgetReportPath.fromString(query.budgets) : query.budgets;
         const categoryPath = typeof query.categories == 'string' ? BudgetReportPath.fromString(query.categories) : query.categories;
 
@@ -39,7 +29,13 @@ export class BudgetReportQueryEngine {
             console.log('QueryEngine is calling resolvers for query: ', query);
         }
 
-        return this._callResolvers({periodRange, budgetPath, categoryPath, granularity:query.granularity});
+        return this._callResolvers({
+            start: query.start, 
+            end: query.end, 
+            budgetPath, 
+            categoryPath, 
+            granularity: query.granularity
+        });
     }
 
     private async _callResolvers(initialInput: ResolverData) {
@@ -96,29 +92,5 @@ export class BudgetReportQueryEngine {
         }
 
         return collectedOutput;
-    }
-
-    private async _resolvePeriodRange(start:BudgetReportPeriodInput, end:BudgetReportPeriodInput): Promise<BudgetReportPeriod[]> {
-        let first: BudgetReportPeriod, last:BudgetReportPeriod;
-
-        if (start === null || end === null) {
-            const availableMonths = await this._lineItemFetcher.getAvailableMonthsRange();
-
-            first = availableMonths.first;
-            if (start !== null) {
-                first = (typeof start === 'string') ? BudgetReportPeriod.fromString(start) : start;
-            }
-            
-            last = availableMonths.last;
-            if (end !== null) {
-                last = (typeof end === 'string') ? BudgetReportPeriod.fromString(end) : end;
-            }
-
-        } else {
-            first = (typeof start === 'string') ? BudgetReportPeriod.fromString(start) : start;
-            last = (typeof end === 'string') ? BudgetReportPeriod.fromString(end) : end;
-        }
-
-        return BudgetReportPeriod.fillRange(first, last);
-    }
+    }   
 }

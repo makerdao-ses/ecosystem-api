@@ -1,6 +1,6 @@
 import { BudgetReportPath } from "./BudgetReportPath.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
-import { BudgetReportGranularity } from "./BudgetReportQuery.js";
+import { BudgetReportGranularity, BudgetReportPeriodInput } from "./BudgetReportQuery.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -9,7 +9,8 @@ export interface NamedResolver {
 }
 
 export interface ResolverData {
-    periodRange: BudgetReportPeriod[],
+    start: BudgetReportPeriodInput,
+    end: BudgetReportPeriodInput,
     budgetPath: BudgetReportPath,
     categoryPath: BudgetReportPath,
     granularity: BudgetReportGranularity

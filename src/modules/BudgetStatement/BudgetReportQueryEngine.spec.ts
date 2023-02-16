@@ -22,16 +22,16 @@ afterAll(async () => {
 
 it ('Correctly does basic validation of its configuration', async () => {
     const resolvers = [ 
-        new PeriodResolver(),
+        new PeriodResolver(knex),
         new DaoResolver(),
         new CoreUnitsResolver(knex),
         new AccountsResolver(knex)
     ];
 
-    expect(() => new BudgetReportQueryEngine(knex, resolvers, 'UnknownResolver'))
+    expect(() => new BudgetReportQueryEngine(resolvers, 'UnknownResolver'))
         .toThrowError('Cannot find root resolver \'UnknownResolver\'');
 
-    const engine = new BudgetReportQueryEngine(knex, resolvers, 'PeriodResolver');
+    const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver');
     const badQuery:BudgetReportQuery = {
         start: BudgetReportPeriod.fromString('2022/Q4'),
         end: BudgetReportPeriod.fromString('2023/Q2'),
@@ -70,13 +70,13 @@ it ('Correctly does basic validation of its configuration', async () => {
 
 it ('Configures the resolvers correctly and returns concatenated output.', async () => {
     const resolvers = [ 
-        new PeriodResolver(),
+        new PeriodResolver(knex),
         new DaoResolver(),
         new CoreUnitsResolver(knex),
         new AccountsResolver(knex)
     ];
 
-    const engine = new BudgetReportQueryEngine(knex, resolvers, 'PeriodResolver');
+    const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver');
     
     expect(engine.rootResolver.name).toEqual('PeriodResolver');
     expect(engine.resolvers.map(r => r.name))
