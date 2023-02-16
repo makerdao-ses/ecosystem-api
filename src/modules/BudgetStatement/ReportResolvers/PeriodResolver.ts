@@ -1,5 +1,5 @@
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";
-import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
 
 const DEBUG_OUTPUT = false;
 

@@ -1,4 +1,4 @@
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
+import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
 import { AccountsResolverData } from "./AccountsResolver.js";
 import { Knex } from "knex";
 import { BudgetReportPathSegment } from "../BudgetReportPath.js";

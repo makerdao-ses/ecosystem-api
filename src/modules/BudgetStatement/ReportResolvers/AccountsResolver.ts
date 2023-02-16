@@ -1,4 +1,4 @@
-import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine.js";
+import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
 
