@@ -15,15 +15,16 @@ const queryData = {
     }`
 }
 
-let server: any, url: any;
+let server: any, db: any;
 
 beforeAll(async () => {
-    const db = new EcosystemDatabase(initKnex());
+    db = new EcosystemDatabase(initKnex());
     const { typeDefs, resolvers } = await linkApiModules(db, defaultSettings)
-    server = new ApolloServer({ typeDefs, resolvers })
+    server = new ApolloServer({ typeDefs, resolvers, dataSources: () => ({ db }) })
 })
 
 afterAll(async () => {
+    await db.knex.destroy()
     await server.stop()
 })
 
