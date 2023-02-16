@@ -1,5 +1,4 @@
 import { Knex } from "knex";
-import { slice } from "lodash";
 import { BudgetReportPeriod } from "./BudgetReportPeriod";
 
 export interface LineItemGroup {
@@ -130,16 +129,14 @@ export class LineItemFetcher {
                 'BSW.address as account',
                 'BSLI.month as month',
                 'BSLI.group as group',
-
                 'BSLI.headcountExpense as headcountExpense',
                 'BSLI.canonicalBudgetCategory as category',
-                
-                'BS.month as report',
-                'BSLI.actual as actual',
-                'BSLI.forecast as forecast',
-                'BSLI.budgetCap as budgetCap',
-                'BSLI.payment as payment',
+                'BS.month as report'
             )
+            .sum('BSLI.actual as actual')
+            .sum('BSLI.forecast as forecast')
+            .sum('BSLI.budgetCap as budgetCap')
+            .sum('BSLI.payment as payment')
 
             .from('public.BudgetStatement as BS')
                 .leftJoin('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
@@ -147,6 +144,15 @@ export class LineItemFetcher {
 
             .whereRaw('LOWER("BSW"."address") = LOWER(?)', account)
             .whereRaw('"BSLI"."month" = ?', month)
+
+            .groupBy(
+                'BSW.address',
+                'BSLI.month',
+                'BSLI.group',
+                'BSLI.headcountExpense',
+                'BSLI.canonicalBudgetCategory',
+                'BS.month'
+            )
 
             .orderBy('group', 'ASC', 'first')
             .orderBy('headcountExpense', 'DESC', 'last')
@@ -164,8 +170,8 @@ export class LineItemFetcher {
         };
 
         let currentCategory: LineItemCategory | null = null;
-
         const records = await this.buildQuery(account, month);
+        
         records.forEach((r: any) => {
             const group = (r.group == null || r.group.length < 1 ? null : r.group);
             const report = this._parseDateStringAsMonthPeriod(r.report);

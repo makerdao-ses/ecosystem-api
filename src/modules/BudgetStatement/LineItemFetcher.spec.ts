@@ -25,7 +25,7 @@ it ('correctly fetches available months range', async() => {
 it ('fetches correct line items for permanent team wallet', async () => {
     const fetcher = new LineItemFetcher(knex);
     const account = '0xb5eb779ce300024edb3df9b6c007e312584f6f4f'.toLowerCase();
-    const lineItems = await fetcher.getLineItems(account, '2022-10-01');
+    const lineItems = await fetcher.getLineItems(account, '2021-09-01');
     
     const lineItemsString = LineItemFetcher.lineItemGroupToString(lineItems);
     if (DEBUG_OUTPUT) {
@@ -33,17 +33,17 @@ it ('fetches correct line items for permanent team wallet', async () => {
     }
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
-    expect(lineItems.month.toString()).toEqual('2022/10');
+    expect(lineItems.month.toString()).toEqual('2021/09');
 
     const totals = groupTotals(lineItems);
-    expect(totals.actual).toBeCloseTo(115368.25);
-    expect(totals.forecast).toBeCloseTo(132574.07);
+    expect(totals.actual).toBeCloseTo(169939.74);
+    expect(totals.forecast).toBeCloseTo(144399.18);
     expect(totals.budgetCap).toBeCloseTo(0.00);
-    expect(totals.payment).toBeCloseTo(97403.93);
+    expect(totals.payment).toBeCloseTo(173330.00);
 
     lineItems.categories.forEach(c => {
         Object.keys(c.reports).forEach(k => {
-            expect(['2022/10', '2022/09', '2022/08', '2022/07']).toContainEqual(k);
+            expect(['2021/09', '2021/08', '2021/07', '2021/06']).toContainEqual(k);
         });
     });
 });
