@@ -7,7 +7,6 @@ import { CoreUnitsResolver } from "./ReportResolvers/CoreUnitsResolver.js";
 import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
-import { BudgetReportOutputGroup, BudgetReportOutputRow } from "./BudgetReportResolver.js";
 import { BudgetReportPath } from "./BudgetReportPath.js";
 
 const DEBUG_OUTPUT_TO_FILE = false;
