@@ -70,9 +70,9 @@ export const resolvers = {
             }
 
             // Budgets parameter
-            filter.budgets = filter.budgets || 'makerdao/core-units/*';
+            filter.budgets = filter.budgets || 'makerdao/*:*';
             if (filter.budgets.length > 0 && filter.budgets[0] === '/') {
-                filter.budgets = filter.budgets.slice(1);
+                filter.budgets = filter.budgets.slice(1) + ':*';
             }
 
             // Time parameters

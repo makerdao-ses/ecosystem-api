@@ -60,6 +60,10 @@ export class BudgetReportQueryEngine {
                 }
 
                 const nextResolver = this._resolvers[name] as BudgetReportResolver<ResolverData, ResolverData>;
+                if (!nextResolver) {
+                    throw new Error(`Resolver '${name}' is selected as next resolver, but it cannot be found.`); 
+                }
+
                 const output:ResolverOutput<ResolverData> = await nextResolver.executeBatch(nextResolverInputMap[name]);
 
                 if (Object.keys(output.nextResolversData).length > 0) {

@@ -5,7 +5,8 @@ import { DaoResolver } from "../BudgetStatement/ReportResolvers/DaoResolver.js";
 import { CoreUnitsResolver } from "../BudgetStatement//ReportResolvers/CoreUnitsResolver.js";
 import { AccountsResolver } from "../BudgetStatement//ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "../BudgetStatement//ReportResolvers/PeriodResolver.js";
-import { BudgetReportQuery } from "../BudgetStatement/BudgetReportQuery";
+import { BudgetReportQuery } from "../BudgetStatement/BudgetReportQuery.js";
+import { DelegatesResolver } from "../BudgetStatement/ReportResolvers/DelegatesResolver.js";
 
 export class TotalExpensesModel {
     knex: Knex;
@@ -18,6 +19,7 @@ export class TotalExpensesModel {
         const resolvers = [ 
             new PeriodResolver(this.knex),
             new DaoResolver(),
+            new DelegatesResolver(),
             new CoreUnitsResolver(this.knex),
             new AccountsResolver(this.knex)
         ];
