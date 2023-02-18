@@ -2,6 +2,7 @@ import { Knex } from "knex";
 import { BudgetReportOutputGroup, CacheKeys } from "./BudgetReportResolver.js";
 import stringify from "json-stringify-deterministic";
 import xxhash from "xxhash-wasm";
+import { reviver } from "./JsonSerializerTypes.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -13,6 +14,25 @@ export class ResolverCache {
 
     constructor(knex:Knex) {
         this._knex = knex;
+    }
+
+    public async load(hash: string): Promise<BudgetReportOutputGroup | null> {
+        if (DEBUG_OUTPUT) {
+            console.log(`ResolverCache is loading output groups with hash: ${hash}`);
+        }
+
+        const query = this._knex('ResolverCache')
+            .select('data')
+            .where('hash', hash)
+            .whereRaw('"public"."ResolverCache"."expiry" > CURRENT_TIMESTAMP');
+
+        const result = await query;
+        return result.length < 1 ? null : {
+            period: result[0].data[0],
+            keys: result[0].data[1],
+            rows: result[0].data[2],
+            cacheKeys: null
+        };
     }
 
     public async store(outputGroups: BudgetReportOutputGroup[]) {

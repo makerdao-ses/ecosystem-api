@@ -141,5 +141,8 @@ it ('Applies caching correctly.', async () => {
         categories: '*'
     };
 
-    const result = await engine.execute(query);
+    await engine.execute(query);
+    
+    const cachedResult = await engine.resolverCache?.load('fee4190f70354552');
+    expect(cachedResult?.keys.join('/')).toEqual('makerdao/core-units');
 });

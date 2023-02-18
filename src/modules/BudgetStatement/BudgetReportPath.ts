@@ -1,3 +1,5 @@
+import { JsonSerializerTypes } from "./JsonSerializerTypes.js";
+
 export class BudgetReportPath {
     get segments(): BudgetReportPathSegment[] { return this._segments; }
     
@@ -13,6 +15,13 @@ export class BudgetReportPath {
 
     constructor(segments:BudgetReportPathSegment[]) {
         this._segments = segments;
+    }
+
+    public toJSON() {
+        return {
+            _t: JsonSerializerTypes.BudgetReportPath,
+            _v: this.toString()
+        };
     }
 
     public toString():string {
@@ -80,6 +89,13 @@ export class BudgetReportPathSegment {
     constructor(filters:NullableStrings = null, groups:NullableStrings = []) {
         this._filters = filters;
         this._groups = groups;
+    }
+
+    public toJSON() {
+        return {
+            _t: JsonSerializerTypes.BudgetReportPathSegment,
+            _v: this.toString()
+        };
     }
 
     public toString():string {
