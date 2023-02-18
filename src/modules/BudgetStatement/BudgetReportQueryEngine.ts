@@ -1,23 +1,30 @@
 import { BudgetReportPath } from "./BudgetReportPath.js";
 import { BudgetReportQuery } from "./BudgetReportQuery.js";
 import { NamedResolver, ResolverData, BudgetReportResolver, BudgetReportOutputGroup, ResolverOutput } from "./BudgetReportResolver.js";
+import { ResolverCache } from "./ResolverCache.js";
 
 const DEBUG_OUTPUT = false;
 
 export class BudgetReportQueryEngine {
     get rootResolver() { return this._resolvers[this._rootResolver] as BudgetReportResolver<ResolverData, any>; }
     get resolvers() { return Object.values(this._resolvers); }
+    get resolverCache() { return this._resolverCache; }
 
-    private _resolvers: Record<string, NamedResolver>;
-    private _rootResolver: string;
+    private readonly _resolvers: Record<string, NamedResolver>;
+    private readonly _rootResolver: string;
+    private readonly _resolverCache?: ResolverCache;
 
-    constructor(resolvers:NamedResolver[], rootResolver:string) {
+    constructor(resolvers:NamedResolver[], rootResolver:string, resolverCache?:ResolverCache) {
         this._resolvers = {};
         resolvers.forEach(r => this._resolvers[r.name] = r);
 
         this._rootResolver = rootResolver;
         if (typeof this._resolvers[rootResolver] === 'undefined') {
             throw new Error(`Cannot find root resolver '${rootResolver}'`);
+        }
+
+        if (resolverCache) {
+            this._resolverCache = resolverCache;
         }
     }
 
@@ -86,6 +93,10 @@ export class BudgetReportQueryEngine {
             const resolver = this._resolvers[resolverStack.pop() as string] as BudgetReportResolver<ResolverData, ResolverData>;
             const inputLength = collectedOutput.length;
             collectedOutput = resolver.processOutputGroups(collectedOutput);
+
+            if (this._resolverCache) {
+                await this._resolverCache.store(collectedOutput);
+            }
 
             if (DEBUG_OUTPUT) {
                 console.log('>> QueryEngine processed output through ' + resolver.name + ': ', inputLength, '>', collectedOutput.length, 'group(s) such as (keys, rows[0]):', collectedOutput[0].keys.join('/'), collectedOutput[0].rows[0]);

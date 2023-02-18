@@ -8,6 +8,8 @@ import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
 import { BudgetReportPath } from "./BudgetReportPath.js";
+import { ResolverCache } from "./ResolverCache.js";
+import { DelegatesResolver } from "./ReportResolvers/DelegatesResolver.js";
 
 const DEBUG_OUTPUT_TO_FILE = false;
 let knex:Knex;
@@ -116,4 +118,28 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
             }
         );
     }
+});
+
+it ('Applies caching correctly.', async () => {
+    const resolvers = [ 
+        new PeriodResolver(knex),
+        new DaoResolver(),
+        new CoreUnitsResolver(knex),
+        new DelegatesResolver(),
+        new AccountsResolver(knex)
+    ];
+
+    const resolverCache = new ResolverCache(knex);
+    const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver', resolverCache);
+    expect(engine.resolverCache).toBeInstanceOf(ResolverCache);
+
+    const query:BudgetReportQuery = {
+        start: null,
+        end: null,
+        granularity: BudgetReportGranularity.Quarterly,
+        budgets: 'makerdao/*:*',
+        categories: '*'
+    };
+
+    const result = await engine.execute(query);
 });

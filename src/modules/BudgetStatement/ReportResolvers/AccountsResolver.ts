@@ -1,4 +1,4 @@
-import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
+import { BudgetReportOutputRow, BudgetReportResolverBase, CacheKeys, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
 import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
 import { PeriodResolverData } from "./PeriodResolver.js";
@@ -23,6 +23,18 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         this._lineItemFetcher = new LineItemFetcher(knex);
     }
 
+    public supportsCaching(query: AccountsResolverData): boolean {
+        return true;
+    }
+
+    public getCacheKeys(query: AccountsResolverData): CacheKeys {
+        return {
+            account: query.account,
+            start: query.start,
+            end: query.end
+        };
+    }
+
     public async execute(query:AccountsResolverData): Promise<ResolverOutput<ResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
@@ -33,7 +45,8 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
             output: [{
                 keys: query.groupPath,
                 period: query.period,
-                rows: []
+                rows: [],
+                cacheKeys: this.getCacheKeys(query)
             }]
         };
 
