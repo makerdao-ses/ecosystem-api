@@ -30,10 +30,12 @@
     "express-jwt": "^7.7.2",
     "graphql": "^16.3.0",
     "graphql-scalars": "^1.17.0",
+    "json-stringify-deterministic": "^1.0.8",
     "jsonwebtoken": "^8.5.1",
     "knex": "^2.3.0",
+    "lodash": "^4.17.21",
     "pg": "^8.9.0",
-    "lodash": "^4.17.21"
+    "xxhash-wasm": "^1.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
