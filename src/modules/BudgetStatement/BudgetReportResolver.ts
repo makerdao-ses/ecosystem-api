@@ -56,7 +56,6 @@ export interface ResolverOutput<TOutput> {
 
 export interface BudgetReportResolver<TInput extends ResolverData, TOutput extends ResolverData> extends NamedResolver {
     execute(query:TInput): Promise<ResolverOutput<TOutput>>;
-    executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>>;
     processOutputRows(rows:BudgetReportOutputRow[], groupKeys:Record<string, SerializableKey>): BudgetReportOutputRow[];
     processOutputGroups(output:BudgetReportOutputGroup[]): BudgetReportOutputGroup[];
     supportsCaching(query:TInput): boolean;
@@ -68,30 +67,6 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
 {
     abstract readonly name: string;
     abstract execute(query:TInput): Promise<ResolverOutput<TOutput>>;
-
-    public async executeBatch(queries:TInput[]): Promise<ResolverOutput<TOutput>> {
-        const result = { nextResolversData: {}, output: [] } as ResolverOutput<TOutput>;
-
-        for (const resolverData of queries) {
-            const queryOutput: ResolverOutput<TOutput> = await this.execute(resolverData);
-            
-            Object.keys(queryOutput.nextResolversData).forEach(k => {
-                if (!result.nextResolversData[k]) {
-                    result.nextResolversData[k] = [];
-                }
-
-                result.nextResolversData[k] = result.nextResolversData[k].concat(queryOutput.nextResolversData[k]);
-            });
-            
-            result.output = queryOutput.output.concat(result.output);
-        }
-
-        if (DEBUG_OUTPUT) {
-            console.log('Concatenated results from ', queries.length, 'execute calls', result);
-        }
-        
-        return result;
-    }
 
     public processOutputRows(rows: BudgetReportOutputRow[], groupKeys:Record<string, any>): BudgetReportOutputRow[] {
         if (DEBUG_OUTPUT) {

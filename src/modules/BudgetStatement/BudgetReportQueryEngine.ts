@@ -1,6 +1,6 @@
 import { BudgetReportPath } from "./BudgetReportPath.js";
 import { BudgetReportQuery } from "./BudgetReportQuery.js";
-import { NamedResolver, ResolverData, BudgetReportResolver, BudgetReportOutputGroup, ResolverOutput } from "./BudgetReportResolver.js";
+import { NamedResolver, ResolverData, BudgetReportResolver, BudgetReportOutputGroup, ResolverOutput, CacheKeys } from "./BudgetReportResolver.js";
 import { ResolverCache } from "./ResolverCache.js";
 
 const DEBUG_OUTPUT = false;
@@ -46,67 +46,155 @@ export class BudgetReportQueryEngine {
         });
     }
 
-    private async _callResolvers(initialInput: ResolverData) {
-        const input: Record<string, ResolverData[]> = {};
-        input[this.rootResolver.name] = [ initialInput ];
-        
-        let collectedOutput:BudgetReportOutputGroup[] = [];
-        const queue: Record<string, ResolverData[]>[] = [ input ];
-        const resolverStack: string[] = [];
-        
-        while (queue.length > 0) {
-            const nextResolverInputMap = queue.shift() as Record<string, ResolverData[]>;
+    private _visualizeResolverStack(resolverStack:ResolverStackElement[], collectedOutputStack:BudgetReportOutputGroup[][]):string {
+        let result = "[  ROOT  ] << ", waitingResolvers:string[] = [];
 
-            for (const name of Object.keys(nextResolverInputMap)) {
-                if (DEBUG_OUTPUT) {
-                    console.log (
-                        '>> QueryEngine is calling ' + resolverStack.join(' > ') 
-                        + (resolverStack.length > 0 ? ' > ' : '') 
-                        + `${name} -- ${nextResolverInputMap[name].length} records such as `, nextResolverInputMap[name][0]
-                    );
-                }
-
-                const nextResolver = this._resolvers[name] as BudgetReportResolver<ResolverData, ResolverData>;
-                if (!nextResolver) {
-                    throw new Error(`Resolver '${name}' is selected as next resolver, but it cannot be found.`); 
-                }
-
-                const output:ResolverOutput<ResolverData> = await nextResolver.executeBatch(nextResolverInputMap[name]);
-
-                if (Object.keys(output.nextResolversData).length > 0) {
-                    queue.push(output.nextResolversData);
-                }
-
-                if (resolverStack.indexOf(name) < 0) {
-                    resolverStack.push(name);
+        resolverStack.forEach(rse => {
+            if (rse.state === ResolverStackState.ReadyForProcessing) {
+                if (waitingResolvers.length > 0) {
+                    result += "(" + waitingResolvers.join(" | ") + ") ";
+                    waitingResolvers = [];
                 }
                 
-                collectedOutput = output.output.concat(collectedOutput);
-            };
+                result += rse.name + "[" + rse.queries.length + "] << ";
+            
+            } else {
+                waitingResolvers.push(rse.name + "[" + rse.queries.length + "]");
+            }
+        });
+
+        if (waitingResolvers.length > 0) {
+            result += "(" + waitingResolvers.join(" | ") + ") << ";
         }
 
-        if (DEBUG_OUTPUT) {
-            console.log('QueryEngine is processing output groups: ', collectedOutput.length, ' group(s)...');
+        if (resolverStack.length > 0) {
+            result += resolverStack[resolverStack.length-1].state === ResolverStackState.ReadyForProcessing ? "PROC" : "QRY";
+        } else {
+            result += "DONE";
         }
+
+        return result + "\n" + collectedOutputStack.map(groupsArray => " " + groupsArray.length + " groups ").join(" || ");
+    }
+
+    private async _callResolvers(rootResolverQuery: ResolverData) {
+        const rootResolverInputMap: Record<string, ResolverData[]> = {};
+        rootResolverInputMap[this.rootResolver.name] = [ rootResolverQuery ];
+        
+        const resolverStack:ResolverStackElement[] = [{
+            name: this.rootResolver.name,
+            queries: [ rootResolverQuery ],
+            state: ResolverStackState.ReadyForQuery
+        }];
+
+        const collectedOutputStack:BudgetReportOutputGroup[][] = [[]];
 
         while (resolverStack.length > 0) {
-            const resolver = this._resolvers[resolverStack.pop() as string] as BudgetReportResolver<ResolverData, ResolverData>;
-            const inputLength = collectedOutput.length;
-            collectedOutput = resolver.processOutputGroups(collectedOutput);
+            if (DEBUG_OUTPUT) {
+                console.log("\nBudgetReportQuery is processing...\n" + this._visualizeResolverStack(resolverStack, collectedOutputStack));
+            }
+            
+            const nextResolverElement = resolverStack.pop() as ResolverStackElement;
 
-            if (this._resolverCache) {
-                await this._resolverCache.store(collectedOutput);
+            // Get the resolver referenced by the nextResolverElement
+            const resolver = this._resolvers[nextResolverElement.name] as BudgetReportResolver<ResolverData, ResolverData>;
+            if (!resolver) {
+                throw new Error(`Resolver '${nextResolverElement.name}' is selected as next resolver, but it cannot be found.`); 
             }
 
-            if (DEBUG_OUTPUT) {
-                console.log('>> QueryEngine processed output through ' + resolver.name + ': ', inputLength, '>', collectedOutput.length, 'group(s) such as (keys, rows[0]):', collectedOutput[0].keys.join('/'), collectedOutput[0].rows[0]);
+            if (nextResolverElement.state === ResolverStackState.ReadyForQuery) {
+                // Put an entry on the stack for this resolver to process the collected results
+                resolverStack.push({
+                    name: nextResolverElement.name,
+                    queries: nextResolverElement.queries,
+                    state: ResolverStackState.ReadyForProcessing
+                });
+
+                // Execute the query batch
+                const toBeProcessed = await this.executeBatch(resolver, nextResolverElement.queries);
+                collectedOutputStack.push(toBeProcessed.output);
+
+                // Push the resolver children on the stack 
+                Object.keys(toBeProcessed.nextResolversData).forEach(name => {
+                    resolverStack.push({
+                        name,
+                        queries: toBeProcessed.nextResolversData[name],
+                        state: ResolverStackState.ReadyForQuery
+                    });
+                });
+
+            } else if (nextResolverElement.state === ResolverStackState.ReadyForProcessing) {
+                // Grab the collected output of the subsequent resolvers for processing
+                const outputToBeProcessed = collectedOutputStack.pop();
+                if (!outputToBeProcessed) {
+                    throw new Error(`Unexpected end of BudgetReportQueryEngine collected output stack.`); 
+                }
+
+                // Process the collected output
+                const processedOutput = resolver.processOutputGroups(outputToBeProcessed);
+
+                // Merge the newly processed output with any previoulsy processed output 
+                collectedOutputStack[collectedOutputStack.length-1] = collectedOutputStack[collectedOutputStack.length-1].concat(processedOutput);
             }
         }
 
         if (DEBUG_OUTPUT) {
-            console.log('QueryEngine finished processing output groups');
+            console.log("\nBudgetReportQuery is done processing\n" + this._visualizeResolverStack(resolverStack, collectedOutputStack));
         }
 
-        return collectedOutput;
-    }   
+        return collectedOutputStack[0];
+    }
+
+    public async executeBatch(resolver: BudgetReportResolver<ResolverData, ResolverData>, queries:ResolverData[]) {
+        const toBeProcessed = { nextResolversData: {}, output: [] } as ResolverOutput<ResolverData>;
+
+        for (const resolverData of queries) {
+            let cacheKeys:CacheKeys|null = null;
+            let cachedOutput:BudgetReportOutputGroup|null = null;
+
+            if (this._resolverCache && resolver.supportsCaching(resolverData)) {
+                //cacheKeys = resolver.getCacheKeys(resolverData);
+                if (cacheKeys) {
+                    cachedOutput = await this._resolverCache.load(await this._resolverCache.calculateHash(cacheKeys));
+                }
+            }
+
+            if (!cachedOutput) {
+                if (cacheKeys) {
+                    console.log('Cache MISS with keys: ', cacheKeys);
+                }
+
+                const resolverOutput: ResolverOutput<ResolverData> = await resolver.execute(resolverData);
+                Object.keys(resolverOutput.nextResolversData).forEach(k => {
+                    if (!toBeProcessed.nextResolversData[k]) {
+                        toBeProcessed.nextResolversData[k] = [];
+                    }
+    
+                    toBeProcessed.nextResolversData[k] = toBeProcessed.nextResolversData[k].concat(resolverOutput.nextResolversData[k]);
+                });
+                
+                toBeProcessed.output = toBeProcessed.output.concat(resolverOutput.output);
+            
+            } else {
+                console.log('Cache HIT with keys: ', cacheKeys, cachedOutput.rows);
+                toBeProcessed.output = toBeProcessed.output.concat(cachedOutput);
+            }
+        }
+
+        if (DEBUG_OUTPUT) {
+            console.log('Concatenated results from ', queries.length, 'execute calls, such as:', toBeProcessed.output[0]);
+        }
+        
+        return toBeProcessed;
+    }
+}
+
+enum ResolverStackState {
+    ReadyForQuery,
+    ReadyForProcessing
+}
+
+interface ResolverStackElement {
+    name: string,
+    queries: ResolverData[],
+    state: ResolverStackState,
 }
