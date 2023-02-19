@@ -7,6 +7,7 @@ import { AccountsResolver } from "../BudgetStatement//ReportResolvers/AccountsRe
 import { PeriodResolver } from "../BudgetStatement//ReportResolvers/PeriodResolver.js";
 import { BudgetReportQuery } from "../BudgetStatement/BudgetReportQuery.js";
 import { DelegatesResolver } from "../BudgetStatement/ReportResolvers/DelegatesResolver.js";
+import { ResolverCache } from "../BudgetStatement/ResolverCache.js";
 
 export class TotalExpensesModel {
     knex: Knex;
@@ -24,7 +25,7 @@ export class TotalExpensesModel {
             new AccountsResolver(this.knex)
         ];
     
-        const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver');
+        const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver', new ResolverCache(this.knex));
 
         return engine.execute(query);
     }

@@ -45,8 +45,7 @@ export class DelegatesResolver extends BudgetReportResolverBase<AccountsResolver
             output: [{
                 keys: query.groupPath,
                 period: query.period,
-                rows: [],
-                cacheKeys: null
+                rows: []
             }]
         };
 

@@ -64,8 +64,7 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
                     result[groupName] = {
                         keys: group.keys,
                         period: group.period,
-                        rows: [{...r}],
-                        cacheKeys: null
+                        rows: [{...r}]
                     }
 
                 } else {

@@ -145,46 +145,69 @@ export class BudgetReportQueryEngine {
     }
 
     public async executeBatch(resolver: BudgetReportResolver<ResolverData, ResolverData>, queries:ResolverData[]) {
-        const toBeProcessed = { nextResolversData: {}, output: [] } as ResolverOutput<ResolverData>;
+        const result:ResolverOutput<ResolverData> = { 
+            nextResolversData:{}, 
+            output:[]
+        };
 
-        for (const resolverData of queries) {
-            let cacheKeys:CacheKeys|null = null;
-            let cachedOutput:BudgetReportOutputGroup|null = null;
+        for (const query of queries) {
+            const resolverOutput: ResolverOutput<ResolverData> = await this.executeQuery(resolver, query);
 
-            if (this._resolverCache && resolver.supportsCaching(resolverData)) {
-                //cacheKeys = resolver.getCacheKeys(resolverData);
-                if (cacheKeys) {
-                    cachedOutput = await this._resolverCache.load(await this._resolverCache.calculateHash(cacheKeys));
-                }
-            }
-
-            if (!cachedOutput) {
-                if (cacheKeys) {
-                    console.log('Cache MISS with keys: ', cacheKeys);
+            Object.keys(resolverOutput.nextResolversData).forEach(k => {
+                if (!result.nextResolversData[k]) {
+                    result.nextResolversData[k] = [];
                 }
 
-                const resolverOutput: ResolverOutput<ResolverData> = await resolver.execute(resolverData);
-                Object.keys(resolverOutput.nextResolversData).forEach(k => {
-                    if (!toBeProcessed.nextResolversData[k]) {
-                        toBeProcessed.nextResolversData[k] = [];
-                    }
-    
-                    toBeProcessed.nextResolversData[k] = toBeProcessed.nextResolversData[k].concat(resolverOutput.nextResolversData[k]);
-                });
-                
-                toBeProcessed.output = toBeProcessed.output.concat(resolverOutput.output);
+                result.nextResolversData[k] = result.nextResolversData[k].concat(resolverOutput.nextResolversData[k]);
+            });
             
-            } else {
-                console.log('Cache HIT with keys: ', cacheKeys, cachedOutput.rows);
-                toBeProcessed.output = toBeProcessed.output.concat(cachedOutput);
-            }
+            result.output = result.output.concat(resolverOutput.output);
         }
 
         if (DEBUG_OUTPUT) {
-            console.log('Concatenated results from ', queries.length, 'execute calls, such as:', toBeProcessed.output[0]);
+            console.log('Concatenated results from ', queries.length, 'execute calls, such as:', result.output[0]);
         }
         
-        return toBeProcessed;
+        return result;
+    }
+
+    public async executeQuery(resolver: BudgetReportResolver<ResolverData, ResolverData>, query:ResolverData) {
+        let cacheKeys:CacheKeys|null = null;
+        let cachedOutput:BudgetReportOutputGroup[]|null = null;
+        let result: ResolverOutput<ResolverData>|null = null;
+
+        if (this._resolverCache && resolver.supportsCaching(query)) {
+            cacheKeys = resolver.getCacheKeys(query);
+            if (cacheKeys) {
+                const cacheResult = await this._resolverCache.load(await this._resolverCache.calculateHash(cacheKeys));
+                if (cacheResult) {
+                    cachedOutput = cacheResult[1];
+                }
+            }
+        }
+
+        if (!cachedOutput) {
+            result = await resolver.execute(query);
+            if (this._resolverCache && cacheKeys) {
+                if (DEBUG_OUTPUT) {
+                    console.log('Cache MISS with keys: ', cacheKeys);
+                }
+
+                this._resolverCache.store(cacheKeys, result.output);
+            }
+        
+        } else {
+            if (DEBUG_OUTPUT) {
+                console.log('Cache HIT with keys: ', cacheKeys, cachedOutput);
+            }
+            
+            result = {
+                nextResolversData: {},
+                output: cachedOutput
+            }
+        }
+
+        return result;
     }
 }
 

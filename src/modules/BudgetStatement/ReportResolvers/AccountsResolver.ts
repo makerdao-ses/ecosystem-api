@@ -45,8 +45,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
             output: [{
                 keys: query.groupPath,
                 period: query.period,
-                rows: [],
-                cacheKeys: this.getCacheKeys(query)
+                rows: []
             }]
         };
 

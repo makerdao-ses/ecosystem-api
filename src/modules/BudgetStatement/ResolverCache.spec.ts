@@ -18,14 +18,15 @@ afterAll(async () => {
 it ('Caches items and maintains the database table correctly', async () => {
     const resolverCache = new ResolverCache(knex);
 
+    const cacheKeys = {
+        owner: 'test',
+        month: BudgetReportPeriod.fromString('2022/12'),
+        coreUnit: 'CES-001'
+    };
+
     const cacheItem: BudgetReportOutputGroup[] = [
         {
             period: '2022/Q4',
-            cacheKeys: {
-                owner: 'test',
-                month: BudgetReportPeriod.fromString('2022/12'),
-                coreUnit: 'CES-001'
-            },
             keys: [
                 BudgetReportPathSegment.fromString('makerdao'),
                 BudgetReportPath.fromString('core-units/CES-001'),
@@ -71,19 +72,24 @@ it ('Caches items and maintains the database table correctly', async () => {
 
     const expectedHash = 'a76eb9b9b4dd90c9';
 
-    const hash = await resolverCache.calculateHash(cacheItem[0].cacheKeys as CacheKeys);
+    const hash = await resolverCache.calculateHash(cacheKeys);
     expect(hash).toBe(expectedHash);
 
     await resolverCache.emptyCache();
     const cacheMiss = await resolverCache.load(expectedHash);
     expect(cacheMiss).toBe(null);
 
-    await resolverCache.store(cacheItem, -1);
+    await resolverCache.store(cacheKeys, cacheItem, -1);
     const cleanedUp = await resolverCache.pruneCache();
     expect(cleanedUp).toBe(1);
 
-    await resolverCache.store(cacheItem);
+    await resolverCache.store(cacheKeys, cacheItem);
     
     const cacheHit = await resolverCache.load(expectedHash);
-    expect(cacheHit).toEqual(cacheItem[0]);
+    if (cacheHit) {
+        expect(cacheHit[1]).toEqual(cacheItem);
+    } else {
+        expect(cacheHit).not.toBe(null);
+    }
+    
 });

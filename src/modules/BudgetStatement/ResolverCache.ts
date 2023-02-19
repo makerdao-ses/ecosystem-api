@@ -31,7 +31,7 @@ export class ResolverCache {
         return await this._knex('ResolverCache').whereRaw('CURRENT_TIMESTAMP > expiry').delete();
     }
 
-    public async load(hash: string): Promise<BudgetReportOutputGroup | null> {
+    public async load(hash: string): Promise<[CacheKeys, BudgetReportOutputGroup[]] | null> {
         if (DEBUG_OUTPUT) {
             console.log(`ResolverCache is loading output groups with hash: ${hash}`);
         }
@@ -42,30 +42,23 @@ export class ResolverCache {
             .whereRaw('"public"."ResolverCache"."expiry" > CURRENT_TIMESTAMP');
 
         const result = await query;
-        return result.length < 1 ? null : {
-            cacheKeys: result[0].data[0],
-            period: result[0].data[1],
-            keys: result[0].data[2],
-            rows: result[0].data[3],
-        };
+        return result.length < 1 ? null : result[0].data;
     }
 
-    public async store(outputGroups: BudgetReportOutputGroup[], expirationInMinutes:number = 240) {
+    public async store(cacheKeys:CacheKeys, outputGroups: BudgetReportOutputGroup[], expirationInMinutes:number = 240) {
         if (DEBUG_OUTPUT) {
             console.log(`ResolverCache is storing ${outputGroups.length} output groups: `, outputGroups);
         }
 
-        for (const group of outputGroups.filter(g => g.cacheKeys !== null)) {
-            const hash = await this.calculateHash(group.cacheKeys as CacheKeys);
-            await this._knex('ResolverCache')
-                .insert({
-                    hash,
-                    expiry: this._knex.raw('CURRENT_TIMESTAMP + interval \'' + expirationInMinutes + ' minutes\''),
-                    data: JSON.stringify([group.cacheKeys, group.period, group.keys, group.rows])
-                })
-                .onConflict('hash')
-                .merge();
-        }
+        const hash = await this.calculateHash(cacheKeys);
+        await this._knex('ResolverCache')
+            .insert({
+                hash,
+                expiry: this._knex.raw('CURRENT_TIMESTAMP + interval \'' + expirationInMinutes + ' minutes\''),
+                data: JSON.stringify([cacheKeys, outputGroups])
+            })
+            .onConflict('hash')
+            .merge();
     }
 
     public async calculateHash(keys: CacheKeys) {

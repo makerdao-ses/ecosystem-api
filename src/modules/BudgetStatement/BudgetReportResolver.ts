@@ -25,7 +25,6 @@ export interface BudgetReportOutputGroup {
     keys: SerializableKey[];
     period: string;
     rows: BudgetReportOutputRow[];
-    cacheKeys: CacheKeys|null; 
 }
 
 export interface BudgetReportOutputRow {

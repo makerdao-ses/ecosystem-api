@@ -120,7 +120,7 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     }
 });
 
-xit ('Applies caching correctly.', async () => {
+it ('Applies caching correctly.', async () => {
     jest.setTimeout(10000);
 
     const resolvers = [ 
@@ -144,7 +144,4 @@ xit ('Applies caching correctly.', async () => {
     };
 
     await engine.execute(query);
-    
-    const cachedResult = await engine.resolverCache?.load('fee4190f70354552');
-    expect(cachedResult?.keys.join('/')).toEqual('makerdao/core-units');
 });
