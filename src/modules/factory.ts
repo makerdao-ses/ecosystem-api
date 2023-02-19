@@ -6,6 +6,8 @@ import { ModulesConfig } from './ModulesConfig';
 import EcosystemDatabase from './EcosystemDatabase.js';
 import { DocumentNode } from 'graphql';
 
+const DEBUG_OUTPUT = false;
+
 export interface ApiModules {
     typeDefs: DocumentNode[];
     resolvers: {[key:string]: any};
@@ -29,7 +31,10 @@ export async function linkSchemas(settings:ModulesConfig = defaultSettings) {
     const moduleTypeDefs:any[] = [], moduleResolvers = {};
 
     for (const moduleName of enabledModules) {
-        console.log(`Importing GraphQL schema for API module '${moduleName}'...`)
+        if (DEBUG_OUTPUT) {
+            console.log(`Importing GraphQL schema for API module '${moduleName}'...`)
+        }
+        
         const schemaJs = await import(`./${moduleName}/schema.js`);
         moduleTypeDefs.push(...schemaJs.typeDefs);
         _.merge(moduleResolvers, schemaJs.resolvers);

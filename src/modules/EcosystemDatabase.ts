@@ -1,7 +1,7 @@
 import { SQLDataSource } from "datasource-sql";
 import { Knex } from "knex";
 
-const DEBUG_OUTPUT = true;
+const DEBUG_OUTPUT = false;
 
 type DatabaseFactoryFn = {
     (knex: Knex, dependencies: {[key: string]: object}): object;
