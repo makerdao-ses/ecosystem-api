@@ -6,7 +6,8 @@ export const typeDefs = [gql`
         "Auto generated id field"
         id: ID!
         "Auto generated id field from Core Unit table"
-        cuId: ID!
+        ownerId: ID!
+        ownerType: String
         "Month of corresponding budget statement"
         month: String!
         "Status of the budgest statement (Draft/Final)"
@@ -145,7 +146,7 @@ export const typeDefs = [gql`
     }
 
     input BudgetStatementInput {
-        cuId: ID
+        ownerId: ID
         cuCode: String
         month: String
         status: BudgetStatus
@@ -153,7 +154,7 @@ export const typeDefs = [gql`
 
     input BudgetStatementFilter {
         id: ID
-        cuId: ID
+        ownerId: ID
         month: String
         status: BudgetStatus
         cuCode: String
@@ -371,7 +372,7 @@ export const resolvers = {
     CoreUnit: {
         budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { cuId: id } });
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id } });
             return result;
         },
     },
