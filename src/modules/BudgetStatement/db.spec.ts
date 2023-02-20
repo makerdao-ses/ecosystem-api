@@ -37,9 +37,9 @@ it('returns list of budgetStatements with limit offset and undefined', async () 
     expect(entry1.length).toBeGreaterThan(0);
 });
 
-it('returns budgetStatements with cuId 39', async () => {
-    const entry = await bsModel.getBudgetStatements({ filter: { ownerId: 39 } });
-    expect(entry[0].cuId).toEqual(38);
+it('returns budgetStatements with cuId 38', async () => {
+    const entry = await bsModel.getBudgetStatements({ filter: { ownerId: 38 } });
+    expect(entry[0].ownerId).toEqual(38);
 });
 
 it('returns list of auditReports with budgetStatmentId or undefined params', async () => {

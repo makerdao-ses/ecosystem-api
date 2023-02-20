@@ -31,9 +31,9 @@ export class BudgetStatementAuthModel {
                 if (input.comment === null || input.comment === '' && budgetStatement.status === input.status) {
                     throw new ForbiddenError('Need to add a comment or change status')
                 }
-                const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.cuId);
+                const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.ownerId);
                 const canAudit = await this.authModel.canAudit(user.id);
-                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.cuId);
+                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.ownerId);
                 const coreUnitHasAuditors = () => {
                     return cuAuditors.length > 0 ? true : false;
                 }
@@ -43,7 +43,7 @@ export class BudgetStatementAuthModel {
                 const userHasAuditPermission = () => {
                     let auditor = false;
                     canAudit.forEach((obj: any) => {
-                        if (obj.resourceId === budgetStatement.cuId || obj.resourceId === null) {
+                        if (obj.resourceId === budgetStatement.ownerId || obj.resourceId === null) {
                             auditor = true
                         }
                     })
@@ -144,7 +144,7 @@ const parseCommentOutput = (comments: any, dataSources: any) => {
 
 const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any) => {
     const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId } })
-    const [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.cuId } });
+    const [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.ownerId } });
     const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
     ctModel.budgetStatementCommentUpdate(
         eventDescription,
