@@ -10,7 +10,10 @@ export interface NamedResolver {
 
 export type SerializableKey = { toString():string };
 
-export type CacheKeys = Record<string, SerializableKey|null>;
+export type CacheKeys = {
+    resolver: string,
+    keys: Record<string, SerializableKey|null>[]
+};
 
 export interface ResolverData {
     start: BudgetReportPeriodInput,
@@ -57,8 +60,8 @@ export interface BudgetReportResolver<TInput extends ResolverData, TOutput exten
     execute(query:TInput): Promise<ResolverOutput<TOutput>>;
     processOutputRows(rows:BudgetReportOutputRow[], groupKeys:Record<string, SerializableKey>): BudgetReportOutputRow[];
     processOutputGroups(output:BudgetReportOutputGroup[]): BudgetReportOutputGroup[];
-    supportsCaching(query:TInput): boolean;
-    getCacheKeys(query:TInput): CacheKeys|null;
+    supportsCaching(): boolean;
+    getCacheKeys(query:TInput): Record<string, SerializableKey|null>;
 }
 
 export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOutput extends ResolverData> 
@@ -83,11 +86,11 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
         return groups;
     }
 
-    public supportsCaching(query: TInput): boolean {
+    public supportsCaching(): boolean {
         return false;
     }
 
-    public getCacheKeys(query: TInput): CacheKeys|null {
-        return null;
+    public getCacheKeys(query: TInput): Record<string, SerializableKey|null> {
+        return {};
     }
 }

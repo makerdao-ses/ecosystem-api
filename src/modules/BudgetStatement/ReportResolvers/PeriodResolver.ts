@@ -21,6 +21,21 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
         this._lineItemFetcher = new LineItemFetcher(knex);
     }
 
+    public supportsCaching(): boolean {
+        return true;
+    }
+
+    public getCacheKeys(query: ResolverData): Record<string,SerializableKey|null> {
+        return {
+            s: query.start,
+            e: query.end,
+            bp: query.budgetPath,
+            cp: query.categoryPath,
+            gp: query.groupPath,
+            g: query.granularity
+        };
+    }
+
     public async execute(query:ResolverData): Promise<ResolverOutput<PeriodResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`PeriodResolver is resolving ${query.budgetPath.toString()}`);

@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import initKnex from "../../initKnex.js";
 import { BudgetReportPath, BudgetReportPathSegment } from "./BudgetReportPath.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
-import { BudgetReportOutputGroup, CacheKeys } from "./BudgetReportResolver";
+import { BudgetReportOutputGroup } from "./BudgetReportResolver";
 import { ResolverCache } from "./ResolverCache";
 
 let knex:Knex;
@@ -19,9 +19,11 @@ it ('Caches items and maintains the database table correctly', async () => {
     const resolverCache = new ResolverCache(knex);
 
     const cacheKeys = {
-        owner: 'test',
-        month: BudgetReportPeriod.fromString('2022/12'),
-        coreUnit: 'CES-001'
+        resolver: 'test',
+        keys: [{
+            month: BudgetReportPeriod.fromString('2022/12'),
+            coreUnit: 'CES-001'
+        }]
     };
 
     const cacheItem: BudgetReportOutputGroup[] = [
@@ -70,13 +72,13 @@ it ('Caches items and maintains the database table correctly', async () => {
         }
     ];
 
-    const expectedHash = 'a76eb9b9b4dd90c9';
+    const expectedHash = '61f87819fcbc62f1';
 
     const hash = await resolverCache.calculateHash(cacheKeys);
     expect(hash).toBe(expectedHash);
 
     await resolverCache.emptyCache();
-    const cacheMiss = await resolverCache.load(expectedHash);
+    const cacheMiss = await resolverCache.load(cacheKeys);
     expect(cacheMiss).toBe(null);
 
     await resolverCache.store(cacheKeys, cacheItem, -1);
@@ -85,11 +87,7 @@ it ('Caches items and maintains the database table correctly', async () => {
 
     await resolverCache.store(cacheKeys, cacheItem);
     
-    const cacheHit = await resolverCache.load(expectedHash);
-    if (cacheHit) {
-        expect(cacheHit[1]).toEqual(cacheItem);
-    } else {
-        expect(cacheHit).not.toBe(null);
-    }
+    const cacheHit = await resolverCache.load(cacheKeys);
+    expect(cacheHit).toEqual(cacheItem);
     
 });

@@ -7,12 +7,27 @@ const DEBUG_OUTPUT = false;
 
 type HashFn = { (input: string, seed?: bigint): string };
 
-export class ResolverCache {
-    private readonly _knex:Knex;
-    private _h64?: HashFn;
+type CacheStatistics = {
+    [resolver:string]: {
+        hits:number,
+        misses:number,
+        stores: number
+    }
+}
 
-    constructor(knex:Knex) {
+export class ResolverCache {
+    public get stats() : CacheStatistics {
+        return this._stats;
+    }
+    
+    private readonly _knex:Knex;
+    private readonly _collectStats:boolean;
+    private _h64?: HashFn;
+    private _stats: CacheStatistics = {};
+
+    constructor(knex:Knex, collectStats:boolean = true) {
         this._knex = knex;
+        this._collectStats = collectStats;
     }
 
     public async emptyCache() {
@@ -31,9 +46,11 @@ export class ResolverCache {
         return await this._knex('ResolverCache').whereRaw('CURRENT_TIMESTAMP > expiry').delete();
     }
 
-    public async load(hash: string): Promise<[CacheKeys, BudgetReportOutputGroup[]] | null> {
+    public async load(keys:CacheKeys): Promise<BudgetReportOutputGroup[]|null> {
+        const hash = await this.calculateHash(keys);
+        
         if (DEBUG_OUTPUT) {
-            console.log(`ResolverCache is loading output groups with hash: ${hash}`);
+            console.log(`ResolverCache is loading entry with hash ${hash} from keys: ${stringify(keys)}`);
         }
 
         const query = this._knex('ResolverCache')
@@ -42,26 +59,44 @@ export class ResolverCache {
             .whereRaw('"public"."ResolverCache"."expiry" > CURRENT_TIMESTAMP');
 
         const result = await query;
-        return result.length < 1 ? null : result[0].data;
-    }
 
-    public async store(cacheKeys:CacheKeys, outputGroups: BudgetReportOutputGroup[], expirationInMinutes:number = 240) {
-        if (DEBUG_OUTPUT) {
-            console.log(`ResolverCache is storing ${outputGroups.length} output groups: `, outputGroups);
+        if (this._collectStats) {
+            if (!this._stats[keys.resolver]) {
+                this._stats[keys.resolver] = { hits:0, misses:0, stores:0 };
+            }
+
+            this._stats[keys.resolver][result.length < 1 ? 'misses' : 'hits']++;
         }
 
-        const hash = await this.calculateHash(cacheKeys);
+        return (result.length < 1 ? null : result[0].data);
+    }
+
+    public async store(keys:CacheKeys, outputGroups: BudgetReportOutputGroup[], expirationInMinutes:number = 240) {
+        const hash = await this.calculateHash(keys);
+
+        if (DEBUG_OUTPUT) {
+            console.log(`ResolverCache is using hash ${hash} to store ${outputGroups.length} output groups: `, outputGroups);
+        }
+
         await this._knex('ResolverCache')
             .insert({
                 hash,
                 expiry: this._knex.raw('CURRENT_TIMESTAMP + interval \'' + expirationInMinutes + ' minutes\''),
-                data: JSON.stringify([cacheKeys, outputGroups])
+                data: JSON.stringify(outputGroups)
             })
             .onConflict('hash')
             .merge();
+
+        if (this._collectStats) {
+            if (!this._stats[keys.resolver]) {
+                this._stats[keys.resolver] = { hits:0, misses:0, stores:0 };
+            }
+
+            this._stats[keys.resolver]['stores']++;
+        }
     }
 
-    public async calculateHash(keys: CacheKeys) {
+    public async calculateHash(keys:CacheKeys) {
         if (!this._h64) {
             this._h64 = (await xxhash()).h64ToString;
         }
@@ -69,10 +104,10 @@ export class ResolverCache {
         const string = stringify(keys);
         const hash = this._h64(string);
         
-        if (DEBUG_OUTPUT) {
-            console.log(`Hashing: [ ${string} ] => [ ${hash} ]`);
-        }
-
         return hash;
+    }
+
+    public clearStats() {
+        this._stats = {};
     }
 }
