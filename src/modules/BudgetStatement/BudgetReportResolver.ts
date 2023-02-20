@@ -10,7 +10,10 @@ export interface NamedResolver {
 
 export type SerializableKey = { toString():string };
 
-export type CacheKeys = Record<string, SerializableKey|null>;
+export type CacheKeys = {
+    resolver: string,
+    [key:string]: SerializableKey|null
+};
 
 export interface ResolverData {
     start: BudgetReportPeriodInput,

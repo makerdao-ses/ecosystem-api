@@ -47,7 +47,7 @@ export class BudgetReportQueryEngine {
     }
 
     private _visualizeResolverStack(resolverStack:ResolverStackElement[], collectedOutputStack:BudgetReportOutputGroup[][]):string {
-        let result = "[  ROOT  ] << ", waitingResolvers:string[] = [];
+        let result = "[ RESULT ] << ", waitingResolvers:string[] = [];
 
         resolverStack.forEach(rse => {
             if (rse.state === ResolverStackState.ReadyForProcessing) {
@@ -68,12 +68,21 @@ export class BudgetReportQueryEngine {
         }
 
         if (resolverStack.length > 0) {
-            result += resolverStack[resolverStack.length-1].state === ResolverStackState.ReadyForProcessing ? "PROC" : "QRY";
+            if (resolverStack[resolverStack.length-1].state === ResolverStackState.ReadyForQuery) {
+                result += "QRY\n" +
+                    collectedOutputStack.map(groupsArray => " " + groupsArray.length + " groups ").join(" || ") + "\n";
+            
+            } else {
+                result += "PROC\n" + 
+                    collectedOutputStack.slice(0, -1).map(groupsArray => " " + groupsArray.length + " groups ").join(" || ") +
+                    " <- " + collectedOutputStack.slice(-1)[0].length + " groups\n";
+            }
+            
         } else {
-            result += "DONE";
+            result += "DONE\n " + collectedOutputStack[0].length + " groups\n";
         }
 
-        return result + "\n" + collectedOutputStack.map(groupsArray => " " + groupsArray.length + " groups ").join(" || ");
+        return result;
     }
 
     private async _callResolvers(rootResolverQuery: ResolverData) {
@@ -165,7 +174,29 @@ export class BudgetReportQueryEngine {
         }
 
         if (DEBUG_OUTPUT) {
-            console.log('Concatenated results from ', queries.length, 'execute calls, such as:', result.output[0]);
+            if (this._resolverCache) {
+                const stats = this._resolverCache.stats;
+                if (Object.keys(stats).length > 0) {
+                    console.log (
+                        ' Cache stats: \n  ' +
+                        Object.keys(stats)
+                        .map(res => `${res}: ${stats[res].hits} hits | ${stats[res].misses} misses | ${stats[res].stores} stores`)
+                        .join("\n  ") + "\n"
+                    );
+                }
+
+                this._resolverCache.clearStats();
+            }
+
+            if (result.output.length > 0) {
+                console.log(' ',
+                    result.output.length, 'resulting groups from', queries.length, resolver.name, 'execute calls, for example:\n', 
+                    JSON.stringify(result.output[Math.floor(result.output.length / 2)]).slice(0, 300) + ' ...'
+                );
+
+            } else {
+                console.log('  No results collected from', queries.length, resolver.name, 'execute calls.');
+            }
         }
         
         return result;
@@ -179,7 +210,7 @@ export class BudgetReportQueryEngine {
         if (this._resolverCache && resolver.supportsCaching(query)) {
             cacheKeys = resolver.getCacheKeys(query);
             if (cacheKeys) {
-                const cacheResult = await this._resolverCache.load(await this._resolverCache.calculateHash(cacheKeys));
+                const cacheResult = await this._resolverCache.load(cacheKeys);
                 if (cacheResult) {
                     cachedOutput = cacheResult[1];
                 }
@@ -189,18 +220,10 @@ export class BudgetReportQueryEngine {
         if (!cachedOutput) {
             result = await resolver.execute(query);
             if (this._resolverCache && cacheKeys) {
-                if (DEBUG_OUTPUT) {
-                    console.log('Cache MISS with keys: ', cacheKeys);
-                }
-
                 this._resolverCache.store(cacheKeys, result.output);
             }
         
         } else {
-            if (DEBUG_OUTPUT) {
-                console.log('Cache HIT with keys: ', cacheKeys, cachedOutput);
-            }
-            
             result = {
                 nextResolversData: {},
                 output: cachedOutput

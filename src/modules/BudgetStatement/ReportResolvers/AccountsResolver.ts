@@ -29,6 +29,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
 
     public getCacheKeys(query: AccountsResolverData): CacheKeys {
         return {
+            resolver: this.name,
             account: query.account,
             start: query.start,
             end: query.end
