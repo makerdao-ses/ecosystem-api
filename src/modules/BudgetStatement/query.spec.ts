@@ -9,7 +9,7 @@ const queryData = {
     query: `query BudgetStatements {
         budgetStatements {
             id
-            cuId
+            ownerId
             month
         }
     }`

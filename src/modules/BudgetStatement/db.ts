@@ -122,7 +122,8 @@ export interface BudgetStatementCommentAuthor {
 
 export interface BudgetStatementFilter {
     id?: number
-    cuId?: number
+    ownerId?: number
+    ownerType?: string
     month?: string
     status?: string
     cuCode?: string
@@ -201,8 +202,10 @@ export class BudgetStatementModel {
             return baseQuery.limit(filter.limit).offset(filter.offset);
         } else if (filter.filter?.id !== undefined) {
             return baseQuery.where('id', filter.filter.id)
-        } else if (filter.filter?.cuId !== undefined) {
-            return baseQuery.where('cuId', filter.filter.cuId)
+        } else if (filter.filter?.ownerId !== undefined) {
+            return baseQuery.where('ownerId', filter.filter.ownerId)
+        } else if (filter.filter?.ownerType !== undefined) {
+            return baseQuery.where('ownerType', filter.filter.ownerType)
         } else if (filter.filter?.month !== undefined) {
             return baseQuery.where('month', filter.filter.month)
         } else if (filter.filter?.status !== undefined) {

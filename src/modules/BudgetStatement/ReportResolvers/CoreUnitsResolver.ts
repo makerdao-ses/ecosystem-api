@@ -103,7 +103,7 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
             .max('BS.month as latestReport')
 
             .from('public.CoreUnit as CU')
-                .leftJoin('public.BudgetStatement as BS', 'BS.cuId', 'CU.id')
+                .leftJoin('public.BudgetStatement as BS', 'BS.ownerId', 'CU.id')
                 .leftJoin('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
             
             .whereNotNull('BSW.address')
