@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import initKnex from "../../initKnex.js";
 import { BudgetReportPath, BudgetReportPathSegment } from "./BudgetReportPath.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
-import { BudgetReportOutputGroup, CacheKeys } from "./BudgetReportResolver";
+import { BudgetReportOutputGroup } from "./BudgetReportResolver";
 import { ResolverCache } from "./ResolverCache";
 
 let knex:Knex;

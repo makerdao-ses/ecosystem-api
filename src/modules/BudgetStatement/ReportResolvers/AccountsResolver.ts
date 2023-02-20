@@ -31,7 +31,9 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         return {
             account: query.account,
             start: query.start,
-            end: query.end
+            end: query.end,
+            groupPath: query.groupPath,
+            period: query.period,
         };
     }
 

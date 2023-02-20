@@ -33,7 +33,13 @@ export class BudgetReportQueryEngine {
         const categoryPath = typeof query.categories == 'string' ? BudgetReportPath.fromString(query.categories) : query.categories;
 
         if (DEBUG_OUTPUT) {
-            console.log('QueryEngine is calling resolvers for query: ', query);
+            console.log('QueryEngine is calling resolvers for query: ', {
+                budgets: query.budgets ? query.budgets.toString() : query.budgets,
+                categories: query.categories ? query.categories.toString() : query.categories,
+                start: query.start ? query.start.toString() : query.start,
+                end: query.end ? query.end.toString() : query.end,
+                granularity: query.granularity
+            });
         }
 
         return this._callResolvers({
