@@ -2,7 +2,7 @@ import { Knex } from "knex";
 import { LineItemFetcher } from "../LineItemFetcher.js";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "../BudgetReportPeriod.js";
 import { BudgetReportGranularity, BudgetReportPeriodInput } from "../BudgetReportQuery.js";
-import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, CacheKeys, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -19,6 +19,21 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
     constructor(knex:Knex) {
         super();
         this._lineItemFetcher = new LineItemFetcher(knex);
+    }
+
+    public supportsCaching(): boolean {
+        return true;
+    }
+
+    public getCacheKeys(query: ResolverData): Record<string,SerializableKey|null> {
+        return {
+            s: query.start,
+            e: query.end,
+            bp: query.budgetPath,
+            cp: query.categoryPath,
+            gp: query.groupPath,
+            g: query.granularity
+        };
     }
 
     public async execute(query:ResolverData): Promise<ResolverOutput<PeriodResolverData>> {

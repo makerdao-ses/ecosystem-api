@@ -20,8 +20,10 @@ it ('Caches items and maintains the database table correctly', async () => {
 
     const cacheKeys = {
         resolver: 'test',
-        month: BudgetReportPeriod.fromString('2022/12'),
-        coreUnit: 'CES-001'
+        keys: [{
+            month: BudgetReportPeriod.fromString('2022/12'),
+            coreUnit: 'CES-001'
+        }]
     };
 
     const cacheItem: BudgetReportOutputGroup[] = [
@@ -70,7 +72,7 @@ it ('Caches items and maintains the database table correctly', async () => {
         }
     ];
 
-    const expectedHash = 'da418c7d26ceb2ab';
+    const expectedHash = '61f87819fcbc62f1';
 
     const hash = await resolverCache.calculateHash(cacheKeys);
     expect(hash).toBe(expectedHash);
@@ -86,10 +88,6 @@ it ('Caches items and maintains the database table correctly', async () => {
     await resolverCache.store(cacheKeys, cacheItem);
     
     const cacheHit = await resolverCache.load(cacheKeys);
-    if (cacheHit) {
-        expect(cacheHit[1]).toEqual(cacheItem);
-    } else {
-        expect(cacheHit).not.toBe(null);
-    }
+    expect(cacheHit).toEqual(cacheItem);
     
 });

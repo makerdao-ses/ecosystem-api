@@ -23,13 +23,12 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         this._lineItemFetcher = new LineItemFetcher(knex);
     }
 
-    public supportsCaching(query: AccountsResolverData): boolean {
+    public supportsCaching(): boolean {
         return true;
     }
 
-    public getCacheKeys(query: AccountsResolverData): CacheKeys {
+    public getCacheKeys(query: AccountsResolverData): Record<string,SerializableKey|null> {
         return {
-            resolver: this.name,
             account: query.account,
             start: query.start,
             end: query.end
