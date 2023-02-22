@@ -43,7 +43,7 @@ it('returns budgetStatements with all params', async () => {
     const entry2 = await bsModel.getBudgetStatements({ filter: { month: "2023-10-01" } })
     const entry3 = await bsModel.getBudgetStatements({ filter: { ownerType: 'CoreUnit' } })
     const entry4 = await bsModel.getBudgetStatements({ filter: { status: 'Draft' } })
-    const entry5 = await bsModel.getBudgetStatements({ filter: { cuCode: 'EXA-001' } })
+    const entry5 = await bsModel.getBudgetStatements({ filter: { ownerCode: 'EXA-001' } })
     const entry6 = await bsModel.getBudgetStatements({ filter: { mkrProgramLength: 3 } })
     expect(entry[0].ownerId).toEqual(38);
     expect(entry1[0].id).toEqual(310);

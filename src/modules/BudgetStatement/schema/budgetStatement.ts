@@ -15,7 +15,7 @@ export const typeDefs = [gql`
         "Link to the complete publication of the budget statement"
         publicationUrl: String @deprecated(reason: "Moving this field to CoreUnit.legacyBudgetStamentUrl")
         "Core Unit code as defined with the Core Units' MIP39"
-        cuCode: String!
+        ownerCode: String
         mkrProgramLength: Float
         activityFeed: [ChangeTrackingEvent]
         auditReport: [AuditReport]
@@ -147,7 +147,7 @@ export const typeDefs = [gql`
 
     input BudgetStatementInput {
         ownerId: ID
-        cuCode: String
+        ownerCode: String
         month: String
         status: BudgetStatus
     }
@@ -155,10 +155,18 @@ export const typeDefs = [gql`
     input BudgetStatementFilter {
         id: ID
         ownerId: ID
+        ownerType: BudgetOwner!
         month: String
         status: BudgetStatus
-        cuCode: String
+        ownerCode: String
         mkrProgramLength: Float
+    }
+
+    enum BudgetOwner {
+        CoreUnit
+        Delegates
+        SpecialPurposeFund
+        Project
     }
 
     input BudgetStatementWalletFilter {
@@ -307,7 +315,7 @@ export const typeDefs = [gql`
         ownerId: ID
         month: String
         status: BudgetStatus
-        cuCode: String
+        ownerCode: String
     }
 
     input BudgetStatementWalletBatchAddInput {
