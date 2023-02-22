@@ -380,7 +380,11 @@ export const resolvers = {
     CoreUnit: {
         budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id } });
+            let ownerType = 'CoreUnit';
+            if (parent.code === 'DEL') {
+                ownerType = 'Delegates'
+            }
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType } });
             return result;
         },
     },
