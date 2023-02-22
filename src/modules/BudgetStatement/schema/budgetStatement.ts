@@ -304,7 +304,7 @@ export const typeDefs = [gql`
     }
 
     input BudgetStatementBatchAddInput {
-        cuId: ID
+        ownerId: ID
         month: String
         status: BudgetStatus
         cuCode: String
@@ -435,7 +435,7 @@ export const resolvers = {
                         if (input.length < 1) {
                             throw new Error('"No input data')
                         }
-                        console.log(`adding ${input.length} budgetStatements to CU ${input[0].cuId}`)
+                        console.log(`adding ${input.length} budgetStatements to CU ${input[0].ownerId}`)
                         const result = await dataSources.db.BudgetStatement.addBatchBudgetStatements(input);
                         return result
                     } else {
