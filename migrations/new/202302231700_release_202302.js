@@ -5,12 +5,11 @@ export async function up(knex) {
     .select('id')
     .where('roleName', '=', 'DelegatesAdmin');
 
-  await knex('RolePermission').insert({
-    roleId: result[0].id,
-    resource: 'Delegates',
-    permission: 'Update'
-  });
-
+    await knex.schema.raw(`
+    INSERT INTO "RolePermission" ("roleId", "resource", "permission")
+    VALUES (?, ?, ?);
+  `, [result[0].id, 'Delegates', 'Update']);
+  
 
 }
 

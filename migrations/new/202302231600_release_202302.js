@@ -1,9 +1,10 @@
-//Up migration adds ownerType and renamed cuId to ownerId
+//Up migration adds Delegates to ResourceType and adds the Role DelegatesAdmin
 export async function up(knex) {
 
   console.log('Adding Delegates to ResourceType');
   await knex.schema.raw(`
   ALTER TYPE "ResourceType" ADD VALUE 'Delegates';
+  COMMIT;
 `);
 
   await knex('Role').insert({
@@ -29,6 +30,7 @@ export async function down(knex) {
   DROP TYPE "ResourceType";
 
   ALTER TYPE new_ResourceType RENAME TO "ResourceType";
+  
 `);
 
   await knex('Role')
