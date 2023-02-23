@@ -262,6 +262,7 @@ export const typeDefs = [gql`
         budgetCap: Float
         payment: Float
         cuId: ID
+        ownerType: String
     }
 
     input LineItemUpdateInput {
@@ -294,6 +295,7 @@ export const typeDefs = [gql`
         budgetCap: Float
         payment: Float
         cuId: ID
+        ownerType: String
     }
 
     input LineItemsBatchDeleteInput {
@@ -309,6 +311,7 @@ export const typeDefs = [gql`
         canonicalBudgetCategory: String
         headcountExpense: Boolean
         cuId: ID
+        ownerType: String
     }
 
     input BudgetStatementBatchAddInput {
@@ -316,6 +319,7 @@ export const typeDefs = [gql`
         month: String
         status: BudgetStatus
         ownerCode: String
+        ownerType: String
     }
 
     input BudgetStatementWalletBatchAddInput {
@@ -447,7 +451,7 @@ export const resolvers = {
                         if (input.length < 1) {
                             throw new Error('No input data')
                         }
-                        if(input[0].ownerType === undefined) {
+                        if (input[0].ownerType === undefined) {
                             throw new Error('ownerType not defined')
                         }
                         console.log(`adding ${input.length} budgetStatements to CU ${input[0].ownerId}`)
@@ -478,7 +482,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -542,7 +546,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -572,7 +576,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         const cuIdFromInput = input.pop()
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
