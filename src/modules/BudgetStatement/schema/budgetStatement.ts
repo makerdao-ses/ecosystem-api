@@ -445,7 +445,10 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         if (input.length < 1) {
-                            throw new Error('"No input data')
+                            throw new Error('No input data')
+                        }
+                        if(input[0].ownerType === undefined) {
+                            throw new Error('ownerType not defined')
                         }
                         console.log(`adding ${input.length} budgetStatements to CU ${input[0].ownerId}`)
                         const result = await dataSources.db.BudgetStatement.addBatchBudgetStatements(input);
