@@ -63,6 +63,7 @@ export class ChangeTrackingModel {
     async getCoreUnitActivityFeed(cuId: string): Promise<ChangeTrackingEvent[]> {
         return await this.knex('ChangeTrackingEvents_Index')
             .where('objectId', cuId)
+            .andWhere('objectType', 'CoreUnit')
             .orderBy('eventId', 'desc')
             .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id');
     }
@@ -70,6 +71,7 @@ export class ChangeTrackingModel {
     async getCoreUnitLastActivity(cuId: string): Promise<ChangeTrackingEvent | null> {
         const result = await this.knex('ChangeTrackingEvents_Index')
             .where('objectId', cuId)
+            .andWhere('objectType', 'CoreUnit')
             .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id')
             .orderBy('ChangeTrackingEvents.created_at', 'desc')
             .limit(1);
