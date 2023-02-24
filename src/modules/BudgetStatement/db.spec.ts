@@ -38,13 +38,13 @@ it('returns list of budgetStatements with limit offset and undefined', async () 
 });
 
 it('returns budgetStatements with all params', async () => {
-    const entry = await bsModel.getBudgetStatements({ filter: { ownerId: 38 } });
-    const entry1 = await bsModel.getBudgetStatements({ filter: { id: 310 } })
-    const entry2 = await bsModel.getBudgetStatements({ filter: { month: "2023-10-01" } })
+    const entry = await bsModel.getBudgetStatements({ filter: { ownerId: 38, ownerType: 'CoreUnit' } });
+    const entry1 = await bsModel.getBudgetStatements({ filter: { id: 310, ownerType: 'CoreUnit' } })
+    const entry2 = await bsModel.getBudgetStatements({ filter: { month: "2023-10-01", ownerType: 'CoreUnit' } })
     const entry3 = await bsModel.getBudgetStatements({ filter: { ownerType: 'CoreUnit' } })
-    const entry4 = await bsModel.getBudgetStatements({ filter: { status: 'Draft' } })
-    const entry5 = await bsModel.getBudgetStatements({ filter: { ownerCode: 'EXA-001' } })
-    const entry6 = await bsModel.getBudgetStatements({ filter: { mkrProgramLength: 3 } })
+    const entry4 = await bsModel.getBudgetStatements({ filter: { status: 'Draft', ownerType: 'CoreUnit' } })
+    const entry5 = await bsModel.getBudgetStatements({ filter: { ownerCode: 'EXA-001', ownerType: 'CoreUnit' } })
+    const entry6 = await bsModel.getBudgetStatements({ filter: { mkrProgramLength: 3, ownerType: 'CoreUnit' } })
     expect(entry[0].ownerId).toEqual(38);
     expect(entry1[0].id).toEqual(310);
     expect(entry2[0].month).toEqual("2023-10-01");

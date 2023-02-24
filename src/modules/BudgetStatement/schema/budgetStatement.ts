@@ -513,7 +513,8 @@ export const resolvers = {
                         //Tacking Change
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: user.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input.budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [ownerTypeResult] = await dataSources.db.BudgetStatement.getBSOwnerType(input.budgetStatementId);
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: ownerTypeResult.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }

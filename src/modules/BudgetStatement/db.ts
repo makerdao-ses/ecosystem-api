@@ -227,6 +227,13 @@ export class BudgetStatementModel {
         }
     };
 
+    async getBSOwnerType(id: number | string) {
+        return this.knex
+            .select('ownerType')
+            .from('BudgetStatement')
+            .where('id', id);
+    }
+
     async getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
         const baseQuery = this.knex
             .select('*')

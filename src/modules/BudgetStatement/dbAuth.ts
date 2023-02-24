@@ -25,7 +25,8 @@ export class BudgetStatementAuthModel {
                 if (input.length < 1) {
                     throw new ForbiddenError('No input data')
                 }
-                const [budgetStatement] = await this.bsModel.getBudgetStatements({ filter: { id: input.budgetStatementId } });
+                const [ownerTypeResult] = await this.bsModel.getBSOwnerType(input.budgetStatementId);
+                const [budgetStatement] = await this.bsModel.getBudgetStatements({ filter: { id: input.budgetStatementId, ownerType: ownerTypeResult.ownerType } });
 
                 // returning error if no comment or same status
                 if (input.comment === null || input.comment === '' && budgetStatement.status === input.status) {
@@ -105,7 +106,7 @@ export class BudgetStatementAuthModel {
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, dataSources);
-                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
                     return parsed;
                 }
 
@@ -122,7 +123,7 @@ export class BudgetStatementAuthModel {
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, dataSources);
-                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
                     return parsed;
                 }
             }
@@ -142,8 +143,8 @@ const parseCommentOutput = (comments: any, dataSources: any) => {
     return Promise.all(parsed);
 };
 
-const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any) => {
-    const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId } })
+const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any, ownerType: string) => {
+    const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId, ownerType } })
     const [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.ownerId } });
     const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
     ctModel.budgetStatementCommentUpdate(
