@@ -32,7 +32,7 @@ export class BudgetStatementAuthModel {
                 if (input.comment === null || input.comment === '' && budgetStatement.status === input.status) {
                     throw new ForbiddenError('Need to add a comment or change status')
                 }
-                const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, 'CoreUnit', budgetStatement.ownerId);
+                const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, ownerTypeResult.ownerType, budgetStatement.ownerId);
                 const canAudit = await this.authModel.canAudit(user.id);
                 const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.ownerId);
                 const coreUnitHasAuditors = () => {
