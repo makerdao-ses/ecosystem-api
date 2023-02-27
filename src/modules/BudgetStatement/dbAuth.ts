@@ -34,7 +34,7 @@ export class BudgetStatementAuthModel {
                 }
                 const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, ownerTypeResult.ownerType, budgetStatement.ownerId);
                 const canAudit = await this.authModel.canAudit(user.id);
-                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', budgetStatement.ownerId);
+                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', ownerTypeResult.ownerType, budgetStatement.ownerId);
                 const coreUnitHasAuditors = () => {
                     return cuAuditors.length > 0 ? true : false;
                 }
