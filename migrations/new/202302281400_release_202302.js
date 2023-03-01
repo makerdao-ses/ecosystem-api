@@ -1,4 +1,4 @@
-//Up migration adds the Delegates/Update RolePermission
+//Up migration adds the Dracaena to the Delegates role
 export async function up(knex) {
 
   await knex('CoreUnit').insert([{
@@ -33,9 +33,6 @@ export async function up(knex) {
     resource: 'Delegates',
     resourceId: DelegateCU[0].id,
   }]);
-
-  
-
 
 }
 
