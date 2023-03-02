@@ -82,10 +82,10 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        activityFeed: async (_, filter, { dataSources }) => {
+        activityFeed: async (_: any, filter: any, { dataSources }: any) => {
             return dataSources.db.ChangeTracking.getActivityFeed(filter.limit, filter.offset, filter.filter);
         },
-        userActivity: async (_, { filter }, { dataSources }) => {
+        userActivity: async (_: any, { filter }: any, { dataSources }: any) => {
             if (filter !== undefined) {
                 const queryParams = Object.keys(filter);
                 const paramName = queryParams[0];
@@ -96,13 +96,13 @@ export const resolvers = {
             }
             return dataSources.db.ChangeTracking.getUserActivity()
         },
-        budgetStatementEvents: async (_, { filter }, { dataSources }) => {
+        budgetStatementEvents: async (_: any, { filter }: any, { dataSources }: any) => {
             const result = await dataSources.db.ChangeTracking.getBsEvents(filter?.budgetStatementId);
             return result
         }
     },
     Mutation: {
-        userActivityUpdate: async (_, { input }, { user, auth, dataSources }) => {
+        userActivityUpdate: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login!")
@@ -129,16 +129,16 @@ export const resolvers = {
                     return [output];
                 }
 
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to perform this query')
             }
         }
     },
     CoreUnit: {
-        lastActivity: async (parent, _, { dataSources }) => {
+        lastActivity: async (parent: any, _: any, { dataSources }: any) => {
             return dataSources.db.ChangeTracking.getCoreUnitLastActivity(parent.id);
         },
-        activityFeed: async (parent, _, { dataSources }) => {
+        activityFeed: async (parent: any, _: any, { dataSources }: any) => {
             return dataSources.db.ChangeTracking.getCoreUnitActivityFeed(parent.id);
         },
     },

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-server-core';
-import { parseToSchemaUser, getCuIdFromPermissions } from '../../Auth/schema.js';
 
 export const typeDefs = gql`
 
@@ -106,9 +105,9 @@ export const typeDefs = gql`
 export const resolvers = {
     Query: {
         // coreUnits: (parent, args, context, info) => {}
-        coreUnits: async (_, filter, { dataSources }) => {
+        coreUnits: async (_: any, filter: any, { dataSources }: any) => {
             const result = await dataSources.db.CoreUnit.getCoreUnits(filter)
-            const parsedResult = result.map(cu => {
+            const parsedResult = result.map((cu: any) => {
                 if (cu.category !== null) {
                     const cleanCategory = cu.category.slice(1, cu.category.length - 1)
                     cu.category = cleanCategory.split(',');
@@ -119,32 +118,32 @@ export const resolvers = {
             })
             return parsedResult;
         },
-        cuUpdates: async (_, { filter }, { dataSources }) => {
+        cuUpdates: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getCuUpdates(filter);
         }
     },
     CoreUnit: {
-        socialMediaChannels: async (parent, __, { dataSources }) => {
+        socialMediaChannels: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.CoreUnit.getSocialMediaChannels({ cuId: id });
             return result;
         },
-        contributorCommitment: async (parent, __, { dataSources }) => {
+        contributorCommitment: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.CoreUnit.getContributorCommitments({ cuCode: id });
             return result;
         },
-        cuGithubContribution: async (parent, __, { dataSources }) => {
+        cuGithubContribution: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.CoreUnit.getCuGithubContributions(id);
             return result;
         },
-        cuUpdates: async (parent, __, { dataSources }) => {
+        cuUpdates: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.CoreUnit.getCuUpdates({ cuId: id });
             return result;
         },
-        auditors: async (parent, __, { dataSources }) => {
+        auditors: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', id);
             return resourceUsers

@@ -1,11 +1,12 @@
 import { Knex } from "knex";
-import { BudgetReportPeriod } from "./BudgetReportPeriod";
+import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
 
 export interface LineItemGroup {
     account: string,
     month: BudgetReportPeriod,
     latestReport: BudgetReportPeriod | null,
     hasActuals: boolean,
+    fteCap: number | null,
     categories: LineItemCategory[],
 }
 
@@ -26,13 +27,21 @@ export interface LineItemNumbers {
     payment: number,
 }
 
+export interface CapNumbers {
+    start: string,
+    end: string,
+    fteCap: number,
+    budgetCap: number
+}
+
 export class LineItemFetcher {
     private _knex:Knex;
 
     public static lineItemGroupToString(lineItems: LineItemGroup): string {
         let result = `${lineItems.month.toString()} [${lineItems.account}]`;
         result += ` - latestReport:${lineItems.latestReport?.toString()} - hasActuals:${lineItems.hasActuals}`;
-        result += ` - obsolete:${lineItems.categories.reduce((obs, cat) => obs + (cat.obsolete ? 1 : 0), 0)}\n\n`;
+        result += ` - obsolete:${lineItems.categories.reduce((obs, cat) => obs + (cat.obsolete ? 1 : 0), 0)}`;
+        result += ` - fteCap:${lineItems.fteCap === null ? '(not set)' : lineItems.fteCap}\n\n`;
 
         const totals: LineItemNumbers = {
             actual: 0.00,
@@ -109,6 +118,41 @@ export class LineItemFetcher {
         this._knex = knex;
     }
 
+    public async getCaps(account:string, date:string): Promise<CapNumbers[]> {
+        const query = this._knex
+            .select(
+                'MBP.budgetPeriodStart as start',
+                'MBP.budgetPeriodEnd as end'
+            )
+            .max('MBP.ftes as fteCap')
+            .sum('MBLI.budgetCap as budgetCap')
+
+            .from('public.Mip40Wallet AS MW')
+            .innerJoin('public.Mip40BudgetPeriod AS MBP', 'MBP.mip40Id', 'MW.mip40Id')
+            .innerJoin('public.Mip40BudgetLineItem AS MBLI', 'MW.id', 'MBLI.mip40WalletId')
+            
+            .whereRaw('LOWER("MW"."address") = ?', account.toLowerCase())
+            .whereRaw('"MBP"."budgetPeriodStart" <= ?', date)
+            .whereRaw('"MBP"."budgetPeriodEnd" >= ?', date)
+            
+            .groupBy(
+                'MW.address',
+                'MBP.budgetPeriodStart',
+                'MBP.budgetPeriodEnd'
+            )
+            
+            // If there are overlapping periods, select the newest first
+            .orderBy('MBP.budgetPeriodStart', 'DESC')
+            .orderBy('MBP.budgetPeriodEnd', 'ASC');
+
+        return (await query).map(r => ({
+            start: r.start,
+            end: r.end,
+            fteCap: Number.parseFloat(r.fteCap),
+            budgetCap: Number.parseFloat(r.budgetCap)
+        }));
+    }
+
     public async getAvailableMonthsRange() {
         const result = await this
             ._knex('public.BudgetStatementLineItem as BSLI')
@@ -161,16 +205,55 @@ export class LineItemFetcher {
     }
 
     public async getLineItems(account:string, month:string, includeObsolete:boolean=false): Promise<LineItemGroup> {
+        const result = await this._readLineItemRecords(account, month);
+        
+        if (!includeObsolete) {
+            result.categories = result.categories.filter(c => !c.obsolete);
+        }
+
+        // Fill out the budget caps and FTE numbers
+        const capNumbers = await this.getCaps(account, result.month.startAsSqlDate());
+        if (capNumbers.length > 0) {
+            result.fteCap = capNumbers[0].fteCap;
+
+            // Calculate the total budget cap number already covered by the line items
+            const budgetCapTotal = result.categories.reduce((total, category) => total + (category.numbers.budgetCap || 0.00), 0.00);
+            const remainderCap = capNumbers[0].budgetCap - budgetCapTotal;
+
+            if (remainderCap > 0.00 || remainderCap < 0.00) {
+                // Select the NULL category or create one if needed
+                let nullCategory: LineItemCategory|null = null;
+                            
+                result.categories
+                    .filter(c => c.category === null && c.group === null)
+                    .forEach(c => nullCategory = c);
+
+                if (nullCategory === null) {
+                    nullCategory = this._newCategory(null, null, null);
+                    result.categories.push(nullCategory);
+                }
+
+                // 
+                nullCategory.numbers.budgetCap += remainderCap;
+                nullCategory.hasError = nullCategory.hasError || (remainderCap < 0);
+            }
+        }
+            
+        return result;
+    }
+
+    private async _readLineItemRecords(account:string, month:string): Promise<LineItemGroup> {
         const result: LineItemGroup = {
             account,
             month: this._parseDateStringAsMonthPeriod(month),
             latestReport: null,
             hasActuals: false,
+            fteCap: null,
             categories: []
         };
 
-        let currentCategory: LineItemCategory | null = null;
         const records = await this.buildQuery(account, month);
+        let currentCategory: LineItemCategory | null = null;
         
         records.forEach((r: any) => {
             const group = (r.group == null || r.group.length < 1 ? null : r.group);
@@ -180,21 +263,7 @@ export class LineItemFetcher {
                 || currentCategory.category !== r.category
                 || currentCategory.group !== group
             ) {
-                currentCategory = {
-                    group,
-                    headcountExpense: r.headcountExpense,
-                    category: r.category,
-                    numbers: {
-                        actual: 0.00,
-                        forecast: 0.00,
-                        budgetCap: 0.00,
-                        payment: 0.00,
-                    },
-                    reports: {},
-                    obsolete: false,
-                    hasError: false
-                };
-
+                currentCategory = this._newCategory(group, r.headcountExpense, r.category);
                 result.categories.push(currentCategory);
             }
 
@@ -207,11 +276,7 @@ export class LineItemFetcher {
                     payment: 0.00
                 };
 
-                if (r.actual && Number.parseFloat(r.actual) > 0.00) {
-                    currentCategory.hasError = true;
-                }
-
-                if (r.payment && Number.parseFloat(r.payment) > 0.00) {
+                if (this._hasActualsOrPayments(r)) {
                     currentCategory.hasError = true;
                 }
 
@@ -233,6 +298,7 @@ export class LineItemFetcher {
             result.hasActuals = result.hasActuals || currentCategory.numbers.actual > 0.00;
         });
 
+        // Set obsolete values
         if (result.latestReport !== null) {
             const latestReportKey = result.latestReport.toString();
             result.categories.forEach(c => {
@@ -240,11 +306,29 @@ export class LineItemFetcher {
             });
         }
 
-        if (!includeObsolete) {
-            result.categories = result.categories.filter(c => !c.obsolete);
-        }
-
         return result;
+    }
+
+    private _hasActualsOrPayments(record:any): boolean {
+        return (record.actual && Number.parseFloat(record.actual) > 0.00) 
+            || (record.payment && Number.parseFloat(record.payment) > 0.00);
+    }
+
+    private _newCategory(group:string|null, headcountExpense:boolean|null, category:string|null): LineItemCategory {
+        return {
+            group,
+            headcountExpense,
+            category,
+            numbers: {
+                actual: 0.00,
+                forecast: 0.00,
+                budgetCap: 0.00,
+                payment: 0.00,
+            },
+            reports: {},
+            obsolete: false,
+            hasError: false
+        };
     }
 
     private _parseDateStringAsMonthPeriod(date: string): BudgetReportPeriod {

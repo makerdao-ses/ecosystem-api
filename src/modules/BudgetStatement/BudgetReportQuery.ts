@@ -1,5 +1,5 @@
-import { BudgetReportPeriod } from "./BudgetReportPeriod";
-import { BudgetReportPath } from "./BudgetReportPath";
+import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
+import { BudgetReportPath } from "./BudgetReportPath.js";
 
 export interface BudgetReportQuery {
     start: BudgetReportPeriodInput,

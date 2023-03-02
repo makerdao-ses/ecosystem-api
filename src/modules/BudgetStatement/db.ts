@@ -2,7 +2,8 @@ import { Knex } from "knex";
 
 export interface BudgetStatement {
     id: string
-    cuId: number
+    ownerId: number
+    ownerType: string
     month: string
     budgetStatus: string
     publicationUrl: string
@@ -122,10 +123,11 @@ export interface BudgetStatementCommentAuthor {
 
 export interface BudgetStatementFilter {
     id?: number
-    cuId?: number
+    ownerId?: number
+    ownerType?: string
     month?: string
     status?: string
-    cuCode?: string
+    ownerCode?: string
     mkrProgramLength?: number
 }
 
@@ -196,25 +198,41 @@ export class BudgetStatementModel {
             .select('*')
             .from('BudgetStatement')
             .orderBy('month', 'desc');
-
         if (filter?.limit !== undefined && filter?.offset !== undefined) {
             return baseQuery.limit(filter.limit).offset(filter.offset);
         } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id)
-        } else if (filter.filter?.cuId !== undefined) {
-            return baseQuery.where('cuId', filter.filter.cuId)
+            return baseQuery.where('id', filter.filter.id).andWhere('ownerType', filter.filter.ownerType)
+        } else if (filter.filter?.ownerId !== undefined) {
+            return baseQuery.where('ownerId', filter.filter.ownerId).andWhere('ownerType', filter.filter.ownerType)
+        } else if (
+            filter.filter?.ownerType !== undefined &&
+            filter.filter?.id == undefined &&
+            filter.filter?.ownerId == undefined &&
+            filter.filter?.month == undefined &&
+            filter.filter?.status == undefined &&
+            filter.filter?.ownerCode == undefined &&
+            filter.filter?.mkrProgramLength == undefined
+        ) {
+            return baseQuery.where('ownerType', filter.filter.ownerType)
         } else if (filter.filter?.month !== undefined) {
-            return baseQuery.where('month', filter.filter.month)
+            return baseQuery.where('month', filter.filter.month).andWhere('ownerType', filter.filter.ownerType)
         } else if (filter.filter?.status !== undefined) {
-            return baseQuery.where('status', filter.filter.status)
-        } else if (filter.filter?.cuCode !== undefined) {
-            return baseQuery.where('cuCode', filter.filter.cuCode)
+            return baseQuery.where('status', filter.filter.status).andWhere('ownerType', filter.filter.ownerType)
+        } else if (filter.filter?.ownerCode !== undefined) {
+            return baseQuery.where('ownerCode', filter.filter.ownerCode).andWhere('ownerType', filter.filter.ownerType)
         } else if (filter.filter?.mkrProgramLength !== undefined) {
-            return baseQuery.where('mkrProgramLength', filter.filter.mkrProgramLength)
+            return baseQuery.where('mkrProgramLength', filter.filter.mkrProgramLength).andWhere('ownerType', filter.filter.ownerType)
         } else {
             return baseQuery;
         }
     };
+
+    async getBSOwnerType(id: number | string) {
+        return this.knex
+            .select('ownerType')
+            .from('BudgetStatement')
+            .where('id', id);
+    }
 
     async getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
         const baseQuery = this.knex

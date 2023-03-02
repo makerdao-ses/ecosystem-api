@@ -1,8 +1,17 @@
-import { BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportQueryEngine";
+import { BudgetReportOutputRow, BudgetReportResolverBase, CacheKeys, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
 import { Knex } from "knex";
-import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher";
+import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
+import { PeriodResolverData } from "./PeriodResolver.js";
+import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 
 const DEBUG_OUTPUT = false;
+
+export interface AccountsResolverData extends PeriodResolverData {
+    account: string;
+    owner: string;
+    discontinued: boolean;
+    discontinuedSince: string | null;
+}
 
 export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {
     readonly name = 'AccountsResolver';
@@ -14,6 +23,20 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         this._lineItemFetcher = new LineItemFetcher(knex);
     }
 
+    public supportsCaching(): boolean {
+        return true;
+    }
+
+    public getCacheKeys(query: AccountsResolverData): Record<string,SerializableKey|null> {
+        return {
+            account: query.account,
+            start: query.start,
+            end: query.end,
+            groupPath: query.groupPath,
+            period: query.period,
+        };
+    }
+
     public async execute(query:AccountsResolverData): Promise<ResolverOutput<ResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
@@ -22,16 +45,18 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         const result:ResolverOutput<ResolverData> = {
             nextResolversData: {},
             output: [{
-                keys: {
-                    owner: query.owner,
-                    account: query.account,
-                    discontinued: query.discontinued
-                },
+                keys: query.groupPath,
+                period: query.period,
                 rows: []
             }]
         };
 
-        for (const month of query.periodRange) {
+        const range = BudgetReportPeriod.fillRange(
+            query.start as BudgetReportPeriod, 
+            query.end as BudgetReportPeriod
+        );
+
+        for (const month of range) {
             const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
             const outputRows:BudgetReportOutputRow[] = lineItemGroup.categories.map(c => {
                 const actualsReported = lineItemGroup.hasActuals 
@@ -65,15 +90,9 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         }
 
         if (DEBUG_OUTPUT) {
-            console.log(`AccountsResolver fetched ${query.periodRange.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
+            console.log(`AccountsResolver fetched ${range.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
         }
         
         return result;
     }
-}
-
-export interface AccountsResolverData extends ResolverData {
-    account: string;
-    owner: string;
-    discontinued: boolean;
 }

@@ -34,11 +34,13 @@ it ('fetches correct line items for permanent team wallet', async () => {
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2021/09');
+    expect(lineItems.fteCap).toBeCloseTo(9.23);
+    expect(lineItems.hasActuals).toBe(true);
 
     const totals = groupTotals(lineItems);
     expect(totals.actual).toBeCloseTo(169939.74);
     expect(totals.forecast).toBeCloseTo(144399.18);
-    expect(totals.budgetCap).toBeCloseTo(0.00);
+    expect(totals.budgetCap).toBeCloseTo(154493.00);
     expect(totals.payment).toBeCloseTo(173330.00);
 
     lineItems.categories.forEach(c => {
@@ -60,11 +62,13 @@ it ('fetches correct line items for incubation program wallet', async () => {
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2022/10');
+    expect(lineItems.fteCap).toBeCloseTo(11.5);
+    expect(lineItems.hasActuals).toBe(true);
 
     const totals = groupTotals(lineItems);
     expect(totals.actual).toBeCloseTo(99445.26);
     expect(totals.forecast).toBeCloseTo(99426.33);
-    expect(totals.budgetCap).toBeCloseTo(0.00);
+    expect(totals.budgetCap).toBeCloseTo(250000.00);
     expect(totals.payment).toBeCloseTo(99365.46);
 
     lineItems.categories.forEach(c => {
@@ -86,11 +90,13 @@ it ('fetches correct line items for grants program wallet', async () => {
 
     expect(lineItems.account.toLowerCase()).toEqual(account);
     expect(lineItems.month.toString()).toEqual('2022/10');
+    expect(lineItems.fteCap).toBeCloseTo(11.5);
+    expect(lineItems.hasActuals).toBe(true);
 
     const totals = groupTotals(lineItems);
     expect(totals.actual).toBeCloseTo(15038.30);
     expect(totals.forecast).toBeCloseTo(55000.00);
-    expect(totals.budgetCap).toBeCloseTo(0.00);
+    expect(totals.budgetCap).toBeCloseTo(60000.00);
     expect(totals.payment).toBeCloseTo(15038.30);
 
     lineItems.categories.forEach(c => {

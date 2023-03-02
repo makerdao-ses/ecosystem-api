@@ -80,26 +80,26 @@ export const typeDefs = gql`
 
 export const resolvers = {
     Query: {
-        cuGithubContributions: async (_, { filter }, { dataSources }) => {
+        cuGithubContributions: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getCuGithubContributions(filter)
         },
-        githubOrgs: async (_, { filter }, { dataSources }) => {
+        githubOrgs: async (_: any, { filter }: any, { dataSources }: any) => {
             return dataSources.db.CoreUnit.getGithubOrgs(filter)
         },
-        githubRepos: async (_, { filter }, { dataSources }) => {
+        githubRepos: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getGithubRepos(filter)
         },
-        makerGithubEcosystemAll: async (_, { filter }, { dataSources }) => {
+        makerGithubEcosystemAll: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.CoreUnit.getMakerGithubEcosystemAll(filter)
         }
     },
     CuGithubContribution: {
-        githubOrg: async (parent, __, { dataSources }) => {
+        githubOrg: async (parent: any, __: any, { dataSources }: any) => {
             const { orgId } = parent;
             const result = await dataSources.db.CoreUnit.getGithubOrgs({ id: orgId });
             return result
         },
-        githubRepo: async (parent, __, { dataSources }) => {
+        githubRepo: async (parent: any, __: any, { dataSources }: any) => {
             const { repoId } = parent;
             const result = await dataSources.db.CoreUnit.getGithubRepos({ id: repoId });
             return result;

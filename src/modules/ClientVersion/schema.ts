@@ -17,10 +17,10 @@ export const typeDefs = [gql`
 
 export const resolvers = {
     Query: {
-        budgetToolVersions: async (_, __, { dataSources }) => {
+        budgetToolVersions: async (_: any, __: any, { dataSources }: any) => {
             return await dataSources.db.ClientVersion.getBudgetToolVersions()
         },
-        latestBudgetToolVersion: async (_, __, {dataSources}) => {
+        latestBudgetToolVersion: async (_: any, __: any, { dataSources }: any) => {
             return await dataSources.db.ClientVersion.getLatestBudgetToolVersion()
         }
     }
