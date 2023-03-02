@@ -6,7 +6,8 @@ export const typeDefs = [gql`
         "Auto generated id field"
         id: ID!
         "Auto generated id field from Core Unit table"
-        cuId: ID!
+        ownerId: ID!
+        ownerType: String
         "Month of corresponding budget statement"
         month: String!
         "Status of the budgest statement (Draft/Final)"
@@ -14,7 +15,7 @@ export const typeDefs = [gql`
         "Link to the complete publication of the budget statement"
         publicationUrl: String @deprecated(reason: "Moving this field to CoreUnit.legacyBudgetStamentUrl")
         "Core Unit code as defined with the Core Units' MIP39"
-        cuCode: String!
+        ownerCode: String
         mkrProgramLength: Float
         activityFeed: [ChangeTrackingEvent]
         auditReport: [AuditReport]
@@ -145,19 +146,27 @@ export const typeDefs = [gql`
     }
 
     input BudgetStatementInput {
-        cuId: ID
-        cuCode: String
+        ownerId: ID
+        ownerCode: String
         month: String
         status: BudgetStatus
     }
 
     input BudgetStatementFilter {
         id: ID
-        cuId: ID
+        ownerId: ID
+        ownerType: BudgetOwner!
         month: String
         status: BudgetStatus
-        cuCode: String
+        ownerCode: String
         mkrProgramLength: Float
+    }
+
+    enum BudgetOwner {
+        CoreUnit
+        Delegates
+        SpecialPurposeFund
+        Project
     }
 
     input BudgetStatementWalletFilter {
@@ -253,6 +262,7 @@ export const typeDefs = [gql`
         budgetCap: Float
         payment: Float
         cuId: ID
+        ownerType: String
     }
 
     input LineItemUpdateInput {
@@ -285,6 +295,7 @@ export const typeDefs = [gql`
         budgetCap: Float
         payment: Float
         cuId: ID
+        ownerType: String
     }
 
     input LineItemsBatchDeleteInput {
@@ -300,13 +311,15 @@ export const typeDefs = [gql`
         canonicalBudgetCategory: String
         headcountExpense: Boolean
         cuId: ID
+        ownerType: String
     }
 
     input BudgetStatementBatchAddInput {
-        cuId: ID
+        ownerId: ID
         month: String
         status: BudgetStatus
-        cuCode: String
+        ownerCode: String
+        ownerType: String
     }
 
     input BudgetStatementWalletBatchAddInput {
@@ -324,18 +337,18 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         // coreUnits: (parent, args, context, info) => {}
-        budgetStatements: async (_, filter, { dataSources }) => {
+        budgetStatements: async (_: any, filter: any, { dataSources }: any) => {
             return await dataSources.db.BudgetStatement.getBudgetStatements(filter)
         },
-        budgetStatementWallets: async (_, { filter }, { dataSources }) => {
+        budgetStatementWallets: async (_: any, { filter }: any, { dataSources }: any) => {
             return await dataSources.db.BudgetStatement.getBudgetStatementWallets(filter);
         },
-        budgetStatementLineItems: async (_, filter, { dataSources }) => {
-            let queryParams = undefined;
-            let paramName = undefined;
-            let paramValue = undefined;
-            let secondParamName = undefined;
-            let secondParamValue = undefined;
+        budgetStatementLineItems: async (_: any, filter: any, { dataSources }: any) => {
+            let queryParams: string[] | undefined = undefined;
+            let paramName: string | undefined = undefined;
+            let paramValue: string[] | undefined = undefined;
+            let secondParamName: string | undefined = undefined;
+            let secondParamValue: string[] | undefined = undefined;
             if (filter.filter !== undefined) {
                 queryParams = Object.keys(filter.filter);
                 if (queryParams.length > 2) {
@@ -369,58 +382,62 @@ export const resolvers = {
         // }
     },
     CoreUnit: {
-        budgetStatements: async (parent, __, { dataSources }) => {
+        budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { cuId: id } });
+            let ownerType = 'CoreUnit';
+            if (parent.code === 'DEL') {
+                ownerType = 'Delegates'
+            }
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType } });
             return result;
         },
     },
     BudgetStatement: {
-        activityFeed: async (parent, __, { dataSources }) => {
+        activityFeed: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.ChangeTracking.getBsEvents(id)
             return result
         },
-        auditReport: async (parent, __, { dataSources }) => {
+        auditReport: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getAuditReports({ budgetStatementId: id });
             return result;
         },
-        budgetStatementFTEs: async (parent, __, { dataSources }) => {
+        budgetStatementFTEs: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementFTEs({ budgetStatementId: id });
             return result
         },
-        budgetStatementMKRVest: async (parent, __, { dataSources }) => {
+        budgetStatementMKRVest: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementMKRVests({ budgetStatementId: id })
             return result;
         },
-        budgetStatementWallet: async (parent, __, { dataSources }) => {
+        budgetStatementWallet: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ budgetStatementId: id });
             return result;
         }
     },
     BudgetStatementWallet: {
-        budgetStatementLineItem: async (parent, __, { dataSources }) => {
+        budgetStatementLineItem: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementLineItems(undefined, undefined, 'budgetStatementWalletId', id);
             return result;
         },
-        budgetStatementPayment: async (parent, __, { dataSources }) => {
+        budgetStatementPayment: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementPayments({ budgetStatementWalletId: id });
             return result;
         },
-        budgetStatementTransferRequest: async (parent, __, { dataSources }) => {
+        budgetStatementTransferRequest: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests({ budgetStatementWalletId: id });
             return result;
         }
     },
     Mutation: {
-        budgetStatementsBatchAdd: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetStatementsBatchAdd: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatements")
@@ -432,22 +449,25 @@ export const resolvers = {
                     const allowed = await auth.canUpdate('CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         if (input.length < 1) {
-                            throw new Error('"No input data')
+                            throw new Error('No input data')
                         }
-                        console.log(`adding ${input.length} budgetStatements to CU ${input[0].cuId}`)
+                        if (input[0].ownerType === undefined) {
+                            throw new Error('ownerType not defined')
+                        }
+                        console.log(`adding ${input.length} budgetStatements to CU ${input[0].ownerId}`)
                         const result = await dataSources.db.BudgetStatement.addBatchBudgetStatements(input);
                         return result
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetStatements')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatements')
             }
 
 
         },
-        budgetLineItemsBatchAdd: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetLineItemsBatchAdd: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItems")
@@ -462,7 +482,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -475,11 +495,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetLineItems')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetLineItems')
             }
         },
-        budgetLineItemUpdate: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetLineItemUpdate: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
@@ -493,7 +513,8 @@ export const resolvers = {
                         //Tacking Change
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: user.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input.budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [ownerTypeResult] = await dataSources.db.BudgetStatement.getBSOwnerType(input.budgetStatementId);
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: ownerTypeResult.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -507,11 +528,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetLineItems')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetLineItems')
             }
         },
-        budgetLineItemsBatchUpdate: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetLineItemsBatchUpdate: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetLineItem")
@@ -526,7 +547,7 @@ export const resolvers = {
                         const cuIdFromInput = input.pop()
                         const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -539,11 +560,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetLineItems')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetLineItems')
             }
         },
-        budgetLineItemsBatchDelete: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetLineItemsBatchDelete: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to delete budgetLineItems")
@@ -556,7 +577,7 @@ export const resolvers = {
                     if (allowed[0].count > 0) {
                         const cuIdFromInput = input.pop()
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
-                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId } })
+                        const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
@@ -566,12 +587,12 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to delete budgetLineItems')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to delete budgetLineItems')
             }
 
         },
-        budgetStatementWalletBatchAdd: async (_, { input }, { user, auth, dataSources }) => { // this one
+        budgetStatementWalletBatchAdd: async (_: any, { input }: any, { user, auth, dataSources }: any) => { // this one
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
@@ -589,11 +610,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatementWallets')
             }
         },
-        budgetStatementFTEAdd: async (_, { input }, { user, auth, dataSources }) => {
+        budgetStatementFTEAdd: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
@@ -611,11 +632,11 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatementWallets')
             }
         },
-        budgetStatementFTEUpdate: async (_, { input }, { user, auth, dataSources }) => {
+        budgetStatementFTEUpdate: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
                 if (!user && !auth) {
                     throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
@@ -633,7 +654,7 @@ export const resolvers = {
                         throw new AuthenticationError('You are not authorized to update budgetStatementWallets')
                     }
                 }
-            } catch (error) {
+            } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatementWallets')
             }
         },

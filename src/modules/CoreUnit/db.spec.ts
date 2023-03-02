@@ -68,9 +68,9 @@ it('returns list of contributors with limit offset and undefined params', async 
     expect(entry1.length).toBeGreaterThan(0);
 });
 
-it('returns contributor with name Jack', async () => {
-    const entry = await authModel.getContributors({ filter: { name: "Jack" } });
-    expect(entry[0].name).toEqual('Jack');
+it('returns contributor with name Payton', async () => {
+    const entry = await authModel.getContributors({ filter: { name: "Payton" } });
+    expect(entry[0].name).toEqual('Payton');
 });
 
 it('returns list of githubOrgs with id and undefined params', async () => {

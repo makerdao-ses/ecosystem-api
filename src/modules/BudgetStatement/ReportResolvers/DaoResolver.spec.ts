@@ -20,13 +20,15 @@ it ('works', async () => {
     const resolver = new DaoResolver();
     const period = ['2021/10', '2021/11', '2021/12'];
     const query = {
-        periodRange: period.map(p => BudgetReportPeriod.fromString(p)),
-        budgetPath: BudgetReportPath.fromString('*'),
+        start: period[0],
+        end: period[2],
+        period: '2021/Q4',
+        budgetPath: BudgetReportPath.fromString('makerdao/core-units'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly,
+        groupPath: ['makerdao', 'core-units']
     };
 
     const result = await resolver.execute(query);
-
     expect(Object.keys(result.nextResolversData)).toEqual(['CoreUnitsResolver']);
 });

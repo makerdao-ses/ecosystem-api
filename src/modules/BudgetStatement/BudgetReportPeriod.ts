@@ -1,3 +1,5 @@
+import { JsonSerializerTypes } from "./JsonSerializerTypes.js";
+
 export enum BudgetReportPeriodType {
     Year,
     Quarter,
@@ -15,6 +17,13 @@ export class BudgetReportPeriod {
     private _quarter: number | null = null;
     private _month: number | null = null;
     
+    public toJSON() {
+        return {
+            _t: JsonSerializerTypes.BudgetReportPeriod,
+            _v: this.toString()
+        };
+    }
+
     public static fromString(period:string): BudgetReportPeriod {
         let result:BudgetReportPeriod;
 
