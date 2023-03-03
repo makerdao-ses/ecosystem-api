@@ -107,6 +107,7 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
                 .leftJoin('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
             
             .whereNotNull('BSW.address')
+            .whereNot('CU.code', 'DEL')
             .groupBy('coreUnitId', 'coreUnitCode', 'account')
 
             .orderBy('coreUnitCode');
