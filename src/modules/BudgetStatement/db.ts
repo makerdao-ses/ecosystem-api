@@ -84,6 +84,7 @@ export interface BudgetStatementTransferRequest {
     budgetStatementPaymentId: string
     requestAmount: number
     comments: string
+    walletBalance: number
 }
 
 type lineItem = {

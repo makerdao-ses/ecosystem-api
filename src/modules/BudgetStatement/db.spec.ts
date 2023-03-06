@@ -167,6 +167,20 @@ it('returns BS ownerType', async () => {
     expect(entry[0].ownerType).toBe('CoreUnit')
 })
 
+it('returns list of getBudgetStatementTransferRequests with all params', async () => {
+    const entry = await bsModel.getBudgetStatementTransferRequests(undefined);
+    const entry1 = await bsModel.getBudgetStatementTransferRequests({ id: 0 })
+    const entry2 = await bsModel.getBudgetStatementTransferRequests({ budgetStatementWalletId: 70 })
+    const entry3 = await bsModel.getBudgetStatementTransferRequests({ budgetStatementPaymentId: 70 })
+    const entry4 = await bsModel.getBudgetStatementTransferRequests({ requestAmount: 363520 })
+    const entry5 = await bsModel.getBudgetStatementTransferRequests({ walletBalance: 0.00 })
+    expect(entry).toBeInstanceOf(Array);
+    expect(entry1[0].id).toEqual(0);
+    expect(entry2[0].budgetStatementWalletId).toEqual(70);
+    expect(entry4[0].requestAmount).toEqual("363520");
+    expect(entry5[0].walletBalance).toEqual("0.00");
+})
+
 /*
 Testing scenarios for comment/status creation
 
