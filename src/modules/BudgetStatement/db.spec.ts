@@ -190,6 +190,13 @@ it('returns budgetStatementComment', async () => {
     expect(entry2).toBeInstanceOf(Array)
 })
 
+it('adds budgetLineItems', async () => {
+    const lineItems = [{ actual: 20, forecast: 10, budgetStatementWalletId: 7, month: '2023-01-01', position: 1 }];
+    const entry = await bsModel.addBatchtLineItems(lineItems) as any;
+    expect(entry[0].actual).toEqual('20');
+    await bsModel.knex('BudgetStatementLineItem').where('id', entry[0].id).del();
+})
+
 /*
 Testing scenarios for comment/status creation
 
