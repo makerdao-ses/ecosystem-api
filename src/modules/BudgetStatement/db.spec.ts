@@ -92,13 +92,13 @@ it('returns list of BudgetStatementFtes with fte number 10', async () => {
 it('returns list of bstatementMKRVest with all params', async () => {
     const entry = await bsModel.getBudgetStatementMKRVests(undefined);
     const entry1 = await bsModel.getBudgetStatementMKRVests({ budgetStatementId: 189 });
-    const entry2 = await bsModel.getBudgetStatementMKRVests({ id: 289 });
+    const entry2 = await bsModel.getBudgetStatementMKRVests({ id: 297 });
     const entry3 = await bsModel.getBudgetStatementMKRVests({ vestingDate: "2022-06-01" });
     const entry4 = await bsModel.getBudgetStatementMKRVests({ mkrAmountOld: 355.86 });
-    const entry5 = await bsModel.getBudgetStatementMKRVests({ comments: 'stuff' });
+    const entry5 = await bsModel.getBudgetStatementMKRVests({ comments: 'new hires' });
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
-    expect(entry2[0].id).toEqual(289);
+    expect(entry2[0].id).toEqual(297);
     expect(entry3[0].vestingDate).toEqual('2022-06-01');
     expect(entry4[0].mkrAmountOld).toEqual('355.86');
 });
@@ -153,7 +153,7 @@ it('returns list of budgetSTatementPayments with all params', async () => {
     const entry2 = await bsModel.getBudgetStatementPayments({ id: 11 });
     const entry3 = await bsModel.getBudgetStatementPayments({ transactionDate: "2022-03-22" });
     const entry4 = await bsModel.getBudgetStatementPayments({ transactionId: "0x91d913989828e60b70d8a8aafadd5c9398907c15ee462551496e122542cec87d" });
-    const entry5 = await bsModel.getBudgetStatementPayments({ budgetStatementLineItemId: 0 });
+    const entry5 = await bsModel.getBudgetStatementPayments({ budgetStatementLineItemId: 5 });
     const entry6 = await bsModel.getBudgetStatementPayments({ comments: '' });
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
