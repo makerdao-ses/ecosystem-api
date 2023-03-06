@@ -181,6 +181,15 @@ it('returns list of getBudgetStatementTransferRequests with all params', async (
     expect(entry5[0].walletBalance).toEqual("0.00");
 })
 
+it('returns budgetStatementComment', async () => {
+    const entry = await bsModel.getBudgetStatementComments('id', 1);
+    const entry1 = await bsModel.getBudgetStatementComments('authorId', 4, 'status', 'Draft')
+    const entry2 = await bsModel.getBudgetStatementComments(undefined)
+    expect(entry[0].id).toEqual(1)
+    expect(entry1[0].status).toEqual('Draft')
+    expect(entry2).toBeInstanceOf(Array)
+})
+
 /*
 Testing scenarios for comment/status creation
 

@@ -115,6 +115,7 @@ export interface BudgetStatementComment {
     budgetStatementId: string
     timestamp: string
     comment: string
+    status: string
 }
 
 export interface BudgetStatementCommentAuthor {
