@@ -657,41 +657,6 @@ export const resolvers = {
             } catch (error: any) {
                 throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatementWallets')
             }
-        },
-        // budgetStatementStatusUpdate: async (_, { input }, { user, auth, dataSources }) => {
-        //     try {
-        //         if (!user && !auth) {
-        //             throw new AuthenticationError("Not authenticated, login to update budgetStatementWallets")
-        //         } else {
-        //             if (input.length < 1) {
-        //                 throw new Error('No input data')
-        //             }
-        //             const canUpdate = await dataSources.db.Auth.canUpdate(user.id, 'CoreUnit', user.cuId)
-        //             const [canAudit] = await dataSources.db.Auth.can(user.id, 'Audit', 'CoreUnit');
-        //             if (canAudit.count > 0 && (input.status === 'Final' || input.status === 'Review' || input.status === 'Escalated')) {
-        //                 console.log(`As an auditor, changing status to ${input.status}`)
-        //                 const [result] = await dataSources.db.BudgetStatement.budgetStatementStatusUpdate(input.id, input.status)
-        //                 return result
-        //             }
-        //             else if (canUpdate[0].count > 0) {
-        //                 if (user.cuId !== undefined) {
-        //                     const cuAuditors = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', user.cuId);
-        //                     if (cuAuditors.length > 0 && (input.status === 'Draft' || input.status === 'Review')) {
-        //                         console.log('With auditors - changing budget statment status to :', input.status);
-        //                         const [result] = await dataSources.db.BudgetStatement.budgetStatementStatusUpdate(input.id, input.status)
-        //                         return result
-        //                     }
-        //                     if (cuAuditors.length < 1 && (input.status === 'Draft' || input.status === 'Final')) {
-        //                         console.log('No auditors - changing budget statment status to :', input.status);
-        //                         const [result] = await dataSources.db.BudgetStatement.budgetStatementStatusUpdate(input.id, input.status)
-        //                         return result
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //     } catch (error) {
-        //         throw new AuthenticationError(error ? error : 'You are not authorized to update budgetStatementWallets')
-        //     }
-        // }
+        }
     }
 }

@@ -493,10 +493,6 @@ export class BudgetStatementModel {
     async budgetStatementCommentDelete(commentId: number) {
         return await this.knex('BudgetStatementComment').where('id', commentId).del().returning('*');
     }
-
-    async budgetStatementStatusUpdate(budgetStatementId: string, status: string) {
-        return await this.knex('BudgetStatement').where('id', budgetStatementId).update({ status }).returning('*');
-    }
 };
 
 export default (knex: Knex, deps: { [key: string]: object }) => new BudgetStatementModel(knex, deps['CoreUnit'], deps['Auth'])
