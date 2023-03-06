@@ -50,7 +50,7 @@ it('returns budgetStatements with all params', async () => {
     expect(entry2[0].month).toEqual("2023-10-01");
     expect(entry3[0].ownerType).toEqual('CoreUnit');
     expect(entry4[0].status).toEqual('Draft');
-    expect(entry5[0].cuCode).toEqual('EXA-001');
+    expect(entry5[0].ownerCode).toEqual('EXA-001');
     expect(entry6[0].mkrProgramLength).toEqual('3');
 
 });

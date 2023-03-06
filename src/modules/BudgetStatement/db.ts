@@ -7,7 +7,7 @@ export interface BudgetStatement {
     month: string
     budgetStatus: string
     publicationUrl: string
-    cuCode: string
+    ownerCode: string
     status: string
     mkrProgramLength: number
     auditReport: object
