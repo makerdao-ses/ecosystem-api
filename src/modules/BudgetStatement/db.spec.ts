@@ -162,6 +162,11 @@ it('returns list of budgetSTatementPayments with all params', async () => {
     expect(entry4[0].transactionId).toEqual('0x91d913989828e60b70d8a8aafadd5c9398907c15ee462551496e122542cec87d');
 });
 
+it('returns BS ownerType', async () => {
+    const entry = await bsModel.getBSOwnerType(1);
+    expect(entry[0].ownerType).toBe('CoreUnit')
+})
+
 /*
 Testing scenarios for comment/status creation
 
