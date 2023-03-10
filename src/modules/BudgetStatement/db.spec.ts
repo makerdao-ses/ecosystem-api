@@ -197,6 +197,29 @@ it('adds budgetLineItems', async () => {
     await bsModel.knex('BudgetStatementLineItem').where('id', entry[0].id).del();
 })
 
+it('adds budgetStatements', async () => {
+    const bsStatements = [{ ownerId: 63, month: '2023-01-01', ownerCode: 'EXA-001' }]
+    const entry = await bsModel.addBatchBudgetStatements(bsStatements) as any;
+    expect(entry[0].ownerId).toEqual(63);
+    await bsModel.knex('BudgetStatement').where('id', entry[0].id).del();
+})
+
+it('adds budgetStatementWallets', async () => {
+    const bsId = await bsModel.getBudgetStatements({ limit: 1, offset: 1 });
+    const input = [{ budgetStatementId: bsId[0].id, name: 'Test Team' }];
+    const entry = await bsModel.addBudgetStatementWallets(input) as any;
+    expect(entry[0].budgetStatementId).toEqual(bsId[0].id);
+    await bsModel.knex('BudgetStatementWallet').where('id', entry[0].id).del()
+})
+
+it('adds budgetStatementFTE', async () => {
+    const bsId = await bsModel.getBudgetStatements({ limit: 1, offset: 1 });
+    const input = { budgetStatementId: bsId[0].id, month: bsId[0].month, ftes: 1 };
+    const entry = await bsModel.addBudgetStatementFTE(input) as any;
+    expect(entry[0].ftes).toEqual('1')
+    await bsModel.knex('BudgetStatementFtes').where('id', entry[0].id).del()
+})
+
 /*
 Testing scenarios for comment/status creation
 
