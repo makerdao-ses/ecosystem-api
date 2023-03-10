@@ -17,7 +17,7 @@ export class BudgetStatementAuthModel {
         this.ctModel = ctModel;
     }
 
-    async budgetStatementCommentCreate(input: any, user: any, dataSources: any) {
+    async budgetStatementCommentCreate(input: any, user: any) {
         try {
             if (!user) {
                 throw new AuthenticationError("Not authenticated, login to create budget statment comments")
@@ -105,7 +105,7 @@ export class BudgetStatementAuthModel {
                     }
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                    const parsed = await parseCommentOutput(addedComment, dataSources);
+                    const parsed = await parseCommentOutput(addedComment, this.authModel);
                     await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
                     return parsed;
                 }
@@ -122,7 +122,7 @@ export class BudgetStatementAuthModel {
                     }
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
-                    const parsed = await parseCommentOutput(addedComment, dataSources);
+                    const parsed = await parseCommentOutput(addedComment, this.authModel);
                     await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
                     return parsed;
                 }
@@ -133,9 +133,9 @@ export class BudgetStatementAuthModel {
     }
 }
 
-const parseCommentOutput = (comments: any, dataSources: any) => {
+const parseCommentOutput = (comments: any, authModel: AuthModel) => {
     const parsed = comments.map(async (comment: any) => {
-        const [user] = await dataSources.db.Auth.getUsersFiltered({ id: comment.authorId });
+        const [user] = await authModel.getUsersFiltered({ id: comment.authorId });
         delete comment.authorId
         comment.author = user
         return comment;

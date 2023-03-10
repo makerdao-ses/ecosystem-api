@@ -233,7 +233,7 @@ Super Administrator with both permissions
 it('Fails when unauthorised users try write operations', async () => {
     const bsbsModel = new BudgetStatementAuthModel(bsModel, authModel, cuModel, ctModel);
     expect(async () => {
-        await bsbsModel.budgetStatementCommentCreate(null, false, null)
+        await bsbsModel.budgetStatementCommentCreate(null, false)
     }).rejects.toThrow()
 
 });

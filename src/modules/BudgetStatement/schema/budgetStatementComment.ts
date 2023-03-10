@@ -95,7 +95,7 @@ export const resolvers = {
     Mutation: {
         budgetStatementCommentCreate: async (_: any, { input }: any, { user, dataSources }: any) => {
             const authModel = new BudgetStatementAuthModel(dataSources.db.BudgetStatement, dataSources.db.Auth, dataSources.db.CoreUnit, dataSources.db.ChangeTracking);
-            return await authModel.budgetStatementCommentCreate(input, user, dataSources)
+            return await authModel.budgetStatementCommentCreate(input, user)
         },
         budgetStatementCommentDelete: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
