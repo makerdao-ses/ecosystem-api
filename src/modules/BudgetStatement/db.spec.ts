@@ -9,6 +9,7 @@ let bsModel: BudgetStatementModel;
 let authModel: AuthModel;
 let cuModel: CoreUnitModel;
 let ctModel: ChangeTrackingModel;
+let bbsModel: BudgetStatementAuthModel;
 
 beforeAll(async () => {
     const apiModules = await initApi({
@@ -20,10 +21,12 @@ beforeAll(async () => {
     bsModel = apiModules.datasource.module<BudgetStatementModel>("BudgetStatement");
     authModel = apiModules.datasource.module<AuthModel>("Auth");
     cuModel = apiModules.datasource.module<CoreUnitModel>("CoreUnit");
-    ctModel = apiModules.datasource.module<ChangeTrackingModel>('ChangeTracking')
+    ctModel = apiModules.datasource.module<ChangeTrackingModel>('ChangeTracking');
+    bbsModel = new BudgetStatementAuthModel(bsModel, authModel, cuModel, ctModel);
 })
 
 afterAll(async () => {
+    await bbsModel.destroy();
     await bsModel.knex.destroy()
     await authModel.knex.destroy()
     await cuModel.knex.destroy()
@@ -231,16 +234,21 @@ Super Administrator with both permissions
 */
 
 it('Fails when unauthorised users try write operations', async () => {
-    const bsbsModel = new BudgetStatementAuthModel(bsModel, authModel, cuModel, ctModel);
     expect(async () => {
-        await bsbsModel.budgetStatementCommentCreate(null, false)
+        await bbsModel.budgetStatementCommentCreate(null, false);
     }).rejects.toThrow()
 
 });
 
-it('Correctly applies CU Admin modifications', async () => {
-    expect(true).toBe(true);
-})
+// To do: find memory leakage reason
+// it('Correctly applies CU Admin modifications', async () => {
+//     const user = { id: 1, cuId: 45 };
+//     const bsStatement = await bsModel.getBudgetStatements({ filter: { ownerId: 45, ownerType: 'CoreUnit' } });
+//     const input = { commentAuthorId: user.id, budgetStatementId: bsStatement[0].id, comment: 'test comment', status: 'Draft' };
+//     const entry = await bbsModel.budgetStatementCommentCreate(input, user) as any;
+//     expect(entry[0].comment).toEqual('test comment');
+//     await bsModel.knex('BudgetStatementComment').where('id', entry[0].id).del();
+// })
 
 it('Correctly applies CU Auditor modifications', async () => {
     expect(true).toBe(true);

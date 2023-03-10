@@ -2,7 +2,7 @@ import { BudgetStatementModel } from "./db";
 import { AuthModel } from '../Auth/db'
 import { CoreUnitModel } from '../CoreUnit/db'
 import { ChangeTrackingModel } from '../ChangeTracking/db'
-import { gql, AuthenticationError, ForbiddenError } from 'apollo-server-core';
+import { AuthenticationError, ForbiddenError } from 'apollo-server-core';
 
 export class BudgetStatementAuthModel {
     private bsModel: BudgetStatementModel;
@@ -15,6 +15,13 @@ export class BudgetStatementAuthModel {
         this.authModel = authModel;
         this.cuModel = cuModel;
         this.ctModel = ctModel;
+    }
+
+    async destroy() {
+        await this.bsModel.knex.destroy();
+        await this.authModel.knex.destroy();
+        await this.cuModel.knex.destroy();
+        await this.ctModel.knex.destroy();
     }
 
     async budgetStatementCommentCreate(input: any, user: any) {
