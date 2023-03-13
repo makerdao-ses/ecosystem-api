@@ -33,7 +33,7 @@ mkrData.forEach(row => {
 
   //Retrieve the budget statement id
   pool.query(
-    `SELECT id FROM "BudgetStatement" WHERE month  = '${monthValue}' AND "cuCode" = '${row.cuCode}'`, (err, res) => {
+    `SELECT id FROM "BudgetStatement" WHERE month  = '${monthValue}' AND "ownerCode" = '${row.ownerCode}'`, (err, res) => {
       if (err) {
         console.log(err);
       } else {
@@ -109,7 +109,7 @@ transferData.forEach(row => {
 
   //Retrieve the budget statement id
   pool.query(
-    `SELECT id FROM "BudgetStatement" WHERE month  = '${monthValue}' AND "cuCode" = '${row.cuCode}'`, (err, res) => {
+    `SELECT id FROM "BudgetStatement" WHERE month  = '${monthValue}' AND "ownerCode" = '${row.ownerCode}'`, (err, res) => {
       if (err) {
         console.log(err);
       } else {
@@ -123,26 +123,40 @@ transferData.forEach(row => {
               if (res1.rows.length != 0) {
 
                 const walletId = res1.rows[0].id;
-
-                pool.query(
+                //Update existing (used to rewrite decimals)
+                /*pool.query(
                   `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
-        VALUES (${walletId}, ${requestAmount}, ${walletBalance})
-    )
-    INSERT INTO "BudgetStatementTransferRequest" ("budgetStatementWalletId", "requestAmount", "walletBalance")
-    SELECT *
-    FROM new_values
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM "BudgetStatementTransferRequest"
-        WHERE "budgetStatementWalletId" = new_values.budgetStatementWalletId
-        AND "requestAmount" = new_values.requestAmount
-        AND "walletBalance" = new_values.walletBalance
-    );
-    `,
+                    VALUES (${walletId}, ${requestAmount}, ${walletBalance})
+                )
+                UPDATE "BudgetStatementTransferRequest"
+                SET "requestAmount" = new_values.requestAmount,
+                    "walletBalance" = new_values.walletBalance
+                FROM new_values
+                WHERE "BudgetStatementTransferRequest"."budgetStatementWalletId" = new_values.budgetStatementWalletId;
+                `,
                   (err, res) => {
                     countTransfer++;
                     console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
-                  });
+                  });*/
+                  //Write new entries
+                  pool.query(
+                    `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
+                      VALUES (${walletId}, ${requestAmount}, ${walletBalance})
+                  )
+                  INSERT INTO "BudgetStatementTransferRequest" ("budgetStatementWalletId", "requestAmount", "walletBalance")
+                  SELECT *
+                  FROM new_values
+                  WHERE NOT EXISTS (
+                      SELECT 1
+                      FROM "BudgetStatementTransferRequest"
+                      WHERE "budgetStatementWalletId" = new_values.budgetStatementWalletId
+                      AND "requestAmount" = new_values.requestAmount
+                      AND "walletBalance" = new_values.walletBalance
+                  );`,
+                    (err, res) => {
+                      countTransfer++;
+                      console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
+                    });
               }
             });
         }
