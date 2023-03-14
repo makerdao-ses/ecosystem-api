@@ -150,11 +150,6 @@ export interface Mip41Filter {
     id?: number
     cuMipId?: number
     contributorId?: number
-    facilitatorName?: string
-    discordHandle?: string
-    twitterHandle?: string
-    forumHandle?: string
-    githubAccount?: string
 }
 
 export class MipModel {
@@ -335,16 +330,6 @@ export class MipModel {
             return baseQuery.where('cuMipId', filter.cuMipId)
         } else if (filter?.contributorId !== undefined) {
             return baseQuery.where('contributorId', filter.contributorId)
-        } else if (filter?.facilitatorName !== undefined) {
-            return baseQuery.where('facilitatorName', filter.facilitatorName)
-        } else if (filter?.discordHandle !== undefined) {
-            return baseQuery.where('discordHandle', filter.discordHandle)
-        } else if (filter?.twitterHandle !== undefined) {
-            return baseQuery.where('twitterHandle', filter.twitterHandle)
-        } else if (filter?.forumHandle !== undefined) {
-            return baseQuery.where('forumHandle', filter.forumHandle)
-        } else if (filter?.githubAccount !== undefined) {
-            return baseQuery.where('githubAccount', filter.githubAccount)
         } else {
             return baseQuery;
         }
