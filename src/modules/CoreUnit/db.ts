@@ -227,7 +227,7 @@ export class CoreUnitModel {
         } else if (filter?.youtube !== undefined) {
             return baseQuery.where('youtube', filter.youtube)
         } else if (filter?.discord !== undefined) {
-            return baseQuery.where('dicord', filter.discord)
+            return baseQuery.where('discord', filter.discord)
         } else if (filter?.linkedIn !== undefined) {
             return baseQuery.where('linkedIn', filter.linkedIn)
         } else if (filter?.website !== undefined) {
@@ -344,10 +344,6 @@ export class CoreUnitModel {
             .orderBy('id');
         if (filter?.id !== undefined) {
             return baseQuery.where('id', filter.id)
-        } else if (filter?.makerRepoId !== undefined) {
-            return baseQuery.where('makerRepoId', filter.makerRepoId)
-        } else if (filter?.cuGithubRepoId !== undefined) {
-            return baseQuery.where('cuGithubRepoId', filter.cuGithubRepoId)
         } else if (filter?.date !== undefined) {
             return baseQuery.where('date', filter.date)
         } else if (filter?.url !== undefined) {
