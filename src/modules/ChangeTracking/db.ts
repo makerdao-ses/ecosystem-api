@@ -89,7 +89,6 @@ export class ChangeTrackingModel {
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
         }
-        console.log(ownerType);
         const monthDate = new Date(month);
         const event = {
             created_at: new Date().toISOString(),
@@ -108,7 +107,6 @@ export class ChangeTrackingModel {
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
         }
-        console.log(ownerType);
         const monthDate = new Date(month);
         const event = {
             created_at: new Date().toISOString(),
