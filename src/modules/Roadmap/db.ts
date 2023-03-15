@@ -213,10 +213,6 @@ export class RoadmapModel {
         }
     };
 
-    async getMilestone(paramName: string, paramValue: string): Promise<Milestone[]> {
-        return this.knex('Milestone').where(`${paramName}`, paramValue)
-    };
-
     async getTasks(
         paramName?: string | undefined,
         paramValue?: string | number | boolean | undefined
