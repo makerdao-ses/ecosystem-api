@@ -81,5 +81,5 @@ it('gets usersFiltered', async () => {
     const entry2 = await authModel.getUsersFiltered({ username: 'exampleName', active: true, rolesAndPermissions: true })
     const entry3 = await authModel.getUsersFiltered({ rolesAndPermissions: true, ids: [1, 2] })
     const entry4 = await authModel.getUsersFiltered({ username: "exampleName" })
-    console.log(entry);
+    expect(entry[0].id).toEqual(1);
 })
