@@ -4,7 +4,7 @@ import initKnex from '../../initKnex';
 import defaultSettings from '../default.config';
 import { ApolloServer } from 'apollo-server-express';
 
-
+// Queries to be executed in tests below
 const budgetStatementsQuery = {
     query: `query BudgetStatements {
         budgetStatements {
@@ -39,6 +39,58 @@ let bsLineItemsQuery = {
         }
     }
 } as any;
+
+const coreUnitBStatementsQuery = {
+    query: `query CoreUnits {
+        coreUnits {
+          id
+          budgetStatements {
+            id
+            ownerId
+          }
+        }
+    }`
+};
+
+const bsWithChildQuries = {
+    query: `query BudgetStatements {
+        budgetStatements {
+          id
+          activityFeed {
+            id
+          }
+          auditReport {
+            id
+          }
+          budgetStatementFTEs {
+            id
+          }
+          budgetStatementMKRVest {
+            id
+          }
+          budgetStatementWallet {
+            id
+          }
+        }
+    }`
+};
+
+const bsWalletWithChildQueries = {
+    query: `query BudgetStatementWallets {
+        budgetStatementWallets {
+          id
+          budgetStatementLineItem {
+            id
+          }
+          budgetStatementPayment {
+            id
+          }
+          budgetStatementTransferRequest {
+            id
+          }
+        }
+    }`
+}
 
 let server: any, db: any;
 
@@ -76,4 +128,22 @@ it('fetches bsLineItems', async () => {
     expect(response2.errors).toBeDefined()
     expect(response1.errors).toBeUndefined()
     expect(response1.data.budgetStatementLineItems.length).toBeGreaterThan(0)
-}); 
+});
+
+it('fetches CoreUnits with budgetStatements', async () => {
+    const response = await server.executeOperation(coreUnitBStatementsQuery);
+    expect(response.errors).toBeUndefined();
+    expect(response.data.coreUnits.length).toBeGreaterThan(0);
+});
+
+it('fetches budgetStatement with child queries', async () => {
+    const response = await server.executeOperation(bsWithChildQuries);
+    expect(response.errors).toBeUndefined();
+    expect(response.data.budgetStatements.length).toBeGreaterThan(0);
+});
+
+it('fetched budgetStatementWallet with child queries', async () => {
+    const response = await server.executeOperation(bsWalletWithChildQueries);
+    expect(response.errors).toBeUndefined();
+    expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0);
+});
