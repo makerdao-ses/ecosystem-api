@@ -74,7 +74,7 @@ export class AuthModel {
             })
     };
 
-    async userCanManage(user: { id: number }, resourceType: string): Promise<Boolean> {
+    async userCanManage(user: { id: number } | undefined, resourceType: string): Promise<Boolean> {
         if (!user) {
             return false;
         }

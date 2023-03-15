@@ -34,6 +34,7 @@ it('userId 1 can updateCoreUnit Id 45', async () => {
 
 it('user can manage resourceType', async () => {
     const entry = await authModel.userCanManage({ id: 1 }, 'CoreUnit');
+    const entry1 = await authModel.userCanManage(undefined, 'CoreUnit')
     expect(entry).toBeFalsy()
 });
 
@@ -72,4 +73,13 @@ it('gets all users with or without params', async () => {
     const entry1 = await authModel.getUsers('username', 'exampleName');
     expect(entry).toBeInstanceOf(Array);
     expect(entry1[0].username).toEqual('exampleName');
+})
+
+it('gets usersFiltered', async () => {
+    const entry = await authModel.getUsersFiltered({ id: 1, active: true, rolesAndPermissions: false })
+    const entry1 = await authModel.getUsersFiltered({ id: 2, active: true, rolesAndPermissions: true })
+    const entry2 = await authModel.getUsersFiltered({ username: 'exampleName', active: true, rolesAndPermissions: true })
+    const entry3 = await authModel.getUsersFiltered({ rolesAndPermissions: true, ids: [1, 2] })
+    const entry4 = await authModel.getUsersFiltered({ username: "exampleName" })
+    console.log(entry);
 })
