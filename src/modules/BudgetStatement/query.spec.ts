@@ -19,8 +19,8 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await db.knex.destroy()
   await server.stop()
+  await db.knex.destroy()
 });
 
 it('fetches budgetStatements', async () => {
@@ -171,4 +171,30 @@ it('adds budgetStatements', async () => {
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatementsBatchAdd[0]['ownerId']).toEqual('45');
   await db.knex('BudgetStatement').where('id', response.data.budgetStatementsBatchAdd[0]['id']).del();
+});
+
+it('adds budgetLineItems', async () => {
+  const lineItem = {
+    budgetStatementWalletId: 1070,
+    month: '2023-01-01',
+    position: 1
+  } as any;
+  const inputArr = [lineItem];
+  inputArr.push({ cuId: 45, ownerType: 'CoreUnit' });
+  const query = {
+    query: `mutation BudgetLineItemsBatchAdd($input: [LineItemsBatchAddInput]) {
+      budgetLineItemsBatchAdd(input: $input) {
+        id
+        budgetStatementWalletId
+      }
+    }`,
+    variables: {
+      input: inputArr
+    }
+  };
+
+  const response = await server.executeOperation(query);
+  expect(response.errors).toBeUndefined();
+  expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1070');
+  await db.knex('BudgetStatementLineItem').where('id', response.data.budgetLineItemsBatchAdd[0]['id']).del();
 })
