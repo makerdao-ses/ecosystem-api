@@ -5,94 +5,6 @@ import defaultSettings from '../default.config';
 import { ApolloServer } from 'apollo-server-express';
 import { Authorization } from '../Auth/authorization';
 
-// Queries to be executed in tests below
-const budgetStatementsQuery = {
-  query: `query BudgetStatements {
-        budgetStatements {
-            id
-            ownerId
-            month
-        }
-    }`
-};
-
-const bsWalletsQuery = {
-  query: `query BudgetStatementWallets {
-        budgetStatementWallets {
-          id
-          budgetStatementId
-          name
-        }
-    }`
-};
-
-let bsLineItemsQuery = {
-  query: `query BudgetStatementLineItems($filter: BudgetStatementLineItemFilter) {
-        budgetStatementLineItems(filter: $filter) {
-          id
-          budgetStatementWalletId
-          month
-        }
-      }`,
-  variables: {
-    filter: {
-      budgetStatementWalletId: 100
-    }
-  }
-} as any;
-
-const coreUnitBStatementsQuery = {
-  query: `query CoreUnits {
-        coreUnits {
-          id
-          budgetStatements {
-            id
-            ownerId
-          }
-        }
-    }`
-};
-
-const bsWithChildQuries = {
-  query: `query BudgetStatements {
-        budgetStatements {
-          id
-          activityFeed {
-            id
-          }
-          auditReport {
-            id
-          }
-          budgetStatementFTEs {
-            id
-          }
-          budgetStatementMKRVest {
-            id
-          }
-          budgetStatementWallet {
-            id
-          }
-        }
-    }`
-};
-
-const bsWalletWithChildQueries = {
-  query: `query BudgetStatementWallets {
-        budgetStatementWallets {
-          id
-          budgetStatementLineItem {
-            id
-          }
-          budgetStatementPayment {
-            id
-          }
-          budgetStatementTransferRequest {
-            id
-          }
-        }
-    }`
-}
-
 let server: any, db: any;
 
 beforeAll(async () => {
@@ -112,18 +24,50 @@ afterAll(async () => {
 });
 
 it('fetches budgetStatements', async () => {
+  const budgetStatementsQuery = {
+    query: `query BudgetStatements {
+          budgetStatements {
+              id
+              ownerId
+              month
+          }
+      }`
+  };
   const response = await server.executeOperation(budgetStatementsQuery)
   expect(response.errors).toBeUndefined()
   expect(response.data.budgetStatements.length).toBeGreaterThan(0)
 });
 
 it('fetches bsWallets', async () => {
+  const bsWalletsQuery = {
+    query: `query BudgetStatementWallets {
+          budgetStatementWallets {
+            id
+            budgetStatementId
+            name
+          }
+      }`
+  };
   const response = await server.executeOperation(bsWalletsQuery)
   expect(response.errors).toBeUndefined()
   expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0)
 });
 
 it('fetches bsLineItems', async () => {
+  let bsLineItemsQuery = {
+    query: `query BudgetStatementLineItems($filter: BudgetStatementLineItemFilter) {
+          budgetStatementLineItems(filter: $filter) {
+            id
+            budgetStatementWalletId
+            month
+          }
+        }`,
+    variables: {
+      filter: {
+        budgetStatementWalletId: 100
+      }
+    }
+  } as any;
   const response1 = await server.executeOperation(bsLineItemsQuery)
   bsLineItemsQuery.variables.filter = {
     ...bsLineItemsQuery.variables.filter,
@@ -137,18 +81,67 @@ it('fetches bsLineItems', async () => {
 });
 
 it('fetches CoreUnits with budgetStatements', async () => {
+  const coreUnitBStatementsQuery = {
+    query: `query CoreUnits {
+          coreUnits {
+            id
+            budgetStatements {
+              id
+              ownerId
+            }
+          }
+      }`
+  };
   const response = await server.executeOperation(coreUnitBStatementsQuery);
   expect(response.errors).toBeUndefined();
   expect(response.data.coreUnits.length).toBeGreaterThan(0);
 });
 
 it('fetches budgetStatement with child queries', async () => {
+  const bsWithChildQuries = {
+    query: `query BudgetStatements {
+          budgetStatements {
+            id
+            activityFeed {
+              id
+            }
+            auditReport {
+              id
+            }
+            budgetStatementFTEs {
+              id
+            }
+            budgetStatementMKRVest {
+              id
+            }
+            budgetStatementWallet {
+              id
+            }
+          }
+      }`
+  };
   const response = await server.executeOperation(bsWithChildQuries);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatements.length).toBeGreaterThan(0);
 });
 
 it('fetched budgetStatementWallet with child queries', async () => {
+  const bsWalletWithChildQueries = {
+    query: `query BudgetStatementWallets {
+          budgetStatementWallets {
+            id
+            budgetStatementLineItem {
+              id
+            }
+            budgetStatementPayment {
+              id
+            }
+            budgetStatementTransferRequest {
+              id
+            }
+          }
+      }`
+  }
   const response = await server.executeOperation(bsWalletWithChildQueries);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0);
