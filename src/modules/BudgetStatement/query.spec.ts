@@ -225,10 +225,35 @@ it('adds budgetLineItems', async () => {
       input: inputArr
     }
   };
-  server.config.context.user = { cuId: 45, username: 'exampleName' };
+
+  // test without credentials
+  const response0 = await server.executeOperation(query);
+  expect(response0.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+
+  server.config.context.user = { cuId: 1, username: 'exampleName' };
   server.config.context.auth = new Authorization(db, 1);
+
+  // testing for authorisation error
+  const response4 = await server.executeOperation(query);
+  expect(response4.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  server.config.context.user.cuId = 45;
+
+  // testing for disabled account
+  await db.knex('User').where('username', 'exampleName').update({ active: false });
+  const response1 = await server.executeOperation(query);
+  expect(response1.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  await db.knex('User').where('username', 'exampleName').update({ active: true });
+
+  // testing for disabled commenting
+  const [wallet] = await db.knex('BudgetStatementWallet').where('id', 1070);
+  const [bStatement] = await db.knex('BudgetStatement').where('id', wallet.budgetStatementId);
+  await db.knex('BudgetStatement').where('id', bStatement.id).update({ status: 'Final' });
+  const response2 = await server.executeOperation(query);
+  expect(response2.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  await db.knex('BudgetStatement').where('id', bStatement.id).update({ status: 'Draft' });
+
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1070');
   await db.knex('BudgetStatementLineItem').where('id', response.data.budgetLineItemsBatchAdd[0]['id']).del();
-})
+});

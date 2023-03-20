@@ -476,7 +476,7 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const allowed = await auth.canUpdate('CoreUnit', user.cuId)
+                    const allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId)
                     if (allowed[0].count > 0) {
                         //Tacking Change
                         const cuIdFromInput = input.pop()
