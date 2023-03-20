@@ -166,10 +166,43 @@ it('adds budgetStatements', async () => {
       input: [budgetStatementInput]
     }
   };
-
+  // testing successfull write
+  server.config.context.user = { cuId: 45, username: 'exampleName' };
+  server.config.context.auth = new Authorization(db, 1);
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatementsBatchAdd[0]['ownerId']).toEqual('45');
+
+  // testing for disabled account
+  await db.knex('User').where('username', 'exampleName').update({ active: false });
+  const response1 = await server.executeOperation(query);
+  expect(response1.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  await db.knex('User').where('username', 'exampleName').update({ active: true });
+
+  // testing wihtout input
+  let noInputQuery = JSON.parse(JSON.stringify(query));
+  noInputQuery.variables.input = [];
+  const response2 = await server.executeOperation(noInputQuery);
+  expect(response2.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+
+  // testing without ownerType
+  let noOwnerTypeQ = JSON.parse(JSON.stringify(query));
+  let varsInput = JSON.parse(JSON.stringify(budgetStatementInput)) as any;
+  delete varsInput.ownerType;
+  noOwnerTypeQ.variables.input = [varsInput];
+  const response3 = await server.executeOperation(noOwnerTypeQ);
+  expect(response3.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+
+  // testing for authorisation error
+  server.config.context.user.cuId = 1;
+  const response4 = await server.executeOperation(query);
+  expect(response4.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+
+  // testig for authentication error
+  delete server.config.context.auth
+  delete server.config.context.user
+  const response5 = await server.executeOperation(query);
+  expect(response5.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
   await db.knex('BudgetStatement').where('id', response.data.budgetStatementsBatchAdd[0]['id']).del();
 });
 
@@ -192,7 +225,8 @@ it('adds budgetLineItems', async () => {
       input: inputArr
     }
   };
-
+  server.config.context.user = { cuId: 45, username: 'exampleName' };
+  server.config.context.auth = new Authorization(db, 1);
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1070');
