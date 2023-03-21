@@ -94,7 +94,22 @@ export const typeDefs = [gql`
         requestAmount: Float
         comments: String
         walletBalance: Float
+        target: Target
+        walletBalanceTimeStamp: DateTime
     }
+
+    type Target {
+        amount: Float
+        calculation: String
+        description: String
+        source: Source
+    }
+
+    type Source {
+        code: String
+        url: String
+        title: String
+    } 
 
     type BudgetStatementLineItem {
         id: ID!
@@ -433,7 +448,22 @@ export const resolvers = {
         budgetStatementTransferRequest: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests({ budgetStatementWalletId: id });
-            return result;
+            const parsedResult = result.map((tReqyest: any) => {
+                const target = {
+                    amount: 506063.09,
+                    calculation: 'FEB + MAR Budget Cap',
+                    description: 'Auditor wallets are topped up to 2 times the budget cap',
+                    source: {
+                        code: 'MIP40C3-SP14',
+                        url: 'https://mips.makerdao.com/mips/details/MIP40c3SP14',
+                        title: 'Modify Core Unit Budget - Collateral Engineering Services (CES-001)'
+                    }
+                };
+                tReqyest.target = target;
+                tReqyest.walletBalanceTimeStamp = '2022-01-31T18:22:03.856Z'
+                return tReqyest;
+            })
+            return parsedResult;
         }
     },
     Mutation: {
