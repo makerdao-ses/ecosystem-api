@@ -33,17 +33,17 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
         };
 
         if (budgetCategories.filters === null || budgetCategories.filters.includes('core-units')) {
-            result.nextResolversData.CoreUnitsResolver = this.getCoreUnitsResolverData(query, path, dao, budgetCategories);
+            result.nextResolversData.CoreUnitsResolver = this._getCoreUnitsResolverData(query, path, dao, budgetCategories);
         }
 
         if (budgetCategories.filters === null || budgetCategories.filters.includes('delegates')) {
-            result.nextResolversData.DelegatesResolver = this.getDelegatesResolverData(query, path, dao, budgetCategories);
+            result.nextResolversData.DelegatesResolver = this._getDelegatesResolverData(query, path, dao, budgetCategories);
         }
 
         return result;
     }
 
-    private getCoreUnitsResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {
+    private _getCoreUnitsResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {
         const groupPath = (budgetCategories.groups === null ? [dao, 'core-units'] : [dao]);
         return [{
             start: query.start,
@@ -56,7 +56,7 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
         }];
     }
 
-    private getDelegatesResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {
+    private _getDelegatesResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {
         const groupPath = (budgetCategories.groups === null ? [dao, 'delegates'] : [dao]);
         return [{
             start: query.start,
