@@ -94,3 +94,32 @@ export abstract class BudgetReportResolverBase<TInput extends ResolverData, TOut
         return {};
     }
 }
+
+// This should be moved to somewhere more sensible, or abstracted as a general group name extractor
+export function getCategoryGroupName(row: BudgetReportOutputRow, categoryPath: BudgetReportPath, leadingSlash:boolean = true): string {
+    const headcountSegment = categoryPath.nextSegment();
+    const expenseCategorySegment = categoryPath.reduce().nextSegment();
+    let result = "";
+
+    if (headcountSegment.groups === null) {
+        if (row.headcountExpense === true) {
+            result += '/headcount';
+        } else if (row.headcountExpense === false) {
+            result += '/non-headcount';
+        } else {
+            result += '/null'
+        }
+    }
+
+    if (expenseCategorySegment.groups === null) {
+        result += (row.category ? '/' + row.category : '/null');
+    }
+
+    if (leadingSlash && result.length < 1) {
+        result = '/';
+    } else if (!leadingSlash && result.length > 0) {
+        result = result.slice(1);
+    }
+
+    return result;
+}

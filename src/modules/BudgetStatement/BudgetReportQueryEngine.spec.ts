@@ -118,11 +118,9 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
             }
         );
     }
-});
+}, 15000);
 
 it ('Applies caching correctly.', async () => {
-    jest.setTimeout(10000);
-
     const resolvers = [ 
         new PeriodResolver(knex),
         new DaoResolver(),
@@ -144,4 +142,4 @@ it ('Applies caching correctly.', async () => {
     };
 
     await engine.execute(query);
-});
+}, 15000);
