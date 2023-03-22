@@ -11,7 +11,7 @@ const db = knex({
     connection: process.env.PG_CONNECTION_STRING,
 });
 
-//Retreive the data from the MIP API
+//Retreive the current data from the database
 const getData = async () => {
 
     var data = await db.select('mipCode', 'cuId', 'id', 'mipTitle', 'mipStatus', 'accepted').from('CuMip');

@@ -21,7 +21,7 @@ const getData = async () => {
     console.log(updateVals.length);
     await writeToDb(updateVals);
 
-    console.log("Updating " +updateVals.length+" payment topup budget cap values...");
+    console.log("Updating " + updateVals.length + " payment topup budget cap values...");
 
     return process.exit(0);
 
@@ -214,19 +214,37 @@ const writeToDb = async (updateVals) => {
             await db('BudgetStatementLineItem')
                 .where('id', item.bsliId)
                 .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
-        } else {
-            // Create a new BudgetStatementLineItem entry
-            const {
-                bsliId
-            } = await db('BudgetStatementLineItem').insert({
-                budgetStatementWalletId: item.bsWid,
-                month: item.month,
-                budgetCategory: 'payment topup',
-                budgetCap: item.diff,
-                position: 0
-            });
+        } else if (item.bslimonth && item.bsWid) {
+            // Check if a 'payment topup' entry already exists for the given month and wallet
+            const existingEntry = await db('BudgetStatementLineItem')
+                .where({
+                    month: item.month,
+                    budgetCategory: 'payment topup',
+                    budgetStatementWalletId: item.bsWid
+                })
+                .first();
 
-            item.bsliId = bsliId; // Update the bsliId in the output list
+            if (existingEntry) {
+                // Update the budget cap in the existing entry
+                await db('BudgetStatementLineItem')
+                    .where('id', existingEntry.id)
+                    .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
+
+                item.bsliId = existingEntry.bslid; // Update the bsliId in the output list
+            } else {
+                // Create a new BudgetStatementLineItem entry
+                const {
+                    bsliId
+                } = await db('BudgetStatementLineItem').insert({
+                    budgetStatementWalletId: item.bsWid,
+                    month: item.month,
+                    budgetCategory: 'payment topup',
+                    budgetCap: item.diff,
+                    position: 0
+                });
+
+                item.bsliId = bsliId; // Update the bsliId in the output list
+            }
         }
     }
 };
