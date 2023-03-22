@@ -2,7 +2,8 @@ import { Knex } from "knex";
 import { LineItemFetcher } from "../LineItemFetcher.js";
 import { BudgetReportPeriod, BudgetReportPeriodType } from "../BudgetReportPeriod.js";
 import { BudgetReportGranularity, BudgetReportPeriodInput } from "../BudgetReportQuery.js";
-import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
+import { BudgetReportOutputGroup, BudgetReportOutputRow, BudgetReportResolverBase, getCategoryGroupName, ResolverData, ResolverOutput, SerializableKey } from "../BudgetReportResolver.js";
+import { BudgetReportPath } from "../BudgetReportPath.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -14,7 +15,8 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
     readonly name = 'PeriodResolver';
 
     private _lineItemFetcher: LineItemFetcher;
-    private _granularity = BudgetReportGranularity.Total; 
+    private _granularity = BudgetReportGranularity.Total;
+    private _categoryPath = BudgetReportPath.fromString('*');
 
     constructor(knex:Knex) {
         super();
@@ -38,7 +40,7 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
 
     public async execute(query:ResolverData): Promise<ResolverOutput<PeriodResolverData>> {
         if (DEBUG_OUTPUT) {
-            console.log(`PeriodResolver is resolving ${query.budgetPath.toString()}`);
+            console.log(`PeriodResolver is resolving budgets "${query.budgetPath.toString()}" with categories "${query.categoryPath.toString()}"`);
         }
         
         const periodRange = await this._resolvePeriodRange(query.start, query.end);
@@ -46,7 +48,10 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
             throw new Error('Quarters and years are not allowed as query start or end values. Use the respective months instead.');
         }
 
+        // This is to gain access to the query parameter during the output row processing phase
+        // Ideally it's replaced by a more immutable mechanism. (The current approach assumes the PeriodResolver object will not be reused) 
         this._granularity = query.granularity;
+        this._categoryPath = query.categoryPath;
 
         const map = this._groupByGranularity(periodRange, query.granularity);
         const queries:PeriodResolverData[] = Object.keys(map).map(period => ({
@@ -159,16 +164,20 @@ export class PeriodResolver extends BudgetReportResolverBase<ResolverData, Perio
     }
 
     private _getGroupName(row: BudgetReportOutputRow, keys: SerializableKey[]): string {
-        let result = keys.join('/') + '/';
+        let result = keys.join('/');
 
+        // Add category segment(s)
+        result += getCategoryGroupName(row, this._categoryPath);
+
+        // Add period segment
         if (this._granularity === BudgetReportGranularity.Annual) {
-            result += row.month.year;
+            result += '/' + row.month.year;
         } else if (this._granularity === BudgetReportGranularity.Quarterly) {
-            result += row.month.year + '/Q' + row.month.quarter;
+            result += '/' + row.month.year + '/Q' + row.month.quarter;
         } else if (this._granularity === BudgetReportGranularity.Monthly) {
-            result += row.month.year + '/' + (row.month.month as number < 10 ? '0' : '') + row.month.month;
+            result += '/' + row.month.year + '/' + (row.month.month as number < 10 ? '0' : '') + row.month.month;
         }
 
-        return result;
+        return result || '/';
     }
 }

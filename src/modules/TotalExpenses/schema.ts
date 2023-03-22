@@ -1,7 +1,7 @@
 import { gql } from 'apollo-server-core';
 import { BudgetReportPath } from '../BudgetStatement/BudgetReportPath.js';
 import { BudgetReportGranularity, BudgetReportQuery } from '../BudgetStatement/BudgetReportQuery.js';
-import { BudgetReportOutputGroup } from '../BudgetStatement/BudgetReportResolver.js';
+import { BudgetReportOutputGroup, getCategoryGroupName } from '../BudgetStatement/BudgetReportResolver.js';
 
 export const typeDefs = [gql`
 
@@ -15,7 +15,8 @@ export const typeDefs = [gql`
 
     type Expense {
         period: String,
-        budget: String, 
+        budget: String,
+        category: String,
         prediction: Float,
         actuals: Float, 
         discontinued: Float
@@ -32,6 +33,7 @@ export const typeDefs = [gql`
     input AggregateExpensesFilter {
         granularity: Granularity,
         budgets: String,
+        categories: String,
         start: String,
         end: String
     }
@@ -75,6 +77,9 @@ export const resolvers = {
                 filter.budgets = filter.budgets.slice(1) + ':*';
             }
 
+            // Categories parameter
+            filter.categories = filter.categories || '*';
+
             // Time parameters
             filter.start = filter.start || null;
             filter.end = filter.end || null;
@@ -85,7 +90,7 @@ export const resolvers = {
                 end: filter.end,
                 granularity,
                 budgets: BudgetReportPath.fromString(filter.budgets),
-                categories: '*'
+                categories: BudgetReportPath.fromString(filter.categories)
             };
             
             // Fetch and format the results
@@ -94,6 +99,7 @@ export const resolvers = {
                 .map((group:BudgetReportOutputGroup) => ({
                     period: group.period.replace('/', '-'),
                     budget: group.keys.join('/'),
+                    category: getCategoryGroupName(group.rows[0], query.categories as BudgetReportPath, false) || '*',
                     prediction: Math.round(group.rows[0].prediction * 100.00) / 100.00,
                     actuals: Math.round(group.rows[0].actual * 100.00) / 100.00,
                     discontinued: Math.round(group.rows[0].actualDiscontinued * 100.00) / 100.00,
