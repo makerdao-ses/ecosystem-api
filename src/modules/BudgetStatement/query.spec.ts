@@ -12,7 +12,7 @@ beforeAll(async () => {
   const { typeDefs, resolvers } = await linkApiModules(db, defaultSettings);
   const context = {
     dataSources: { db },
-    user: { cuId: 45, username: 'exampleName' },
+    user: { cuId: 46, username: 'exampleName' },
     auth: new Authorization(db, 1)
   }
   server = new ApolloServer({ typeDefs, resolvers, context })
@@ -167,7 +167,7 @@ it('adds budgetStatements', async () => {
     }
   };
   // testing successfull write
-  server.config.context.user = { cuId: 45, username: 'exampleName' };
+  server.config.context.user = { cuId: 46, username: 'exampleName' };
   server.config.context.auth = new Authorization(db, 1);
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
@@ -208,12 +208,12 @@ it('adds budgetStatements', async () => {
 
 it('adds budgetLineItems', async () => {
   const lineItem = {
-    budgetStatementWalletId: 1070,
+    budgetStatementWalletId: 1177,
     month: '2023-01-01',
     position: 1
   } as any;
   const inputArr = [lineItem];
-  inputArr.push({ cuId: 45, ownerType: 'CoreUnit' });
+  inputArr.push({ cuId: 46, ownerType: 'CoreUnit' });
   const query = {
     query: `mutation BudgetLineItemsBatchAdd($input: [LineItemsBatchAddInput]) {
       budgetLineItemsBatchAdd(input: $input) {
@@ -236,7 +236,7 @@ it('adds budgetLineItems', async () => {
   // testing for authorisation error
   const response4 = await server.executeOperation(query);
   expect(response4.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  server.config.context.user.cuId = 45;
+  server.config.context.user.cuId = 46;
 
   // testing for disabled account
   await db.knex('User').where('username', 'exampleName').update({ active: false });
@@ -245,7 +245,7 @@ it('adds budgetLineItems', async () => {
   await db.knex('User').where('username', 'exampleName').update({ active: true });
 
   // testing for disabled commenting
-  const [wallet] = await db.knex('BudgetStatementWallet').where('id', 1070);
+  const [wallet] = await db.knex('BudgetStatementWallet').where('id', 1177);
   const [bStatement] = await db.knex('BudgetStatement').where('id', wallet.budgetStatementId);
   await db.knex('BudgetStatement').where('id', bStatement.id).update({ status: 'Final' });
   const response2 = await server.executeOperation(query);
@@ -254,6 +254,6 @@ it('adds budgetLineItems', async () => {
 
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
-  expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1070');
+  expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1177');
   await db.knex('BudgetStatementLineItem').where('id', response.data.budgetLineItemsBatchAdd[0]['id']).del();
 });

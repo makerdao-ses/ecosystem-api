@@ -22,13 +22,13 @@ it('returns resourceId with userId 1', async () => {
     expect(entry[0].resourceId).toEqual(null);
 });
 
-it('userId 1 can update resourceType CoreUnit and resourceId 45', async () => {
-    const entry = await authModel.canUpdate(1, 'CoreUnit', 45);
+it('userId 1 can update resourceType CoreUnit and resourceId 46', async () => {
+    const entry = await authModel.canUpdate(1, 'CoreUnit', 46);
     expect(parseInt(entry[0].count)).toBeGreaterThan(0);
 });
 
-it('userId 1 can updateCoreUnit Id 45', async () => {
-    const entry = await authModel.canUpdateCoreUnit(1, 'CoreUnit', 45);
+it('userId 1 can updateCoreUnit Id 46', async () => {
+    const entry = await authModel.canUpdateCoreUnit(1, 'CoreUnit', 46);
     expect(parseInt(entry[0].count)).toBeGreaterThan(0);
 });
 
@@ -45,7 +45,7 @@ it('userId 0 can manage resourceType CoreUnit', async () => {
 
 it('user can audit', async () => {
     const entry = await authModel.can(1, 'Update', 'CoreUnit');
-    expect(entry[0].resourceId).toEqual(45);
+    expect(entry[0].resourceId).toEqual(46);
 })
 
 it('user can audit', async () => {

@@ -95,13 +95,13 @@ it('returns list of BudgetStatementFtes with fte number 10', async () => {
 it('returns list of bstatementMKRVest with all params', async () => {
     const entry = await bsModel.getBudgetStatementMKRVests(undefined);
     const entry1 = await bsModel.getBudgetStatementMKRVests({ budgetStatementId: 189 });
-    const entry2 = await bsModel.getBudgetStatementMKRVests({ id: 297 });
+    const entry2 = await bsModel.getBudgetStatementMKRVests({ id: 3757 });
     const entry3 = await bsModel.getBudgetStatementMKRVests({ vestingDate: "2022-06-01" });
     const entry4 = await bsModel.getBudgetStatementMKRVests({ mkrAmountOld: 355.86 });
     const entry5 = await bsModel.getBudgetStatementMKRVests({ comments: 'new hires' });
     expect(entry).toBeInstanceOf(Array);
     expect(entry1).toBeInstanceOf(Array);
-    expect(entry2[0].id).toEqual(297);
+    expect(entry2[0].id).toEqual(3757);
     expect(entry3[0].vestingDate).toEqual('2022-06-01');
     expect(entry4[0].mkrAmountOld).toEqual('355.86');
 });
@@ -180,7 +180,7 @@ it('returns list of getBudgetStatementTransferRequests with all params', async (
     expect(entry).toBeInstanceOf(Array);
     expect(entry1[0].id).toEqual(0);
     expect(entry2[0].budgetStatementWalletId).toEqual(70);
-    expect(entry4[0].requestAmount).toEqual("363520");
+    expect(entry4[0].requestAmount).toEqual("363520.00");
     expect(entry5[0].walletBalance).toEqual("0.00");
 })
 

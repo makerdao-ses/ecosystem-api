@@ -74,8 +74,8 @@ it('creates budgetStatementCommentUpdate event', async () => {
 it('gets userActivity with and no params', async () => {
     const entry = await authModel.getUserActivity(undefined, undefined, undefined, undefined);
     const entry1 = await authModel.getUserActivity('id', 1, undefined, undefined);
-    const entry2 = await authModel.getUserActivity('userId', 37, "collection", 'BudgetStatement(538).comments');
-    expect(entry2[0].userId).toEqual(37);
+    const entry2 = await authModel.getUserActivity('userId', 2, "collection", 'BudgetStatement(230).comments');
+    expect(entry2[0].userId).toEqual(2);
 });
 
 it('creates userActivity', async () => {
