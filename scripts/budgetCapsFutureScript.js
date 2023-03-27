@@ -252,12 +252,16 @@ const mapValue = async (p, m) => {
 
 const writeToDb = async (updateVals) => {
 
+    //console.log(updateVals);
+
     for (const item of updateVals) {
         if (item.bsliId) {
             // Update the budget cap in the BudgetStatementLineItem table
-            await db('BudgetStatementLineItem')
-                .where('id', item.bsliId)
-                .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
+            await db.raw(`
+            UPDATE "BudgetStatementLineItem"
+            SET "budgetCap" = COALESCE("budgetCap", 0) + ${item.diff}
+            WHERE "id" = ${item.bsliId}
+          `);
         } else if (item.bslimonth && item.bsWid) {
             // Check if a 'payment topup' entry already exists for the given month and wallet
             const existingEntry = await db('BudgetStatementLineItem')
@@ -270,11 +274,13 @@ const writeToDb = async (updateVals) => {
 
             if (existingEntry) {
                 // Update the budget cap in the existing entry
-                await db('BudgetStatementLineItem')
-                    .where('id', existingEntry.id)
-                    .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
+                
+                    await db.raw(`
+                    UPDATE "BudgetStatementLineItem"
+                    SET "budgetCap" = COALESCE("budgetCap", 0) + ${item.diff}
+                    WHERE "id" = ${existingEntry.id}
+                  `);
 
-                item.bsliId = existingEntry.bslid; // Update the bsliId in the output list
             } else {
                 // Create a new BudgetStatementLineItem entry
                 const { bsliId } = await db('BudgetStatementLineItem').insert({
@@ -285,7 +291,6 @@ const writeToDb = async (updateVals) => {
                     position: 0
                 });
 
-                item.bsliId = bsliId; // Update the bsliId in the output list
             }
         } else {
             // Do nothing if bsliId is not present and bslimonth and bsWid are not both present

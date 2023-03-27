@@ -208,13 +208,17 @@ const mapValue = async (paymentTopupOutput, matchedCategoriesOutput) => {
 
 const writeToDb = async (updateVals) => {
 
+    //console.table(updateVals);
+
     for (const item of updateVals) {
         if (item.bsliId) {
             // Update the budget cap in the BudgetStatementLineItem table
-            await db('BudgetStatementLineItem')
-                .where('id', item.bsliId)
-                .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
-        } else if (item.bslimonth && item.bsWid) {
+            await db.raw(`
+            UPDATE "BudgetStatementLineItem"
+            SET "budgetCap" = COALESCE("budgetCap", 0) + ${item.diff}
+            WHERE "id" = ${item.bsliId}
+          `);
+        } else if (item.month && item.bsWid) {
             // Check if a 'payment topup' entry already exists for the given month and wallet
             const existingEntry = await db('BudgetStatementLineItem')
                 .where({
@@ -230,7 +234,6 @@ const writeToDb = async (updateVals) => {
                     .where('id', existingEntry.id)
                     .update('budgetCap', db.raw('"budgetCap" + ?', [item.diff]));
 
-                item.bsliId = existingEntry.bslid; // Update the bsliId in the output list
             } else {
                 // Create a new BudgetStatementLineItem entry
                 const {
@@ -242,8 +245,6 @@ const writeToDb = async (updateVals) => {
                     budgetCap: item.diff,
                     position: 0
                 });
-
-                item.bsliId = bsliId; // Update the bsliId in the output list
             }
         }
     }
