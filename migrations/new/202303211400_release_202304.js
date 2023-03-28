@@ -1,4 +1,4 @@
-//Up migration renamed the budgetStatementLineId column
+//Up migration drops the foreign key relationship in BudgetStatment
 export async function up(knex) {
 
     return knex.schema.table("BudgetStatement", function(table) {
