@@ -29,8 +29,7 @@ export async function up(knex) {
   rows.forEach(row => {
 
     //Retrieve walletBalanceTimestamo
-    const timestamp = new Date(Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12));
-    const walletBalanceTimestamp = timestamp.toLocaleString();
+    const walletBalanceTimestamp = new Date(row.month).toISOString();
 
     const formattedRow = {
       code: row.code,
@@ -39,7 +38,7 @@ export async function up(knex) {
       targetAmount: null,
       targetDescription: `Core Unit ${row.code} currently does not work with an Core Unit Auditor to top up its operational wallet but streams funds directly from the Maker protocol.`,
       targetCalculation: 'N/A',
-      walletBalanceTimestamp: walletBalanceTimestamp
+      walletBalanceTimestamp
     };
 
     formattedResult.push(formattedRow);
