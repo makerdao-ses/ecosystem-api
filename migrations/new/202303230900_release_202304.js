@@ -17,7 +17,7 @@ LEFT JOIN "BudgetStatement" as bs ON bs."ownerId" = cu.id
 LEFT JOIN "BudgetStatementWallet" as bsw ON bsw."budgetStatementId" = bs.id
 LEFT JOIN "BudgetStatementTransferRequest" as bstr ON bstr."budgetStatementWalletId" = bsw.id
 LEFT JOIN "BudgetStatementLineItem" as bsli ON bsw.id = bsli."budgetStatementWalletId"
-WHERE auditors."resourceId" IS NOT NULL AND cu.code != 'DECO-001'
+WHERE auditors."resourceId" IS NOT NULL AND cu.code != 'DECO-001' AND bs.month NOTNULL
 GROUP BY cu.code, cu.id, bs.id, bs.month, bsw.name, bstr.id, bsw.id
 ORDER BY cu.code, bs.month DESC
 `);
