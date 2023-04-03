@@ -523,7 +523,7 @@ export const resolvers = {
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Adding lineItems
                         console.log(`adding ${input.length} line items to CU ${cuIdFromInput.cuId}`,)
-                        const result = await dataSources.db.BudgetStatement.addBatchtLineItems(input)
+                        const result = await dataSources.db.BudgetStatement.addBatchLineItems(input)
                         return result;
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetLineItems')

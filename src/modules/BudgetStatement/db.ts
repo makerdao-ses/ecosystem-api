@@ -409,7 +409,7 @@ export class BudgetStatementModel {
 
     // ------------------- Adding data --------------------------------
 
-    async addBatchtLineItems(rows: object[]) {
+    async addBatchLineItems(rows: object[]) {
         const chunkSize = rows.length;
         return this.knex.batchInsert('BudgetStatementLineItem', rows, chunkSize).returning('*');
     };
