@@ -74,6 +74,7 @@ const cuMipTable = async (data) => {
     console.log("MIP API Response: ");
 
     for (var i = 0; i < resLength - 1; i++) {
+        
 
         var fullMipCode = data['items'][i]['mipName'];
         var mipTitle = data['items'][i]['title'];
@@ -83,6 +84,10 @@ const cuMipTable = async (data) => {
         var forumUrl = data['items'][i]['forumLink'];
         var cuId = null;
         if (fullMipCode.includes('MIP39') || fullMipCode.includes('MIP40') || fullMipCode.includes('MIP41')) {
+            if(status === 'Obsolete' && fullMipCode.includes('MIP40')){
+                console.log(data['items'][i]);
+            }
+            
             var mipDict = {}
             var cuCode = cuCodeParse(data['items'][i]['tags']);
             for (var j = 0; j < cuTableLength - 1; j++) {
@@ -90,7 +95,9 @@ const cuMipTable = async (data) => {
                     cuId = cuTable[j].id;
                 }
             }
+            
             if (cuId != null) {
+                
                 mipDict.cuId = cuId;
                 mipDict.mipCode = fullMipCode;
                 mipDict.mipTitle = mipTitle;
