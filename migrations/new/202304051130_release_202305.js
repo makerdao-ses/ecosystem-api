@@ -25,7 +25,6 @@ const delId = del.id;
 await knex('UserRole').insert({
   roleId: newRoleId.id,
   resource: 'Delegates',
-  resourceId: delId,
   userId: userId
 });
 
