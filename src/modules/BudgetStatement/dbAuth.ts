@@ -42,7 +42,7 @@ export class BudgetStatementAuthModel {
                 const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, ownerTypeResult.ownerType, budgetStatement.ownerId);
                 const canAudit = await this.authModel.canAudit(user.id, ownerTypeResult.ownerType);
                 const cuAuditors = await this.authModel.getSystemRoleMembers(
-                    ownerTypeResult.ownerType === 'CoreUnit' ? 'CoreUnitAuditor' : 'DelegatesAudit',
+                    ownerTypeResult.ownerType === 'CoreUnit' ? 'CoreUnitAuditor' : 'DelegatesAuditor',
                     ownerTypeResult.ownerType,
                     budgetStatement.ownerId
                 );
