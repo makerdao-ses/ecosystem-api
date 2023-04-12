@@ -98,7 +98,7 @@ export class ChangeTrackingModel {
             cuId = budgetStatementId;
             eventEvent = 'DELEGATES_BUDGET_STATEMENT_CREATED';
             params = JSON.stringify({ budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
-            description = `${ownerType} have published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+            description = `Delegate administrator has published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
         }
         const event = {
             created_at: new Date().toISOString(),
@@ -124,7 +124,7 @@ export class ChangeTrackingModel {
             cuId = budgetStatementId;
             eventEvent = 'DELEGATES_BUDGET_STATEMENT_UPDATED';
             params = JSON.stringify({ budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
-            description = `${ownerType} has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+            description = `Delegate administrator has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
         }
         const event = {
             created_at: new Date().toISOString(),

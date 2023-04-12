@@ -162,7 +162,7 @@ const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, 
     } else {
         [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.ownerId } });
     }
-    const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
+    const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3), ownerType)
     ctModel.budgetStatementCommentUpdate(
         eventDescription,
         CU.id,
@@ -178,9 +178,9 @@ const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, 
     )
 }
 
-const getEventDescription = (oldStatus: string, newStatus: string, CU: any, author: any, month: string) => {
+const getEventDescription = (oldStatus: string, newStatus: string, CU: any, author: any, month: string, ownerType: string) => {
     if (oldStatus === newStatus) {
-        return `${author.username} commented on the ${CU.code} ${month} Expense Report`
+        return `${author.username} commented on the ${ownerType === 'Delegates' ? 'Delegates' : CU.code} ${month} Expense Report`
     }
     // Initial status is Draft
     if (oldStatus === 'Draft' && newStatus === 'Review') {
