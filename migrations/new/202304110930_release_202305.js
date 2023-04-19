@@ -21,8 +21,7 @@ export async function up(knex) {
     table.integer('snapshotId').unsigned().notNullable();
     table.foreign('snapshotId').references('id').inTable('Snapshot');
     table.string('accountLabel').notNullable();
-    table.string('accountOwnerCode');
-    table.string('accountType').notNullable();
+    table.string('accountType').notNullable(); //Group OR Singular
     table.string('accountAddress').notNullable().unique();
     table.integer('groupAccountId').unsigned();
     table.foreign('groupAccountId').references('id').inTable('SnapshotAccount');
@@ -37,7 +36,6 @@ export async function up(knex) {
     table.timestamp('timestamp').notNullable();
     table.string('tx_hash').notNullable();
     table.string('token').notNullable();
-    table.string('account').notNullable();
     table.string('counterParty').notNullable();
     table.specificType('amount', 'numeric');
   })
@@ -48,6 +46,8 @@ export async function up(knex) {
     table.string('token').notNullable();
     table.specificType('initialBalance', 'numeric');
     table.specificType('newBalance', 'numeric');
+    table.specificType('inflow', 'numeric');
+    table.specificType('outflow', 'numeric');
   });
 
 }
@@ -72,5 +72,6 @@ export async function down(knex) {
   // Drop SnapshotAccount and Snapshot tables
   await knex.schema.dropTableIfExists('SnapshotAccount');
   await knex.schema.dropTableIfExists('Snapshot');
+  await knex.schema.dropTableIfExists('SnapshotAccountTransaction');
 
 }
