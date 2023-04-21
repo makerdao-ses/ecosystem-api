@@ -22,7 +22,7 @@ export async function up(knex) {
     table.foreign('snapshotId').references('id').inTable('Snapshot');
     table.string('accountLabel').notNullable();
     table.string('accountType').notNullable(); //Group OR Singular
-    table.string('accountAddress').notNullable().unique();
+    table.string('accountAddress').notNullable();
     table.integer('groupAccountId').unsigned();
     table.foreign('groupAccountId').references('id').inTable('SnapshotAccount');
     table.integer('upstreamAccountId').unsigned();
