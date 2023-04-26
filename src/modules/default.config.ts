@@ -6,6 +6,7 @@ export default {
     BudgetStatement: { enabled: true, require: ['Auth', 'CoreUnit'] },
     Mip: { enabled: true, require: ['CoreUnit'] },
     TotalExpenses: { enabled: true },
-    Delegates: { enabled: true }
+    Delegates: { enabled: true },
+    Snapshot: { enabled: true }
     // Roadmap: { enabled: true, require: ['CoreUnit'] },
 };
