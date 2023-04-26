@@ -28,7 +28,7 @@ export const typeDefs = [gql`
         id: ID!
         snapshotAccountId: ID
         block: Int
-        timeStamp: DateTime
+        timestamp: DateTime
         tx_hash: String
         token: String
         counterParty: String
