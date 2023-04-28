@@ -84,18 +84,6 @@ export const data = [
         }
     },
     {
-        "name": "ultraschuppi",
-        "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/ultraschuppi/240/16540_2.png",
-        "latestVotingContract": "0x...",
-        "socials": {
-            "forumProfile": "https://forum.makerdao.com/u/flipflopflapdelegate/summary",
-            "forumPlatform": "https://forum.makerdao.com/t/flip-flop-flap-delegate-llc-platform/9106",
-            "youtube": "https://www.youtube.com/watch?v=3483QFS4_qQ",
-            "votingPortal": "https://vote.makerdao.com/address/0xf60d7a62c98f65480725255e831de531efe3fe14#metrics",
-            "twitter": ""	
-        }
-    },
-    {
         "name": "Chris Blec",
         "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/chrisblec/90/18799_2.png",
         "latestVotingContract": "0x2C511D932C5a6fE4071262D49bfc018cfBaAa1F5",
@@ -134,7 +122,7 @@ export const data = [
     {
         "name": "Governance House",
         "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/llama/90/20819_2.png",
-        "latestVotingContract": "0xd2362DbB5Aa708Bc454Ce5C3F11050C016764fA6",
+        "latestVotingContract": "0x4e314eba76c3062140ad196e4ffd34485e33c5f5",
         "socials": {
             "forumProfile": "https://forum.makerdao.com/u/Llama",
             "forumPlatform": "https://forum.makerdao.com/t/llama-delegate-platform/15191",
@@ -146,7 +134,7 @@ export const data = [
     {
         "name": "MakerMan",
         "image": "https://forum.makerdao.com/letter_avatar_proxy/v4/letter/m/82dd89/90.png",
-        "latestVotingContract": "0x...",
+        "latestVotingContract": "0x22d5294a23d49294Bf11D9db8bEda36e104ad9b3",
         "socials": {
             "forumProfile": "https://forum.makerdao.com/u/MakerMan",
             "forumPlatform": "https://forum.makerdao.com/t/makerman-delegate-platform/9891",
@@ -218,7 +206,7 @@ export const data = [
     {
         "name": "Llama",
         "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/llama/90/20819_2.png",
-        "latestVotingContract": "0xd2362DbB5Aa708Bc454Ce5C3F11050C016764fA6",
+        "latestVotingContract": "0x4e314eba76c3062140ad196e4ffd34485e33c5f5",
         "socials": {
             "forumProfile": "https://forum.makerdao.com/u/Llama",
             "forumPlatform": "https://forum.makerdao.com/t/llama-delegate-platform/15191",
@@ -278,7 +266,7 @@ export const data = [
     {
         "name": "JustinCase",
         "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/justincase/90/13398_2.png",
-        "latestVotingContract": "0x...",
+        "latestVotingContract": "0xCdB792c14391F7115Ba77A7Cd27f724fC9eA2091",
         "socials": {
             "forumProfile": "https://forum.makerdao.com/u/JustinCase",
             "forumPlatform": "https://forum.makerdao.com/t/justincase-delegate-platform/11721",
