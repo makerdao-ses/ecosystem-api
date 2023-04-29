@@ -24,46 +24,59 @@ const endTimestamp = (month) => {
 }
 
 const fillSnapshotTable = async () => {
-  const cuBs = await db
-    .select('ownerType', 'ownerId', 'month')
-    .distinctOn(['ownerType', 'ownerId', 'month'])
-    .from('BudgetStatement');
+
+  
+  const now = new Date();
+  now.setUTCHours(12, 0, 0, 0);
+  const newestMonth = now.toISOString();
+  const oldestMonth = '2021-01-01T12:00:00.000Z';
+  
+
+  const ownerTypesAndIds = await db('BudgetStatement')
+    .distinct('ownerType', 'ownerId')
+    .select();
+
+  console.log(oldestMonth);
+  console.log(newestMonth);
 
   let sCount = 0;
 
-  const snapshotData = await Promise.all(
-    cuBs.map(async (row) => {
-      const [existingSnapshot] = await db
+  for (const { ownerType, ownerId } of ownerTypesAndIds) {
+    for (let d = new Date(oldestMonth); d <= new Date(newestMonth); d.setUTCMonth(d.getUTCMonth() + 1)) {
+      
+      const start = startTimestamp(d.toISOString());
+      const end = endTimestamp(d.toISOString());
+  
+      const existingSnapshot = await db('Snapshot')
         .select('id')
-        .from('Snapshot')
         .where({
-          start: startTimestamp(row.month),
-          end: endTimestamp(row.month),
-          ownerType: row.ownerType,
-          ownerId: row.ownerId,
+          start,
+          end,
+          ownerType,
+          ownerId,
         })
-        .limit(1);
-
+        .first();
+  
       if (existingSnapshot) {
-        return null; // Row already exists, skip inserting
+        continue; // Row already exists, skip inserting
       }
-
+  
       await db('Snapshot')
         .insert({
-          start: startTimestamp(row.month),
-          end: endTimestamp(row.month),
-          ownerType: row.ownerType,
-          ownerId: row.ownerId,
+          start,
+          end,
+          ownerType,
+          ownerId,
         });
-
+  
       sCount++;
+    }
+  }
+  
 
-      return {};
-    })
-  );
-
-  console.log(`${sCount} rows inserted into SnapshotAccount table`);
+  console.log(`${sCount} rows inserted into Snapshot table`);
 };
+
 
 const fillSnapshotAccountTable = async () => {
   const rows = await db.raw(`
@@ -75,49 +88,48 @@ const fillSnapshotAccountTable = async () => {
     WHERE bsw.address NOTNULL
   `);
 
-  let count = 0;
+  const snapshots = await db('Snapshot')
+    .select('id', 'start', 'end', 'ownerType', 'ownerId');
 
-  await Promise.all(
-    rows.rows.map(async (row) => {
-      const [snapshot] = await db('Snapshot')
-        .select('id')
-        .where({
-          start: startTimestamp(row.month),
-          end: endTimestamp(row.month),
-          ownerType: row.ownerType,
-          ownerId: row.ownerId,
-        })
-        .limit(1);
+  
+  
+  const snapshotAccounts = [];
 
-      if (!snapshot) {
-        return null;
-      }
+  for (const snapshot of snapshots) {
+    const filteredRows = rows.rows.filter((row) => {
+      return (
+        row.month >= snapshot.start &&
+        row.month <= snapshot.end &&
+        row.ownerType === snapshot.ownerType &&
+        row.ownerId === snapshot.ownerId
+      );
+    });
 
-      const [existingAccount] = await db('SnapshotAccount')
+    for (const row of filteredRows) {
+      
+      const existingAccount = await db('SnapshotAccount')
         .where({
           snapshotId: snapshot.id,
           accountAddress: row.address,
         })
-        .select('id');
+        .first();
 
       if (existingAccount) {
-        return null;
+        continue;
       }
 
-      await db('SnapshotAccount').insert({
+      snapshotAccounts.push({
         snapshotId: snapshot.id,
         accountType: 'singular',
         accountAddress: row.address,
         accountLabel: row.code,
       });
+    }
+  }
 
-      count++;
+  await db('SnapshotAccount').insert(snapshotAccounts);
 
-      return { success: true };
-    })
-  );
-
-  console.log(`${count} rows inserted into SnapshotAccount table`);
+  console.log(`${snapshotAccounts.length} rows inserted into SnapshotAccount table`);
 };
 
 fillSnapshotTable()
