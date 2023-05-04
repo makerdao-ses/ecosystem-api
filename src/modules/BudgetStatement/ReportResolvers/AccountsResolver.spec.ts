@@ -30,8 +30,7 @@ it ('works', async () => {
         budgetPath: BudgetReportPath.fromString('*'),
         categoryPath: BudgetReportPath.fromString('*'),
         granularity: BudgetReportGranularity.Monthly,
-        groupPath:['SES-001/0x7c09ff9b59baaebfd721cbda3676826aa6d7bae8'],
-        keepLineItemGroupsSeparate: false
+        groupPath:['SES-001/0x7c09ff9b59baaebfd721cbda3676826aa6d7bae8']
     };
 
     const result = await resolver.execute(query);

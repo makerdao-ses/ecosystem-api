@@ -22,13 +22,10 @@ export class DelegatesResolver extends BudgetReportResolverBase<PeriodResolverDa
 
         const pathInfo = {
             delegatesPath: query.budgetPath,
-            walletSegment: query.budgetPath.nextSegment(),
-            groupSegment: query.budgetPath.reduce().nextSegment()
+            walletSegment: query.budgetPath.nextSegment()
         };
 
         const attachWalletPathSegment = (pathInfo.walletSegment.groups === null);
-        const keepLineItemGroupsSeparate = (pathInfo.groupSegment.groups === null);
-
         const delegatesWallets = await this._buildDelegatesWalletQuery();
         
         const resolverInput: AccountsResolverData[] = delegatesWallets.map(wallet => {
@@ -36,7 +33,7 @@ export class DelegatesResolver extends BudgetReportResolverBase<PeriodResolverDa
                 owner: "Delegates",
                 account: wallet.account,
                 discontinued: true,
-                discontinuedSince: "2023/03", 
+                discontinuedSince: "2023/04", 
 
                 start: query.start,
                 end: query.end,
@@ -44,8 +41,7 @@ export class DelegatesResolver extends BudgetReportResolverBase<PeriodResolverDa
                 categoryPath: query.categoryPath,
                 budgetPath: query.budgetPath.reduce(),
                 granularity: query.granularity,
-                groupPath: query.groupPath.concat(),
-                keepLineItemGroupsSeparate
+                groupPath: [...query.groupPath]
             };
 
             if (attachWalletPathSegment) {
