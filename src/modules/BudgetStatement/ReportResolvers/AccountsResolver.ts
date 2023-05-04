@@ -3,6 +3,7 @@ import { Knex } from "knex";
 import { LineItemFetcher, LineItemGroup } from "../LineItemFetcher.js";
 import { PeriodResolverData } from "./PeriodResolver.js";
 import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
+import { BudgetReportPathSegment } from "../BudgetReportPath.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -33,6 +34,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
             start: query.start,
             end: query.end,
             groupPath: query.groupPath,
+            keepLineItemsSeparate: (query.budgetPath.nextSegment().groups === null),
             period: query.period,
         };
     }
@@ -41,7 +43,14 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         if (DEBUG_OUTPUT) {
             console.log(`AccountsResolver is resolving ${query.budgetPath.toString()}`);
         }
-        
+
+        const pathInfo = {
+            accountPath: query.budgetPath,
+            groupSegment: query.budgetPath.nextSegment(),
+        };
+
+        const keepLineItemGroupsSeparate = pathInfo.groupSegment.groups === null;
+
         const result:ResolverOutput<ResolverData> = {
             nextResolversData: {},
             output: [{
@@ -58,6 +67,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
 
         for (const month of range) {
             const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
+            
             const outputRows:BudgetReportOutputRow[] = lineItemGroup.categories.map(c => {
                 const actualsReported = lineItemGroup.hasActuals 
                     || (lineItemGroup.latestReport !== null && lineItemGroup.latestReport.equals(lineItemGroup.month));
@@ -86,11 +96,22 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
                 }
             });
 
-            result.output[0].rows = result.output[0].rows.concat(outputRows);
+            for (const row of outputRows) {
+                const keys = [...query.groupPath];
+                if (row.group && keepLineItemGroupsSeparate) {
+                    keys.push(BudgetReportPathSegment.escape(row.group));
+                }
+
+                result.output.push({
+                    keys,
+                    period: query.period,
+                    rows: [row]
+                });
+            }
         }
 
         if (DEBUG_OUTPUT) {
-            console.log(`AccountsResolver fetched ${range.length} months of ${query.owner}/${query.account}, returning 1 group with ${result.output[0].rows.length} record(s).`);
+            console.log(`AccountsResolver fetched ${range.length} months of ${query.owner}/${query.account}, returning ${result.output.length} groups with 1 record.`);
         }
         
         return result;

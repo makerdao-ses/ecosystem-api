@@ -20,7 +20,7 @@ export class TotalExpensesModel {
         const resolvers = [ 
             new PeriodResolver(this.knex),
             new DaoResolver(),
-            new DelegatesResolver(),
+            new DelegatesResolver(this.knex),
             new CoreUnitsResolver(this.knex),
             new AccountsResolver(this.knex)
         ];

@@ -87,16 +87,24 @@ export class ChangeTrackingModel {
     }
 
     async coreUnitBudgetStatementCreated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string) {
+        const monthDate = new Date(month);
+
         let ownerType = 'Core Unit';
+        let params = JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+        let description = `${ownerType} ${cuShortCode} has published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+        let eventEvent = 'CU_BUDGET_STATEMENT_CREATED';
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
+            cuId = budgetStatementId;
+            eventEvent = 'DELEGATES_BUDGET_STATEMENT_CREATED';
+            params = JSON.stringify({ budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+            description = `Delegate administrator has published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
         }
-        const monthDate = new Date(month);
         const event = {
             created_at: new Date().toISOString(),
-            event: 'CU_BUDGET_STATEMENT_CREATED',
-            params: JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) }),
-            description: `${ownerType} ${cuShortCode} has published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+            event: eventEvent,
+            params,
+            description
         }
 
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
@@ -105,16 +113,24 @@ export class ChangeTrackingModel {
     }
 
     async coreUnitBudgetStatementUpdated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string) {
+        const monthDate = new Date(month);
+
         let ownerType = 'Core Unit';
+        let params = JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+        let description = `${ownerType} ${cuShortCode} has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+        let eventEvent = 'CU_BUDGET_STATEMENT_UPDATED';
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
+            cuId = budgetStatementId;
+            eventEvent = 'DELEGATES_BUDGET_STATEMENT_UPDATED';
+            params = JSON.stringify({ budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+            description = `Delegate administrator has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
         }
-        const monthDate = new Date(month);
         const event = {
             created_at: new Date().toISOString(),
-            event: 'CU_BUDGET_STATEMENT_UPDATED',
-            params: JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) }),
-            description: `${ownerType} ${cuShortCode} has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
+            event: eventEvent,
+            params,
+            description
         }
 
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
@@ -135,16 +151,22 @@ export class ChangeTrackingModel {
         oldStatus: string,
         newStatus: string
     ) {
+        let coreUnit;
+        let eventEvent = 'DELEGATES_BUDGET_STATEMENT_COMMENT';
+        if (cuId) {
+            coreUnit = {
+                id: cuId,
+                code: cuCode,
+                shortCode: shortCode
+            }
+            eventEvent = 'CU_BUDGET_STATEMENT_COMMENT'
+        }
         const event = {
             created_at: new Date().toISOString(),
-            event: 'CU_BUDGET_STATEMENT_COMMENT',
+            event: eventEvent,
             description: description,
             params: JSON.stringify({
-                coreUnit: {
-                    id: cuId,
-                    code: cuCode,
-                    shortCode: shortCode
-                },
+                coreUnit,
                 budgetStatementId: budgetStatementId,
                 month: month.substring(0, month.length - 3),
                 author: {
@@ -161,7 +183,9 @@ export class ChangeTrackingModel {
         const result = await this.knex('ChangeTrackingEvents').insert({ created_at: event.created_at, event: event.event, params: event.params, description: event.description }).returning('*')
         let [lastIndex] = await this.knex('ChangeTrackingEvents_Index').select('id').orderBy('id', 'desc').limit(1);
         await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 1, eventId: result[0].id, objectType: 'BudgetStatement', objectId: budgetStatementId })
-        await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 2, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
+        if (cuId) {
+            await this.knex('ChangeTrackingEvents_Index').insert({ id: parseInt(lastIndex.id) + 2, eventId: result[0].id, objectType: 'CoreUnit', objectId: cuId })
+        }
 
     }
 

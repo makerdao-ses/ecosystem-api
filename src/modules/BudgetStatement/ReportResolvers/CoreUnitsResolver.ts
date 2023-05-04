@@ -44,7 +44,7 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
                 end: query.end,
                 period: query.period,
                 categoryPath: query.categoryPath,
-                budgetPath: query.budgetPath.reduce(),
+                budgetPath: query.budgetPath.reduce().reduce(),
                 granularity: query.granularity,
                 groupPath: query.groupPath.concat()
             };

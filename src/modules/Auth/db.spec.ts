@@ -49,7 +49,7 @@ it('user can audit', async () => {
 })
 
 it('user can audit', async () => {
-    const entry = await authModel.canAudit(4);
+    const entry = await authModel.canAudit(4, 'CoreUnit');
     expect(entry[0].resourceId).toEqual(15)
 })
 

@@ -18,7 +18,7 @@ const db = knex({
 
 
 const fetchDB = async (mipDict) => {
-    if (mipDict.length != 0) {    
+    if (mipDict.length != 0) {
         console.log(await db.insert(mipDict).into('CuMip'));
     }
 };
@@ -75,7 +75,9 @@ const cuMipTable = async (data) => {
 
     for (var i = 0; i < resLength - 1; i++) {
 
+
         var fullMipCode = data['items'][i]['mipName'];
+        var sp = fullMipCode.substring(9, 11);
         var mipTitle = data['items'][i]['title'];
         var dateRFC = data['items'][i]['dateProposed'];
         var ratified = data['items'][i]['dateRatified'];
@@ -83,6 +85,8 @@ const cuMipTable = async (data) => {
         var forumUrl = data['items'][i]['forumLink'];
         var cuId = null;
         if (fullMipCode.includes('MIP39') || fullMipCode.includes('MIP40') || fullMipCode.includes('MIP41')) {
+
+
             var mipDict = {}
             var cuCode = cuCodeParse(data['items'][i]['tags']);
             for (var j = 0; j < cuTableLength - 1; j++) {
@@ -90,7 +94,11 @@ const cuMipTable = async (data) => {
                     cuId = cuTable[j].id;
                 }
             }
+
+
             if (cuId != null) {
+
+
                 mipDict.cuId = cuId;
                 mipDict.mipCode = fullMipCode;
                 mipDict.mipTitle = mipTitle;
@@ -113,16 +121,20 @@ const cuMipTable = async (data) => {
                     mipDict.accepted = null;
                 }
                 if (checkUnique(cuMipTable, fullMipCode) != true) {
+                    if (status === 'Obsolete' && fullMipCode.includes('MIP40') && sp > 88) {
+                        cuMipEntry.push(mipDict);
+                    }
                     if (mipDict.dateRFC == undefined && mipDict.accepted == undefined && mipDict.rejected == undefined) {} else {
                         cuMipEntry.push(mipDict);
                     }
+
                 }
             }
         }
     }
 
     await fetchDB(cuMipEntry);
-    
+
     console.log(cuMipEntry);
     if (cuMipEntry.length == 0) {
         console.log("CuMip table up-to-date for MIP entries");
@@ -133,17 +145,15 @@ const cuMipTable = async (data) => {
 
 //Parse the CU Code from the MIP API response
 const cuCodeParse = (tags) => {
-    var tagsLength = tags.length;
-
-    for (var i = 0; i < tagsLength - 1; i++) {
-        if (tags[i].includes('cu-')) {
-            var cu = tags[i].substring(3);
-            return cu;
-        } else if (tags[i].includes('001')) {
-            var cu = tags[i].toLowerCase();
-            return cu;
+    for (let i = 0; i < tags.length; i++) {
+        const tag = tags[i];
+        const match = tag.match(/([a-z]{3,4}-001)$/);
+        if (match) {
+            return match[1];
         }
     }
+    return null;
 };
+
 
 getData();

@@ -40,8 +40,12 @@ export class BudgetStatementAuthModel {
                     throw new ForbiddenError('Need to add a comment or change status')
                 }
                 const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, ownerTypeResult.ownerType, budgetStatement.ownerId);
-                const canAudit = await this.authModel.canAudit(user.id);
-                const cuAuditors = await this.authModel.getSystemRoleMembers('CoreUnitAuditor', ownerTypeResult.ownerType, budgetStatement.ownerId);
+                const canAudit = await this.authModel.canAudit(user.id, ownerTypeResult.ownerType);
+                const cuAuditors = await this.authModel.getSystemRoleMembers(
+                    ownerTypeResult.ownerType === 'CoreUnit' ? 'CoreUnitAuditor' : 'DelegatesAuditor',
+                    ownerTypeResult.ownerType,
+                    budgetStatement.ownerId
+                );
                 const coreUnitHasAuditors = () => {
                     return cuAuditors.length > 0 ? true : false;
                 }
@@ -152,8 +156,13 @@ const parseCommentOutput = (comments: any, authModel: AuthModel) => {
 
 const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, cuModel: CoreUnitModel, ctModel: ChangeTrackingModel, parsedComment: any, oldStatus: any, ownerType: string) => {
     const [budgetStatement] = await bsModel.getBudgetStatements({ filter: { id: parsedComment.budgetStatementId, ownerType } })
-    const [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.ownerId } });
-    const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3))
+    let CU;
+    if (ownerType === 'Delegates') {
+        CU = { id: '', code: '', shortCode: '' }
+    } else {
+        [CU] = await cuModel.getCoreUnits({ filter: { id: budgetStatement.ownerId } });
+    }
+    const eventDescription = getEventDescription(oldStatus, parsedComment.status, CU, parsedComment.author, budgetStatement.month.substring(0, budgetStatement.month.length - 3), ownerType)
     ctModel.budgetStatementCommentUpdate(
         eventDescription,
         CU.id,
@@ -169,9 +178,9 @@ const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, 
     )
 }
 
-const getEventDescription = (oldStatus: string, newStatus: string, CU: any, author: any, month: string) => {
+const getEventDescription = (oldStatus: string, newStatus: string, CU: any, author: any, month: string, ownerType: string) => {
     if (oldStatus === newStatus) {
-        return `${author.username} commented on the ${CU.code} ${month} Expense Report`
+        return `${author.username} commented on the ${ownerType === 'Delegates' ? 'Delegates' : CU.code} ${month} Expense Report`
     }
     // Initial status is Draft
     if (oldStatus === 'Draft' && newStatus === 'Review') {

@@ -128,7 +128,7 @@ export class AuthModel {
             })
     }
 
-    async canAudit(userId: number): Promise<any> {
+    async canAudit(userId: number, resource: string): Promise<any> {
         return this.knex
             .select('resourceId')
             .from('UserRole')

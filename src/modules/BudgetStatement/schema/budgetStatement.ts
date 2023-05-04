@@ -6,7 +6,7 @@ export const typeDefs = [gql`
         "Auto generated id field"
         id: ID!
         "Auto generated id field from Core Unit table"
-        ownerId: ID!
+        ownerId: ID
         ownerType: String
         "Month of corresponding budget statement"
         month: String!
@@ -510,11 +510,19 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId)
-                    if (allowed[0].count > 0) {
+                    const cuIdFromInput = input.pop()
+                    let allowed = { count: 0 }
+                    if (cuIdFromInput.ownerType !== 'Delegates') {
+                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId);
+                    }
+                    if (allowed.count > 0 || cuIdFromInput.ownerType === 'Delegates') {
                         //Tacking Change
-                        const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
+                        let CU;
+                        if (cuIdFromInput.ownerType === 'Delegates') {
+                            CU = { id: '', code: '', shortCode: 'DEL' }
+                        } else {
+                            [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
+                        }
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
@@ -523,7 +531,7 @@ export const resolvers = {
                         dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
                         //Adding lineItems
                         console.log(`adding ${input.length} line items to CU ${cuIdFromInput.cuId}`,)
-                        const result = await dataSources.db.BudgetStatement.addBatchtLineItems(input)
+                        const result = await dataSources.db.BudgetStatement.addBatchLineItems(input)
                         return result;
                     } else {
                         throw new AuthenticationError('You are not authorized to update budgetLineItems')
@@ -575,11 +583,19 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const allowed = await auth.canUpdate('CoreUnit', user.cuId)
-                    if (allowed[0].count > 0) {
+                    const cuIdFromInput = input.pop()
+                    let allowed = { count: 0 }
+                    if (cuIdFromInput.ownerType !== 'Delegates') {
+                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId);
+                    }
+                    if (allowed.count > 0 || cuIdFromInput.ownerType === 'Delegates') {
                         //Tacking Change
-                        const cuIdFromInput = input.pop()
-                        const [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
+                        let CU;
+                        if (cuIdFromInput.ownerType === 'Delegates') {
+                            CU = { id: '', code: '', shortCode: 'DEL' }
+                        } else {
+                            [CU] = await dataSources.db.CoreUnit.getCoreUnits({ filter: { id: cuIdFromInput.cuId } });
+                        }
                         const [wallet] = await dataSources.db.BudgetStatement.getBudgetStatementWallets({ id: input[0].budgetStatementWalletId })
                         const [bStatement] = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { id: wallet.budgetStatementId, ownerType: cuIdFromInput.ownerType } })
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {

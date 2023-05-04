@@ -1,87 +1,84 @@
-import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
-import { BudgetReportResolverBase, ResolverData, ResolverOutput } from "../BudgetReportResolver.js";
+import { BudgetReportResolverBase, ResolverOutput } from "../BudgetReportResolver.js";
 import { AccountsResolverData } from "./AccountsResolver.js";
-import delegatesData from "./DelegatesResolverData.js";
+import { Knex } from "knex";
+import { PeriodResolverData } from "./PeriodResolver.js";
 
 const DEBUG_OUTPUT = false;
 
-interface DelegateRecord {
-    account: string;
-    month: string;
-    group: string;
-    headcountExpense: boolean;
-    category: string;
-    actual: number;
-    forecast: number;
-    prediction: number;
-    payment: number;
-}
-
-export class DelegatesResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {
+export class DelegatesResolver extends BudgetReportResolverBase<PeriodResolverData, AccountsResolverData> {
     readonly name = 'DelegatesResolver';
 
-    private _delegateNumbersByMonth: Record<string, DelegateRecord[]>;
+    private readonly _knex:Knex;
 
-    constructor() {
+    constructor(knex:Knex) {
         super();
-        this._delegateNumbersByMonth = {};
-
-        delegatesData.forEach(d => {
-            if (!this._delegateNumbersByMonth[d.month]) {
-                this._delegateNumbersByMonth[d.month] = [];
-            }
-
-            this._delegateNumbersByMonth[d.month].push(d);
-        });
+        this._knex = knex;
     }
-    
-    public async execute(query: AccountsResolverData): Promise<ResolverOutput<ResolverData>> {
+
+    public async execute(query:PeriodResolverData): Promise<ResolverOutput<AccountsResolverData>> {
         if (DEBUG_OUTPUT) {
             console.log(`DelegatesResolver is resolving ${query.budgetPath.toString()}`);
         }
-        
-        const result:ResolverOutput<ResolverData> = {
-            nextResolversData: {},
-            output: [{
-                keys: query.groupPath,
-                period: query.period,
-                rows: []
-            }]
+
+        const pathInfo = {
+            delegatesPath: query.budgetPath,
+            walletSegment: query.budgetPath.nextSegment()
         };
 
-        const range = BudgetReportPeriod.fillRange(
-            query.start as BudgetReportPeriod, 
-            query.end as BudgetReportPeriod
-        );
-
-        for (const month of range) {
-            const delegateNumbers = this._delegateNumbersByMonth[month.toString()] || [];
-            result.output[0].rows = result.output[0].rows.concat(delegateNumbers.map(d => ({
-                account: d.account,
-                month: BudgetReportPeriod.fromString(d.month),
-
-                group: d.group,
-                headcountExpense: d.headcountExpense,
-                category: d.category,
-                
-                actual: d.actual,
-                forecast: d.forecast,
-                prediction: d.prediction,
-                budgetCap: 0.00,
-                payment: d.payment,
-
-                actualDiscontinued: 0.00,
-                forecastDiscontinued: 0.00,
-                predictionDiscontinued: 0.00,
-                budgetCapDiscontinued: 0.00,
-                paymentDiscontinued: 0.00
-            })));
-        }
-
-        if (DEBUG_OUTPUT) {
-            console.log(`DelegatesResolver fetched ${range.length} months of delegates information, returning 1 group with ${result.output[0].rows.length} record(s).`);
-        }
+        const attachWalletPathSegment = (pathInfo.walletSegment.groups === null);
+        const delegatesWallets = await this._buildDelegatesWalletQuery();
         
-        return result;
+        const resolverInput: AccountsResolverData[] = delegatesWallets.map(wallet => {
+            const result = {
+                owner: "Delegates",
+                account: wallet.account,
+                discontinued: true,
+                discontinuedSince: "2023/04", 
+
+                start: query.start,
+                end: query.end,
+                period: query.period,
+                categoryPath: query.categoryPath,
+                budgetPath: query.budgetPath.reduce(),
+                granularity: query.granularity,
+                groupPath: [...query.groupPath]
+            };
+
+            if (attachWalletPathSegment) {
+                result.groupPath.push(wallet.account);
+            }
+
+            return result;
+        });
+
+        if (DEBUG_OUTPUT) { 
+            console.log(resolverInput);
+        }
+
+        return {
+            nextResolversData: {
+                AccountsResolver: resolverInput
+            },
+            output: []
+        };
+    }
+
+    private _buildDelegatesWalletQuery() {
+        const query = this._knex
+            .select(
+                this._knex.raw('LOWER("BSW"."address") as "account"'),
+                this._knex.raw('STRING_AGG(DISTINCT "BSW"."name", \';\' ORDER BY "BSW"."name" ASC) as "accountNames"')
+            )
+            .min('BS.month as firstReport')
+            .max('BS.month as latestReport')
+
+            .from('public.BudgetStatement as BS')
+            .join('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
+            .groupBy('account')
+
+            .where('BS.ownerType', 'Delegates')
+            ;
+
+        return query;
     }
 }
