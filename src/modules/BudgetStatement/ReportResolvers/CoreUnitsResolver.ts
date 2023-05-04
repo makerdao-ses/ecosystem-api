@@ -24,11 +24,13 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
         const pathInfo = {
             coreUnitPath: query.budgetPath,
             coreUnitSegment: query.budgetPath.nextSegment(),
-            walletSegment: query.budgetPath.reduce().nextSegment()
+            walletSegment: query.budgetPath.reduce().nextSegment(),
+            groupSegment: query.budgetPath.reduce().reduce().nextSegment()
         };
 
         const attachCoreUnitPathSegment = (pathInfo.coreUnitSegment.groups === null);
         const attachWalletPathSegment = (pathInfo.walletSegment.groups === null);
+        const keepLineItemGroupsSeparate = (pathInfo.groupSegment.groups === null);
 
         const coreUnitWallets = await this._buildCoreUnitWalletQuery(pathInfo.coreUnitSegment);
         const mip39c3s = await this._getMip39c3s();
@@ -46,7 +48,8 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
                 categoryPath: query.categoryPath,
                 budgetPath: query.budgetPath.reduce(),
                 granularity: query.granularity,
-                groupPath: query.groupPath.concat()
+                groupPath: query.groupPath.concat(),
+                keepLineItemGroupsSeparate
             };
 
             if (attachCoreUnitPathSegment) {

@@ -11,6 +11,7 @@ export interface AccountsResolverData extends PeriodResolverData {
     owner: string;
     discontinued: boolean;
     discontinuedSince: string | null;
+    keepLineItemGroupsSeparate: boolean;
 }
 
 export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverData, ResolverData> {

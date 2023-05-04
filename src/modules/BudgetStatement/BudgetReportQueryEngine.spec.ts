@@ -125,7 +125,7 @@ it ('Applies caching correctly.', async () => {
         new PeriodResolver(knex),
         new DaoResolver(),
         new CoreUnitsResolver(knex),
-        new DelegatesResolver(),
+        new DelegatesResolver(knex),
         new AccountsResolver(knex)
     ];
 
