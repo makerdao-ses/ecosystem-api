@@ -44,6 +44,75 @@ export class BudgetModel {
             .from('ExpenseCategory')
             .where('id', id);
     };
+
+    // create budget
+    async createBudget(
+        parentId: number | string | undefined,
+        name: string,
+        code: string,
+        start: string,
+        end: string,
+        expenseCategoryId: number | string | undefined,
+        amount: number,
+        currency: string
+    ) {
+        const budget = await this.knex('Budget')
+            .insert({
+                parentId,
+                name,
+                code,
+                start,
+                end
+            })
+            .returning('*');
+        const { id } = budget[0];
+        await this.addBudgetCap(id, expenseCategoryId, amount, currency);
+        return budget
+    }
+
+    // add a budget cap
+    async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
+        return this.knex('BudgetCap')
+            .insert({
+                budgetId,
+                expenseCategoryId,
+                amount,
+                currency
+            })
+            .returning('*');
+    };
+
+    //update a budget cap
+    async updateBudgetCap(id: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
+        return this.knex('BudgetCap')
+            .where('id', id)
+            .update({
+                expenseCategoryId,
+                amount,
+                currency
+            })
+            .returning('*');
+    };
+
+    // delete a budget cap
+    async deleteBudgetCap(id: number | string) {
+        return this.knex('BudgetCap')
+            .where('id', id)
+            .del();
+    };
+
+    // delete expense category (if no line items and caps exist)
+    async deleteExpenseCategory(id: number | string) {
+        // check if any line items exist wtih this expense category
+
+
+        // check if budget caps exist with this expense category
+
+
+        // return this.knex('ExpenseCategory')
+        //     .where('id', id)
+        //     .del();
+    }
 }
 
 export default (knex: Knex) => new BudgetModel(knex);
