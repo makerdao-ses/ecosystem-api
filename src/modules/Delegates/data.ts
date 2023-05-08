@@ -168,18 +168,6 @@ export const data = [
         }
     },
     {
-        "name": "Field Technologies, Inc.",
-        "image": "https://forum.makerdao.com/letter_avatar_proxy/v4/letter/p/779978/90.png",
-        "latestVotingContract": "",
-        "socials": {
-            "forumProfile": "https://forum.makerdao.com/u/PaperImperium",
-            "forumPlatform": "https://forum.makerdao.com/t/paperimperium-delegate-platform/8992",
-            "youtube": "https://www.youtube.com/watch?v=SVUm1Bz0U9A&t=1577s",
-            "votingPortal": "https://vote.makerdao.com/address/0xf60d7a62c98f65480725255e831de531efe3fe14#metrics",
-            "twitter": ""	
-        }
-    },
-    {
         "name": "ACREInvest",
         "image": "https://forum.makerdao.com/user_avatar/forum.makerdao.com/acreinvest/90/13683_2.png",
         "latestVotingContract": "0x06e8dedf9e1adb1eba32f36ea9223770ba378b77",

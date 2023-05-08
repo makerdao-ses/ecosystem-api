@@ -7,6 +7,7 @@ export default {
     Mip: { enabled: true, require: ['CoreUnit'] },
     TotalExpenses: { enabled: true },
     Delegates: { enabled: true },
-    Snapshot: { enabled: true }
+    Snapshot: { enabled: true },
+    Budget: {enabled: true}
     // Roadmap: { enabled: true, require: ['CoreUnit'] },
 };
