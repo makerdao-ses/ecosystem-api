@@ -45,6 +45,17 @@ export class BudgetModel {
             .where('id', id);
     };
 
+
+    async getExpenseCategory(id: number, name: string, headcountExpense: boolean) {
+        return this.knex
+            .select('*')
+            .from('ExpenseCategory')
+            .where('id', id)
+            .orWhere('name', name)
+            .orWhere('headcountExpense', headcountExpense)
+            .returning('*');
+    };
+
     // create budget
     async createBudget(
         parentId: number | string | undefined,
@@ -69,6 +80,16 @@ export class BudgetModel {
         await this.addBudgetCap(id, expenseCategoryId, amount, currency);
         return budget
     }
+
+    // update budget
+    /* check for loops
+        1 / 10 / 15
+        update budget 10: set parent = 15
+        budget 10 > new parent, 15 :
+        - does it exist? => yes, OK
+        - does it NOT have budget 10 in its id path? 
+        => NO, ERROR: can't create loop
+    */
 
     // add a budget cap
     async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
@@ -103,7 +124,10 @@ export class BudgetModel {
 
     // delete expense category (if no line items and caps exist)
     async deleteExpenseCategory(id: number | string) {
+        const categoryName = await this.knex('ExpenseCategory').where('id', id).select('name');
+
         // check if any line items exist wtih this expense category
+
 
 
         // check if budget caps exist with this expense category
