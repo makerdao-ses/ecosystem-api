@@ -13,7 +13,6 @@ export const typeDefs = [gql`
 
     type SnapshotAccount { 
         id: ID!
-        snapshotId: ID
         accountLabel: String
         accountType: String
         accountAddress: String
@@ -26,7 +25,6 @@ export const typeDefs = [gql`
 
     type SnapshotAccountTransaction { 
         id: ID!
-        snapshotAccountId: ID
         block: Int
         timestamp: DateTime
         tx_hash: String
@@ -37,7 +35,6 @@ export const typeDefs = [gql`
 
     type SnapshotAccountBalance {
         id: ID!
-        snapshotAccountId: ID
         token: String
         initialBalance: Float
         newBalance: Float
