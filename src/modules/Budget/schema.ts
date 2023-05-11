@@ -14,8 +14,6 @@ export const typeDefs = [gql`
 
     type BudgetCap {
         id: ID!
-        budgetId: ID
-        expenseCategoryId: ID
         amount: Float
         currency: String
         expenseCategory: [ExpenseCategory]
