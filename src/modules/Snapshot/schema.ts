@@ -42,8 +42,16 @@ export const typeDefs = [gql`
         outflow: Float
     }
 
+    input SnapshotFilter {
+        id: ID
+        start: DateTime
+        end: DateTime
+        ownerType: String
+        ownerId: ID
+    }
+
     extend type Query { 
-        snapshots: [Snapshot]
+        snapshots(filter: SnapshotFilter): [Snapshot]
     }
 `];
 
