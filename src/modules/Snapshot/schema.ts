@@ -46,7 +46,7 @@ export const typeDefs = [gql`
         id: ID
         start: DateTime
         end: DateTime
-        ownerType: String
+        ownerType: String!
         ownerId: ID
     }
 
