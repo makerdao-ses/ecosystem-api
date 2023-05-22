@@ -81,6 +81,7 @@ export const typeDefs = [gql`
         addBudgetCap(input: AddBudgetCapInput): [BudgetCap]
         updateBudgetCap(input: UpdateBudgetCapInput): [BudgetCap]
         updateBudget(input: UpdateBudgetInput): Budget
+        deleteExpenseCategory(id: ID!): ExpenseCategory
     }
 
 `];
@@ -115,6 +116,9 @@ export const resolvers = {
         },
         updateBudget: async (_: any, { input }: any, { dataSources }: any) => {
             return await dataSources.db.Budget.updateBudget(input);
+        },
+        deleteExpenseCategory: async (_: any, { id }: any, { dataSources }: any) => {
+            return await dataSources.db.Budget.deleteExpenseCategory(id);
         }
     }
 };

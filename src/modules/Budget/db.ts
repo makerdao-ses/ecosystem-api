@@ -185,18 +185,23 @@ export class BudgetModel {
 
     // delete expense category (if no line items and caps exist)
     async deleteExpenseCategory(id: number | string) {
-        const categoryName = await this.knex('ExpenseCategory').where('id', id).select('name');
+        const [{ name }] = await this.knex('ExpenseCategory').where('id', id).select('name');
 
         // check if any line items exist wtih this expense category
-
-
-
         // check if budget caps exist with this expense category
+        const [lineItemCount] = await this.knex('BudgetStatementLineItem').where('canonicalBudgetCategory', name).count('canonicalBudgetCategory');
+        const [budgetCapLineItemCount] = await this.knex('Mip40BudgetLineItem').where('canonicalBudgetCategory', name).count('canonicalBudgetCategory');
+        console.log(lineItemCount.count, budgetCapLineItemCount.count);
+
+        if (Number(lineItemCount.count) > 0 && Number(budgetCapLineItemCount.count) > 0) {
+            throw new Error(`Cannot delete expense category ${name} with ID ${id} because it has line items`);
+        } else {
+            return this.knex('ExpenseCategory')
+                .where('id', id)
+                .del();
+        }
 
 
-        // return this.knex('ExpenseCategory')
-        //     .where('id', id)
-        //     .del();
     }
 }
 
