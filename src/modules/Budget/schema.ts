@@ -3,12 +3,14 @@ import { gql } from 'apollo-server-core';
 export const typeDefs = [gql`
 
     type Budget { 
-        id: ID!
+        id: ID
         parentId: ID
         name: String
         code: String
         start: DateTime
         end: DateTime
+        idPath: String
+        codePath: String
         budgetCap: [BudgetCap]
     }
 
@@ -27,8 +29,10 @@ export const typeDefs = [gql`
     }
 
     input BudgetFilter {
+        id: ID
+        maxDepth: Int
+        path: Int
         parentId: ID
-        name: String
         code: String
         start: DateTime
         end: DateTime
@@ -59,6 +63,15 @@ export const typeDefs = [gql`
         currency: String!
     }
 
+    input UpdateBudgetInput {
+        id: ID!
+        parentId: ID
+        name: String
+        code: String
+        start: DateTime
+        end: DateTime
+    }
+
     extend type Query {
         budgets(limit: Int, offset: Int, filter: BudgetFilter): [Budget]
     }
@@ -67,6 +80,7 @@ export const typeDefs = [gql`
         createBudget(input: CreateBudgetInput): [Budget]
         addBudgetCap(input: AddBudgetCapInput): [BudgetCap]
         updateBudgetCap(input: UpdateBudgetCapInput): [BudgetCap]
+        updateBudget(input: UpdateBudgetInput): Budget
     }
 
 `];
@@ -98,6 +112,9 @@ export const resolvers = {
         },
         updateBudgetCap: async (_: any, { input }: any, { dataSources }: any) => {
             return await dataSources.db.Budget.updateBudgetCap(input.id, input.expenseCategoryId, input.amount, input.currency);
+        },
+        updateBudget: async (_: any, { input }: any, { dataSources }: any) => {
+            return await dataSources.db.Budget.updateBudget(input);
         }
     }
 };

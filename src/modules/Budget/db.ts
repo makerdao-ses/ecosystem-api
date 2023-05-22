@@ -1,5 +1,21 @@
 import { Knex } from "knex";
 
+interface Budget {
+    id: string | number;
+    parentId: string | number | null;
+    name: string;
+    code: string | null;
+    start: string | null;
+    end: string | null;
+    idPath?: string;
+    codePath?: string;
+}
+
+interface IdOrCode {
+    id?: number;
+    code?: string;
+}
+
 export class BudgetModel {
     knex: Knex;
 
@@ -7,28 +23,67 @@ export class BudgetModel {
         this.knex = knex;
     };
 
+
+    processBudgets(budgets: Budget[], depth: number, parentId: number | string | null = null, idOrCode: IdOrCode = {}) {
+        const result = [] as any;
+
+        if (depth === 0) {
+            return result;
+        }
+
+        for (const budget of budgets) {
+            if ((idOrCode.id && budget.id == idOrCode.id) || (idOrCode.code && budget.code == idOrCode.code)) {
+                result.push(budget);
+                result.push(... this.processBudgets(budgets, depth - 1, budget.id));
+            }
+            else if (budget.parentId == parentId && idOrCode.id === undefined && idOrCode.code === undefined) {
+                result.push(budget);
+                result.push(... this.processBudgets(budgets, depth - 1, budget.id));
+            }
+        }
+
+        return result;
+    }
+
+    addBudgetPaths(budgets: Budget[], parentId: number | string | null, idPath: string, codePath: string) {
+        for (const budget of budgets) {
+            if (budget.parentId == parentId) {
+                budget.idPath = idPath + budget.id;
+                budget.codePath = codePath + (budget.code || budget.id);
+                this.addBudgetPaths(budgets, budget.id, budget.idPath + '/', budget.codePath + '/');
+            }
+        }
+
+    }
+
     async getBudgets(filter: { limit?: number, offset?: number, filter?: any }) {
         const baseQuery = this.knex
             .select('*')
             .from('Budget')
-            .orderBy('id', 'desc');
-        if (filter.limit !== undefined && filter.offset !== undefined) {
-            return baseQuery.limit(filter.limit).offset(filter.offset);
-        } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id);
-        } else if (filter.filter?.parentId !== undefined) {
-            return baseQuery.where('parentId', filter.filter.parentId);
-        } else if (filter.filter?.name !== undefined) {
-            return baseQuery.where('name', filter.filter.name);
-        } else if (filter.filter?.code !== undefined) {
-            return baseQuery.where('code', filter.filter.code);
-        } else if (filter.filter?.start !== undefined) {
-            return baseQuery.where('start', filter.filter.start);
-        } else if (filter.filter?.end !== undefined) {
-            return baseQuery.where('end', filter.filter.end);
+            .orderBy('id', 'asc');
+
+        if (filter.limit || filter.offset) {
+            return await baseQuery.limit(filter.limit as number).offset(filter.offset as number);
         } else {
-            return baseQuery;
-        };
+            let start = filter.filter?.start;
+            let end = filter.filter?.end;
+
+            if (start && end) {
+                baseQuery.where(b => b.whereNull('start').orWhere('start', '<', end))
+                baseQuery.andWhere(b => b.whereNull('end').orWhere('end', '>', start))
+            }
+            let idOrCode = {
+                id: filter.filter?.id,
+                code: filter.filter?.code
+            }
+            let parentId = filter.filter?.parentId || null;
+            let maxDepth = filter.filter?.maxDepth || Number.MAX_SAFE_INTEGER;
+
+            let result = await baseQuery;
+            this.addBudgetPaths(result, null, '', '');
+            return this.processBudgets(result, maxDepth, parentId, idOrCode);
+        }
+
     }
 
     async getBudgetCaps(budgetId: number | string) {
@@ -81,15 +136,21 @@ export class BudgetModel {
         return budget
     }
 
-    // update budget
-    /* check for loops
-        1 / 10 / 15
-        update budget 10: set parent = 15
-        budget 10 > new parent, 15 :
-        - does it exist? => yes, OK
-        - does it NOT have budget 10 in its id path? 
-        => NO, ERROR: can't create loop
-    */
+    async updateBudget(updatedFields: Partial<Budget>) {
+        const { parentId, id } = updatedFields;
+        if (parentId) {
+            const budgets = await this.getBudgets({})
+            const budget = budgets.find((b: Budget) => b.id == id);
+            const idPath = budget.idPath.split('/');
+            if (idPath.includes(parentId)) {
+                throw new Error(`Can't change parentId to ${parentId} because it would create a circular dependency`);
+            }
+        }
+        delete updatedFields.id;
+        const [result] = await this.knex('Budget').where('id', id).update(updatedFields).returning('*');
+        return result;
+    }
+
 
     // add a budget cap
     async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
