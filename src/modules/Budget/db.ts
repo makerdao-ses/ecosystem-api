@@ -93,22 +93,20 @@ export class BudgetModel {
             .where('budgetId', budgetId);
     };
 
-    async getExpenseCategories(id: number | string) {
-        return this.knex
-            .select('*')
-            .from('ExpenseCategory')
-            .where('id', id);
-    };
-
-
-    async getExpenseCategory(id: number, name: string, headcountExpense: boolean) {
-        return this.knex
+    async getExpenseCategory(id: number, name?: string, headcountExpense?: boolean) {
+        const baseQuery = this.knex
             .select('*')
             .from('ExpenseCategory')
             .where('id', id)
-            .orWhere('name', name)
-            .orWhere('headcountExpense', headcountExpense)
             .returning('*');
+        if (name) {
+            baseQuery.orWhere('name', name);
+        }
+        if (headcountExpense) {
+            baseQuery.orWhere('headcountExpense', headcountExpense);
+        }
+        return baseQuery;
+
     };
 
     // create budget
@@ -151,6 +149,21 @@ export class BudgetModel {
         return result;
     }
 
+    // delete budget only if no foreign keys exist 
+    async deleteBudget(id: number | string) {
+        const [{ name }] = await this.knex('Budget').where('id', id).select('name');
+        // check if there's no child budgets
+        const [childBudgetCount] = await this.knex('Budget').where('parentId', id).count('parentId');
+        // check if any budget caps exist with this budget
+        const [budgetCapCount] = await this.knex('BudgetCap').where('budgetId', id).count('budgetId');
+        if (Number(budgetCapCount.count) > 0 || Number(childBudgetCount.count) > 0) {
+            throw new Error(`Cannot delete budget ${name} with ID ${id} because it has budget caps or child budgets`);
+        } else {
+            return this.knex('Budget')
+                .where('id', id)
+                .del();
+        }
+    }
 
     // add a budget cap
     async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
@@ -180,6 +193,7 @@ export class BudgetModel {
     async deleteBudgetCap(id: number | string) {
         return this.knex('BudgetCap')
             .where('id', id)
+            .returning('*')
             .del();
     };
 
