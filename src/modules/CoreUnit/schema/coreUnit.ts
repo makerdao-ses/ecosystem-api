@@ -22,7 +22,11 @@ export const typeDefs = gql`
         "A shortened version of the Core Unit code"
         shortCode: String
         "Link to the Legacy GitHub repository containing historical records of the Core Unit Budget Statement reports"
-        legacyBudgetStatementUrl: String       
+        legacyBudgetStatementUrl: String    
+        "The ID of the budget that is assigned to this Core Unit"
+        budgetId: ID
+        "ResouceType of the Core Unit"
+        type: ResourceType
         "Information on the Users that are this Core Units' auditors"
         auditors: [User] 
         "Access details on the social media channels of a Core Unit"
@@ -33,6 +37,13 @@ export const typeDefs = gql`
         cuGithubContribution: [CuGithubContribution]
         "Object containing data relating to updates provided by the Core Unit"
         cuUpdates: [CuUpdate]
+    }
+
+    enum ResourceType {
+        System
+        CoreUnit
+        Delegates
+        EcosystemActor
     }
 
     "Possible values for Core Unit categories - A Core Unit can be assigned to more than one category"
@@ -99,6 +110,8 @@ export const typeDefs = gql`
         name: String
         "Use to filter on the short code of a Core Unit e.g. 'SES'"
         shortCode: String
+        "ResourceType of the Core Unit"
+        type: ResourceType
     }
 `;
 

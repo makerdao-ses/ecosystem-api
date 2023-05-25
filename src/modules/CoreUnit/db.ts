@@ -14,6 +14,7 @@ export interface CoreUnit {
     contributorCommitment: object
     cuGithubContribution: object
     cuUpdates: object
+    type: String
 }
 
 export interface CuUpdate {
@@ -97,6 +98,7 @@ export interface CoreUnitFilter {
     code?: string,
     name?: string,
     shortCode?: string
+    type?: string
 }
 
 export interface SocialMediaChannelsFilter {
@@ -176,18 +178,19 @@ export class CoreUnitModel {
             .from('CoreUnit')
             .orderBy('id');
         if (filter.limit !== undefined && filter.offset !== undefined) {
-            return baseQuery.limit(filter.limit).offset(filter.offset);
+            return baseQuery.limit(filter.limit).offset(filter.offset).where('type', 'CoreUnit');
         } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id)
+            return baseQuery.where('id', filter.filter.id).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.code !== undefined) {
-            return baseQuery.where('code', filter.filter.code)
+            return baseQuery.where('code', filter.filter.code).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.name !== undefined) {
-            return baseQuery.where('name', filter.filter.name)
+            return baseQuery.where('name', filter.filter.name).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.shortCode !== undefined) {
-            return baseQuery.where('shortCode', filter.filter.shortCode)
-        }
-        else {
-            return baseQuery;
+            return baseQuery.where('shortCode', filter.filter.shortCode).andWhere('type', 'CoreUnit');
+        } else if (filter.filter?.type !== undefined) {
+            return baseQuery.where('type', filter.filter.type)
+        } else {
+            return baseQuery.where('type', 'CoreUnit');
         }
     };
 
