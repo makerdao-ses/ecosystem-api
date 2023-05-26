@@ -180,7 +180,7 @@ export class CoreUnitModel {
         if (filter.limit !== undefined && filter.offset !== undefined) {
             return baseQuery.limit(filter.limit).offset(filter.offset).where('type', 'CoreUnit');
         } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id).andWhere('type', 'CoreUnit');
+            return baseQuery.where('id', filter.filter.id)
         } else if (filter.filter?.code !== undefined) {
             return baseQuery.where('code', filter.filter.code).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.name !== undefined) {
