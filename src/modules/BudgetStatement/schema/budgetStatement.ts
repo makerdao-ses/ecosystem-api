@@ -124,6 +124,8 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        budgetId: ID
+        currency: String
     }
 
     enum CanonicalBudgetCategory {
@@ -311,6 +313,7 @@ export const typeDefs = [gql`
         payment: Float
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input LineItemsBatchDeleteInput {
