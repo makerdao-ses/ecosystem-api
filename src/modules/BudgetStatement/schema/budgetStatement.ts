@@ -399,11 +399,8 @@ export const resolvers = {
     CoreUnit: {
         budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            let ownerType = 'CoreUnit';
-            if (parent.code === 'DEL') {
-                ownerType = 'Delegates'
-            }
-            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType } });
+            const [output] = await dataSources.db.knex('CoreUnit').where('id', id).select('type');
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType: output.type } });
             return result;
         },
     },
