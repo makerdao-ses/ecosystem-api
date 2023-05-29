@@ -158,7 +158,7 @@ export const resolvers = {
         },
         auditors: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers('CoreUnitAuditor', 'CoreUnit', id);
+            const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers(parent.type + 'Auditor', parent.type, id);
             return resourceUsers
         }
     }

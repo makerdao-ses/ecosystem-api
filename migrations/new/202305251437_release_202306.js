@@ -6,7 +6,7 @@ export async function up(knex) {
     // Adding Roles
     const roles = await knex('Role').insert([
         { roleName: 'EcosystemActorAdmin' },
-        { roleName: 'EcosystemActorAuditor' }
+        { roleName: 'EcosystemActorAuditor', system: true }
     ]).returning('*');
 
     // Adding RolePermissions
