@@ -24,6 +24,25 @@ export class BudgetStatementAuthModel {
         await this.ctModel.knex.destroy();
     }
 
+    getRoleName(ownerType: string) {
+
+        switch (ownerType) {
+            case 'CoreUnit': {
+                return 'CoreUnitAuditor'
+            }
+            case 'Delegates': {
+                return 'DelegatesAuditor'
+            }
+            case 'EcosystemActor': {
+                return 'EcosystemActorAuditor'
+            }
+            default: {
+                return 'CoreUnitAuditor'
+            }
+        }
+
+    }
+
     async budgetStatementCommentCreate(input: any, user: any) {
         try {
             if (!user) {
@@ -42,7 +61,7 @@ export class BudgetStatementAuthModel {
                 const canUpdate = await this.authModel.canUpdateCoreUnit(user.id, ownerTypeResult.ownerType, budgetStatement.ownerId);
                 const canAudit = await this.authModel.canAudit(user.id, ownerTypeResult.ownerType);
                 const cuAuditors = await this.authModel.getSystemRoleMembers(
-                    ownerTypeResult.ownerType === 'CoreUnit' ? 'CoreUnitAuditor' : 'DelegatesAuditor',
+                    this.getRoleName(ownerTypeResult.ownerType),
                     ownerTypeResult.ownerType,
                     budgetStatement.ownerId
                 );
