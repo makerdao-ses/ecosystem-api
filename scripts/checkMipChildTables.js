@@ -19,6 +19,7 @@ const getData = async () => {
     //Pass CU MIP table data to the functions
     await checkChildTables(data);
     await checkMipReplacesMip39(data);
+    await obsoleteMip40();
     
     process.exit(0);
 
@@ -97,7 +98,7 @@ const checkMipReplacesMip39 = async (data) => {
 
         if (mipCode.includes('MIP39c3') && status == 'Accepted') {
 
-            //use CU ID of offboarded CU to find old MIP
+            //Use CU ID of offboarded CU to find old MIP
             var result = await db.raw(`SELECT * FROM public."CuMip" WHERE "cuId" = ` + cuId + ` AND "mipCode" LIKE '%MIP39c2%'`);
             var oldMipId = result["rows"][0]["id"];
             
@@ -129,6 +130,19 @@ const checkMipReplacesMip39 = async (data) => {
                 WHERE "newMip" = `+newMipId+` AND "replacedMip" = `+oldMipId+`)`);
         }
     }
+};
+
+
+const obsoleteMip40 = async () => {
+
+    const result = await db.schema.raw(`SELECT cumip."mipCode", cumip."mipTitle", cumip."mipStatus", cumip."id", m4bp."budgetPeriodStart", m4bp."budgetPeriodEnd"
+    FROM public. "CuMip" as cumip
+    LEFT JOIN "Mip40" as m4 on m4. "cuMipId" = cumip.id
+    LEFT JOIN "Mip40Wallet" as m4w on m4w. "mip40Id" = m4.id
+    LEFT JOIN "Mip40BudgetPeriod" as m4bp on m4.id = m4bp."mip40Id"
+    WHERE m4bp."budgetPeriodEnd" < CURRENT_DATE AND cumip."mipStatus" = 'Accepted'`);
+
+    return console.table(result.rows);
 };
 
 getData();

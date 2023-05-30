@@ -22,9 +22,7 @@ const createSnapshotAccount = async (snapshotReportId, account, knex) => {
           }
         }
 
-    return {
-        accountData
-    };
+    return accountData;
 };
 
 // Check for existing SnapshotAccount entry

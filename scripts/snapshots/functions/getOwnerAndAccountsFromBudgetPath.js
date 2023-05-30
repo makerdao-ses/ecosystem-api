@@ -35,21 +35,21 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
         throw new Error(`Expected owner type as second budget path segment but got "${segments[1]}"`);
     }
 
-    let ownerId = await getOwnerId(ownerType, segments[2], knex);
+    const idSegment = segments[2]||"";
+    let ownerId = await getOwnerId(ownerType, idSegment, knex);
     console.log(segments);
     let selectedAccounts = [];
     for (let i = 0; i < accounts.length; i++){
         if (
             accounts[i]['budget path 1'].toLowerCase() === 'makerdao' && 
             accounts[i]['budget path 2'].toLowerCase() === segments[1].toLowerCase() &&
-            accounts[i]['budget path 3'].toLowerCase() === segments[2].toLowerCase()
+            accounts[i]['budget path 3'].toLowerCase() === idSegment.toLowerCase()
         ){
             selectedAccounts.push(
                 {
                     type:accounts[i].Type,
                     label: accounts[i].Name,
                     address: accounts[i].Address,
-                    group: accounts[i].group
                 }
             );
         }

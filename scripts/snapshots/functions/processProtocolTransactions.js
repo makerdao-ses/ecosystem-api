@@ -18,6 +18,25 @@
       console.log(`Creating protocol account for snapshot report ${snapshotReportId} with ${protocolTransactions.length} transactions`);
 
       let accountIdProtocol;
+      const protocolAccount = '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb';
+        const [existingAccountP] = await snapshotProtocolEntryCheck(protocolAccount, snapshotReportId, knex);
+
+      if (existingAccountP) {
+        accountIdProtocol = existingAccountP.id;
+    } else {
+        if (snapshotReportId) {
+            let insertedAccountProtocol = await knex('SnapshotAccount')
+                .insert({
+                    snapshotId: snapshotReportId,
+                    accountType: 'singular',
+                    accountAddress: protocolAccount,
+                    accountLabel: 'Maker Protocol Wallet'
+                })
+                .returning('id');
+            accountIdProtocol = insertedAccountProtocol[0].id;
+        }
+    }
+
 
       for (let i = 0; i < protocolTransactions.length; i++) {
 
@@ -25,28 +44,8 @@
 
           const counterParty = txData.flow === 'outflow' ? txData.sender : txData.receiver;
           const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
-          const protocolAccount = '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb';
-
-          const [existingAccountP] = await snapshotProtocolEntryCheck(protocolAccount, snapshotReportId, knex);
 
           const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-
-          if (existingAccountP) {
-              accountIdProtocol = existingAccountP.id;
-          } else {
-              if (snapshotReportId) {
-                  let insertedAccountProtocol = await knex('SnapshotAccount')
-                      .insert({
-                          snapshotId: snapshotReportId,
-                          accountType: 'singular',
-                          accountAddress: protocolAccount,
-                          accountLabel: 'Maker Protocol Wallet'
-                      })
-                      .returning('id');
-                  accountIdProtocol = insertedAccountProtocol[0].id;
-              }
-          }
-
 
           if (accountIdProtocol) {
               // Check if the transaction already exists for the protocol counterParty

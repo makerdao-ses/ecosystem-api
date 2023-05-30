@@ -8,10 +8,10 @@ import processTransactions from './functions/processTransactions.js';
 import processProtocolTransactions from './functions/processProtocolTransactions.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
 
-let budgetPath = process.argv[2];
+let budgetPath = process.argv[2]||null;
 let month = process.argv[3]||null;
 
-console.log(`Syncing the ${month||"draft"} snapshot report for ${budgetPath}`);
+console.log(`Syncing the ${month||"draft"} snapshot report for ${budgetPath||'all budgets'}`);
 
 let knex = getKnexInstance();
 let apiToken = await getApiToken();
@@ -24,14 +24,19 @@ for(let i = 0; i < owner.accounts.length; i++){
     let transactions = await fetchTransactionData(owner.accounts[i].address, owner.type, owner.id, month, apiToken, knex);
     if (transactions.length > 0){
         let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], knex);
-        owner.accounts[i].accountId = snapshotAccount.accountData.id;
+        owner.accounts[i].accountId = snapshotAccount.id;
         let output = await processTransactions(snapshotAccount, transactions, knex);
+        console.log(output);
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
         owner.accounts[i].addedTransactions = output.addedTransactions;
     }
 }
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
+
+console.log(snapshotReport);
+console.log(owner.accounts);
+console.log(protocolAccountId);
 
 await finalizeReportAccounts(snapshotReport, owner.accounts, protocolAccountId, knex);
 
