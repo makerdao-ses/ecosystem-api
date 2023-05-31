@@ -280,6 +280,7 @@ export const typeDefs = [gql`
         payment: Float
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input LineItemUpdateInput {
@@ -296,6 +297,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        currency: String
     }
 
     input LineItemsBatchAddInput {
@@ -330,6 +332,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input BudgetStatementBatchAddInput {
