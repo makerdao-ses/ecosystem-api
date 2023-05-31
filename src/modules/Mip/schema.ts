@@ -272,6 +272,11 @@ export const typeDefs = [gql`
         "Access details on MIPs 39/40/41 of a Core Unit"
         cuMip: [CuMip]
     }
+
+    extend type Team {
+        "Access details on MIPs 39/40/41 of a Core Unit"
+        cuMip: [CuMip]
+    }
 `];
 
 export const resolvers = {
@@ -303,6 +308,13 @@ export const resolvers = {
         }
     },
     CoreUnit: {
+        cuMip: async (parent: any, __: any, { dataSources }: any) => {
+            const { id } = parent;
+            const result = await dataSources.db.Mip.getMips({ cuId: id });
+            return result;
+        },
+    },
+    Team: {
         cuMip: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const result = await dataSources.db.Mip.getMips({ cuId: id });

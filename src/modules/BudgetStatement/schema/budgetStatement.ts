@@ -231,6 +231,10 @@ export const typeDefs = [gql`
         "Access details on the budget statements of a Core Unit"
         budgetStatements: [BudgetStatement]
     }
+    extend type Team {
+        "Access details on the budget statements of a Team"
+        budgetStatements: [BudgetStatement]
+    }
 
     type Mutation {
         budgetStatementsBatchAdd(input: [BudgetStatementBatchAddInput]): [BudgetStatement]
@@ -403,6 +407,14 @@ export const resolvers = {
         // }
     },
     CoreUnit: {
+        budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
+            const { id } = parent;
+            const [output] = await dataSources.db.knex('CoreUnit').where('id', id).select('type');
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType: output.type } });
+            return result;
+        },
+    },
+    Team: {
         budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
             const [output] = await dataSources.db.knex('CoreUnit').where('id', id).select('type');

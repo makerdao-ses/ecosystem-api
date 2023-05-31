@@ -194,6 +194,29 @@ export class CoreUnitModel {
         }
     };
 
+    async getTeams(filter: { limit?: number, offset?: number, filter?: CoreUnitFilter }): Promise<CoreUnit[]> {
+        const baseQuery = this.knex
+            .select('')
+            .from('CoreUnit')
+            .orderBy('id');
+        if (filter.limit !== undefined && filter.offset !== undefined) {
+            baseQuery.limit(filter.limit).offset(filter.offset)
+        } else if (filter.filter?.id !== undefined) {
+            baseQuery.where('id', filter.filter.id)
+        } else if (filter.filter?.code !== undefined) {
+            baseQuery.where('code', filter.filter.code)
+        } else if (filter.filter?.name !== undefined) {
+            baseQuery.where('name', filter.filter.name)
+        } else if (filter.filter?.shortCode !== undefined) {
+            baseQuery.where('shortCode', filter.filter.shortCode)
+        }
+
+        if (filter.filter?.type !== undefined) {
+            baseQuery.where('type', filter.filter.type)
+        }
+        return baseQuery;
+    };
+
     async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
         const baseQuery = this.knex
             .select('*')

@@ -20,11 +20,17 @@ import {
     resolvers as CuGithubContributionResolvers
 } from './schema/cuGithubContribution.js';
 
+import {
+    typeDefs as Team,
+    resolvers as TeamResolvers
+} from './schema/teams.js';
+
 const typeDefs = [
     CoreUnit,
     SocialMediaChannels,
     ContributorCommitment,
     CuGithubContribution,
+    Team
 ];
 
 const resolvers = _.merge(
@@ -32,6 +38,7 @@ const resolvers = _.merge(
     SocialMediaChannelsResolvers,
     ContributorCommitmentResolvers,
     CuGithubContributionResolvers,
+    TeamResolvers
 );
 
 export { typeDefs, resolvers };
