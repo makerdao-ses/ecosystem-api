@@ -23,15 +23,21 @@ export class SnapshotModel {
         if (filter.limit !== undefined && filter.offset !== undefined) {
             return baseQuery.limit(filter.limit).offset(filter.offset);
         } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id);
+            return baseQuery.where('id', filter.filter.id).andWhere('ownerType', filter.filter.ownerType);
         } else if (filter.filter?.start !== undefined) {
-            return baseQuery.where('start', filter.filter.start);
+            return baseQuery.where('start', filter.filter.start).andWhere('ownerType', filter.filter.ownerType);;
         } else if (filter.filter?.end !== undefined) {
-            return baseQuery.where('end', filter.filter.end);
-        } else if (filter.filter?.ownerType !== undefined) {
+            return baseQuery.where('end', filter.filter.end).andWhere('ownerType', filter.filter.ownerType);;
+        } else if (
+            filter.filter?.ownerType !== undefined &&
+            filter.filter?.id == undefined &&
+            filter.filter?.start == undefined &&
+            filter.filter?.end == undefined &&
+            filter.filter?.ownerId == undefined
+        ) {
             return baseQuery.where('ownerType', filter.filter.ownerType);
         } else if (filter.filter?.ownerId !== undefined) {
-            return baseQuery.where('ownerId', filter.filter.ownerId);
+            return baseQuery.where('ownerId', filter.filter.ownerId).andWhere('ownerType', filter.filter.ownerType);;
         } else {
             return baseQuery;
         };

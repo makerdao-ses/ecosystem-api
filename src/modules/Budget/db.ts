@@ -1,5 +1,21 @@
 import { Knex } from "knex";
 
+interface Budget {
+    id: string | number;
+    parentId: string | number | null;
+    name: string;
+    code: string | null;
+    start: string | null;
+    end: string | null;
+    idPath?: string;
+    codePath?: string;
+}
+
+interface IdOrCode {
+    id?: number;
+    code?: string;
+}
+
 export class BudgetModel {
     knex: Knex;
 
@@ -7,28 +23,67 @@ export class BudgetModel {
         this.knex = knex;
     };
 
+
+    processBudgets(budgets: Budget[], depth: number, parentId: number | string | null = null, idOrCode: IdOrCode = {}) {
+        const result = [] as any;
+
+        if (depth === 0) {
+            return result;
+        }
+
+        for (const budget of budgets) {
+            if ((idOrCode.id && budget.id == idOrCode.id) || (idOrCode.code && budget.code == idOrCode.code)) {
+                result.push(budget);
+                result.push(... this.processBudgets(budgets, depth - 1, budget.id));
+            }
+            else if (budget.parentId == parentId && idOrCode.id === undefined && idOrCode.code === undefined) {
+                result.push(budget);
+                result.push(... this.processBudgets(budgets, depth - 1, budget.id));
+            }
+        }
+
+        return result;
+    }
+
+    addBudgetPaths(budgets: Budget[], parentId: number | string | null, idPath: string, codePath: string) {
+        for (const budget of budgets) {
+            if (budget.parentId == parentId) {
+                budget.idPath = idPath + budget.id;
+                budget.codePath = codePath + (budget.code || budget.id);
+                this.addBudgetPaths(budgets, budget.id, budget.idPath + '/', budget.codePath + '/');
+            }
+        }
+
+    }
+
     async getBudgets(filter: { limit?: number, offset?: number, filter?: any }) {
         const baseQuery = this.knex
             .select('*')
             .from('Budget')
-            .orderBy('id', 'desc');
-        if (filter.limit !== undefined && filter.offset !== undefined) {
-            return baseQuery.limit(filter.limit).offset(filter.offset);
-        } else if (filter.filter?.id !== undefined) {
-            return baseQuery.where('id', filter.filter.id);
-        } else if (filter.filter?.parentId !== undefined) {
-            return baseQuery.where('parentId', filter.filter.parentId);
-        } else if (filter.filter?.name !== undefined) {
-            return baseQuery.where('name', filter.filter.name);
-        } else if (filter.filter?.code !== undefined) {
-            return baseQuery.where('code', filter.filter.code);
-        } else if (filter.filter?.start !== undefined) {
-            return baseQuery.where('start', filter.filter.start);
-        } else if (filter.filter?.end !== undefined) {
-            return baseQuery.where('end', filter.filter.end);
+            .orderBy('id', 'asc');
+
+        if (filter.limit || filter.offset) {
+            return await baseQuery.limit(filter.limit as number).offset(filter.offset as number);
         } else {
-            return baseQuery;
-        };
+            let start = filter.filter?.start;
+            let end = filter.filter?.end;
+
+            if (start && end) {
+                baseQuery.where(b => b.whereNull('start').orWhere('start', '<', end))
+                baseQuery.andWhere(b => b.whereNull('end').orWhere('end', '>', start))
+            }
+            let idOrCode = {
+                id: filter.filter?.id,
+                code: filter.filter?.code
+            }
+            let parentId = filter.filter?.parentId || null;
+            let maxDepth = filter.filter?.maxDepth || Number.MAX_SAFE_INTEGER;
+
+            let result = await baseQuery;
+            this.addBudgetPaths(result, null, '', '');
+            return this.processBudgets(result, maxDepth, parentId, idOrCode);
+        }
+
     }
 
     async getBudgetCaps(budgetId: number | string) {
@@ -38,11 +93,20 @@ export class BudgetModel {
             .where('budgetId', budgetId);
     };
 
-    async getExpenseCategories(id: number | string) {
-        return this.knex
+    async getExpenseCategory(id: number, name?: string, headcountExpense?: boolean) {
+        const baseQuery = this.knex
             .select('*')
             .from('ExpenseCategory')
-            .where('id', id);
+            .where('id', id)
+            .returning('*');
+        if (name) {
+            baseQuery.orWhere('name', name);
+        }
+        if (headcountExpense) {
+            baseQuery.orWhere('headcountExpense', headcountExpense);
+        }
+        return baseQuery;
+
     };
 
     // create budget
@@ -68,6 +132,37 @@ export class BudgetModel {
         const { id } = budget[0];
         await this.addBudgetCap(id, expenseCategoryId, amount, currency);
         return budget
+    }
+
+    async updateBudget(updatedFields: Partial<Budget>) {
+        const { parentId, id } = updatedFields;
+        if (parentId) {
+            const budgets = await this.getBudgets({})
+            const budget = budgets.find((b: Budget) => b.id == id);
+            const idPath = budget.idPath.split('/');
+            if (idPath.includes(parentId)) {
+                throw new Error(`Can't change parentId to ${parentId} because it would create a circular dependency`);
+            }
+        }
+        delete updatedFields.id;
+        const [result] = await this.knex('Budget').where('id', id).update(updatedFields).returning('*');
+        return result;
+    }
+
+    // delete budget only if no foreign keys exist 
+    async deleteBudget(id: number | string) {
+        const [{ name }] = await this.knex('Budget').where('id', id).select('name');
+        // check if there's no child budgets
+        const [childBudgetCount] = await this.knex('Budget').where('parentId', id).count('parentId');
+        // check if any budget caps exist with this budget
+        const [budgetCapCount] = await this.knex('BudgetCap').where('budgetId', id).count('budgetId');
+        if (Number(budgetCapCount.count) > 0 || Number(childBudgetCount.count) > 0) {
+            throw new Error(`Cannot delete budget ${name} with ID ${id} because it has budget caps or child budgets`);
+        } else {
+            return this.knex('Budget')
+                .where('id', id)
+                .del();
+        }
     }
 
     // add a budget cap
@@ -98,20 +193,29 @@ export class BudgetModel {
     async deleteBudgetCap(id: number | string) {
         return this.knex('BudgetCap')
             .where('id', id)
+            .returning('*')
             .del();
     };
 
     // delete expense category (if no line items and caps exist)
     async deleteExpenseCategory(id: number | string) {
+        const [{ name }] = await this.knex('ExpenseCategory').where('id', id).select('name');
+
         // check if any line items exist wtih this expense category
-
-
         // check if budget caps exist with this expense category
+        const [lineItemCount] = await this.knex('BudgetStatementLineItem').where('canonicalBudgetCategory', name).count('canonicalBudgetCategory');
+        const [budgetCapLineItemCount] = await this.knex('Mip40BudgetLineItem').where('canonicalBudgetCategory', name).count('canonicalBudgetCategory');
+        console.log(lineItemCount.count, budgetCapLineItemCount.count);
+
+        if (Number(lineItemCount.count) > 0 && Number(budgetCapLineItemCount.count) > 0) {
+            throw new Error(`Cannot delete expense category ${name} with ID ${id} because it has line items`);
+        } else {
+            return this.knex('ExpenseCategory')
+                .where('id', id)
+                .del();
+        }
 
 
-        // return this.knex('ExpenseCategory')
-        //     .where('id', id)
-        //     .del();
     }
 }
 

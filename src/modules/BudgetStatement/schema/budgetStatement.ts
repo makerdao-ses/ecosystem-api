@@ -124,6 +124,8 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        budgetId: ID
+        currency: String
     }
 
     enum CanonicalBudgetCategory {
@@ -181,6 +183,7 @@ export const typeDefs = [gql`
         Delegates
         SpecialPurposeFund
         Project
+        EcosystemActor
     }
 
     input BudgetStatementWalletFilter {
@@ -226,6 +229,10 @@ export const typeDefs = [gql`
 
     extend type CoreUnit {
         "Access details on the budget statements of a Core Unit"
+        budgetStatements: [BudgetStatement]
+    }
+    extend type Team {
+        "Access details on the budget statements of a Team"
         budgetStatements: [BudgetStatement]
     }
 
@@ -277,6 +284,7 @@ export const typeDefs = [gql`
         payment: Float
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input LineItemUpdateInput {
@@ -293,6 +301,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         budgetCap: Float
         payment: Float
+        currency: String
     }
 
     input LineItemsBatchAddInput {
@@ -310,6 +319,7 @@ export const typeDefs = [gql`
         payment: Float
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input LineItemsBatchDeleteInput {
@@ -326,6 +336,7 @@ export const typeDefs = [gql`
         headcountExpense: Boolean
         cuId: ID
         ownerType: String
+        currency: String
     }
 
     input BudgetStatementBatchAddInput {
@@ -398,11 +409,16 @@ export const resolvers = {
     CoreUnit: {
         budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
             const { id } = parent;
-            let ownerType = 'CoreUnit';
-            if (parent.code === 'DEL') {
-                ownerType = 'Delegates'
-            }
-            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType } });
+            const [output] = await dataSources.db.knex('CoreUnit').where('id', id).select('type');
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType: output.type } });
+            return result;
+        },
+    },
+    Team: {
+        budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
+            const { id } = parent;
+            const [output] = await dataSources.db.knex('CoreUnit').where('id', id).select('type');
+            const result = await dataSources.db.BudgetStatement.getBudgetStatements({ filter: { ownerId: id, ownerType: output.type } });
             return result;
         },
     },

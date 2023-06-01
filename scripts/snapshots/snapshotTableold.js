@@ -7,27 +7,52 @@ const db = knex({
   connection: process.env.PG_CONNECTION_STRING,
 });
 
+const startTimestamp = (month) => {
+  const date = new Date(month);
+  date.setUTCDate(15);
+  date.setUTCMonth(date.getUTCMonth() + 1); // add 1 to get the next month
+  date.setUTCHours(12, 0, 0, 0);
+  return date.toISOString();
+};
+
+const endTimestamp = (month) => {
+  const date = new Date(month);
+  date.setUTCDate(15);
+  date.setUTCMonth(date.getUTCMonth() + 2);
+  date.setUTCHours(12, 0, 0, 0);
+  return date.toISOString();
+}
+
 const fillSnapshotTable = async () => {
+
+  
+  const now = new Date();
+  now.setUTCHours(12, 0, 0, 0);
+  const newestMonth = now.toISOString();
+  const oldestMonth = '2021-01-01T12:00:00.000Z';
+  
 
   const ownerTypesAndIds = await db('BudgetStatement')
     .distinct('ownerType', 'ownerId')
     .select();
 
-    console.log(ownerTypesAndIds);
+  console.log(oldestMonth);
+  console.log(newestMonth);
 
   let sCount = 0;
 
   for (const { ownerType, ownerId } of ownerTypesAndIds) {
+    for (let d = new Date(oldestMonth); d <= new Date(newestMonth); d.setUTCMonth(d.getUTCMonth() + 1)) {
       
-      const start = '1999-01-01 12:00:00+00';
-      const end = '2099-01-01 12:00:00+00';
+      const start = startTimestamp(d.toISOString());
+      const end = endTimestamp(d.toISOString());
   
       const existingSnapshot = await db('Snapshot')
         .select('id')
         .where({
           start,
           end,
-          ownerType: ownerType+'Draft',
+          ownerType,
           ownerId,
         })
         .first();
@@ -40,26 +65,27 @@ const fillSnapshotTable = async () => {
         .insert({
           start,
           end,
-          ownerType: ownerType+'Draft',
+          ownerType,
           ownerId,
         });
   
       sCount++;
     }
-    console.log(`${sCount} rows inserted into Snapshot table`);
+  }
+  
 
+  console.log(`${sCount} rows inserted into Snapshot table`);
 };
 
 
 const fillSnapshotAccountTable = async () => {
   const rows = await db.raw(`
-  SELECT cu.code, bsw.address, bs."ownerType", bs."ownerId"
-  FROM "CoreUnit" AS cu
-  LEFT JOIN "BudgetStatement" AS bs ON bs."ownerId" = cu.id
-  LEFT JOIN "BudgetStatementWallet" AS bsw ON bsw."budgetStatementId" = bs.id
-  LEFT JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
-  WHERE bsw.address IS NOT NULL
-  GROUP BY cu.code,  bs."ownerType", bsw.address, bs."ownerId";
+    SELECT DISTINCT ON (cu.code, bs.month, bsw.address) cu.code, bsw.address, bs."ownerType", bs."ownerId", bs.month, bs.id
+    FROM "CoreUnit" as cu
+    LEFT JOIN "BudgetStatement" as bs ON bs."ownerId" = cu.id
+    LEFT JOIN "BudgetStatementWallet" as bsw ON bsw."budgetStatementId" = bs.id
+    LEFT JOIN "BudgetStatementLineItem" as bsli ON bsw.id = bsli."budgetStatementWalletId"
+    WHERE bsw.address NOTNULL
   `);
 
   const snapshots = await db('Snapshot')
@@ -72,7 +98,9 @@ const fillSnapshotAccountTable = async () => {
   for (const snapshot of snapshots) {
     const filteredRows = rows.rows.filter((row) => {
       return (
-        row.ownerType + 'Draft' === snapshot.ownerType &&
+        row.month >= snapshot.start &&
+        row.month <= snapshot.end &&
+        row.ownerType === snapshot.ownerType &&
         row.ownerId === snapshot.ownerId
       );
     });

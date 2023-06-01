@@ -14,6 +14,7 @@ export interface CoreUnit {
     contributorCommitment: object
     cuGithubContribution: object
     cuUpdates: object
+    type: String
 }
 
 export interface CuUpdate {
@@ -97,6 +98,7 @@ export interface CoreUnitFilter {
     code?: string,
     name?: string,
     shortCode?: string
+    type?: string
 }
 
 export interface SocialMediaChannelsFilter {
@@ -176,19 +178,43 @@ export class CoreUnitModel {
             .from('CoreUnit')
             .orderBy('id');
         if (filter.limit !== undefined && filter.offset !== undefined) {
-            return baseQuery.limit(filter.limit).offset(filter.offset);
+            return baseQuery.limit(filter.limit).offset(filter.offset).where('type', 'CoreUnit');
         } else if (filter.filter?.id !== undefined) {
             return baseQuery.where('id', filter.filter.id)
         } else if (filter.filter?.code !== undefined) {
-            return baseQuery.where('code', filter.filter.code)
+            return baseQuery.where('code', filter.filter.code).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.name !== undefined) {
-            return baseQuery.where('name', filter.filter.name)
+            return baseQuery.where('name', filter.filter.name).andWhere('type', 'CoreUnit');
         } else if (filter.filter?.shortCode !== undefined) {
-            return baseQuery.where('shortCode', filter.filter.shortCode)
+            return baseQuery.where('shortCode', filter.filter.shortCode).andWhere('type', 'CoreUnit');
+        } else if (filter.filter?.type !== undefined) {
+            return baseQuery.where('type', filter.filter.type)
+        } else {
+            return baseQuery.where('type', 'CoreUnit');
         }
-        else {
-            return baseQuery;
+    };
+
+    async getTeams(filter: { limit?: number, offset?: number, filter?: CoreUnitFilter }): Promise<CoreUnit[]> {
+        const baseQuery = this.knex
+            .select('')
+            .from('CoreUnit')
+            .orderBy('id');
+        if (filter.limit !== undefined && filter.offset !== undefined) {
+            baseQuery.limit(filter.limit).offset(filter.offset)
+        } else if (filter.filter?.id !== undefined) {
+            baseQuery.where('id', filter.filter.id)
+        } else if (filter.filter?.code !== undefined) {
+            baseQuery.where('code', filter.filter.code)
+        } else if (filter.filter?.name !== undefined) {
+            baseQuery.where('name', filter.filter.name)
+        } else if (filter.filter?.shortCode !== undefined) {
+            baseQuery.where('shortCode', filter.filter.shortCode)
         }
+
+        if (filter.filter?.type !== undefined) {
+            baseQuery.where('type', filter.filter.type)
+        }
+        return baseQuery;
     };
 
     async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
