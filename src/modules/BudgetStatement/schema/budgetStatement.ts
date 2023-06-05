@@ -184,6 +184,7 @@ export const typeDefs = [gql`
         SpecialPurposeFund
         Project
         EcosystemActor
+        AlignedDelegates
     }
 
     input BudgetStatementWalletFilter {
