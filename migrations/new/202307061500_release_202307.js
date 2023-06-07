@@ -107,9 +107,20 @@ export async function up(knex) {
     ];
 
     budgetCategoriesMap.forEach(async (item) => {
-        const idOfCanonicalCategory = await knex('ExpenseCategory').insert({ name: item.canonicalCategory, headcountExpense: item.headCountExpense, order: item.position }).returning('id');
+        const idOfCanonicalCategory = await knex('ExpenseCategory').insert({
+            name: item.canonicalCategory,
+            headcountExpense: item.headCountExpense,
+            order: item.position,
+            legacyCategory: item.canonicalCategory
+        }).returning('id');
         item.budgetCategories.forEach(async (budgetCategory) => {
-            await knex('ExpenseCategory').insert({ name: budgetCategory, headcountExpense: item.headCountExpense, parentId: idOfCanonicalCategory[0].id, order: item.position });
+            await knex('ExpenseCategory').insert({
+                name: budgetCategory,
+                headcountExpense: item.headCountExpense,
+                parentId: idOfCanonicalCategory[0].id,
+                order: item.position,
+                legacyCategory: item.canonicalCategory
+            });
         })
     })
 }
