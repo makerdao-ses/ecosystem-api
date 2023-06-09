@@ -23,9 +23,11 @@ export const typeDefs = [gql`
 
     type ExpenseCategory {
         id: ID
-        name: String
-        headcountExpense: Boolean
+        parentId: ID
         order: Int
+        name: String
+        legacyCategory: CanonicalBudgetCategory
+        headcountExpense: Boolean
     }
 
     input BudgetFilter {
@@ -74,6 +76,7 @@ export const typeDefs = [gql`
 
     extend type Query {
         budgets(limit: Int, offset: Int, filter: BudgetFilter): [Budget]
+        expenseCategories: [ExpenseCategory]
     }
 
     type Mutation {
@@ -91,6 +94,10 @@ export const resolvers = {
         // schema object: (parent, args, context, info) => {}
         budgets: async (_: any, filter: any, { dataSources }: any) => {
             return await dataSources.db.Budget.getBudgets(filter);
+        },
+        expenseCategories: async (_: any, __: any, { dataSources }: any) => {
+            const result = await dataSources.db.Budget.getExpenseCategories();
+            return result.sort((a: any, b: any) => b.headcountExpense - a.headcountExpense);
         }
     },
 

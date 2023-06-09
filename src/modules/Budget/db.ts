@@ -214,8 +214,13 @@ export class BudgetModel {
                 .where('id', id)
                 .del();
         }
+    }
 
-
+    async getExpenseCategories() {
+        return this.knex
+            .select('*')
+            .from('ExpenseCategory')
+            .orderBy('id', 'asc');
     }
 }
 
