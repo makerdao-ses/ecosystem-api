@@ -6,6 +6,7 @@ import fetchTransactionData from './functions/fetchTransactionData.js';
 import createSnapshotAccount from './functions/createSnapshotAccount.js';
 import processTransactions from './functions/processTransactions.js';
 import processProtocolTransactions from './functions/processProtocolTransactions.js';
+import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
 
 let budgetPath = process.argv[2]||null;
@@ -33,11 +34,7 @@ for(let i = 0; i < owner.accounts.length; i++){
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 
-await insertAccountBalance(owner.accounts, , knex);
-
-console.log(snapshotReport);
-console.log(owner.accounts);
-console.log(protocolAccountId);
+await insertAccountBalance(owner.accounts, knex);
 
 await finalizeReportAccounts(snapshotReport, owner.accounts, protocolAccountId, knex);
 

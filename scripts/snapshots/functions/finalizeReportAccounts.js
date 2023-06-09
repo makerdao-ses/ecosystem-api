@@ -49,8 +49,6 @@ const getGroupUpstream = (groupName, allAccounts) => {
         }
     }
 
-    console.log(groupName, upstreamCandidates[index]);
-
     return upstreamCandidates[index];
 };
 
