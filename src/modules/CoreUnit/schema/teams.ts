@@ -37,6 +37,7 @@ export const typeDefs = gql`
         cuGithubContribution: [CuGithubContribution]
         "Object containing data relating to updates provided by the Team"
         updates: [TeamUpdate]
+        scopes: [Scope]
     }
 
     enum ResourceType {
@@ -45,6 +46,12 @@ export const typeDefs = gql`
         Delegates
         EcosystemActor
         AlignedDelegates
+    }
+
+    type Scope {
+        id: ID!
+        code: String
+        name: String
     }
 
     "Possible values for Team categories - A Team can be assigned to more than one category"
@@ -151,6 +158,11 @@ export const resolvers = {
             const { id } = parent;
             const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers(parent.type + 'Auditor', parent.type, id);
             return resourceUsers
+        },
+        scopes: async (parent: any, __: any, { dataSources }: any) => {
+            const { id } = parent;
+            const result = await dataSources.db.CoreUnit.getScopesByTeamId(id);
+            return result;
         }
     }
 };
