@@ -26,13 +26,14 @@ for(let i = 0; i < owner.accounts.length; i++){
         let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], knex);
         owner.accounts[i].accountId = snapshotAccount.id;
         let output = await processTransactions(snapshotAccount, transactions, knex);
-        console.log(output);
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
         owner.accounts[i].addedTransactions = output.addedTransactions;
     }
 }
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
+
+await insertAccountBalance(owner.accounts, , knex);
 
 console.log(snapshotReport);
 console.log(owner.accounts);

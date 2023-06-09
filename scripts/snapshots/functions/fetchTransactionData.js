@@ -2,6 +2,8 @@ import fetch from 'node-fetch';
 
 const fetchTransactionData = async (address, ownerType, ownerId, month, apiToken, knex) => {
 
+    address = address.toLowerCase();
+
     console.log(`Fetching transactions for account ${ownerType} ${ownerId} ${address}, ${month||'draft'}`);
 
     const token = 'DAI';
@@ -53,6 +55,7 @@ const fetchTransactionData = async (address, ownerType, ownerId, month, apiToken
             method: 'GET',
             headers: headers
         });
+        
         jsonData = await response.json(); // assign response to jsonData
 
         if (jsonData.detail === 'Could not validate credentials') {

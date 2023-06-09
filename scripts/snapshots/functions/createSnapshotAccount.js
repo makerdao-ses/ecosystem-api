@@ -1,8 +1,9 @@
 const createSnapshotAccount = async (snapshotReportId, account, knex) => {
     
-    console.log(`Creating snapshot accounts for ${account.address}`);
+  let address = account.address.toLowerCase();  
+  console.log(`Creating snapshot accounts for ${address}`);
 
-    let existingAccount = await checkSnapshotAccount(snapshotReportId, account.address, knex);
+    let existingAccount = await checkSnapshotAccount(snapshotReportId, address, knex);
     let accountData;
 
     if (existingAccount) {
@@ -14,7 +15,7 @@ const createSnapshotAccount = async (snapshotReportId, account, knex) => {
               .insert({
                 snapshotId: snapshotReportId,
                 accountType: 'singular',
-                accountAddress: account.address,
+                accountAddress: address,
                 accountLabel: account.label
               })
               .returning('*');
