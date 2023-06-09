@@ -7,153 +7,147 @@
 
 export async function seed(knex) {
 
-    /*
-        const techOpsCuMipEntry = {
-            cuId: 22,
-            mipCode: 'MIP40c3SP88',
-            mipTitle: 'MIP40c3-SP88: TechOps Core Unit DAI Budget',
-            rfc: '2022-12-02',
-            mipStatus: 'Accepted',
-            forumUrl: 'https://forum.makerdao.com/t/mip40c3-sp88-techops-core-unit-dai-budget/19017',
-            mipUrl: 'https://mips.makerdao.com/mips/details/MIP40c3SP88#sentence-summary',
-            accepted: '2023-03-27',
-            rejected: null
-          };
-          
-          const [techOpsMipId] = await knex('CuMip').insert(techOpsCuMipEntry).returning('id').onConflict().ignore();
-          
-          const techOpsMip40 = {
-            cuMipId: techOpsMipId.id,
-            mip40Spn: 'MIP40c3SP88'
-          };
-          
-          const [techOpsMip40Id] = await knex('Mip40').insert(techOpsMip40).returning('id');
 
-          await knex ('Mip40BudgetPeriod').insert({
-            mip40Id: techOpsMip40Id.id,
-            budgetPeriodStart: '2023-04-01',
-            budgetPeriodEnd: '2024-03-31',
-            ftes: 4.7,});
+    const [techOpsMipId] = await knex('CuMip').where({
+        mipCode: 'MIP40c3SP88'
+    }).update({
+        rfc: '2022-12-02',
+        mipStatus: 'Accepted',
+        accepted: '2023-03-27',
+    }).returning('id');
 
-            const techOpsMipWalletEntry = {
-                    mip40Id: techOpsMip40Id.id,
-                    address: '0x1a3da79ee7db30466ca752de6a75def5e635b2f6',
-                    name: 'TechOps Operational Wallet',
-                    signersRequired: 2,
-                    signersTotal: 2,
-                    clawbackLimit: 1000000000
-            };
-          
-            const [techOpsMipWallet40Id] = await knex('Mip40Wallet').insert(techOpsMipWalletEntry).returning('id'); 
-            
-            await knex ('Mip40BudgetLineItem').insert([
-                {
-                mip40WalletId: techOpsMipWallet40Id.id,
-                budgetCategory: 'Compensation and Benefits',
-                canonicalBudgetCategory: 'CompensationAndBenefits',
-                budgetCap: 70447.5,
-                headcountExpense: true,
-                position: 1
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Compensation and Benefits',
-                    canonicalBudgetCategory: 'SoftwareExpense',
-                    budgetCap: 33333.33,
-                    headcountExpense: false,
-                    position: 11
-                    },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Tools',
-                    canonicalBudgetCategory: 'SoftwareExpense',
-                    budgetCap: 3333.33,
-                    headcountExpense: false,
-                    position: 11
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Gas',
-                    canonicalBudgetCategory: 'GasExpense',
-                    budgetCap: 2500,
-                    headcountExpense: false,
-                    position: 5
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Professional Services',
-                    canonicalBudgetCategory: 'ProfessionalServices',
-                    budgetCap: 3333.33,
-                    headcountExpense: false,
-                    position: 9
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Travel and Accommodation',
-                    canonicalBudgetCategory: 'TravelAndEntertainment',
-                    budgetCap: 0,
-                    headcountExpense: true,
-                    position: 3
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Conferences and Education',
-                    canonicalBudgetCategory: 'TrainingExpense',
-                    budgetCap: 0,
-                    headcountExpense: true,
-                    position: 12
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'R&D',
-                    canonicalBudgetCategory: 'AdminExpense',
-                    budgetCap: 0,
-                    headcountExpense: false,
-                    position: 2
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Hardware',
-                    canonicalBudgetCategory: 'HardwareExpense',
-                    budgetCap: 0,
-                    headcountExpense: false,
-                    position: 7
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Integrations',
-                    canonicalBudgetCategory: 'SoftwareExpense',
-                    budgetCap: 0,
-                    headcountExpense: false,
-                    position: 11
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'VulcanizeDB',
-                    canonicalBudgetCategory: 'SoftwareExpense',
-                    budgetCap: 0,
-                    headcountExpense: false,
-                    position: 11
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Recruiting',
-                    canonicalBudgetCategory: 'ProfessionalServices',
-                    budgetCap: 0,
-                    headcountExpense: false,
-                    position: 9
-                },
-                {
-                    mip40WalletId: techOpsMipWallet40Id.id,
-                    budgetCategory: 'Contingency',
-                    canonicalBudgetCategory: 'ContingencyBuffer',
-                    budgetCap: 1129.5,
-                    headcountExpense: false,
-                    position: 15
-                }]
-                );
-            
-    */
+    const techOpsMip40 = {
+        cuMipId: techOpsMipId.id,
+        mip40Spn: 'MIP40c3SP88'
+    };
+
+    const [techOpsMip40Id] = await knex('Mip40').insert(techOpsMip40).returning('id');
+
+    await knex('Mip40BudgetPeriod').insert({
+        mip40Id: techOpsMip40Id.id,
+        budgetPeriodStart: '2023-04-01',
+        budgetPeriodEnd: '2024-03-31',
+        ftes: 4.7,
+    });
+
+    const techOpsMipWalletEntry = {
+        mip40Id: techOpsMip40Id.id,
+        address: '0x1a3da79ee7db30466ca752de6a75def5e635b2f6',
+        name: 'TechOps Operational Wallet',
+        signersRequired: 2,
+        signersTotal: 2,
+        clawbackLimit: 1000000000
+    };
+
+    const [techOpsMipWallet40Id] = await knex('Mip40Wallet').insert(techOpsMipWalletEntry).returning('id');
+
+    await knex('Mip40BudgetLineItem').insert([{
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Compensation and Benefits',
+            canonicalBudgetCategory: 'CompensationAndBenefits',
+            budgetCap: 70447.5,
+            headcountExpense: true,
+            position: 1
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Compensation and Benefits',
+            canonicalBudgetCategory: 'SoftwareExpense',
+            budgetCap: 33333.33,
+            headcountExpense: false,
+            position: 11
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Tools',
+            canonicalBudgetCategory: 'SoftwareExpense',
+            budgetCap: 3333.33,
+            headcountExpense: false,
+            position: 11
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Gas',
+            canonicalBudgetCategory: 'GasExpense',
+            budgetCap: 2500,
+            headcountExpense: false,
+            position: 5
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Professional Services',
+            canonicalBudgetCategory: 'ProfessionalServices',
+            budgetCap: 3333.33,
+            headcountExpense: false,
+            position: 9
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Travel and Accommodation',
+            canonicalBudgetCategory: 'TravelAndEntertainment',
+            budgetCap: 0,
+            headcountExpense: true,
+            position: 3
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Conferences and Education',
+            canonicalBudgetCategory: 'TrainingExpense',
+            budgetCap: 0,
+            headcountExpense: true,
+            position: 12
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'R&D',
+            canonicalBudgetCategory: 'AdminExpense',
+            budgetCap: 0,
+            headcountExpense: false,
+            position: 2
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Hardware',
+            canonicalBudgetCategory: 'HardwareExpense',
+            budgetCap: 0,
+            headcountExpense: false,
+            position: 7
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Integrations',
+            canonicalBudgetCategory: 'SoftwareExpense',
+            budgetCap: 0,
+            headcountExpense: false,
+            position: 11
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'VulcanizeDB',
+            canonicalBudgetCategory: 'SoftwareExpense',
+            budgetCap: 0,
+            headcountExpense: false,
+            position: 11
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Recruiting',
+            canonicalBudgetCategory: 'ProfessionalServices',
+            budgetCap: 0,
+            headcountExpense: false,
+            position: 9
+        },
+        {
+            mip40WalletId: techOpsMipWallet40Id.id,
+            budgetCategory: 'Contingency',
+            canonicalBudgetCategory: 'ContingencyBuffer',
+            budgetCap: 1129.5,
+            headcountExpense: false,
+            position: 15
+        }
+    ]);
+
+
 
 
     const [govAlphasId] = await knex('CuMip').where({
@@ -330,6 +324,115 @@ export async function seed(knex) {
             position: 15
         }
     ]);
+
+    const [sfId] = await knex('CuMip').where({
+        mipCode: 'MIP40c3SP93'
+    }).update({
+        rfc: '2023-02-08',
+        mipStatus: 'Accepted',
+        accepted: '2023-03-27',
+    }).returning('id');
+
+    const sfMip40 = {
+        cuMipId: sfId.id,
+        mip40Spn: 'MIP40c3SP93'
+    };
+
+    const [sfMip40Id] = await knex('Mip40').insert(sfMip40).returning('id');
+
+    const sfMipWalletEntry = {
+        mip40Id: sfMip40Id.id,
+        address: '0xf737C76D2B358619f7ef696cf3F94548fEcec379',
+        name: 'SF Operational Wallet',
+        signersRequired: 2,
+        signersTotal: 3,
+        clawbackLimit: 1000000000
+    };
+
+    const [sfMip40WalletId] = await knex('Mip40Wallet').insert(sfMipWalletEntry).returning('id');
+
+    await knex('Mip40BudgetPeriod').insert({
+        mip40Id: sfMip40Id.id,
+        budgetPeriodStart: '2023-04-01',
+        budgetPeriodEnd: '2024-03-31',
+        ftes: 7
+    });
+
+
+    await knex('Mip40BudgetLineItem').insert([{
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Compensation',
+            canonicalBudgetCategory: 'CompensationAndBenefits',
+            budgetCap: 130966.67,
+            headcountExpense: true,
+            position: 1
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Grants',
+            canonicalBudgetCategory: 'GovernancePrograms',
+            budgetCap: 10416.67,
+            headcountExpense: false,
+            position: 4
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Travel',
+            canonicalBudgetCategory: 'TravelAndEntertainment',
+            budgetCap: 6250.00,
+            headcountExpense: true,
+            position: 3
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Professional Services',
+            canonicalBudgetCategory: 'ProfessionalServices',
+            budgetCap: 6666.67,
+            headcountExpense: false,
+            position: 9
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Software Costs',
+            canonicalBudgetCategory: 'SoftwareExpense',
+            budgetCap: 2000.00,
+            headcountExpense: false,
+            position: 11
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Hardware',
+            canonicalBudgetCategory: 'HardwareExpense',
+            budgetCap: 583.33,
+            headcountExpense: false,
+            position: 7
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Admin',
+            canonicalBudgetCategory: 'AdminExpense',
+            budgetCap: 100.00,
+            headcountExpense: false,
+            position: 2
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Gas Costs',
+            canonicalBudgetCategory: 'GasExpense',
+            budgetCap: 250.00,
+            headcountExpense: false,
+            position: 5
+        },
+        {
+            mip40WalletId: sfMip40WalletId.id,
+            budgetCategory: 'Contingency',
+            canonicalBudgetCategory: 'ContingencyBuffer',
+            budgetCap: 7861.67,
+            headcountExpense: false,
+            position: 15
+        }
+    ]);
+
 
 
     const [dinId] = await knex('CuMip').where({
