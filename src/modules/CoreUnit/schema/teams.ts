@@ -44,6 +44,7 @@ export const typeDefs = gql`
         CoreUnit
         Delegates
         EcosystemActor
+        AlignedDelegates
     }
 
     "Possible values for Team categories - A Team can be assigned to more than one category"
