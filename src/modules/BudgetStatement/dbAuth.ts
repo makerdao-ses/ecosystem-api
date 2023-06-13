@@ -136,7 +136,7 @@ export class BudgetStatementAuthModel {
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, this.authModel);
-                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, budgetStatement.ownerType)
                     return parsed;
                 }
 
@@ -153,7 +153,7 @@ export class BudgetStatementAuthModel {
 
                     const addedComment = await this.bsModel.addBudgetStatementComment(input.commentAuthorId, input.budgetStatementId, input.comment, input.status);
                     const parsed = await parseCommentOutput(addedComment, this.authModel);
-                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, ownerTypeResult.ownerType)
+                    await createBudgetStatementCommentEvent(this.bsModel, this.cuModel, this.ctModel, parsed[0], budgetStatement.status, budgetStatement.ownerType)
                     return parsed;
                 }
             }
@@ -193,7 +193,8 @@ const createBudgetStatementCommentEvent = async (bsModel: BudgetStatementModel, 
         parsedComment.author.username,
         parsedComment.id,
         oldStatus,
-        parsedComment.status
+        parsedComment.status,
+        ownerType
     )
 }
 

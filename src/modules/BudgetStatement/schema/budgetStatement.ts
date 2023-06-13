@@ -545,7 +545,7 @@ export const resolvers = {
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
-                        dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
+                        dataSources.db.ChangeTracking.coreUnitBudgetStatementCreated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month, bStatement.ownerType)
                         //Adding lineItems
                         console.log(`adding ${input.length} line items to CU ${cuIdFromInput.cuId}`,)
                         const result = await dataSources.db.BudgetStatement.addBatchLineItems(input)
@@ -577,7 +577,7 @@ export const resolvers = {
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
-                        dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
+                        dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month, bStatement.ownerType)
                         //Updating lineItems
                         console.log(`updating line item ${input.id} to CU ${user.cuId}`,)
                         console.log('updating lineItem input', input);
@@ -618,7 +618,7 @@ export const resolvers = {
                         if (bStatement.status === 'Final' || bStatement.status === 'Escalated') {
                             throw new Error(`Cannot update statement with status ${bStatement.status}`)
                         }
-                        dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month)
+                        dataSources.db.ChangeTracking.coreUnitBudgetStatementUpdated(CU.id, CU.code, CU.shortCode, wallet.budgetStatementId, bStatement.month, bStatement.ownerType)
                         //Updating lineItems
                         console.log(`updating line items ${input.length} to CU ${cuIdFromInput.cuId}`,)
                         const result = await dataSources.db.BudgetStatement.batchUpdateLineItems(input)
