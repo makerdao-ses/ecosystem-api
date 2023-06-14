@@ -29,6 +29,7 @@ ORDER BY cu.code, bs.month DESC
 
 const rows = auditorCusQuery.rows;
 
+
 // Create an empty array to hold the formatted results
 const formattedResult = [];
 
@@ -36,17 +37,24 @@ const formattedResult = [];
 rows.forEach(row => {
 
   //Format date string (targetCalculation)
-  const months = [(row.month.getMonth()+1)%12, (row.month.getMonth()+2)%12,(row.month.getMonth()+3)%12];
-  const monthNames = months.map(m => new Date(2022, m, 1).toLocaleString('en-us', { month: 'short' }));
-  const targetCalculation = `${monthNames.join(' + ')} forecast`;
+const currentMonth = row.month.getMonth();
+const months = [(currentMonth + 1) % 12, (currentMonth + 2) % 12, (currentMonth + 3) % 12];
+const monthNames = months.map(m => new Date(row.month.getFullYear(), m, 1).toLocaleString('en-us', { month: 'short' }));
+const targetCalculation = `${monthNames.join(' + ')} forecast`;
+
 
   //Retrieve walletBalanceTimestamo
   const timestamp = new Date(Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12));
   const walletBalanceTimestamp = timestamp.toLocaleString();
 
+  
+  const adjustedDate = new Date(row.month);
+  adjustedDate.setMinutes(row.month.getMinutes() - row.month.getTimezoneOffset());
+
+
   const formattedRow = {
     code: row.code,
-    month: row.month,
+    month: adjustedDate,
     walletName: row.name,
     walletId: row.bswid,
     statementId: row.id,
@@ -59,17 +67,25 @@ rows.forEach(row => {
     targetSourceTitle: null,
     walletBalanceTimestamp: walletBalanceTimestamp
   };
+  
 
   formattedResult.push(formattedRow);
 
 
 });
 
+
+
+
+
 // Push the formattedResult array to the database
 console.log(`Adding ${formattedResult.length} values to the BudgetStatementTransferRequest table...`);
 
 const insertOrUpdate = async (row) => {
-  if (row.transferRequestId !== null) {
+  
+  if (row.transferRequestId) {
+    console.log('updating ' +row.transferRequestId);
+    console.log(row);
     // Update existing row
     await knex("BudgetStatementTransferRequest")
       .where({ id: row.transferRequestId })
@@ -98,7 +114,7 @@ const insertOrUpdate = async (row) => {
 };
 
 // Loop through each row and insert/update the data
-formattedResult.forEach(insertOrUpdate);
+await Promise.all(formattedResult.map(insertOrUpdate));
 }
 
 

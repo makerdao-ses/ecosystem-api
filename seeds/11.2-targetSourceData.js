@@ -1,4 +1,4 @@
-//See file adds data for non-auditor Core Units
+//Seed file adds data for non-auditor Core Units
 
 /**
  * @param { import("knex").Knex } knex
@@ -87,7 +87,7 @@ export async function seed(knex) {
   };
 
   // Loop through each row and insert/update the data
-  formattedResult.forEach(insertOrUpdate);
+  await Promise.all(formattedResult.map(insertOrUpdate));
 
 }
 

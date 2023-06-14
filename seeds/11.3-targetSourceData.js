@@ -3,7 +3,7 @@
  * @returns { Promise<void> } 
  */
 
-//Set delegate budget caps
+//Set source code, url and title
 
 export async function seed(knex) {
   console.log("Adding targetSource data to the BudgetStatementTransferRequest...");
@@ -56,7 +56,7 @@ ORDER BY bstrid;
   };
 
   // Loop through each row and insert/update the data
-  formattedResult.forEach(insert);
+  await Promise.all(formattedResult.map(insert));
  
 
 }
