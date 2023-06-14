@@ -124,7 +124,7 @@ transferData.forEach(row => {
 
                 const walletId = res1.rows[0].id;
                 //Update existing (used to rewrite decimals)
-                /*pool.query(
+                pool.query(
                   `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
                     VALUES (${walletId}, ${requestAmount}, ${walletBalance})
                 )
@@ -137,9 +137,9 @@ transferData.forEach(row => {
                   (err, res) => {
                     countTransfer++;
                     console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
-                  });*/
+                  });
                   //Write new entries
-                  pool.query(
+                  /*pool.query(
                     `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
                       VALUES (${walletId}, ${requestAmount}, ${walletBalance})
                   )
@@ -156,7 +156,7 @@ transferData.forEach(row => {
                     (err, res) => {
                       countTransfer++;
                       console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
-                    });
+                    });*/
               }
             });
         }
