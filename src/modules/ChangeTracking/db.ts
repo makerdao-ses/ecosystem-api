@@ -89,9 +89,9 @@ export class ChangeTrackingModel {
     async coreUnitBudgetStatementCreated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string, ownerType: string) {
         const monthDate = new Date(month);
 
-        let params = JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+        let params = JSON.stringify({ owner: { id: cuId, code: cuCode, shortCode: cuShortCode, type: ownerType }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
         let description = `${ownerType} ${cuShortCode} has published a new expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
-        let eventEvent = 'CU_BUDGET_STATEMENT_CREATED';
+        let eventEvent = 'TEAM_BUDGET_STATEMENT_CREATED';
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
             cuId = budgetStatementId;
@@ -114,9 +114,9 @@ export class ChangeTrackingModel {
     async coreUnitBudgetStatementUpdated(cuId: string, cuCode: string, cuShortCode: string, budgetStatementId: string, month: string, ownerType: string) {
         const monthDate = new Date(month);
 
-        let params = JSON.stringify({ coreUnit: { id: cuId, code: cuCode, shortCode: cuShortCode }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
+        let params = JSON.stringify({ owner: { id: cuId, code: cuCode, shortCode: cuShortCode, type: ownerType }, budgetStatementId, month: monthDate.toISOString().slice(0, 7) });
         let description = `${ownerType} ${cuShortCode} has updated their expense report for ${this.toMonthName(Number(monthDate.toISOString().slice(5, 7)))} ${monthDate.getFullYear()}`
-        let eventEvent = 'CU_BUDGET_STATEMENT_UPDATED';
+        let eventEvent = 'TEAM_BUDGET_STATEMENT_UPDATED';
         if (cuShortCode == 'DEL') {
             ownerType = 'Delegates';
             cuId = budgetStatementId;
@@ -150,22 +150,23 @@ export class ChangeTrackingModel {
         newStatus: string,
         ownerType: string
     ) {
-        let coreUnit;
+        let owner;
         let eventEvent = 'DELEGATES_BUDGET_STATEMENT_COMMENT';
         if (cuId) {
-            coreUnit = {
+            owner = {
                 id: cuId,
                 code: cuCode,
-                shortCode: shortCode
+                shortCode: shortCode,
+                type: ownerType
             }
-            eventEvent = 'CU_BUDGET_STATEMENT_COMMENT'
+            eventEvent = 'TEAM_BUDGET_STATEMENT_COMMENT'
         }
         const event = {
             created_at: new Date().toISOString(),
             event: eventEvent,
             description: description,
             params: JSON.stringify({
-                coreUnit,
+                owner,
                 budgetStatementId: budgetStatementId,
                 month: month.substring(0, month.length - 3),
                 author: {
