@@ -144,16 +144,18 @@ const matchCategories = async (bs, m) => {
         var matchFound = false;
         for (var j = 0; j < m.length; j++) {
             var diff = 0;
+            let bsTotal = parseFloat(bs[i].total).toFixed(2);
+            let mTotal = parseFloat(m[j].total).toFixed(2);
             if (bs[i].address == m[j].address && bs[i].bslimonth <= m[j].end && bs[i].bslimonth >= m[j].start) {
 
-                if (bs[i].total == 0 || bs[i].total == null) {
-                    empty++;
-                    diff = m[j].total;
-                } else if (bs[i].total == m[j].total) {
+                if (bsTotal == mTotal || ((bsTotal == null || bsTotal == 0) && (mTotal == null || mTotal == 0 || isNaN(mTotal)))) {
                     right++;
-                } else if (bs[i].total != null || bs[i].total != 0) {
+                } else if (bsTotal == 0 || bsTotal == null) {
+                    empty++;
+                    diff = mTotal;
+                } else if (bsTotal != null || bsTotal != 0) {
                     wrong++;
-                    diff = m[j].total - bs[i].total;
+                    diff = mTotal - bsTotal;
                 }
                 matchFound = true;
 

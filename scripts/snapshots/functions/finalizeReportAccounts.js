@@ -1,5 +1,3 @@
-import { graphql } from "graphql";
-
 const getAccountTypeGroup = (accountType) => {
     const mapping = {
         "DSSVest": "DSSVest",
@@ -37,21 +35,19 @@ const getGroupUpstream = (groupName, allAccounts) => {
             null
         ]
     };
-    
+
     const upstreamCandidates = mapping[groupName];
     if (!upstreamCandidates) {
         throw new Error(`Unsupported group name for upstream: "${groupName}"`);
     }
     let index = 0;
 
-    for(let i = 0; i < allAccounts.length; i++){
-        const newIndex = upstreamCandidates.indexOf(allAccounts[i].group); 
-        if(newIndex > index){
+    for (let i = 0; i < allAccounts.length; i++) {
+        const newIndex = upstreamCandidates.indexOf(allAccounts[i].group);
+        if (newIndex > index) {
             index = newIndex;
         }
     }
-
-    console.log(groupName, upstreamCandidates[index]);
 
     return upstreamCandidates[index];
 };
@@ -59,19 +55,18 @@ const getGroupUpstream = (groupName, allAccounts) => {
 const updateUpstreamIds = async (allAccountsInfo, knex) => {
     console.log(`Updating upstream ids for ${allAccountsInfo.allAccounts.length} accounts`);
 
-    for(let i = 0; i < allAccountsInfo.allAccounts.length; i++){
+    for (let i = 0; i < allAccountsInfo.allAccounts.length; i++) {
         const upstreamGroupName = getGroupUpstream(allAccountsInfo.allAccounts[i].group, allAccountsInfo.allAccounts);
-        if(upstreamGroupName !== null) {
-        const upstreamGroupId = allAccountsInfo.groupUpstreamIds[upstreamGroupName];
-        console.log(allAccountsInfo.allAccounts[i].id, "=>", upstreamGroupName, upstreamGroupId);
-        
+        if (upstreamGroupName !== null) {
+            const upstreamGroupId = allAccountsInfo.groupUpstreamIds[upstreamGroupName];
+            console.log(allAccountsInfo.allAccounts[i].id, "=>", upstreamGroupName, upstreamGroupId);
+
             await knex('SnapshotAccount')
                 .where('id', '=', allAccountsInfo.allAccounts[i].id)
                 .update({
                     upstreamAccountId: upstreamGroupId
                 });
-            }
-
+        }
     }
 };
 
@@ -109,47 +104,44 @@ const createGroupAccount = async (snapshotReport, label, groupAccountId, knex) =
 
 const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAccountId, knex) => {
     const accountsInfo = {
-        allAccounts: [
-            {
-                id: protocolAccountId,
-                group: 'Protocol'
-            }
-        ],
+        allAccounts: [{
+            id: protocolAccountId,
+            group: 'Protocol'
+        }],
         groupUpstreamIds: {
             "Protocol": protocolAccountId
         }
     };
 
-    for(let i = 0; i < singularAccounts.length; i++){
+    for (let i = 0; i < singularAccounts.length; i++) {
         accountsInfo.allAccounts.push({
             id: singularAccounts[i].accountId,
             group: getAccountTypeGroup(singularAccounts[i].type)
         });
     }
-    
+
     const coreUnitReservesAccountId = await createGroupAccount(snapshotReport, 'Core Unit Reserves', null, knex);
     accountsInfo.allAccounts.push({
         id: coreUnitReservesAccountId,
         group: 'Reserve'
     });
     accountsInfo.groupUpstreamIds.Reserve = coreUnitReservesAccountId;
-    
+
     const onchainAccountId = await createGroupAccount(snapshotReport, 'On-Chain Reserves', coreUnitReservesAccountId, knex);
     accountsInfo.allAccounts.push({
         id: onchainAccountId,
         group: 'Reserve'
     });
     //const offchainAccountId = await createGroupAccount(snapshotReport, 'Off-Chain Reserves', coreUnitReservesAccountId, knex);
-    
+
 
     const groupAccountMapping = {};
-    for(let i = 0; i < singularAccounts.length; i++){
+    for (let i = 0; i < singularAccounts.length; i++) {
         const groupName = getAccountTypeGroup(singularAccounts[i].type);
-        if(!groupAccountMapping[groupName]){
+        if (!groupAccountMapping[groupName]) {
             groupAccountMapping[groupName] = onchainAccountId;
             accountsInfo.groupUpstreamIds[groupName] = singularAccounts[i].accountId;
-        }
-        else if(groupAccountMapping[groupName] === onchainAccountId){
+        } else if (groupAccountMapping[groupName] === onchainAccountId) {
             groupAccountMapping[groupName] = await createGroupAccount(snapshotReport, groupName, onchainAccountId, knex);
             accountsInfo.groupUpstreamIds[groupName] = groupAccountMapping[groupName];
             accountsInfo.allAccounts.push({
@@ -160,13 +152,13 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         }
     }
 
-    for(let i = 0; i < singularAccounts.length; i++){
+    for (let i = 0; i < singularAccounts.length; i++) {
         const groupName = getAccountTypeGroup(singularAccounts[i].type);
         await knex('SnapshotAccount')
-                    .where('id', '=', singularAccounts[i].accountId)
-                    .update({
-                        groupAccountId: groupAccountMapping[groupName]
-                    });
+            .where('id', '=', singularAccounts[i].accountId)
+            .update({
+                groupAccountId: groupAccountMapping[groupName]
+            });
     }
 
     return accountsInfo;
@@ -216,16 +208,16 @@ const handleGroupAccounts = async (snapshotReport, parentId, knex) => {
 const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocolAccountId, knex) => {
 
     console.log(`Finalising report for id:${snapshotReport.id}`);
-    
-    const filteredSingularAccounts = singularAccounts.filter(a => (a.accountId||0) > 0 );
+
+    const filteredSingularAccounts = singularAccounts.filter(a => (a.accountId || 0) > 0);
 
     const allAccountsInfo = await createGroupAccounts(snapshotReport, filteredSingularAccounts, protocolAccountId, knex);
     console.log(allAccountsInfo);
 
     await updateUpstreamIds(allAccountsInfo, knex);
-    
+
     return;
-    
+
     let auditorId;
 
     // if Maker Protocol - No Parent / No Group
@@ -280,19 +272,6 @@ const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocol
 
         }
     }
-
-
-    // if label contains 'audit', upstreamAccountId = maker protocol
-    // if group accounts, check if group line exists, if not create set accountType: group. 
-    // Assign group upstream to auditor, if none then maker protocol
-    // save upstream Id, assign to all group accounts, 
-    // save group line id, assign to group value of all group accounts, 
-
-    //1. Creating missing group accounts
-    //2. Set groupAccountId of it's contained elements
-    //3. Setting upstreamId's
-
-
 };
 
 export default finalizeReportAccounts;

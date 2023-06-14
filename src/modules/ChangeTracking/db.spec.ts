@@ -34,7 +34,7 @@ it('get bsEvent', async () => {
 it('creates budgetStatementCreated event', async () => {
     const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'EXA');
     const [bs] = await authModel.knex('BudgetStatement').where('ownerId', cu.id).limit(1)
-    await authModel.coreUnitBudgetStatementCreated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month)
+    await authModel.coreUnitBudgetStatementCreated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month, bs.ownerType)
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
     await authModel.knex('ChangeTrackingEvents').where('id', activity?.id).del()
     await authModel.knex('ChangeTrackingEvents_Index').where('eventId', activity?.id).del()
@@ -43,7 +43,7 @@ it('creates budgetStatementCreated event', async () => {
 it('creates budgetStatementUpdated event', async () => {
     const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'EXA');
     const [bs] = await authModel.knex('BudgetStatement').where('ownerId', cu.id).limit(1);
-    await authModel.coreUnitBudgetStatementUpdated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month);
+    await authModel.coreUnitBudgetStatementUpdated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month, bs.ownerType);
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
     await authModel.knex('ChangeTrackingEvents').where('id', activity?.id).del();
     await authModel.knex('ChangeTrackingEvents_Index').where('eventId', activity?.id).del();
@@ -64,6 +64,7 @@ it('creates budgetStatementCommentUpdate event', async () => {
         bsEvent.params.commentId,
         bsEvent.params.status.old,
         bsEvent.params.status.old,
+        'CoreUnit',
     );
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
     await authModel.knex('ChangeTrackingEvents').where('id', activity?.id).del();

@@ -389,6 +389,16 @@ export class CoreUnitModel {
         }
     };
 
+    async getScopesByTeamId(teamId: number): Promise<any> {
+        const result = await this.knex
+            .select('scopeId')
+            .from('ContributorTeam_AlignmentScope')
+            .where('teamId', teamId);
+
+        if (result.length > 0) {
+            return await this.knex.select('*').from('AlignmentScope').where('id', result[0].scopeId)
+        }
+    }
 }
 
 export default (knex: Knex) => new CoreUnitModel(knex);

@@ -4,7 +4,8 @@ const ownerTypeMapping = {
     "core-units": "CoreUnit",
     "spfs": "SpecialPurposeFund",
     "projects": "Project",
-    "ecosystem-actors": "EcosystemActor"
+    "ecosystem-actors": "EcosystemActor",
+    "scopes": "EcosystemActor"
 };
 const getOwnerId = async (ownerType, idSegment, knex) => {
     if(ownerType === 'Delegates'){
@@ -17,6 +18,14 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
             throw new Error(`Cannot find Core Unit with code "${idSegment}"`);
         }
 
+        return result.id;   
+    }
+
+    if(ownerType === 'EcosystemActor'){
+        let result = await knex('CoreUnit').select('id').whereRaw('LOWER(code) = ?', ''+idSegment).first();
+        if(!result){
+            throw new Error(`Cannot find Core Unit with code "${idSegment}"`);
+        }
         return result.id;   
     }
 
@@ -36,6 +45,7 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
     }
 
     const idSegment = segments[2]||"";
+    const scopesSegment = segments[3]||"";
     let ownerId = await getOwnerId(ownerType, idSegment, knex);
     console.log(segments);
     let selectedAccounts = [];
@@ -43,7 +53,8 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
         if (
             accounts[i]['budget path 1'].toLowerCase() === 'makerdao' && 
             accounts[i]['budget path 2'].toLowerCase() === segments[1].toLowerCase() &&
-            accounts[i]['budget path 3'].toLowerCase() === idSegment.toLowerCase()
+            accounts[i]['budget path 3'].toLowerCase() === idSegment.toLowerCase() &&
+            accounts[i]['budget path 4'].toLowerCase() === scopesSegment.toLowerCase()
         ){
             selectedAccounts.push(
                 {

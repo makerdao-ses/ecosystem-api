@@ -57,6 +57,9 @@ export const typeDefs = gql`
         Growth
         Finance
         Legal
+        ActiveEcosystemActor
+        AdvisoryCouncilMember
+        ScopeFacilitator
     }
 
     type CuUpdate {
