@@ -1,58 +1,76 @@
 
 
-const insertAccountBalance = async (accounts, knex) => {
+const insertAccountBalance = async (allAccounts, knex) => {
 
     let formattedResponse = [];
 
-    for(let i = 0; i < accounts.length; i++){
+    for(let i = 0; i < allAccounts.length; i++){
 
-        let address = ''+accounts[i].address;
-        console.log(address);
+        const idsList = allAccounts[i].internalIds.join(', ');
+        const addressesList = "'"+allAccounts[i].internalAddresses.join("', '")+"'";
     
-        const result = await knex.raw(`SELECT 
-        sa.id, 
-        sa."accountLabel", 
-        sa."accountAddress", 
-        round(sum(sat.amount), 2) AS total_amount,
+        const result = await knex.raw(`
+        SELECT 
+ 		count(*),
         round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 2) AS inflow,
-        round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 2) AS outflow
+		round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 2) AS outflow
+		
     FROM 
-        "Snapshot" as s
-        LEFT JOIN "SnapshotAccount" as sa on s.id = sa."snapshotId"
-        LEFT JOIN "SnapshotAccountTransaction" as sat on sat."snapshotAccountId" = sa.id
-        LEFT JOIN "CoreUnit" as cu on cu.id = s."ownerId"
-    WHERE 
-        sa."accountAddress" = '${address}'
-    GROUP BY 
-        sa."accountAddress", sa."accountLabel", cu.code, sa.id
+		"SnapshotAccountTransaction" as sat
+	WHERE 
+	sat."snapshotAccountId" in (${idsList})
+	AND
+	NOT lower(sat."counterParty") in (${addressesList})
     `);
+
+    console.log(result.rows);
 
     if(result){
         
     formattedResponse.push({
-        snapshotAccountId: result.rows[0].id,
-        totalAmount: result.rows[0].total_amount,
-        inflow: result.rows[0].inflow,
-        outflow: result.rows[0].outflow
+        snapshotAccountId: allAccounts[i].id,
+        totalAmount: (parseFloat(result.rows[0].outflow||0) + parseFloat(result.rows[0].inflow||0)).toFixed(2),
+        inflow: result.rows[0].inflow||0,
+        outflow: result.rows[0].outflow||0
     });
 
     }
 }
-formattedResponse.forEach(async (resp) => {
+await Promise.all(formattedResponse.map(async (resp) => {
+    const exists = await knex('SnapshotAccountBalance')
+        .where({
+            snapshotAccountId: resp.snapshotAccountId,
+            token: 'DAI',
+            initialBalance: 0,
+            newBalance: resp.totalAmount,
+            inflow: resp.inflow,
+            outflow: resp.outflow
+        })
+        .first();
 
-    console.log('resp');
-    console.log(resp);
-    await knex('SnapshotAccountBalance').insert({
-        snapshotAccountId: resp.snapshotAccountId,
-        token: 'DAI',
-        initialBalance: 0,
-        newBalance: resp.totalAmount,
-        inflow: resp.inflow,
-        outflow: resp.outflow
-    });
-});
+    if (!exists) {
+        await knex('SnapshotAccountBalance').insert({
+            snapshotAccountId: resp.snapshotAccountId,
+            token: 'DAI',
+            initialBalance: 0,
+            newBalance: resp.totalAmount,
+            inflow: resp.inflow,
+            outflow: resp.outflow
+        });
+    }
+    //if exists - update
+}));
 
-return; 
+
+return formattedResponse;
 };
 
+
 export default insertAccountBalance;
+
+
+
+/*
+Allow for month input from the original terminal call
+Add the protocol wallets
+*/
