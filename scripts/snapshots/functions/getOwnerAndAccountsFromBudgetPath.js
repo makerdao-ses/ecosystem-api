@@ -11,6 +11,10 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
     if(ownerType === 'Delegates'){
        return null; 
     }
+    
+    if(ownerType === 'SpecialPurposeFund'){
+        return null; 
+     }
 
     if(ownerType === 'CoreUnit'){    
         let result = await knex('CoreUnit').select('id').whereRaw('LOWER(code) = ?', ''+idSegment).first();
@@ -56,6 +60,7 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
             accounts[i]['budget path 3'].toLowerCase() === idSegment.toLowerCase() &&
             accounts[i]['budget path 4'].toLowerCase() === scopesSegment.toLowerCase()
         ){
+            console.log(accounts[i]);
             selectedAccounts.push(
                 {
                     type:accounts[i].Type,
