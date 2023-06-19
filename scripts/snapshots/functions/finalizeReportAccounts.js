@@ -149,8 +149,15 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         internalIds: [onchainAccountId].concat(singularAccountsIds)
     });
     coreUnitReservesAccount.internalIds.push(onchainAccountId);
-    //const offchainAccountId = await createGroupAccount(snapshotReport, 'Off-Chain Reserves', coreUnitReservesAccountId, knex);
 
+    /*const offchainAccountId = await createGroupAccount(snapshotReport, 'Off-Chain Reserves', coreUnitReservesAccountId, knex);
+    accountsInfo.allAccounts.push({
+        id: offchainAccountId,
+        group: 'Reserve',
+        internalAddresses: [],
+        internalIds: []
+    });
+    coreUnitReservesAccount.internalIds.push(offchainAccountId);*/
 
     const groupAccountMapping = {};
     for (let i = 0; i < singularAccounts.length; i++) {
