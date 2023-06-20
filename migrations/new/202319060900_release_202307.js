@@ -1,21 +1,28 @@
-// Up migration add column to 'includesOffChain' to SnapshotAccountBalance table
+// Up migration add column to 'includesOffChain' to SnapshotAccountBalance table and 'offChain' to SnapshotAccount
 
 export async function up(knex) {
 
-    console.log('Adding includesOffChain column to SnapshotAccountBalance table...');
+    console.log('Adding offChain columns to Snapshot subtables...');
 
     await knex.schema.table('SnapshotAccountBalance', table => {
         table.boolean('includesOffChain');
-      });
+    });
+
+    await knex.schema.table('SnapshotAccount', table => {
+        table.boolean('offChain');
+    });
 }
 
-// Down migration that removes the new values from the CoreUnitCategory enum type
 export async function down(knex) {
 
-    console.log('Reverting the change that added includesOffChain to SnapshotAccountBalance...');
+    console.log('Reverting the change that added offChain columns to Snapshot subtables...');
 
     await knex.schema.table('SnapshotAccountBalance', table => {
         table.dropColumn('includesOffChain');
-      });
+    });
+
+    await knex.schema.table('SnapshotAccount', table => {
+        table.dropColumn('offChain');
+    });
 
 };
