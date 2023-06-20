@@ -68,7 +68,6 @@ export async function seed(knex) {
         twitter: 'https://twitter.com/dewiz_xyz',
         discord: 'https://discord.com/invite/sZQPFJxDYf',
         website: 'https://dewiz.xyz/',
-        github: 'https://github.com/EXA'
       });
 
       //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
@@ -83,6 +82,12 @@ export async function seed(knex) {
 
   const role = await knex('Role').select('id').where({roleName: 'EcosystemActorAdmin'}).first();
   const roleId = role.id;
+
+  const supScope = await knex('AlignmentScope').select('id').where({code: 'SUP'}).first();
+  const supId = supScope.id;
+
+  const proScope = await knex('AlignmentScope').select('id').where({code: 'PRO'}).first();
+  const proId = proScope.id;
   
   // Finally, insert the new user role record with the appropriate values
   await knex('UserRole').insert({
@@ -90,6 +95,16 @@ export async function seed(knex) {
     resource: 'EcosystemActor',
     resourceId: dewizId,
     userId: userId
+  });
+
+  await knex('ContributorTeam_AlignmentScope').insert({
+    teamId: dewizId,
+    scopeId: supId,
+  },
+  {
+    teamId: dewizId,
+    scopeId: proId,
+
   });
   
 
