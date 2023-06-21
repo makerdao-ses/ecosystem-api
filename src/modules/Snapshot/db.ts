@@ -55,7 +55,7 @@ export class SnapshotModel {
             .select('*')
             .from('SnapshotAccountTransaction')
             .where('snapshotAccountId', snapshotAccountId)
-            .orderBy('id', 'dsc');
+            .orderBy('id', 'desc');
     };
 
     async getSnapshotAccountBalances(snapshotAccountId: number | string) {
