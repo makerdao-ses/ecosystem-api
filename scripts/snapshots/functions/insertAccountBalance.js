@@ -76,6 +76,8 @@ const insertAccountBalance = async (allAccounts, knex) => {
 
         const idsList = allAccounts[i].internalIds.join(', ');
         const addressesList = "'" + allAccounts[i].internalAddresses.join("', '") + "'";
+        console.log('ids list', idsList);
+        console.log('addresses list', addressesList);
 
         const result = await knex.raw(`
         SELECT 

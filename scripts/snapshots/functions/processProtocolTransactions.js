@@ -54,7 +54,7 @@
                       snapshotAccountId: accountIdProtocol,
                   })
                   .andWhere({
-                      tx_hash: txData.tx_hash
+                      txHash: txData.tx_hash
                   })
                   .andWhere({
                       amount: -amount
@@ -68,7 +68,7 @@
                   await knex('SnapshotAccountTransaction').insert({
                       block: txData.block,
                       timestamp: txData.timestamp,
-                      tx_hash: txData.tx_hash,
+                      txHash: txData.tx_hash,
                       token: txData.token,
                       counterParty: counterParty,
                       amount: -amount,
