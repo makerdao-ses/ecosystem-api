@@ -41,7 +41,8 @@ const checkChildTables = async (data) => {
                         id: data[i].id,
                         mipCode: data[i].mipCode,
                         mipTitle: data[i].mipTitle,
-                        mipStatus: data[i].mipStatus
+                        mipStatus: data[i].mipStatus,
+                        accepted: data[i].accepted
                     };
                     missingEntries.push(res);
                 }
@@ -53,7 +54,8 @@ const checkChildTables = async (data) => {
                         id: data[i].id,
                         mipCode: data[i].mipCode,
                         mipTitle: data[i].mipTitle,
-                        mipStatus: data[i].mipStatus
+                        mipStatus: data[i].mipStatus,
+                        accepted: data[i].accepted
                     };
                     missingEntries.push(res);
                 }
@@ -65,7 +67,8 @@ const checkChildTables = async (data) => {
                         id: data[i].id,
                         mipCode: data[i].mipCode,
                         mipTitle: data[i].mipTitle,
-                        mipStatus: data[i].mipStatus
+                        mipStatus: data[i].mipStatus,
+                        accepted: data[i].accepted
                     };
                     missingEntries.push(res);
                 }
