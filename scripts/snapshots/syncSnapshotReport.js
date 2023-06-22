@@ -1,5 +1,5 @@
 import getOwnerAndAccountsFromBudgetPath from './functions/getOwnerAndAccountsFromBudgetPath.js';
-import getApiToken from './functions/getApiToken.js'
+import getApiToken from './functions/getApiToken.js';
 import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
 import fetchTransactionData from './functions/fetchTransactionData.js';
@@ -8,6 +8,7 @@ import processTransactions from './functions/processTransactions.js';
 import processProtocolTransactions from './functions/processProtocolTransactions.js';
 import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
+import createOffChainAccounts from './functions/createOffChainAccounts.js';
 
 const makerProtocolAddresses = [
     '0x0048fc4357db3c0f45adea433a07a20769ddb0cf',
@@ -41,8 +42,8 @@ for(let i = 0; i < owner.accounts.length; i++){
 }
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
-
-let allAccounts = await finalizeReportAccounts(snapshotReport, owner.accounts, protocolAccountId, makerProtocolAddresses, knex);
+const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
+let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);
 
 
 

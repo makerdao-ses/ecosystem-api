@@ -5,6 +5,7 @@ const getAccountTypeGroup = (accountType) => {
         "Operational": "Operational",
         "Emergency": "Operational",
         "Accountant": "Operational",
+        "PaymentProcessor": "PaymentProcessor",
     };
     const key = ("" + accountType).trim() || "Operational";
 
@@ -16,6 +17,12 @@ const getAccountTypeGroup = (accountType) => {
 
 const getGroupUpstream = (groupName, allAccounts) => {
     const mapping = {
+        "PaymentProcessor": [
+            "Protocol",
+            "DSSVest",
+            "Auditor",
+            "Operational"
+        ],
         "Operational": [
             "Protocol",
             "DSSVest",
@@ -110,15 +117,6 @@ const updateUpstreamIds = async (allAccountsInfo, knex) => {
 
 const createGroupAccount = async (snapshotReport, label, groupAccountId, offChain, knex) => {
 
-    let groupId;
-    let existingEntry = await knex('SnapshotAccount')
-        .where({
-            snapshotId: snapshotReport.id,
-            accountLabel: label,
-            accountType: 'group',
-        })
-        .del();
-
         // Entry does not exist, perform insert
         let insert = await knex('SnapshotAccount')
             .insert({
@@ -130,7 +128,7 @@ const createGroupAccount = async (snapshotReport, label, groupAccountId, offChai
                 offChain: offChain
             })
             .returning('id');
-        groupId = insert[0].id;
+        let groupId = insert[0].id;
     
     return groupId;
 };
@@ -151,6 +149,7 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
     let singularAccountsIds = [];
 
     for (let i = 0; i < singularAccounts.length; i++) {
+        console.log('Processing singular account ',singularAccounts[i]);
         const newAccount = {
             id: singularAccounts[i].accountId,
             group: getAccountTypeGroup(singularAccounts[i].type),
