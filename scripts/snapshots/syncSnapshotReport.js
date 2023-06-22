@@ -32,7 +32,7 @@ for(let i = 0; i < owner.accounts.length; i++){
 
     let transactions = await fetchTransactionData(owner.accounts[i].address, owner.type, owner.id, month, apiToken, knex);
     if (transactions.length > 0){
-        let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], knex);
+        let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], false, knex);
         owner.accounts[i].accountId = snapshotAccount.id;
         let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, knex);
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);

@@ -2,6 +2,7 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
 
     console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
 
+
     let start = null;
     let end = null;
 
@@ -17,26 +18,26 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
       ownerType = ownerType+'Draft';
     }
 
-    let snapshotId;
+    
 
-    const existingSnapshot = await knex('Snapshot')
+    
+    const existingSnapshots = await knex('Snapshot')
         .select('id')
         .where({
           start: start,
           end: end,
           ownerType: ownerType,
           ownerId,
-        })
-        .first();
+        });
+        
+
+        
 
     
-    try {
-      snapshotId = existingSnapshot.id; 
-    }
-    catch {
+    existingSnapshots.forEach(s => {
+      removeSnapshot(s.id, knex);
+    });
 
-      if (!snapshotId) {
-  
       const newSnapshot = await knex('Snapshot')
         .insert({
           start: start,
@@ -45,13 +46,47 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
           ownerId,
         }).returning('id');
 
-        snapshotId = await newSnapshot[0].id;
-    }
-  }
-
     return {
-        id:snapshotId
+        id:newSnapshot[0].id
     };
+};
+
+const removeSnapshot = async (snapshotId, knex) => {
+
+  const snapshotAccountIds = await knex('SnapshotAccount')
+  .where('snapshotId', snapshotId)
+  .select('id');
+
+  console.log(`Removing Snapshot with id: ${snapshotId} with accounts`,snapshotAccountIds.map(r=>r.id));
+
+  const deletedTransactions = await knex('SnapshotAccountTransaction')
+  .whereIn('snapshotAccountId', snapshotAccountIds.map(r=>r.id))
+  .del();
+
+  console.log(deletedTransactions, `deleted transactions`);
+
+  const deletedBalances = await knex('SnapshotAccountBalance')
+  .whereIn('snapshotAccountId', snapshotAccountIds.map(r=>r.id))
+  .del();
+
+  console.log(deletedBalances, `deleted balances`);
+
+  await knex('SnapshotAccount')
+  .where('snapshotId', snapshotId)
+  .update({
+    groupAccountId: null,
+    upstreamAccountId: null
+  });
+
+  const deletedAccounts = await knex('SnapshotAccount')
+  .where('snapshotId', snapshotId)
+  .del();
+
+  console.log(deletedAccounts, 'deleted accounts');
+
+  await knex('Snapshot')
+  .where('id', snapshotId)
+  .del();
 };
 
 function getStartAndEndDates(month) {

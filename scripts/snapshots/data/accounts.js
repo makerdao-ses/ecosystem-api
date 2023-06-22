@@ -670,4 +670,13 @@ export default [{
     "budget path 4": "multichain-engeering",
     "Type": "Auditor",
     "Address": "0x868b44e8191a2574334deb8e7efa38910df941fa"
+},
+{
+    "Name": "Accountable Payment Processor",
+    "budget path 1": "makerdao",
+    "budget path 2": "payment-processors",
+    "budget path 3": "accountable",
+    "budget path 4": "",
+    "Type": "PaymentProcessor",
+    "Address": "0x3c267dfc8ba8f7359af0d8afc45b43731173236d" 
 }];

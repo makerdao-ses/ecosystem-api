@@ -69,15 +69,11 @@ const insertAccountBalanceOffChain = async (allAccounts, knex) => {
 const insertAccountBalance = async (allAccounts, knex) => {
 
     let formattedResponse = [];
-
-    console.log(allAccounts);
     
     for (let i = 0; i < allAccounts.length; i++) {
 
         const idsList = allAccounts[i].internalIds.join(', ');
         const addressesList = "'" + allAccounts[i].internalAddresses.join("', '") + "'";
-        console.log('ids list', idsList);
-        console.log('addresses list', addressesList);
 
         const result = await knex.raw(`
         SELECT 
@@ -110,15 +106,10 @@ const insertAccountBalance = async (allAccounts, knex) => {
             .where({
                 snapshotAccountId: resp.snapshotAccountId,
                 token: 'DAI',
-                initialBalance: 0,
-                newBalance: resp.totalAmount,
-                inflow: resp.inflow,
-                outflow: resp.outflow,
-                includesOffChain: true
             })
-            .first();
+            .del();
 
-        if (!exists) {
+        
             await knex('SnapshotAccountBalance').insert({
                 snapshotAccountId: resp.snapshotAccountId,
                 token: 'DAI',
@@ -126,9 +117,19 @@ const insertAccountBalance = async (allAccounts, knex) => {
                 newBalance: resp.totalAmount,
                 inflow: resp.inflow,
                 outflow: resp.outflow,
+                includesOffChain: false
+            });
+
+            await knex('SnapshotAccountBalance').insert({
+                snapshotAccountId: resp.snapshotAccountId,
+                token: 'DAI',
+                initialBalance: 0,
+                newBalance: resp.totalAmount*1.05,
+                inflow: resp.inflow*1.05,
+                outflow: resp.outflow*1.05,
                 includesOffChain: true
             });
-        }
+        
         //if exists - update
     }));
 

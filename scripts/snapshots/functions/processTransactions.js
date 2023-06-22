@@ -1,21 +1,11 @@
+import getCounterPartyName from "./getCounterPartyName.js";
+import getTxLabel from "./getTxLabel.js";
+
 const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, knex) => {
 
     console.log(`Fetched ${transactions.length} transactions for ${snapshotAccount.accountAddress}`);
     let protocolTransactions = [];
     let addedTransactionsCount = 0;
-
-    //clear existing transactions
-    const deletedEntries = await knex('SnapshotAccountTransaction')
-        .whereIn('snapshotAccountId', function () {
-            this.select('id')
-                .from('SnapshotAccount')
-                .where('accountAddress', snapshotAccount.accountAddress)
-                .andWhere('snapshotAccountId', snapshotAccount.id);
-        })
-        .del();
-
-    console.log('Cleared ' + deletedEntries + ' entries');
-
 
     for (let i = 0; i < transactions.length; i++) {
 
@@ -25,14 +15,18 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
         if (account === snapshotAccount.accountAddress) {
 
             const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
+            const counterPartyName = getCounterPartyName(counterParty);
             const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
+            const txLabel = getTxLabel(snapshotAccount, counterParty, amount, knex);
 
             await knex('SnapshotAccountTransaction').insert({
                 block: txData.block,
                 timestamp: txData.timestamp,
                 txHash: txData.tx_hash,
+                txLabel: txLabel,
                 token: txData.token,
                 counterParty: counterParty,
+                counterPartyName: counterPartyName,
                 amount: amount,
                 snapshotAccountId: snapshotAccount.id,
             });
@@ -51,6 +45,7 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
         protocolTransactions: protocolTransactions
     };
 };
+
 
 
 export default processTransactions;
