@@ -395,9 +395,14 @@ export class CoreUnitModel {
             .from('ContributorTeam_AlignmentScope')
             .where('teamId', teamId);
 
+        const scopes = [] as any[];
         if (result.length > 0) {
-            return await this.knex.select('*').from('AlignmentScope').where('id', result[0].scopeId)
+            for (const r of result) {
+                const [scope] = await this.knex.select('*').from('AlignmentScope').where('id', r.scopeId);
+                scopes.push(scope);
+            }
         }
+        return scopes.length > 0 ? scopes : null;
     }
 }
 

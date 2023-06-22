@@ -54,7 +54,8 @@ export class SnapshotModel {
         return this.knex
             .select('*')
             .from('SnapshotAccountTransaction')
-            .where('snapshotAccountId', snapshotAccountId);
+            .where('snapshotAccountId', snapshotAccountId)
+            .orderBy('id', 'desc');
     };
 
     async getSnapshotAccountBalances(snapshotAccountId: number | string) {

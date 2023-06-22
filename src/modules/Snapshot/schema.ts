@@ -18,6 +18,7 @@ export const typeDefs = [gql`
         accountAddress: String
         groupAccountId: ID
         upstreamAccountId: ID
+        offChain: Boolean
         snapshotAccountTransaction: [SnapshotAccountTransaction]
         snapshotAccountBalance: [SnapshotAccountBalance]
 
@@ -27,10 +28,12 @@ export const typeDefs = [gql`
         id: ID!
         block: Int
         timestamp: DateTime
-        tx_hash: String
+        txHash: String
         token: String
         counterParty: String
         amount: Float
+        txLabel: String
+        counterPartyName: String
     }
 
     type SnapshotAccountBalance {
@@ -40,6 +43,7 @@ export const typeDefs = [gql`
         newBalance: Float
         inflow: Float
         outflow: Float
+        includesOffChain: Boolean
     }
 
     input SnapshotFilter {
