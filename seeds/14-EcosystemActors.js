@@ -8,7 +8,7 @@
 export async function seed(knex) {
 
     // Inserting new Ecosystem Actors
-    await knex('CoreUnit').insert([
+    const ecosystemActors = await knex('CoreUnit').insert([
         {
             code: 'L2B-001',
             shortCode: 'L2B',
@@ -286,6 +286,91 @@ export async function seed(knex) {
     `
         }
     ]).returning('*');
+
+    // Inserting new Social Media Channels
+    await knex('SocialMediaChannels').insert([
+        {
+            cuId: ecosystemActors[0].id,
+            forumTag: 'https://forum.makerdao.com/u/l2beat/summary',
+            twitter: 'https://twitter.com/l2beat',
+            discord: 'https://discord.gg/eaVKXPmtWk',
+            website: "https://l2beat.com",
+            github: 'https://github.com/l2beat',
+
+        },
+        {
+            cuId: ecosystemActors[1].id,
+            forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-ba-labs/20813',
+            twitter: 'https://twitter.com/BlockAnalitica',
+            discord: 'https://discord.com/channels/893112320329396265/897513189711937608',
+            website: "https://blockanalitica.com/",
+            github: 'https://github.com/blockanalitica',
+        },
+        {
+            cuId: ecosystemActors[2].id,
+            forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-powerhouse/21057',
+            twitter: 'https://twitter.com/PowerhouseDAO',
+            discord: 'https://discord.com/invite/h7GKvqDyDP',
+            website: "https://www.powerhouse.inc",
+            github: 'https://github.com/makerdao-ses',
+        },
+        {
+            cuId: ecosystemActors[3].id,
+            forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-chronicle-labs/21053',
+            twitter: 'https://twitter.com/ChronicleLabs',
+            discord: 'https://discord.gg/CjgvJ9EspJ',
+            website: "https://chroniclelabs.org",
+            github: '',
+        },
+        {
+            cuId: ecosystemActors[4].id,
+            forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-jetstream/21054',
+            twitter: 'https://twitter.com/jetstream_gg',
+            discord: 'https://discord.gg/3qy8e2Q8',
+            website: "https://dux.makerdao.network",
+            github: 'https://github.com/makerdao-dux',
+        },
+        {
+            cuId: ecosystemActors[5].id,
+            forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-intro-devpool/20895',
+            twitter: 'https://twitter.com/UbiquityDAO',
+            discord: 'https://discord.com/invite/SjymJ5maJ4',
+            website: "https://dao.ubq.fi/devpool",
+            github: 'https://github.com/ubiquity',
+        },
+        {
+            cuId: ecosystemActors[6].id,
+            forumTag: 'https://forum.makerdao.com/u/pulluplabs/summary',
+            twitter: '',
+            discord: 'https://discord.gg/3qy8e2Q8',
+            website: "https://dux.makerdao.network",
+            github: 'https://github.com/makerdao',
+        },
+        {
+            cuId: ecosystemActors[7].id,
+            forumTag: 'https://forum.makerdao.com/u/phoenixlabs/summary',
+            twitter: 'https://twitter.com/spark_protocol',
+            discord: 'https://discord.gg/EHyhp3aCFz',
+            website: "https://www.sparkprotocol.io/",
+            github: 'https://github.com/marsfoundation/'
+        },
+        {
+            cuId: ecosystemActors[8].id,
+            forumTag: 'https://forum.makerdao.com/u/viridian/summary',
+            twitter: '',
+            discord: '',
+            website: "",
+            github: ''
+        },
+        {
+            cuId: ecosystemActors[9].id,
+            forumTag: 'https://forum.makerdao.com/u/steakhouse/summary',
+            twitter: 'https://twitter.com/SteakFi',
+            discord: 'https://discord.gg/kmHe4wNcZy',
+            website: "https://steakhouse.financial/",
+            github: ''
+        }
+    ])
 
     const scopesToAdd = [
         {
