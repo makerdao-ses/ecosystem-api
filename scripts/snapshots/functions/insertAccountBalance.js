@@ -69,6 +69,8 @@ const insertAccountBalanceOffChain = async (allAccounts, knex) => {
 const insertAccountBalance = async (allAccounts, knex) => {
 
     let formattedResponse = [];
+
+    allAccounts = allAccounts.allAccounts;
     
     for (let i = 0; i < allAccounts.length; i++) {
 

@@ -1,5 +1,4 @@
 import getCounterPartyName from "./getCounterPartyName.js";
-import getTxLabel from "./getTxLabel.js";
 
 const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, knex) => {
 
@@ -17,13 +16,11 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
             const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
             const counterPartyName = getCounterPartyName(counterParty);
             const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
-            const txLabel = getTxLabel(snapshotAccount, counterParty, amount, knex);
 
             await knex('SnapshotAccountTransaction').insert({
                 block: txData.block,
                 timestamp: txData.timestamp,
                 txHash: txData.tx_hash,
-                txLabel: txLabel,
                 token: txData.token,
                 counterParty: counterParty,
                 counterPartyName: counterPartyName,

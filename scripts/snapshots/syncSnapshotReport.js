@@ -9,6 +9,7 @@ import processProtocolTransactions from './functions/processProtocolTransactions
 import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
 import createOffChainAccounts from './functions/createOffChainAccounts.js';
+import setTxLabel from './functions/setTxLabel.js';
 
 const makerProtocolAddresses = [
     '0x0048fc4357db3c0f45adea433a07a20769ddb0cf',
@@ -45,7 +46,7 @@ let protocolAccountId = await processProtocolTransactions(snapshotReport.id, pro
 const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
 let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);
 
-
+await setTxLabel(allAccounts, knex);
 
 await insertAccountBalance(allAccounts, knex);
 

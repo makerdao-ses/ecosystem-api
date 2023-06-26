@@ -32,7 +32,21 @@ import getCounterPartyName from "./getCounterPartyName.js";
 
           if (accountIdProtocol) {
              
-             
+            const [existingProtocolTransaction] = await knex('SnapshotAccountTransaction')
+            .where({
+                snapshotAccountId: accountIdProtocol,
+            })
+            .andWhere({
+                txHash: txData.tx_hash
+            })
+            .andWhere({
+                amount: -amount
+            })
+            .andWhere({
+                counterParty: counterParty    
+            });
+
+        if (!existingProtocolTransaction) {
                   // If the transaction does not exist, insert it
                   await knex('SnapshotAccountTransaction').insert({
                       block: txData.block,
@@ -45,6 +59,7 @@ import getCounterPartyName from "./getCounterPartyName.js";
                       snapshotAccountId: accountIdProtocol,
                   });
               }
+            }
           }
       
 

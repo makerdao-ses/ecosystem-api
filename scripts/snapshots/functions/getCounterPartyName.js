@@ -2,7 +2,7 @@ import accounts from '../data/accounts.js';
 
 const getCounterPartyName = (counterParty) => {
     for (const account of accounts) {
-      if (account.Address === counterParty) {
+      if (account.Address.toLowerCase() === counterParty.toLowerCase()) {
         return account.Name;
       }
     }

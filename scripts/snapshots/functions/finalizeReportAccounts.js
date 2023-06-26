@@ -243,6 +243,7 @@ const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocol
     const filteredSingularAccounts = singularAccounts.filter(a => (a.accountId || 0) > 0);
 
     const allAccountsInfo = await createGroupAccounts(snapshotReport, filteredSingularAccounts, protocolAccountId, makerProtocolAddresses, knex);
+    const allAccounts = allAccountsInfo.allAccounts
 
     console.log('All Accounts Info: ', allAccountsInfo.allAccounts);
     console.log('Upstream Account Ids:', allAccountsInfo.groupUpstreamIds);
@@ -250,7 +251,7 @@ const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocol
     const upstreamDownstreamMap = await updateUpstreamIds(allAccountsInfo, knex);
     console.log(upstreamDownstreamMap);
 
-    return allAccountsInfo.allAccounts;
+    return {allAccounts, upstreamDownstreamMap};
 };
 
 export default finalizeReportAccounts;
