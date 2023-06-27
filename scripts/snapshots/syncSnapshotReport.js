@@ -15,8 +15,6 @@ const makerProtocolAddresses = [
     '0x0048fc4357db3c0f45adea433a07a20769ddb0cf',
     '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb',
     '0x0000000000000000000000000000000000000000',
-    //SES Auditor Wallet:
-    '0x87acdd9208f73bfc9207e1f6f0fde906bca95cc6'
 ].map(a => a.toLowerCase());
 
 let budgetPath = process.argv[2]||null;
