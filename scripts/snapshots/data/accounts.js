@@ -685,7 +685,7 @@ export default [{
     "budget path 1": "makerdao",
     "budget path 2": "protocol",
     "budget path 3": "",
-    "budget path 4": "",
+    "budget path 4": "",    
     "Type": "Protocol",
     "Address": "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" 
 },

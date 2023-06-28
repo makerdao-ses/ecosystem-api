@@ -9,6 +9,7 @@ import processProtocolTransactions from './functions/processProtocolTransactions
 import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
 import createOffChainAccounts from './functions/createOffChainAccounts.js';
+import processPaymentProcessorTransactions from './functions/processPaymentProcessorTransactions.js';
 import setTxLabel from './functions/setTxLabel.js';
 
 const makerProtocolAddresses = [
@@ -27,6 +28,7 @@ let apiToken = await getApiToken();
 let owner = await getOwnerAndAccountsFromBudgetPath(budgetPath, knex);
 let snapshotReport = await createSnapshotReport(owner.type, owner.id, month, knex);
 let protocolTransactions = [];
+let paymentProcessorTransactions = [];
 
 for(let i = 0; i < owner.accounts.length; i++){
 
@@ -34,14 +36,19 @@ for(let i = 0; i < owner.accounts.length; i++){
     if (transactions.length > 0){
         let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], false, knex);
         owner.accounts[i].accountId = snapshotAccount.id;
-        let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, knex);
+        let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, knex, snapshotReport.id);
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
+        paymentProcessorTransactions = paymentProcessorTransactions.concat(output.paymentProcessorTransactions);
         owner.accounts[i].addedTransactions = output.addedTransactions;
     }
 }
 
+
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
+if(paymentProcessorTransactions.length>0){
+    await processPaymentProcessorTransactions(snapshotReport.id, paymentProcessorTransactions, knex);
+}
 let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);
 
 await setTxLabel(allAccounts, knex);

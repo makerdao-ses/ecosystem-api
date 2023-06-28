@@ -144,17 +144,7 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         groupUpstreamIds: {}
     };
 
-    // Create Root Account
-    const rootAccountId = await createGroupAccount(snapshotReport, 'Root', null, false, knex);
-    const rootAccount = {
-        id: rootAccountId,
-        group: 'Root',
-        internalAddresses: [],
-        internalIds: [rootAccountId]
-    };
-    accountsInfo.allAccounts.push(rootAccount);
-    accountsInfo.groupUpstreamIds.Root = rootAccountId;
-
+    
     // Create Protocol Account
     const protocolAccount = {
         id: protocolAccountId,
@@ -164,13 +154,6 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
     };
     accountsInfo.allAccounts.push(protocolAccount);
     accountsInfo.groupUpstreamIds.Protocol = protocolAccountId;
-    await knex('SnapshotAccount')
-        .where({
-            id: protocolAccountId
-        })
-        .update({
-            groupAccountId: rootAccountId,
-        });
 
 
     let singularAccountsAddresses = {
@@ -197,6 +180,8 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         singularAccountsAddresses[key].push(newAccount.internalAddresses[0]);
         singularAccountsIds[key].push(newAccount.internalIds[0]);
     }
+
+    const rootAccountId = await createGroupAccount(snapshotReport, 'Root', null, false, knex);
 
     const coreUnitReservesAccountId = await createGroupAccount(snapshotReport, 'Core Unit Reserves', rootAccountId, false, knex);
     const coreUnitReservesAccount = {
@@ -225,6 +210,23 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         internalIds: [offchainAccountId].concat(singularAccountsIds.offChain)
     });
     coreUnitReservesAccount.internalIds.push(offchainAccountId);
+
+    // Create Root Account
+    const rootAccount = {
+        id: rootAccountId,
+        group: 'Root',
+        internalAddresses: [],
+        internalIds: [rootAccountId, protocolAccount.internalIds, coreUnitReservesAccount.internalIds]
+    };
+    accountsInfo.allAccounts.push(rootAccount);
+    accountsInfo.groupUpstreamIds.Root = rootAccountId;
+    await knex('SnapshotAccount')
+    .where({
+        id: protocolAccountId
+    })
+    .update({
+        groupAccountId: rootAccountId,
+    });
 
     const groupAccountMapping = {};
     for (let i = 0; i < singularAccounts.length; i++) {

@@ -3,7 +3,8 @@ import createSnapshotAccount from './createSnapshotAccount.js';
 
 const ownerMapping = {
     'CoreUnit': {
-        '1': 'sesBalances'
+        '1': 'sesBalances',
+        '19': 'sasBalances'
     }
 };
 

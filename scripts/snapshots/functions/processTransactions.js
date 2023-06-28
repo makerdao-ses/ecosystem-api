@@ -1,9 +1,10 @@
 import getCounterPartyName from "./getCounterPartyName.js";
 
-const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, knex) => {
+const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, knex, snapshotId) => {
 
     console.log(`Fetched ${transactions.length} transactions for ${snapshotAccount.accountAddress}`);
     let protocolTransactions = [];
+    let paymentProcessorTransactions = [];
     let addedTransactionsCount = 0;
 
     for (let i = 0; i < transactions.length; i++) {
@@ -14,7 +15,9 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
         if (account === snapshotAccount.accountAddress) {
 
             const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-            const counterPartyName = getCounterPartyName(counterParty);
+            const counterPartyResp = getCounterPartyName(counterParty);
+            const accountName = getCounterPartyName(account);
+            const counterPartyName = counterPartyResp.name;
             const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
 
             await knex('SnapshotAccountTransaction').insert({
@@ -30,7 +33,9 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
 
             addedTransactionsCount++;
 
-
+            if (counterPartyResp.paymentProcessor) {
+                paymentProcessorTransactions.push(txData);
+            }
             //Check MakerProtocol addressses
             if (makerProtocolAddresses.indexOf(counterParty.toLowerCase()) > -1) {
                 protocolTransactions.push(txData);
@@ -39,7 +44,8 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
     }
     return {
         addedTransactions: addedTransactionsCount,
-        protocolTransactions: protocolTransactions
+        protocolTransactions: protocolTransactions,
+        paymentProcessorTransactions: paymentProcessorTransactions
     };
 };
 
