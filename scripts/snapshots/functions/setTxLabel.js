@@ -3,9 +3,6 @@ const setTxLabel = async (allAccounts, knex) => {
   const upstreamDownstream = allAccounts.upstreamDownstreamMap;
   const allAccountsInfo = allAccounts.allAccounts;
 
-  console.log(allAccountsInfo);
-  console.log(upstreamDownstream);
-
   const distinctInternalAddresses = Array.from(
     new Set(allAccountsInfo.map(item => item.internalAddresses).flat())
   );
@@ -18,9 +15,6 @@ const setTxLabel = async (allAccounts, knex) => {
 
   const combinedArray = [...upstreamFlat, ...downstreamFlat];
   const flatIds = Array.from(new Set(combinedArray));
-
-  console.log('flat ids ', flatIds);
-  console.log('distinct addresses ', distinctInternalAddresses);
 
   await knex('SnapshotAccountTransaction')
     .whereIn('snapshotAccountId', flatIds)
@@ -58,8 +52,6 @@ const setTxLabel = async (allAccounts, knex) => {
       
   
       if (internalAddressesList.length > 0) {
-        console.log('valueArray ', valueArray);
-        console.log('internalAddressesList ', internalAddressesList);
         for (const value of valueArray) {
           
           await knex('SnapshotAccountTransaction')
@@ -105,8 +97,6 @@ const setTxLabel = async (allAccounts, knex) => {
       
   
       if (internalAddressesDownstreamList.length > 0) {
-        console.log('valueArray ', valueArray);
-        console.log(internalAddressesDownstreamList);
         for (const value of valueArray) {
           
           await knex('SnapshotAccountTransaction')
