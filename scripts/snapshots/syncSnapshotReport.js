@@ -46,7 +46,7 @@ for(let i = 0; i < owner.accounts.length; i++){
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
-if(paymentProcessorTransactions.length>0){
+if(paymentProcessorTransactions.length>0 && singularAccounts){
     await processPaymentProcessorTransactions(snapshotReport.id, paymentProcessorTransactions, knex);
 }
 let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);

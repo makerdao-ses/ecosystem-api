@@ -16,7 +16,6 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
 
             const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
             const counterPartyResp = getCounterPartyName(counterParty);
-            const accountName = getCounterPartyName(account);
             const counterPartyName = counterPartyResp.name;
             const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
 
