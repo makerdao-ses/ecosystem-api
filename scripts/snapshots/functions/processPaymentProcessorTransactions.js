@@ -19,6 +19,9 @@ const processPaymentProcessorTransactions = async (snapshotReportId, ppTransacti
         const counterPartyName = counterPartyResp.name;
 
         if (!processorAccountId || processorAccount != account) {
+            console.log(processorAccount)
+            console.log(processorAccountId)
+
             const result = await knex('SnapshotAccount')
                 .select('id')
                 .where({
@@ -49,35 +52,7 @@ const processPaymentProcessorTransactions = async (snapshotReportId, ppTransacti
             });
         }
     }
-
-    await insertMissingPaymentProcessorTransactions(processorAccountIds, knex);
-    
-
-
     return processorAccountId;
-};
-
-const insertMissingPaymentProcessorTransactions = async (processorAccountIds, knex) => {
-
-    for (const accountId of processorAccountIds) {
-    const expectedNewBalance = await knex('SnapshotAccountBalance')
-    .select(knex.raw('sum(inflow) as totalInflow'), knex.raw('sum("SnapshotAccountBalance"."initialBalance") as initialBalance'))
-    .where('token', '=', 'USD')
-    .orWhere('token', '=', 'DAI')
-    .andWhere('snapshotAccountId', accountId)
-    .groupBy('id');
-    
-
-    const realNewBalance = await knex('SnapshotAccountBalance as sab')
-    .select('id', 'sab.newBalance')
-    .where('sab.token', '=', 'USD')
-    .andWhere('sab.snapshotAccountId', accountId);
-
-    console.log('ExpectedNewBalance: ',expectedNewBalance);
-    console.log('RealNewBalance: ',realNewBalance);
-
-    }
-    
 };
 
 

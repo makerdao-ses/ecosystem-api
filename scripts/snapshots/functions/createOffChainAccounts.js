@@ -5,7 +5,7 @@ const ownerMapping = {
     'CoreUnit': {
         '0': 'peBalances',
         '1': 'sesBalances',
-        '3': 'cesBalances',
+        //'3': 'cesBalances',
         '9': 'rwfBalances',
         '11': 'oraBalances',
         '12': 'comBalances',
@@ -23,7 +23,6 @@ const dataMapping = {
 const createOffChainAccounts = async (snapshotId, ownerType, ownerId, month, knex) => {
     const balances = getOffChainAccountBalances(ownerType, ownerId, month);
     const accounts = [];
-    if (balances.length > 0) {
         console.log(`Creating offchain accounts for balances `, balances);
         const account = {
             type: 'PaymentProcessor',
@@ -34,9 +33,9 @@ const createOffChainAccounts = async (snapshotId, ownerType, ownerId, month, kne
         };
         const result = await createSnapshotAccount(snapshotId, account, true, knex);
         account.accountId = result.id;
-        await insertOffChainAccountBalance(result.id, balances, knex);
+        if (balances.length > 0) { await insertOffChainAccountBalance(result.id, balances, knex); }
         accounts.push(account);
-    }
+    
     console.log('Created offchain accounts', accounts);
     return accounts;
 };
@@ -44,7 +43,7 @@ const createOffChainAccounts = async (snapshotId, ownerType, ownerId, month, kne
 const getOffChainAccountBalances = (ownerType, ownerId, month) => {
 
     let result = [];
-    if (ownerMapping[ownerType] && ownerMapping[ownerType][ownerId]) {
+    if (ownerMapping[ownerType] && ownerMapping[ownerType][ownerId] && dataMapping[ownerMapping[ownerType][ownerId]]) {
         result = getBalancesFromMapping(ownerMapping[ownerType][ownerId], month);
     }
     return result;

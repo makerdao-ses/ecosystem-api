@@ -25,7 +25,8 @@ import getCounterPartyName from "./getCounterPartyName.js";
           const txData = protocolTransactions[i];
 
           const counterParty = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-          const counterPartyName = getCounterPartyName(counterParty);
+          const counterPartyResp = getCounterPartyName(counterParty);
+          const counterPartyName = counterPartyResp.name;
           const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
 
           const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;

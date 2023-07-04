@@ -67,7 +67,6 @@ WHERE NOT EXISTS (
 `,
               (err, res) => {
                 countMkr++;
-                console.log(err ? err.stack : res.command + ' ' + countMkr + ' rows affected');
               });
           } else {
             pool.query(
@@ -136,7 +135,6 @@ transferData.forEach(row => {
                 `,
                   (err, res) => {
                     countTransfer++;
-                    console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
                   });
                   //Write new entries
                   /*pool.query(

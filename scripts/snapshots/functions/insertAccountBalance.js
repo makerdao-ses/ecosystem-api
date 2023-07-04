@@ -121,16 +121,6 @@ const insertAccountBalance = async (allAccounts, knex) => {
                 outflow: resp.outflow,
                 includesOffChain: false
             });
-
-            await knex('SnapshotAccountBalance').insert({
-                snapshotAccountId: resp.snapshotAccountId,
-                token: 'DAI',
-                initialBalance: 0,
-                newBalance: resp.totalAmount*1.05,
-                inflow: resp.inflow*1.05,
-                outflow: resp.outflow*1.05,
-                includesOffChain: true
-            });
         
         //if exists - update
     }));

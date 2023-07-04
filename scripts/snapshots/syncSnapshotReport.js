@@ -10,6 +10,7 @@ import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
 import createOffChainAccounts from './functions/createOffChainAccounts.js';
 import processPaymentProcessorTransactions from './functions/processPaymentProcessorTransactions.js';
+import insertMissingPaymentProcessorTransactions from './functions/insertMissingPaymentProcessorTransactions.js';
 import setTxLabel from './functions/setTxLabel.js';
 
 const makerProtocolAddresses = [
@@ -46,14 +47,20 @@ for(let i = 0; i < owner.accounts.length; i++){
 
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
+
+let paymentProcessorId;
 if(paymentProcessorTransactions.length>0 && singularAccounts){
-    await processPaymentProcessorTransactions(snapshotReport.id, paymentProcessorTransactions, knex);
+    paymentProcessorId = await processPaymentProcessorTransactions(snapshotReport.id, paymentProcessorTransactions, knex);
 }
 let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);
 
 await setTxLabel(allAccounts, knex);
 
 await insertAccountBalance(allAccounts, knex);
+
+if(paymentProcessorId){
+    await insertMissingPaymentProcessorTransactions(paymentProcessorId, month, knex);
+}
 
 
 
