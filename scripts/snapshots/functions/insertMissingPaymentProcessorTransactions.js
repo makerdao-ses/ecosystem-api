@@ -82,6 +82,9 @@ else{
         token: 'DAI',
         txLabel: 'Offchain payment(s)',
         counterPartyName: 'Unspecified Recipient(s)',
+        block: "Null",
+        txHash: "Null",
+        counterParty: "Null"
     });
 }
 

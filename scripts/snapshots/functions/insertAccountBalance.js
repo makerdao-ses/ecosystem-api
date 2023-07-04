@@ -1,4 +1,4 @@
-const insertAccountBalanceOffChain = async (allAccounts, knex) => {
+const insertAccountBalanceExcludingOffChain = async (allAccounts, knex) => {
 
     let formattedResponse = [];
 
@@ -66,7 +66,14 @@ const insertAccountBalanceOffChain = async (allAccounts, knex) => {
     return formattedResponse;
 };
 
-const insertAccountBalance = async (allAccounts, knex) => {
+
+//ExcludingOffChain - Filter out payment processor ^^
+
+//InlcudingOffChain(T) - Include payment processor from internal address and internal id
+
+
+
+const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
 
     let formattedResponse = [];
 
@@ -121,6 +128,7 @@ const insertAccountBalance = async (allAccounts, knex) => {
                 outflow: resp.outflow,
                 includesOffChain: false
             });
+
         
         //if exists - update
     }));
@@ -129,7 +137,7 @@ const insertAccountBalance = async (allAccounts, knex) => {
     return formattedResponse;
 };
 
-export default insertAccountBalance;
+export default insertAccountBalanceIncludingOffChain;
 
 
 

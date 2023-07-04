@@ -1,3 +1,12 @@
+import reportDatesSAS from "../data/reportDates-SAS.js";
+
+const ownerMapping = {
+  'CoreUnit': {
+      '19': reportDatesSAS
+  }
+};
+
+
 const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
 
     console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
@@ -5,6 +14,7 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
 
     let start = null;
     let end = null;
+    let reportMonth = null;
 
     //If month report - ownerType (no draft)
 
@@ -13,6 +23,18 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
       const startAndEnd = getStartAndEndDates(monthDate);
       start = startAndEnd.firstDay;
       end =  startAndEnd.lastDay;
+
+      const [m, y] = month.split('/');
+      const dateObject = new Date(y, m);
+      const keyMonthString = `${y}/${m}`;
+      console.log(keyMonthString);
+
+      const dateFile = ownerMapping[ownerType][ownerId];
+      const startHash = dateFile[0][keyMonthString];
+      const endHash = dateFile[0][indexOf];
+      console.log(dateFile);
+      console.log(startHash);
+      reportMonth = dateObject;
     }
     else {
       ownerType = ownerType+'Draft';

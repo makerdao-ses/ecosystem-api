@@ -79,6 +79,18 @@ const getBalancesFromMapping = (balanceData, month) => {
         console.log(`No offchain data provided for ${balanceData} yet`);
     }
 
+    //Create an object with the date as a key and the value nested for the complete timeframe of the offchain data
+    /*{ 
+        '30/06/2023': [ 
+          { token: 'USD', ... }, 
+          { token: 'DKK', ... }, 
+       ],
+       '31/07/2023': [ 
+          { token: 'USD', ... }, 
+          { token: 'DKK', ... }, 
+       ], 
+       ...
+     }*/
     const balances = jsonData
         .filter(entry => !entry.Name.includes('USD value'))
         .reduce((result, entry) => {

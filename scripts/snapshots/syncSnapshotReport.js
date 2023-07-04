@@ -27,9 +27,13 @@ console.log(`Syncing the ${month||"draft"} snapshot report for ${budgetPath||'al
 let knex = getKnexInstance();
 let apiToken = await getApiToken();
 let owner = await getOwnerAndAccountsFromBudgetPath(budgetPath, knex);
+const blockNumberRange = calculateBlockNumberRange(owner, month)
+//{  initialBlock: null, finalBlock: null };
 let snapshotReport = await createSnapshotReport(owner.type, owner.id, month, knex);
 let protocolTransactions = [];
 let paymentProcessorTransactions = [];
+
+
 
 for(let i = 0; i < owner.accounts.length; i++){
 
@@ -38,6 +42,8 @@ for(let i = 0; i < owner.accounts.length; i++){
         let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], false, knex);
         owner.accounts[i].accountId = snapshotAccount.id;
         let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, knex, snapshotReport.id);
+        //owner.accounts[i].initialBalance = output.initialBalance
+        //if(output.snapshotStart || output.snapshotEnd){updateSnapshotReport(start, end)}
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
         paymentProcessorTransactions = paymentProcessorTransactions.concat(output.paymentProcessorTransactions);
         owner.accounts[i].addedTransactions = output.addedTransactions;

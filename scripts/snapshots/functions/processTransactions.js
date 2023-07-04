@@ -6,6 +6,9 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
     let protocolTransactions = [];
     let paymentProcessorTransactions = [];
     let addedTransactionsCount = 0;
+    let initialBalance = 0;
+    let snapshotStart = null;
+    let snapshotEnd = null;
 
     for (let i = 0; i < transactions.length; i++) {
 
@@ -18,6 +21,12 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
             const counterPartyResp = getCounterPartyName(counterParty);
             const counterPartyName = counterPartyResp.name;
             const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
+
+            // If txData.block between initial block number and final block number THEN we do the insert
+            // Else IF txData.block < initial block number then add to inital balance += amount
+            // If txData.block = initialBlockNumber THEN remember SnapshotStart
+            // If txData.block = finalBlockNumber THEN remember SnapshotEnd
+
 
             await knex('SnapshotAccountTransaction').insert({
                 block: txData.block,
@@ -44,7 +53,10 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
     return {
         addedTransactions: addedTransactionsCount,
         protocolTransactions: protocolTransactions,
-        paymentProcessorTransactions: paymentProcessorTransactions
+        paymentProcessorTransactions: paymentProcessorTransactions,
+        initialBalance: initialBalance,
+        snapshotStart: snapshotStart,
+        snapshotEnd: snapshotEnd
     };
 };
 
