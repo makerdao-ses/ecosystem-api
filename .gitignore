@@ -3,3 +3,4 @@
 /node_modules
 /seeds/07-DevSeed.js
 /coverage
+/scripts/snapshots/data/runCodes.sh

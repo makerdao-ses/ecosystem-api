@@ -145,13 +145,16 @@ const cuMipTable = async (data) => {
 
 //Parse the CU Code from the MIP API response
 const cuCodeParse = (tags) => {
+    if(tags){
     for (let i = 0; i < tags.length; i++) {
         const tag = tags[i];
         const match = tag.match(/([a-z]{3,4}-001)$/);
         if (match) {
+            console.log(match);
             return match[1];
         }
     }
+}
     return null;
 };
 

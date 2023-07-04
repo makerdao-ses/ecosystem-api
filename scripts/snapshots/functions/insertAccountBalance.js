@@ -1,4 +1,4 @@
-const insertAccountBalanceOffChain = async (allAccounts, knex) => {
+const insertAccountBalanceExcludingOffChain = async (allAccounts, knex) => {
 
     let formattedResponse = [];
 
@@ -66,18 +66,23 @@ const insertAccountBalanceOffChain = async (allAccounts, knex) => {
     return formattedResponse;
 };
 
-const insertAccountBalance = async (allAccounts, knex) => {
+
+//ExcludingOffChain - Filter out payment processor ^^
+
+//InlcudingOffChain(T) - Include payment processor from internal address and internal id
+
+
+
+const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
 
     let formattedResponse = [];
 
-    console.log(allAccounts);
+    allAccounts = allAccounts.allAccounts;
     
     for (let i = 0; i < allAccounts.length; i++) {
 
         const idsList = allAccounts[i].internalIds.join(', ');
         const addressesList = "'" + allAccounts[i].internalAddresses.join("', '") + "'";
-        console.log('ids list', idsList);
-        console.log('addresses list', addressesList);
 
         const result = await knex.raw(`
         SELECT 
@@ -110,15 +115,10 @@ const insertAccountBalance = async (allAccounts, knex) => {
             .where({
                 snapshotAccountId: resp.snapshotAccountId,
                 token: 'DAI',
-                initialBalance: 0,
-                newBalance: resp.totalAmount,
-                inflow: resp.inflow,
-                outflow: resp.outflow,
-                includesOffChain: true
             })
-            .first();
+            .del();
 
-        if (!exists) {
+        
             await knex('SnapshotAccountBalance').insert({
                 snapshotAccountId: resp.snapshotAccountId,
                 token: 'DAI',
@@ -126,9 +126,10 @@ const insertAccountBalance = async (allAccounts, knex) => {
                 newBalance: resp.totalAmount,
                 inflow: resp.inflow,
                 outflow: resp.outflow,
-                includesOffChain: true
+                includesOffChain: false
             });
-        }
+
+        
         //if exists - update
     }));
 
@@ -136,7 +137,7 @@ const insertAccountBalance = async (allAccounts, knex) => {
     return formattedResponse;
 };
 
-export default insertAccountBalance;
+export default insertAccountBalanceIncludingOffChain;
 
 
 

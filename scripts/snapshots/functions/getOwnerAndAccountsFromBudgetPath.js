@@ -5,7 +5,8 @@ const ownerTypeMapping = {
     "spfs": "SpecialPurposeFund",
     "projects": "Project",
     "ecosystem-actors": "EcosystemActor",
-    "scopes": "EcosystemActor"
+    "scopes": "EcosystemActor",
+    "payment-processors": "EcosystemActor"
 };
 const getOwnerId = async (ownerType, idSegment, knex) => {
     if (ownerType === 'Delegates') {
@@ -69,6 +70,7 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
                 type: accounts[i].Type,
                 label: accounts[i].Name,
                 address: accounts[i].Address,
+                offchain: false
             });
         }
     }

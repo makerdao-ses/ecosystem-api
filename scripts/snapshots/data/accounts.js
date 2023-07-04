@@ -670,4 +670,40 @@ export default [{
     "budget path 4": "multichain-engeering",
     "Type": "Auditor",
     "Address": "0x868b44e8191a2574334deb8e7efa38910df941fa"
+},
+{
+    "Name": "Accountable Payment Processor",
+    "budget path 1": "makerdao",
+    "budget path 2": "payment-processors",
+    "budget path 3": "accountable",
+    "budget path 4": "",
+    "Type": "PaymentProcessor",
+    "Address": "0x3c267dfc8ba8f7359af0d8afc45b43731173236d" 
+},
+{
+    "Name": "Maker Protocol Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "protocol",
+    "budget path 3": "",
+    "budget path 4": "",    
+    "Type": "Protocol",
+    "Address": "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" 
+},
+{
+    "Name": "Maker Protocol Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "protocol",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "Protocol",
+    "Address": "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb" 
+},
+{
+    "Name": "Maker Protocol Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "protocol",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "Protocol",
+    "Address": "0x0000000000000000000000000000000000000000" 
 }];
