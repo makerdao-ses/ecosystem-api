@@ -49,6 +49,7 @@ export const typeDefs = [gql`
 
     type ActualsComparison {
         month: String
+        currency: String
         reportedActuals: Float
         netExpenses: ActualsComparisonNetExpenses
     }

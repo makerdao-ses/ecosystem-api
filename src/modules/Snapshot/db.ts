@@ -89,6 +89,7 @@ export class SnapshotModel {
     async getActualsComparison(snapshotId: number, months: string[]) {
         return months.map(month => ({
             month,
+            currency: 'DAI',
             reportedActuals: snapshotId * 10000,
             netExpenses: {
                 onChainOnly: {
