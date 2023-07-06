@@ -44,7 +44,6 @@ for(let i = 0; i < owner.accounts.length; i++){
         let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, monthInfo, knex);
         console.log(output);
         owner.accounts[i].initialBalance = output.initialBalance;
-        //if(output.snapshotStart || output.snapshotEnd){updateSnapshotReport(start, end)}
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
         paymentProcessorTransactions = paymentProcessorTransactions.concat(output.paymentProcessorTransactions);
         owner.accounts[i].addedTransactions = output.addedTransactions;
@@ -52,6 +51,7 @@ for(let i = 0; i < owner.accounts.length; i++){
 }
 
 
+//Rewrite protocol transactions - overwrites the address in current logic
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 const singularAccounts = owner.accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
 
@@ -68,7 +68,5 @@ await insertAccountBalance(allAccounts, knex);
 if(paymentProcessorId){
     await insertMissingPaymentProcessorTransactions(paymentProcessorId, monthInfo, knex);
 }
-
-
 
 knex.destroy();
