@@ -1,4 +1,4 @@
-import reportDatesSAS from "../data/reportDates-SAS.js";
+import reportDatesSAS from "../data/blockNumbers-SAS.js";
 
 const ownerMapping = {
   'CoreUnit': {
@@ -7,63 +7,34 @@ const ownerMapping = {
 };
 
 
-const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
+const createSnapshotReport = async (ownerType, ownerId, monthInfo, knex) => {
 
-    console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
+    console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${monthInfo.month}`);
 
-
-    let start = null;
-    let end = null;
     let reportMonth = null;
 
     //If month report - ownerType (no draft)
+    if(!monthInfo.month){
+      ownerType = ownerType+'Draft';}
 
-    if(month) {
-      let monthDate = convertMonthStringToDate(month);
-      const startAndEnd = getStartAndEndDates(monthDate);
-      start = startAndEnd.firstDay;
-      end =  startAndEnd.lastDay;
-
-      const [m, y] = month.split('/');
-      const dateObject = new Date(y, m);
-      const keyMonthString = `${y}/${m}`;
-      console.log(keyMonthString);
-
-      const dateFile = ownerMapping[ownerType][ownerId];
-      const startHash = dateFile[0][keyMonthString];
-      const endHash = dateFile[0][indexOf];
-      console.log(dateFile);
-      console.log(startHash);
-      reportMonth = dateObject;
-    }
-    else {
-      ownerType = ownerType+'Draft';
-    }
-
-    
-
+      console.log('OwnerType: ',ownerType);
     
     const existingSnapshots = await knex('Snapshot')
         .select('id')
         .where({
-          start: start,
-          end: end,
           ownerType: ownerType,
           ownerId,
         });
         
-
-        
-
-    
     existingSnapshots.forEach(s => {
       removeSnapshot(s.id, knex);
     });
 
       const newSnapshot = await knex('Snapshot')
         .insert({
-          start: start,
-          end: end,
+          start: monthInfo.firstDay,
+          end: monthInfo.lastDay,
+          month: monthInfo.lastDay,
           ownerType: ownerType,
           ownerId,
         }).returning('id');

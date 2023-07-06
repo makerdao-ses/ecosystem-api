@@ -75,15 +75,9 @@ const fetchTransactionData = async (address, ownerType, ownerId, month, apiToken
     //Check the code in the response matches the report
     data = await checkOwnerCode(data, ownerType, ownerId, knex);
 
-    if (month) {
-        const {
-            startTimestamp,
-            endTimestamp
-        } = await getMonthTimestamps(month);
-        formattedData = await formatResponse(data, startTimestamp, endTimestamp);
-    } else {
+   
         formattedData = data;
-    }
+    
 
     return formattedData;
 };

@@ -144,7 +144,6 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         groupUpstreamIds: {}
     };
 
-    
     // Create Protocol Account
     const protocolAccount = {
         id: protocolAccountId,
@@ -173,7 +172,8 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
             internalAddresses: [
                 singularAccounts[i].address.toLowerCase()
             ],
-            internalIds: [singularAccounts[i].accountId]
+            internalIds: [singularAccounts[i].accountId],
+            initialBalance: singularAccounts[i].initialBalance
         };
         accountsInfo.allAccounts.push(newAccount);
         const key = newAccount.offChain ? 'offChain' : 'onChain';
@@ -189,6 +189,7 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         group: 'Reserve',
         internalAddresses: singularAccountsAddresses.onChain.concat(singularAccountsAddresses.offChain),
         internalIds: [coreUnitReservesAccountId].concat(singularAccountsIds.onChain).concat(singularAccountsIds.offChain)
+        //TODO Everywhere a new account is created - for all accounts, add the initial balances
     };
     accountsInfo.allAccounts.push(coreUnitReservesAccount);
     accountsInfo.groupUpstreamIds.Reserve = coreUnitReservesAccountId;

@@ -1,6 +1,6 @@
 import accounts from '../data/accounts.js';
 
-const getCounterPartyName = (counterParty) => {
+const getCounterPartyData = (counterParty) => {
   let paymentProcessor;
     for (const account of accounts) {
       if (account.Address.toLowerCase() === counterParty.toLowerCase()) {
@@ -13,4 +13,4 @@ const getCounterPartyName = (counterParty) => {
     return {name: 'External Address', paymentProcessor: paymentProcessor};
   };
 
-  export default getCounterPartyName;
+  export default getCounterPartyData;

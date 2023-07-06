@@ -1,4 +1,4 @@
-import getCounterPartyName from "./getCounterPartyName.js";
+import getCounterPartyData from "./getCounterPartyData.js";
 
   const processProtocolTransactions = async (snapshotReportId, protocolTransactions, knex) => {
 
@@ -25,7 +25,7 @@ import getCounterPartyName from "./getCounterPartyName.js";
           const txData = protocolTransactions[i];
 
           const counterParty = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-          const counterPartyResp = getCounterPartyName(counterParty);
+          const counterPartyResp = getCounterPartyData(counterParty);
           const counterPartyName = counterPartyResp.name;
           const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
 

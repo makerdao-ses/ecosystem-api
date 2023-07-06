@@ -100,12 +100,16 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
         console.log(result.rows);
 
         if (result) {
-
+            let initialBalance = 0;
+            if(allAccounts[i].initialBalance && allAccounts[i].initialBalance.DAI){
+                initialBalance = allAccounts[i].initialBalance.DAI;
+            }
             formattedResponse.push({
                 snapshotAccountId: allAccounts[i].id,
                 totalAmount: (parseFloat(result.rows[0].outflow || 0) + parseFloat(result.rows[0].inflow || 0)).toFixed(2),
                 inflow: result.rows[0].inflow || 0,
-                outflow: result.rows[0].outflow || 0
+                outflow: result.rows[0].outflow || 0,
+                initialBalance: initialBalance
             });
 
         }
@@ -117,19 +121,17 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
                 token: 'DAI',
             })
             .del();
-
         
             await knex('SnapshotAccountBalance').insert({
                 snapshotAccountId: resp.snapshotAccountId,
                 token: 'DAI',
-                initialBalance: 0,
-                newBalance: resp.totalAmount,
+                initialBalance: resp.initialBalance,
+                newBalance: parseFloat(resp.initialBalance) + parseFloat(resp.totalAmount),
                 inflow: resp.inflow,
                 outflow: resp.outflow,
                 includesOffChain: false
             });
 
-        
         //if exists - update
     }));
 

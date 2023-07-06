@@ -1,4 +1,5 @@
 import getOwnerAndAccountsFromBudgetPath from './functions/getOwnerAndAccountsFromBudgetPath.js';
+import getMonthInfo from './functions/getMonthInfo.js';
 import getApiToken from './functions/getApiToken.js';
 import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
@@ -27,9 +28,8 @@ console.log(`Syncing the ${month||"draft"} snapshot report for ${budgetPath||'al
 let knex = getKnexInstance();
 let apiToken = await getApiToken();
 let owner = await getOwnerAndAccountsFromBudgetPath(budgetPath, knex);
-const blockNumberRange = calculateBlockNumberRange(owner, month)
-//{  initialBlock: null, finalBlock: null };
-let snapshotReport = await createSnapshotReport(owner.type, owner.id, month, knex);
+const monthInfo = getMonthInfo(owner, month);
+let snapshotReport = await createSnapshotReport(owner.type, owner.id, monthInfo, knex);
 let protocolTransactions = [];
 let paymentProcessorTransactions = [];
 
@@ -41,8 +41,9 @@ for(let i = 0; i < owner.accounts.length; i++){
     if (transactions.length > 0){
         let snapshotAccount = await createSnapshotAccount(snapshotReport.id, owner.accounts[i], false, knex);
         owner.accounts[i].accountId = snapshotAccount.id;
-        let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, knex, snapshotReport.id);
-        //owner.accounts[i].initialBalance = output.initialBalance
+        let output = await processTransactions(snapshotAccount, transactions, makerProtocolAddresses, monthInfo, knex);
+        console.log(output);
+        owner.accounts[i].initialBalance = output.initialBalance;
         //if(output.snapshotStart || output.snapshotEnd){updateSnapshotReport(start, end)}
         protocolTransactions = protocolTransactions.concat(output.protocolTransactions);
         paymentProcessorTransactions = paymentProcessorTransactions.concat(output.paymentProcessorTransactions);
@@ -65,7 +66,7 @@ await setTxLabel(allAccounts, knex);
 await insertAccountBalance(allAccounts, knex);
 
 if(paymentProcessorId){
-    await insertMissingPaymentProcessorTransactions(paymentProcessorId, month, knex);
+    await insertMissingPaymentProcessorTransactions(paymentProcessorId, monthInfo, knex);
 }
 
 

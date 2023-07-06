@@ -1,4 +1,4 @@
-import getCounterPartyName from "./getCounterPartyName.js";
+import getCounterPartyData from "./getCounterPartyData.js";
 
 const processPaymentProcessorTransactions = async (snapshotReportId, ppTransactions, knex) => {
 
@@ -15,7 +15,7 @@ const processPaymentProcessorTransactions = async (snapshotReportId, ppTransacti
         const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
         const account = txData.flow === 'inflow' ? txData.sender : txData.receiver;
         const counterParty = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-        const counterPartyResp = getCounterPartyName(counterParty);
+        const counterPartyResp = getCounterPartyData(counterParty);
         const counterPartyName = counterPartyResp.name;
 
         if (!processorAccountId || processorAccount != account) {
