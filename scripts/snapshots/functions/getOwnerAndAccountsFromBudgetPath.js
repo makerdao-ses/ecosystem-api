@@ -42,6 +42,10 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
 };
 
 const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
+    if (!budgetPath) {
+        throw new Error(`No budget path provided. Try running 'node ./syncSnapshotReport.js makerdao/core-units/SES-001' or similar.`);
+    }
+
     let segments = budgetPath.toLowerCase().split('/');
 
     if (segments[0] != 'makerdao') {
@@ -50,7 +54,7 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
 
     let ownerType = ownerTypeMapping[segments[1]];
     if (!ownerType) {
-        throw new Error(`Expected owner type as second budget path segment but got "${segments[1]}"`);
+        throw new Error(`Expected owner type as second budget path segment but got "${segments[1]}". Valid owner types are: "${Object.keys(ownerTypeMapping).join('", "')}"`);
     }
 
     const idSegment = segments[2] || "";
