@@ -4,11 +4,13 @@ export const typeDefs = [gql`
 
     type Snapshot {
         id: ID!
+        period: String
         start: DateTime
         end: DateTime
         ownerType: String
         ownerId: ID
         snapshotAccount: [SnapshotAccount]
+        actualsComparison: [ActualsComparison]
     }
 
     type SnapshotAccount { 
@@ -21,7 +23,6 @@ export const typeDefs = [gql`
         offChain: Boolean
         snapshotAccountTransaction: [SnapshotAccountTransaction]
         snapshotAccountBalance: [SnapshotAccountBalance]
-
     }
 
     type SnapshotAccountTransaction { 
@@ -46,12 +47,27 @@ export const typeDefs = [gql`
         includesOffChain: Boolean
     }
 
+    type ActualsComparison {
+        month: String
+        reportedActuals: Float
+        netExpenses: ActualsComparisonNetExpenses
+    }
+
+    type ActualsComparisonNetExpenses {
+        onChainOnly: ActualsComparisonNetExpensesItem!
+        offChainIncluded: ActualsComparisonNetExpensesItem
+    }
+
+    type ActualsComparisonNetExpensesItem {
+        amount: Float
+        difference: Float
+    }
+
     input SnapshotFilter {
         id: ID
-        start: DateTime
-        end: DateTime
         ownerType: String!
         ownerId: ID
+        period: String
     }
 
     extend type Query { 
@@ -64,7 +80,20 @@ export const resolvers = {
     Query: {
         // schema object: (parent, args, context, info) => {}
         snapshots: async (_: any, filter: any, { dataSources }: any) => {
-            return dataSources.db.Snapshot.getSnapshots(filter);
+            const result = await dataSources.db.Snapshot
+                .getSnapshots(filter);
+
+            return result.map((report: {month?:string, period:string|null}) => {
+                if (report.month) {
+                    const month = report.month;
+                    report.period = month.slice(0, 4) + '/' + month.slice(5, 7);
+                } else {
+                    report.period = null;
+                }
+
+                report.month = undefined;
+                return report
+            });
         }
     },
     Snapshot: {
