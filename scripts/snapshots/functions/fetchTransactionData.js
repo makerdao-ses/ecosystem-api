@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
-const fetchTransactionData = async (address, ownerType, ownerId, month, apiToken, knex) => {
-    console.log(`\nFetching transactions for ${ownerType}/${ownerId}, account ${address}, ${month||'draft'}`);
+const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex) => {
+    console.log(`\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`);
 
     address = address.toLowerCase();
     let result = [];

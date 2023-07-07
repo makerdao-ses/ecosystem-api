@@ -1,11 +1,15 @@
-import getCounterPartyNameAndPaymentProcessorStatus from "./getCounterPartyNameAndPaymentProcessorStatus.js";
+import getAccountInfoFromConfig from "./getAccountInfoFromConfig.js";
 
-const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, monthInfo, knex) => {
-    let protocolTransactions = [];
-    let paymentProcessorTransactions = [];
+const processTransactions = async (snapshotAccount, transactions, monthInfo, knex) => {
+    const protocolTransactions = [];
+    const paymentProcessorTransactions = [];
+    const initialBalanceByToken = {};
+    const timespan = {
+        start: null,
+        end: null
+    };
     let addedTransactionsCount = 0;
-    let initialBalanceByToken = {};
-
+    
     console.log(`\nProcessing ${transactions.length} transactions for account ${snapshotAccount.id}: ${snapshotAccount.accountLabel} (${snapshotAccount.accountAddress})`);
     console.log(` ...block range [${monthInfo.blockNumberRange.initial}-${monthInfo.blockNumberRange.final}] for month:${monthInfo.month}`)
     
@@ -36,7 +40,7 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
             || !monthInfo.blockNumberRange.final
         ) {
             const counterPartyAddress = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-            const counterPartyInfo = getCounterPartyNameAndPaymentProcessorStatus(counterPartyAddress);
+            const counterPartyInfo = getAccountInfoFromConfig(counterPartyAddress);
 
             // Add the transaction to the selected account in the database
             await knex('SnapshotAccountTransaction').insert({
@@ -53,13 +57,22 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
             addedTransactionsCount++;
 
             // Keep track of included payment processor transactions
-            if (counterPartyInfo.paymentProcessor) {
+            if (counterPartyInfo.offChain) {
                 paymentProcessorTransactions.push(txData);
             }
             
             // Keep track of included Maker Protocol transactions
-            if (makerProtocolAddresses.indexOf(counterPartyAddress.toLowerCase()) > -1) {
+            if (counterPartyInfo.isProtocolAddress) {
                 protocolTransactions.push(txData);
+            }
+
+            // Keep track of the earliest and oldest timestamp
+            if (!timespan.start || txData.timestamp < timespan.start) {
+                timespan.start = txData.timestamp;
+            }
+
+            if (!timespan.end || txData.timestamp > timespan.end) {
+                timespan.end = txData.timestamp;
             }
         }
     }
@@ -68,12 +81,14 @@ const processTransactions = async (snapshotAccount, transactions, makerProtocolA
     console.log(` ...detected ${protocolTransactions.length} protocol transaction(s)`);
     console.log(` ...detected ${paymentProcessorTransactions.length} payment processor transaction(s)`);
     console.log(` ...calculated initial balance(s)`, initialBalanceByToken);
+    console.log(` ...calculated timespan: ${timespan.start} => ${timespan.end}`);
 
     return {
         addedTransactions: addedTransactionsCount,
         protocolTransactions,
         paymentProcessorTransactions,
         initialBalance: initialBalanceByToken,
+        timespan
     };
 };
 

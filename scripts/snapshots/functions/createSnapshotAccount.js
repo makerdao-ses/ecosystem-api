@@ -17,6 +17,4 @@ const createSnapshotAccount = async (snapshotReportId, account, offChain, knex) 
   return insertedAccount[0];
 };
 
-
-
 export default createSnapshotAccount;

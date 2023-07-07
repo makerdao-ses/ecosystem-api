@@ -1,48 +1,47 @@
-import reportDatesSAS from "../data/blockNumbers-SAS.js";
+import blockNumbersSAS from "../data/blockNumbers-SAS.js";
 
 const ownerMapping = {
   'CoreUnit': {
-    '19': reportDatesSAS
+    '19': blockNumbersSAS
   }
 };
 
-const createSnapshotReport = async (ownerType, ownerId, monthInfo, knex) => {
+const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
+  console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
 
-  console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${monthInfo.month}`);
+  const snapshotKey = {
+    ownerType: (month ? ownerType : ownerType + 'Draft'),
+    ownerId,
+    month: (month ? convertMonthStringToDate(month) : null)
+  };
 
-  const reportingMonth = monthInfo.month ?
-    new Date(monthInfo.month.slice(0, 4), parseFloat(monthInfo.month.slice(5, 7)) - 1, 1) :
-    null;
-
-  if (!monthInfo.month) {
-    ownerType = ownerType + 'Draft';
+  const existingSnapshots = await knex('Snapshot').select('id').where(snapshotKey);
+  for (let i=0; i<existingSnapshots.length; i++) {
+    await removeSnapshot(existingSnapshots[i].id, knex);
   }
 
-  const existingSnapshots = await knex('Snapshot')
-    .select('id')
-    .where({
-      ownerType,
-      ownerId,
-      month: reportingMonth
-    });
-
-  existingSnapshots.forEach(s => {
-    removeSnapshot(s.id, knex);
-  });
-
-  const newSnapshot = await knex('Snapshot')
-    .insert({
-      start: monthInfo.firstDay,
-      end: monthInfo.lastDay,
-      month: reportingMonth,
-      ownerType,
-      ownerId,
-    }).returning('id');
+  const newSnapshot = 
+    await knex('Snapshot')
+      .insert({
+        ...snapshotKey,
+        start: null,
+        end: null,
+      })
+      .returning('id');
 
   return {
     id: newSnapshot[0].id
   };
 };
+
+const convertMonthStringToDate = (month) => {
+  const monthPattern = /^[0-9]{4}[\/\-][0-9]{2}([\/\-]01)*$/;
+  if (!monthPattern.test(month)) {
+    throw new Error(`"${month}" is not a valid month string. Use YYYY/MM or YYYY-MM-01 format.`);
+  }
+
+  return new Date(parseInt(month.slice(0, 4)), parseInt(month.slice(5, 7)) - 1, 1);
+}
 
 const removeSnapshot = async (snapshotId, knex) => {
   const snapshotAccountIds = await knex('SnapshotAccount')
@@ -80,35 +79,5 @@ const removeSnapshot = async (snapshotId, knex) => {
     .where('id', snapshotId)
     .del();
 };
-
-function getStartAndEndDates(month) {
-
-  // Get the year and month components from the provided date
-
-  // Get the year and month components from the provided date
-  const year = month.getUTCFullYear();
-  const monthIndex = month.getUTCMonth();
-
-  // Create a new Date object for the first day of the month
-  const firstDay = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0));
-
-  // Create a new Date object for the last day of the month
-  const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999));
-
-  return {
-    firstDay,
-    lastDay
-  };
-}
-
-function convertMonthStringToDate(monthString) {
-  // Split the month string into year and month parts
-  const [year, month] = monthString.split('/');
-
-  // Create a new Date object with the year and month values
-  const date = new Date(year, parseInt(month) - 1, 1);
-
-  return date;
-}
 
 export default createSnapshotReport;
