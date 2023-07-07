@@ -1,10 +1,13 @@
 import knex from 'knex';
 // Connect to database selected in the .env file
-const getKnexInstance = () => { 
+const getKnexInstance = () => {
     return knex({
         client: 'pg',
-        connection: process.env.PG_CONNECTION_STRING,
-        idleTimeoutMillis: 0,
+        connection: {
+            connectionString: process.env.PG_CONNECTION_STRING,
+            ssl: { rejectUnauthorized: false }
+        },
+        idleTimeoutMillis: 0
     });
 };
 
