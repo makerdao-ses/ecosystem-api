@@ -179,7 +179,7 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
                 singularAccounts[i].address.toLowerCase()
             ],
             internalIds: [singularAccounts[i].accountId],
-            initialBalance: singularAccounts[i].initialBalance
+            //initialBalance: singularAccounts[i].initialBalance
         };
         accountsInfo.allAccounts.push(newAccount);
         const key = newAccount.offChain ? 'offChain' : 'onChain';
