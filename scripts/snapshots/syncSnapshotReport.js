@@ -67,6 +67,8 @@ for (let i=0; i<accounts.length; i++) {
     }
 }
 
+
+//Rewrite protocol transactions - overwrites the address in current logic
 let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
 const singularAccounts = accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
 
@@ -83,7 +85,5 @@ await insertAccountBalance(allAccounts, knex);
 if(paymentProcessorId){
     await insertMissingPaymentProcessorTransactions(paymentProcessorId, monthInfo, knex);
 }
-
-
 
 knex.destroy();
