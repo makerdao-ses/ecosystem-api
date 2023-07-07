@@ -82,8 +82,8 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
     
     for (let i = 0; i < allAccounts.length; i++) {
 
-        const idsList = allAccounts[i].internalIds.join(', ');
-        const addressesList = "'" + allAccounts[i].internalAddresses.join("', '") + "'";
+        const idsList = allAccounts[i].offChainIncluded.internalIds.join(', ');
+        const addressesList = "'" + allAccounts[i].offChainIncluded.internalAddresses.join("', '") + "'";
 
         const result = await knex.raw(`
             SELECT 
@@ -103,15 +103,15 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
 
         if (result) {
             let initialBalance = 0;
-            if(allAccounts[i].initialBalance && allAccounts[i].initialBalance.DAI){
-                initialBalance = allAccounts[i].initialBalance.DAI;
+            if(allAccounts[i].offChainIncluded.initialBalance && allAccounts[i].offChainIncluded.initialBalance.DAI){
+                initialBalance = allAccounts[i].offChainIncluded.initialBalance.DAI;
             }
             formattedResponse.push({
-                snapshotAccountId: allAccounts[i].id,
+                snapshotAccountId: allAccounts[i].accountId,
                 totalAmount: (parseFloat(result.rows[0].outflow || 0) + parseFloat(result.rows[0].inflow || 0)).toFixed(2),
                 inflow: result.rows[0].inflow || 0,
                 outflow: result.rows[0].outflow || 0,
-                initialBalance: initialBalance
+                initialBalance
             });
 
         }

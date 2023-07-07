@@ -4,7 +4,7 @@ const setTxLabel = async (allAccounts, knex) => {
   const allAccountsInfo = allAccounts.allAccounts;
 
   const distinctInternalAddresses = Array.from(
-    new Set(allAccountsInfo.map(item => item.internalAddresses).flat())
+    new Set(allAccountsInfo.map(item => item.offChainIncluded.internalAddresses).flat())
   );
 
   const upstreamSet = upstreamDownstream.upstreamSet;
@@ -37,9 +37,9 @@ const setTxLabel = async (allAccounts, knex) => {
       let internalAddressesList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.id === parseInt(key));
+        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
         if (obj) {
-          obj.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach(address => {
             if (!internalAddressesList.includes(address)) {
               internalAddressesList.push(address);
             }
@@ -82,9 +82,9 @@ const setTxLabel = async (allAccounts, knex) => {
       let internalAddressesDownstreamList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.id === parseInt(key));
+        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
         if (obj) {
-          obj.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach(address => {
             if (!internalAddressesDownstreamList.includes(address)) {
               internalAddressesDownstreamList.push(address);
             }
