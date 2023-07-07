@@ -1,70 +1,80 @@
-import getCounterPartyData from "./getCounterPartyData.js";
+import getCounterPartyNameAndPaymentProcessorStatus from "./getCounterPartyNameAndPaymentProcessorStatus.js";
 
 const processTransactions = async (snapshotAccount, transactions, makerProtocolAddresses, monthInfo, knex) => {
-
-    console.log(`Fetched ${transactions.length} transactions for ${snapshotAccount.accountAddress}`);
     let protocolTransactions = [];
     let paymentProcessorTransactions = [];
     let addedTransactionsCount = 0;
-    let initialBalance = {};
+    let initialBalanceByToken = {};
 
-    console.log(`Processing transactions between block ${monthInfo.blockNumberRange.initial} and ${monthInfo.blockNumberRange.final}`);
-
+    console.log(`\nProcessing ${transactions.length} transactions for account ${snapshotAccount.id}: ${snapshotAccount.accountLabel} (${snapshotAccount.accountAddress})`);
+    console.log(` ...block range [${monthInfo.blockNumberRange.initial}-${monthInfo.blockNumberRange.final}] for month:${monthInfo.month}`)
+    
     for (let i = 0; i < transactions.length; i++) {
-
         const txData = transactions[i];
         const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-            if (account === snapshotAccount.accountAddress) {
-            if(!initialBalance[txData.token]){
-                initialBalance[txData.token] = 0;
+        const amount = txData.flow === 'outflow' ? -txData.amount : txData.amount;
+
+        // Skip irrelevant transactions that belong to the counterparty wallet
+        if (account !== snapshotAccount.accountAddress) {
+            continue;
+        }
+
+        // Ensure that the initial balance is properly initialized
+        if (!initialBalanceByToken[txData.token]){
+            initialBalanceByToken[txData.token] = 0;
+        }
+        
+        // A block range is set and we haven't reached the first block yet 
+        //   => don't include the transaction yet, but increase the initial balance
+        if (monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial) {
+            initialBalanceByToken[txData.token] += amount;
+
+        // No block range is set or we haven't hit the final block of the set range yet
+        //   => include the transaction
+        } else if (
+            (monthInfo.blockNumberRange.final && txData.block < monthInfo.blockNumberRange.final)
+            || !monthInfo.blockNumberRange.final
+        ) {
+            const counterPartyAddress = txData.flow === 'inflow' ? txData.sender : txData.receiver;
+            const counterPartyInfo = getCounterPartyNameAndPaymentProcessorStatus(counterPartyAddress);
+
+            // Add the transaction to the selected account in the database
+            await knex('SnapshotAccountTransaction').insert({
+                snapshotAccountId: snapshotAccount.id,
+                block: txData.block,
+                timestamp: txData.timestamp,
+                txHash: txData.tx_hash,
+                token: txData.token,
+                counterParty: counterPartyAddress,
+                counterPartyName: counterPartyInfo.name,
+                amount: amount,
+            });
+
+            addedTransactionsCount++;
+
+            // Keep track of included payment processor transactions
+            if (counterPartyInfo.paymentProcessor) {
+                paymentProcessorTransactions.push(txData);
             }
-
-            const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
-            if(monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial){
-                console.log(`Adding ${amount} to initial balance`);
-                initialBalance[txData.token] += amount;
+            
+            // Keep track of included Maker Protocol transactions
+            if (makerProtocolAddresses.indexOf(counterPartyAddress.toLowerCase()) > -1) {
+                protocolTransactions.push(txData);
             }
-            else if ((monthInfo.blockNumberRange.final && txData.block < monthInfo.blockNumberRange.final) || !monthInfo.blockNumberRange.final){
-
-                    const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-                    const counterPartyResponse = getCounterPartyData(counterParty);
-                    const counterPartyName = counterPartyResponse.name;
-
-                    // If txData.block between initial block number and final block number THEN we do the insert
-                    // Else IF txData.block < initial block number then add to inital balance += amount
-
-
-                    await knex('SnapshotAccountTransaction').insert({
-                        block: txData.block,
-                        timestamp: txData.timestamp,
-                        txHash: txData.tx_hash,
-                        token: txData.token,
-                        counterParty: counterParty,
-                        counterPartyName: counterPartyName,
-                        amount: amount,
-                        snapshotAccountId: snapshotAccount.id,
-                    });
-
-                    addedTransactionsCount++;
-
-                    if (counterPartyResponse.paymentProcessor) {
-                        paymentProcessorTransactions.push(txData);
-                    }
-                    //Check MakerProtocol addressses
-                    if (makerProtocolAddresses.indexOf(counterParty.toLowerCase()) > -1) {
-                        protocolTransactions.push(txData);
-                    }
-                }
         }
     }
+
+    console.log(` ...added ${addedTransactionsCount} transaction(s)`);
+    console.log(` ...detected ${protocolTransactions.length} protocol transaction(s)`);
+    console.log(` ...detected ${paymentProcessorTransactions.length} payment processor transaction(s)`);
+    console.log(` ...calculated initial balance(s)`, initialBalanceByToken);
+
     return {
         addedTransactions: addedTransactionsCount,
-        protocolTransactions: protocolTransactions,
-        paymentProcessorTransactions: paymentProcessorTransactions,
-        initialBalance: initialBalance,
+        protocolTransactions,
+        paymentProcessorTransactions,
+        initialBalance: initialBalanceByToken,
     };
 };
-
-
 
 export default processTransactions;

@@ -1,4 +1,4 @@
-import getCounterPartyData from "./getCounterPartyData.js";
+import getCounterPartyData from "./getCounterPartyNameAndPaymentProcessorStatus.js";
 
   const processProtocolTransactions = async (snapshotReportId, protocolTransactions, knex) => {
 

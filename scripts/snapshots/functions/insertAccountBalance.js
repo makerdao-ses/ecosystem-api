@@ -78,6 +78,7 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
     let formattedResponse = [];
 
     allAccounts = allAccounts.allAccounts;
+    console.log('Updating account balances...');
     
     for (let i = 0; i < allAccounts.length; i++) {
 
@@ -85,17 +86,18 @@ const insertAccountBalanceIncludingOffChain = async (allAccounts, knex) => {
         const addressesList = "'" + allAccounts[i].internalAddresses.join("', '") + "'";
 
         const result = await knex.raw(`
-        SELECT 
- 		count(*),
-        round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 2) AS inflow,
-		round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 2) AS outflow
-        FROM 
-		"SnapshotAccountTransaction" as sat
-        WHERE 
-        sat."snapshotAccountId" in (${idsList})
-        AND
-        NOT lower(sat."counterParty") in (${addressesList})
+            SELECT 
+                count(*),
+                round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 2) AS inflow,
+                round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 2) AS outflow
+            
+            FROM "SnapshotAccountTransaction" as sat
+            
+            WHERE 
+                sat."snapshotAccountId" in (${idsList})
+                AND NOT lower(sat."counterParty") in (${addressesList})
         `);
+
 
         console.log(result.rows);
 
