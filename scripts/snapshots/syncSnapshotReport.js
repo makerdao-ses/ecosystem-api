@@ -4,15 +4,15 @@ import getApiToken from './functions/getApiToken.js';
 import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
 import fetchTransactionData from './functions/fetchTransactionData.js';
-import createSnapshotAccount from './functions/createSnapshotAccount.js';
-import processTransactions from './functions/processTransactions.js';
-import processProtocolTransactions from './functions/processProtocolTransactions.js';
 import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
-import createOffChainAccounts from './functions/createOffChainAccounts.js';
-import processPaymentProcessorTransactions from './functions/processPaymentProcessorTransactions.js';
 import insertMissingPaymentProcessorTransactions from './functions/insertMissingPaymentProcessorTransactions.js';
 import setTxLabel from './functions/setTxLabel.js';
+import getAccountInfoFromConfig from './functions/getAccountInfoFromConfig.js';
+import createAccountFromTransactions from './functions/createAccountFromTransactions.js';
+
+const PROTOCOL_PRIMARY_ADDRESS = '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb';
+const PAYMENT_PROCESSOR_ADDRESS = '0x3c267dfc8ba8f7359af0d8afc45b43731173236d';
 
 const makerProtocolAddresses = [
     '0x0048fc4357db3c0f45adea433a07a20769ddb0cf',
@@ -32,58 +32,72 @@ const monthInfo = getMonthInfo(owner, month);
 
 const snapshotReport = await createSnapshotReport(owner.type, owner.id, monthInfo.month, knex);
 
+const createdAccounts = [];
 let protocolTransactions = [];
 let paymentProcessorTransactions = [];
-let timespan = {
-    start: null,
-    end: null
-};
 
 for (let i=0; i<accounts.length; i++) {
     const transactions = await fetchTransactionData(accounts[i].address, owner.type, owner.id, apiToken, knex);
 
     if (transactions.length > 0) {
-        // Create snapshot account
-        const snapshotAccount = await createSnapshotAccount(snapshotReport.id, accounts[i], false, knex);
-        accounts[i].accountId = snapshotAccount.id;
+        const newAccount = await createAccountFromTransactions (
+            snapshotReport.id, 
+            getAccountInfoFromConfig(accounts[i].address),
+            transactions, 
+            monthInfo, 
+            false, 
+            knex
+        );
 
-        // Add the transactions based on the selected month(s) and collect relevant info
-        let txsProcessingInfo = await processTransactions(snapshotAccount, transactions, monthInfo, knex);
-        accounts[i].initialBalance = txsProcessingInfo.initialBalance;
-        accounts[i].addedTransactions = txsProcessingInfo.addedTransactions;
-        
-        // Keep track of protocol and payment processor transactions
-        protocolTransactions = protocolTransactions.concat(txsProcessingInfo.protocolTransactions);
-        paymentProcessorTransactions = paymentProcessorTransactions.concat(txsProcessingInfo.paymentProcessorTransactions);
+        // Move collected protocol transactions for later processing
+        protocolTransactions = protocolTransactions.concat(newAccount.protocolTransactions);
+        delete newAccount.protocolTransactions;
 
-        // Keep track of the earliest and last inlcuded transaction timestamp
-        if (!timespan.start || txsProcessingInfo.timespan.start < timespan.start) {
-            timespan.start = txsProcessingInfo.timespan.start;
-        }
+        // Move collected payment processor transactions for later processing
+        paymentProcessorTransactions = paymentProcessorTransactions.concat(newAccount.paymentProcessorTransactions);
+        delete newAccount.paymentProcessorTransactions;
 
-        if (!timespan.end || txsProcessingInfo.timespan.end > timespan.end) {
-            timespan.end = txsProcessingInfo.timespan.end;
-        }
+        // Keep track of the created accounts
+        createdAccounts.push(newAccount);
     }
 }
 
+// Create the Maker Protocol account
+const protocolAccount = await createAccountFromTransactions(
+    snapshotReport.id,
+    getAccountInfoFromConfig(PROTOCOL_PRIMARY_ADDRESS),
+    protocolTransactions,
+    monthInfo,
+    true, 
+    knex
+);
 
-//Rewrite protocol transactions - overwrites the address in current logic
-let protocolAccountId = await processProtocolTransactions(snapshotReport.id, protocolTransactions, knex);
-const singularAccounts = accounts.concat(await createOffChainAccounts(snapshotReport.id, owner.type, owner.id, month, knex));
+createdAccounts.push(protocolAccount);
 
-let paymentProcessorId;
-if(paymentProcessorTransactions.length>0 && singularAccounts){
-    paymentProcessorId = await processPaymentProcessorTransactions(snapshotReport.id, paymentProcessorTransactions, knex);
+let paymentProcessorAccount = null;
+if (paymentProcessorTransactions.length > 0) {
+    // Create the Payment Processor account
+    paymentProcessorAccount = await createAccountFromTransactions(
+        snapshotReport.id,
+        getAccountInfoFromConfig(PAYMENT_PROCESSOR_ADDRESS),
+        paymentProcessorTransactions,
+        monthInfo,
+        true,
+        knex
+    );
+
+    createdAccounts.push(paymentProcessorAccount); 
 }
-let allAccounts = await finalizeReportAccounts(snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex);
+
+let allAccounts = await finalizeReportAccounts(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
 
 await setTxLabel(allAccounts, knex);
 
 await insertAccountBalance(allAccounts, knex);
 
-if(paymentProcessorId){
-    await insertMissingPaymentProcessorTransactions(paymentProcessorId, monthInfo, knex);
+if(paymentProcessorAccount){
+    await insertMissingPaymentProcessorTransactions(paymentProcessorAccount.accountId, monthInfo, knex);
 }
 
 knex.destroy();
+

@@ -6,6 +6,7 @@ const getAccountTypeGroup = (accountType) => {
         "Emergency": "Operational",
         "Accountant": "Operational",
         "PaymentProcessor": "PaymentProcessor",
+        "Protocol": "Protocol",
     };
     const key = ("" + accountType).trim() || "Operational";
 
@@ -185,9 +186,9 @@ const createGroupAccounts = async (snapshotReport, singularAccounts, protocolAcc
         const key = newAccount.offChain ? 'offChain' : 'onChain';
         singularAccountsAddresses[key].push(newAccount.internalAddresses[0]);
         singularAccountsIds[key].push(newAccount.internalIds[0]);
-        if(newAccount.initialBalance){
-            console.log(newAccount.initialBalance);
-            singularAccountTotalInitialBalance[key].newAccount.initialBalance;
+        if(newAccount.initialBalanceByToken){
+            console.log(newAccount.initialBalanceByToken);
+            singularAccountTotalInitialBalance[key].newAccount.initialBalanceByToken;
         }
     }
 

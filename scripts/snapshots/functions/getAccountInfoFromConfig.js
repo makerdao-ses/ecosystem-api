@@ -2,8 +2,8 @@ import accounts from '../data/accounts.js';
 
 const getAccountInfoFromConfig = (address) => {
   const result = {
-    address: address.toLowerCase(),
     name: 'External Address',
+    address: address.toLowerCase(),
     category: 'External',
     offChain: false,
     isProtocolAddress: false
