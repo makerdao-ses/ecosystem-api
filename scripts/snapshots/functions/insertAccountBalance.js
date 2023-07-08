@@ -31,8 +31,8 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
             if (result) {
                 let initialBalance = 0;
 
-                if(allAccounts[i][offChainKey].initialBalance && allAccounts[i][offChainKey].initialBalance.DAI){
-                    initialBalance = allAccounts[i][offChainKey].initialBalance.DAI;
+                if(allAccounts[i][offChainKey].initialBalanceByToken && allAccounts[i][offChainKey].initialBalanceByToken.DAI){
+                    initialBalance = allAccounts[i][offChainKey].initialBalanceByToken.DAI;
                 }
 
                 formattedResponse.push({
