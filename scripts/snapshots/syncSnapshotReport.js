@@ -4,12 +4,11 @@ import getApiToken from './functions/getApiToken.js';
 import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
 import fetchTransactionData from './functions/fetchTransactionData.js';
-import insertAccountBalance from './functions/insertAccountBalance.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
-import insertMissingPaymentProcessorTransactions from './functions/insertMissingPaymentProcessorTransactions.js';
 import setTxLabel from './functions/setTxLabel.js';
 import getAccountInfoFromConfig from './functions/getAccountInfoFromConfig.js';
 import createAccountFromTransactions from './functions/createAccountFromTransactions.js';
+import insertAccountBalances from './functions/insertAccountBalance.js';
 
 const PROTOCOL_PRIMARY_ADDRESS = '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb';
 const PAYMENT_PROCESSOR_ADDRESS = '0x3c267dfc8ba8f7359af0d8afc45b43731173236d';
@@ -93,11 +92,14 @@ let allAccounts = await finalizeReportAccounts(snapshotReport, createdAccounts, 
 
 await setTxLabel(allAccounts, knex);
 
-await insertAccountBalance(allAccounts, knex);
+await insertAccountBalances(allAccounts, true, knex);
+await insertAccountBalances(allAccounts, false, knex);
 
+/*
 if(paymentProcessorAccount){
     await insertMissingPaymentProcessorTransactions(paymentProcessorAccount.accountId, monthInfo, knex);
 }
+*/
 
 knex.destroy();
 
