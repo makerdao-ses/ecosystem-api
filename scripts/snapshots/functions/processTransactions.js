@@ -95,16 +95,6 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
 
             addedTransactionsCount++;
 
-            // Keep track of included payment processor transactions
-            if (relativeTxData.counterPartyInfo.offChain) {
-                paymentProcessorTransactions.push(txData);
-            }
-            
-            // Keep track of included Maker Protocol transactions
-            if (relativeTxData.counterPartyInfo.isProtocolAddress) {
-                protocolTransactions.push(txData);
-            }
-
             // Keep track of the earliest and oldest timestamp
             if (!timespan.start || txData.timestamp < timespan.start) {
                 timespan.start = txData.timestamp;
@@ -114,6 +104,17 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
                 timespan.end = txData.timestamp;
             }
         }
+
+        // Keep track of included payment processor transactions
+        if (relativeTxData.counterPartyInfo.offChain) {
+            paymentProcessorTransactions.push(txData);
+        }
+        
+        // Keep track of included Maker Protocol transactions
+        if (relativeTxData.counterPartyInfo.isProtocolAddress) {
+            protocolTransactions.push(txData);
+        }
+
     }
 
     console.log(` ...added ${addedTransactionsCount} transaction(s)`);
