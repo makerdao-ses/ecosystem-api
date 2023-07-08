@@ -1,4 +1,4 @@
-const setTxLabel = async (allAccounts, knex) => {
+const setTxLabels = async (allAccounts, knex) => {
 
   const upstreamDownstream = allAccounts.upstreamDownstreamMap;
   const allAccountsInfo = allAccounts.allAccounts;
@@ -122,4 +122,4 @@ const setTxLabel = async (allAccounts, knex) => {
   }
 };
 
-export default setTxLabel;
+export default setTxLabels;

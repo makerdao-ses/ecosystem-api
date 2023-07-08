@@ -4,7 +4,7 @@ const getAccountInfoFromConfig = (address) => {
   const result = {
     name: 'External Address',
     address: address.toLowerCase(),
-    category: 'External',
+    type: 'External',
     offChain: false,
     isProtocolAddress: false
   };
@@ -12,7 +12,7 @@ const getAccountInfoFromConfig = (address) => {
   for (const account of accounts) {
     if (account.Address.toLowerCase() === address.toLowerCase()) {
       result.name = account.Name;
-      result.category = account.Type;
+      result.type = account.Type;
       result.offChain = (account.Type === 'PaymentProcessor');
       result.isProtocolAddress = (account.Type === 'Protocol');
     }

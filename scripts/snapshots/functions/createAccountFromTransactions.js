@@ -1,9 +1,8 @@
-import createSnapshotAccount from "./createSnapshotAccount.js";
 import processTransactions from "./processTransactions.js";
 
-export default async function createAccountFromTransactions(snapshotReportId, accountInfo, transactions, monthInfo, invertFlow, knex) {
+const createAccountFromTransactions = async (snapshotReportId, accountInfo, transactions, monthInfo, invertFlow, knex) => {
     const accountBasics = {
-        type: accountInfo.category,
+        type: accountInfo.type,
         label: accountInfo.name,
         address: accountInfo.address,
         offChain: accountInfo.offChain,
@@ -17,4 +16,26 @@ export default async function createAccountFromTransactions(snapshotReportId, ac
         ...accountBasics, 
         ...txsProcessingInfo
     };
+};
+
+const createSnapshotAccount = async (snapshotReportId, accountInfo, knex) => {
+    console.log(`\nCreating snapshot account for`, accountInfo);
+  
+    const insertedAccount = 
+      await knex('SnapshotAccount')
+        .insert({
+          snapshotId: snapshotReportId,
+          accountType: 'singular',
+          accountAddress: accountInfo.address,
+          accountLabel: accountInfo.name,
+          offChain: accountInfo.offChain
+        })
+        .returning('*');
+  
+    return insertedAccount[0];
+  };
+
+export { 
+    createAccountFromTransactions,
+    createSnapshotAccount
 };

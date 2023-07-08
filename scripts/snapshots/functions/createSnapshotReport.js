@@ -1,13 +1,5 @@
-import blockNumbersSAS from "../data/blockNumbers-SAS.js";
-
-const ownerMapping = {
-  'CoreUnit': {
-    '19': blockNumbersSAS
-  }
-};
-
 const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
-  console.log(`Creating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
+  console.log(`\nCreating snapshot report for ${ownerType} ${ownerId}, month ${month}`);
 
   const snapshotKey = {
     ownerType: (month ? ownerType : ownerType + 'Draft'),
@@ -48,19 +40,19 @@ const removeSnapshot = async (snapshotId, knex) => {
     .where('snapshotId', snapshotId)
     .select('id');
 
-  console.log(`Removing Snapshot with id: ${snapshotId} with accounts`, snapshotAccountIds.map(r => r.id));
+  console.log(`\nRemoving Snapshot with id: ${snapshotId} with accounts`, snapshotAccountIds.map(r => r.id));
 
   const deletedTransactions = await knex('SnapshotAccountTransaction')
     .whereIn('snapshotAccountId', snapshotAccountIds.map(r => r.id))
     .del();
 
-  console.log(deletedTransactions, `deleted transactions`);
+  console.log(` ...${deletedTransactions} deleted transactions`);
 
   const deletedBalances = await knex('SnapshotAccountBalance')
     .whereIn('snapshotAccountId', snapshotAccountIds.map(r => r.id))
     .del();
 
-  console.log(deletedBalances, `deleted balances`);
+  console.log(` ...${deletedBalances} deleted balances`);
 
   await knex('SnapshotAccount')
     .where('snapshotId', snapshotId)
@@ -73,7 +65,7 @@ const removeSnapshot = async (snapshotId, knex) => {
     .where('snapshotId', snapshotId)
     .del();
 
-  console.log(deletedAccounts, 'deleted accounts');
+  console.log(` ...${deletedAccounts} deleted accounts`);
 
   await knex('Snapshot')
     .where('id', snapshotId)

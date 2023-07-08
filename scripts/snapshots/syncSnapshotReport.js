@@ -5,14 +5,13 @@ import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
 import fetchTransactionData from './functions/fetchTransactionData.js';
 import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
-import setTxLabel from './functions/setTxLabel.js';
+import setTxLabels from './functions/setTxLabels.js';
 import getAccountInfoFromConfig from './functions/getAccountInfoFromConfig.js';
-import createAccountFromTransactions from './functions/createAccountFromTransactions.js';
+import {createAccountFromTransactions} from './functions/createAccountFromTransactions.js';
 import insertAccountBalances from './functions/insertAccountBalance.js';
 
 const PROTOCOL_PRIMARY_ADDRESS = '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb';
 const PAYMENT_PROCESSOR_ADDRESS = '0x3c267dfc8ba8f7359af0d8afc45b43731173236d';
-
 const makerProtocolAddresses = [
     '0x0048fc4357db3c0f45adea433a07a20769ddb0cf',
     '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb',
@@ -89,10 +88,10 @@ if (paymentProcessorTransactions.length > 0) {
 }
 
 
-let allAccounts = await finalizeReportAccounts(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
+let allAccountsInfo = await finalizeReportAccounts(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
 
 // Update snapshot report start and end dates 
-const rootAccount = allAccounts.allAccounts.filter(a => a.type === 'Root')[0];
+const rootAccount = allAccountsInfo.allAccounts.filter(a => a.type === 'Root')[0];
 await knex('Snapshot').update({
     start: rootAccount.timespan.start,
     end: rootAccount.timespan.end,
@@ -101,10 +100,10 @@ await knex('Snapshot').update({
 });
 
 // Update transaction labeling
-await setTxLabel(allAccounts, knex);
+await setTxLabels(allAccountsInfo, knex);
 
 // Save account balances for offChain included/excluded
-await insertAccountBalances(allAccounts, true, knex);
-await insertAccountBalances(allAccounts, false, knex);
+await insertAccountBalances(allAccountsInfo, true, knex);
+await insertAccountBalances(allAccountsInfo, false, knex);
 
 knex.destroy();
