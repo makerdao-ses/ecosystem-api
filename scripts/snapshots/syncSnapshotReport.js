@@ -88,18 +88,23 @@ if (paymentProcessorTransactions.length > 0) {
     createdAccounts.push(paymentProcessorAccount); 
 }
 
+
 let allAccounts = await finalizeReportAccounts(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
 
+// Update snapshot report start and end dates 
+const rootAccount = allAccounts.allAccounts.filter(a => a.type === 'Root')[0];
+await knex('Snapshot').update({
+    start: rootAccount.timespan.start,
+    end: rootAccount.timespan.end,
+}).where({
+    id: snapshotReport.id
+});
+
+// Update transaction labeling
 await setTxLabel(allAccounts, knex);
 
+// Save account balances for offChain included/excluded
 await insertAccountBalances(allAccounts, true, knex);
 await insertAccountBalances(allAccounts, false, knex);
 
-/*
-if(paymentProcessorAccount){
-    await insertMissingPaymentProcessorTransactions(paymentProcessorAccount.accountId, monthInfo, knex);
-}
-*/
-
 knex.destroy();
-
