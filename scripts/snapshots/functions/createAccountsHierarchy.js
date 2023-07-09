@@ -1,5 +1,5 @@
-const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex) => {
-    console.log(`\nFinalising report with ID: ${snapshotReport.id}`);
+const createAccountsHierarchy = async (snapshotReport, singularAccounts, protocolAccountId, makerProtocolAddresses, knex) => {
+    console.log(`\nCreating accounts hierarchy for ${singularAccounts.length} singular accounts in report with ID: ${snapshotReport.id}`);
 
     // Keep track of account IDs
     const accountIds = {
@@ -36,36 +36,27 @@ const finalizeReportAccounts = async (snapshotReport, singularAccounts, protocol
     };
 
     // Create new group accounts for grouping singular accounts
-    const { newGroupAccountsInfo, newUpstreamAccountIdsByGroup, groupAccountMapping } = 
+    const { newGroupAccountsInfo, newUpstreamAccountIdsByGroup } = 
         await groupSingularAccounts (snapshotReport, accountIds, allAccountsInfo.allAccounts, knex);
 
     // Update upstream account ids
     allAccountsInfo.upstreamAccountIdsByGroup = {...allAccountsInfo.upstreamAccountIdsByGroup, ...newUpstreamAccountIdsByGroup };
 
-    // Combine singular accounts, grouped singular accounts and top-level group accounts into one
-    allAccountsInfo.allAccounts = allAccountsInfo.allAccounts.concat(newGroupAccountsInfo).concat(
-        await generateTopLevelGroupAccountsInfo(allAccountsInfo, newGroupAccountsInfo, accountIds)
-    );
+    // Combine singular accounts, singular account group accounts, and top-level group accounts into one
+    allAccountsInfo.allAccounts = allAccountsInfo.allAccounts
+        .concat(newGroupAccountsInfo)
+        .concat(calculateTopLevelGroupAccountsInfo(allAccountsInfo, newGroupAccountsInfo, accountIds));
 
-    //
-    for (let i = 0; i < singularAccounts.length; i++) {
-        const groupName = getAccountTypeGroup(singularAccounts[i].type);
-        await knex('SnapshotAccount')
-            .where('id', '=', singularAccounts[i].accountId)
-            .update({
-                groupAccountId: groupAccountMapping[groupName]
-            });
-    }
-
-    console.log('All Accounts Info: ', ...allAccountsInfo.allAccounts);
-    console.log('Upstream Account Ids:', allAccountsInfo.upstreamAccountIdsByGroup);
+    // Write upstreamAccountIds to database and capture the calculated set
+    const upstreamSet = await setUpstreamAccountIds(allAccountsInfo, knex);
     
-    const upstreamDownstreamMap = await updateUpstreamIds(allAccountsInfo, knex);
-    console.log(upstreamDownstreamMap);
-
+    // 
     return {
         allAccounts: allAccountsInfo.allAccounts,
-        upstreamDownstreamMap
+        upstreamDownstreamMap: {
+            upstreamSet,
+            downstreamSet: calculateDownstreamSet(upstreamSet)
+        }
     };
 };
 
@@ -84,7 +75,63 @@ const createGroupAccount = async (snapshotReport, label, groupAccountId, offChai
     return newAccount[0].id;
 };
 
-const groupSingularAccounts = async (snapshotReport, accountIds, allAccounts, knex) => {
+const initializeAllAccountsMapping = 
+    (singularAccounts, protocolAccountId, makerProtocolAddresses) => singularAccounts.map(inputAccount => {
+        const result = {
+            ...inputAccount,
+            group: getAccountTypeGroup(inputAccount.type),
+            offChainIncluded: {
+                internalIds: [inputAccount.accountId],
+                internalAddresses: [inputAccount.address.toLowerCase()],
+                initialBalanceByToken: {...inputAccount.initialBalanceByToken},
+                finalBalanceByToken: {...inputAccount.finalBalanceByToken},
+            },
+            offChainExcluded: {
+                internalIds: (inputAccount.offChain ? [] : [inputAccount.accountId]),
+                internalAddresses: (inputAccount.offChain ? [] : [inputAccount.address.toLowerCase()]),
+                initialBalanceByToken:  (inputAccount.offChain ? {} : {...inputAccount.initialBalanceByToken}),
+                finalBalanceByToken: (inputAccount.offChain ? {} : {...inputAccount.finalBalanceByToken}),
+            }
+        };
+
+        // Add additional internal addresses for the Maker Protocol Account
+        if (result.accountId === protocolAccountId) {
+            result.offChainIncluded.internalAddresses = [...makerProtocolAddresses];
+            result.offChainExcluded.internalAddresses = [...makerProtocolAddresses];
+        }
+
+        // Clean up by removing some older collections (performance optimization)
+        if (result.protocolTransactions) {
+            delete result.protocolTransactions;
+        }
+        if (result.paymentProcessorTransactions) {
+            delete result.paymentProcessorTransactions;
+        }
+
+        //
+        return result;
+    });
+
+const getAccountTypeGroup = (accountType) => {
+    const mapping = {
+        "DSSVest": "DSSVest",
+        "Auditor": "Auditor",
+        "Operational": "Operational",
+        "Emergency": "Operational",
+        "Accountant": "Operational",
+        "PaymentProcessor": "PaymentProcessor",
+        "Protocol": "Protocol",
+    };
+
+    const key = ("" + accountType).trim() || "Operational";
+    if (!mapping[key]) {
+        throw new Error(`Unsupported account type for group name: "${accountType}"`);
+    }
+
+    return mapping[key];
+};
+
+const groupSingularAccounts = async (snapshotReport, accountIds, singularAccountsInfo, knex) => {
     // Keep track of the groupAccountIds for singular accounts of each group so we can set them later
     const groupAccountMapping = {
         // Protocol account(s) should point at accountIds.rootAccountId as groupAccountId
@@ -97,8 +144,8 @@ const groupSingularAccounts = async (snapshotReport, accountIds, allAccounts, kn
     const newGroupAccountsInfo = [];
     const upstreamAccountIdsByGroup = {};
 
-    for (let i=0; i<allAccounts.length; i++) {
-        const account = allAccounts[i];
+    for (let i=0; i<singularAccountsInfo.length; i++) {
+        const account = singularAccountsInfo[i];
         const groupName = account.group;
 
         // Only attempt to group accounts within the Core Unit Reserves groups,
@@ -119,7 +166,10 @@ const groupSingularAccounts = async (snapshotReport, accountIds, allAccounts, kn
             groupAccountMapping[groupName] === accountIds.onchainAccountId || 
             groupAccountMapping[groupName] === accountIds.offchainAccountId
         ) {
-            // Create a common group account for the (two or more) accounts in this group
+            const childAccounts = singularAccountsInfo.filter(a => a.group == groupName);
+            console.log(` ...creating new group account for ${childAccounts.length} '${groupName}' accounts`);
+
+            // Create a common group account for the child accounts in this group
             if (groupAccountMapping[groupName] === accountIds.onchainAccountId) {
                 // On-chain accounts
                 groupAccountMapping[groupName] = await createGroupAccount(snapshotReport, groupName, accountIds.onchainAccountId, false, knex);
@@ -132,7 +182,6 @@ const groupSingularAccounts = async (snapshotReport, accountIds, allAccounts, kn
             upstreamAccountIdsByGroup[groupName] = groupAccountMapping[groupName];
 
             // Calculate the new group account's information based on its children
-            const childAccounts = allAccounts.filter(a => a.group == groupName);
             const newAccount = {
                 accountId: groupAccountMapping[groupName],
                 type: groupName,
@@ -145,19 +194,43 @@ const groupSingularAccounts = async (snapshotReport, accountIds, allAccounts, kn
                 )
             };
 
-            console.log(` ...new group account created for ${childAccounts.length} '${groupName}' accounts`);
             newGroupAccountsInfo.push(newAccount);
         }
     }
 
+    // Write the calculated groupAccountIds to the database
+    await setSingularAccountsGroupIds(singularAccountsInfo, groupAccountMapping, knex);
+
+    // Return all info about the newly created accounts + identified upstreamAccountIds
     return {
-        groupAccountMapping,
         newGroupAccountsInfo,
         newUpstreamAccountIdsByGroup: upstreamAccountIdsByGroup
     };
 }
 
-const generateTopLevelGroupAccountsInfo = async (singularAccountsInfo, otherGroupAccounts, accountIds) => {
+const setSingularAccountsGroupIds = async (singularAccountsInfo, groupAccountMapping, knex) => {
+    console.log(` ...updating groupAccountId of ${singularAccountsInfo.length} singular accounts`);
+
+    for (let i = 0; i < singularAccountsInfo.length; i++) {
+        const groupName = singularAccountsInfo[i].group;
+
+        if (!groupName) {
+            console.error(` ...ERROR: expected group to be set on singular account`, singularAccountsInfo[i]);
+
+        } else if (!groupAccountMapping[groupName]) {
+            console.error(` ...ERROR: expected groupAccountId for group '${groupName}' set in `, groupAccountMapping);
+        
+        } else {
+            await knex('SnapshotAccount')
+                .where('id', '=', singularAccountsInfo[i].accountId)
+                .update({
+                    groupAccountId: groupAccountMapping[groupName]
+                });
+        }
+    }
+}
+
+const calculateTopLevelGroupAccountsInfo = (singularAccountsInfo, otherGroupAccounts, accountIds) => {
     const newGroupAccountsInfo = [];
 
     const onChainReserveChildrenIds = [
@@ -213,24 +286,6 @@ const generateTopLevelGroupAccountsInfo = async (singularAccountsInfo, otherGrou
     return newGroupAccountsInfo;
 };
 
-const getAccountTypeGroup = (accountType) => {
-    const mapping = {
-        "DSSVest": "DSSVest",
-        "Auditor": "Auditor",
-        "Operational": "Operational",
-        "Emergency": "Operational",
-        "Accountant": "Operational",
-        "PaymentProcessor": "PaymentProcessor",
-        "Protocol": "Protocol",
-    };
-    const key = ("" + accountType).trim() || "Operational";
-
-    if (!mapping[key]) {
-        throw new Error(`Unsupported account type for group name: "${accountType}"`);
-    }
-    return mapping[key];
-};
-
 const getGroupUpstream = (groupName, allAccounts) => {
     const mapping = {
         "PaymentProcessor": [
@@ -278,16 +333,17 @@ const getGroupUpstream = (groupName, allAccounts) => {
     return upstreamCandidates[index];
 };
 
-const updateUpstreamIds = async (allAccountsInfo, knex) => {
-    console.log(`Updating upstream ids for ${allAccountsInfo.allAccounts.length} accounts`);
+const setUpstreamAccountIds = async (allAccountsInfo, knex) => {
     const upstreamSet = {};
     const downstreamSet = {};
+    
+    console.log(` ...updating upstreamAccountId of ${allAccountsInfo.allAccounts.length} accounts`);
     for (let i = 0; i < allAccountsInfo.allAccounts.length; i++) {
         const upstreamGroupName = getGroupUpstream(allAccountsInfo.allAccounts[i].group, allAccountsInfo.allAccounts);
+
         if (upstreamGroupName !== null) {
             const upstreamGroupId = allAccountsInfo.upstreamAccountIdsByGroup[upstreamGroupName];
-            console.log(allAccountsInfo.allAccounts[i].accountId, "=>", upstreamGroupName, upstreamGroupId);
-
+            
             await knex('SnapshotAccount')
                 .where('id', '=', allAccountsInfo.allAccounts[i].accountId)
                 .update({
@@ -295,13 +351,21 @@ const updateUpstreamIds = async (allAccountsInfo, knex) => {
                 });
 
             upstreamSet[allAccountsInfo.allAccounts[i].accountId] = [upstreamGroupId];
+            
             if (!downstreamSet[upstreamGroupId]) {
                 downstreamSet[upstreamGroupId] = [];
             }
+            
             downstreamSet[upstreamGroupId].push(allAccountsInfo.allAccounts[i].accountId);
-
         }
     }
+
+    return upstreamSet;
+};
+
+const calculateDownstreamSet = (upstreamSet) => {
+    const downstreamSet = {};
+
     let updates;
     do {
         updates = false;
@@ -313,10 +377,12 @@ const updateUpstreamIds = async (allAccountsInfo, knex) => {
                     newSet.add(element);
                 });
             }
+
             if (newSet.size > upstreamSet[k].length) {
                 updates = true;
                 upstreamSet[k] = [...newSet];
             }
+
             newSet.forEach(e => {
                 if (!downstreamSet[e]) {
                     downstreamSet[e] = [];
@@ -327,52 +393,12 @@ const updateUpstreamIds = async (allAccountsInfo, knex) => {
                 }
             });
         }
+
     } while (updates);
 
-    return {
-        upstreamSet,
-        downstreamSet
-    };
-};
+    return downstreamSet;
+}
 
-const initializeAllAccountsMapping = 
-    (singularAccounts, protocolAccountId, makerProtocolAddresses) => singularAccounts.map(inputAccount => {
-        const result = {
-            ...inputAccount,
-            group: getAccountTypeGroup(inputAccount.type),
-            offChainIncluded: {
-                internalIds: [inputAccount.accountId],
-                internalAddresses: [inputAccount.address.toLowerCase()],
-                initialBalanceByToken: {...inputAccount.initialBalanceByToken},
-                finalBalanceByToken: {...inputAccount.finalBalanceByToken},
-            },
-            offChainExcluded: {
-                internalIds: (inputAccount.offChain ? [] : [inputAccount.accountId]),
-                internalAddresses: (inputAccount.offChain ? [] : [inputAccount.address.toLowerCase()]),
-                initialBalanceByToken:  (inputAccount.offChain ? {} : {...inputAccount.initialBalanceByToken}),
-                finalBalanceByToken: (inputAccount.offChain ? {} : {...inputAccount.finalBalanceByToken}),
-            },
-            groupAccountId: null,
-            upstreamAccountId: null,
-        };
-
-        // Add additional internal addresses for the Maker Protocol Account
-        if (result.accountId === protocolAccountId) {
-            result.offChainIncluded.internalAddresses = [...makerProtocolAddresses];
-            result.offChainExcluded.internalAddresses = [...makerProtocolAddresses];
-        }
-
-        // Clean up by removing some older collections
-        if (result.protocolTransactions) {
-            delete result.protocolTransactions;
-        }
-        if (result.paymentProcessorTransactions) {
-            delete result.paymentProcessorTransactions;
-        }
-
-        //
-        return result;
-    });
 
 const mergeAddObjects = (a, b) => {
     const result = {...a};
@@ -423,4 +449,4 @@ const calculateParentFromDirectChildren = (childAccounts, parentId) => {
     return result;
 }
 
-export default finalizeReportAccounts;
+export default createAccountsHierarchy;

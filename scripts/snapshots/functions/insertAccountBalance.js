@@ -2,9 +2,7 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
     let formattedResponse = [];
     let offChainKey = (offChainIncluded ? 'offChainIncluded' : 'offChainExcluded');
 
-    allAccounts = allAccounts.allAccounts;
     console.log('Updating account balances...');
-    
     for (let i = 0; i < allAccounts.length; i++) {
 
         const idsList = allAccounts[i][offChainKey].internalIds.join(', ');
@@ -24,7 +22,6 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
                     sat."snapshotAccountId" in (${idsList})
                     AND NOT lower(sat."counterParty") in (${addressesList})
             `);
-
 
             console.log(allAccounts[i].label, result.rows, parseFloat(result.rows[0].inflow) + parseFloat(result.rows[0].outflow));
 
@@ -67,8 +64,3 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
 };
 
 export default insertAccountBalances;
-
-/*
-Allow for month input from the original terminal call
-Add the protocol wallets
-*/

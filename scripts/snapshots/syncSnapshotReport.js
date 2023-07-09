@@ -4,8 +4,8 @@ import getApiToken from './functions/getApiToken.js';
 import getKnexInstance from './functions/getKnexInstance.js';
 import createSnapshotReport from './functions/createSnapshotReport.js';
 import fetchTransactionData from './functions/fetchTransactionData.js';
-import finalizeReportAccounts from './functions/finalizeReportAccounts.js';
-import setTxLabels from './functions/setTxLabels.js';
+import createAccountsHierarchy from './functions/createAccountsHierarchy.js';
+import setTransactionLabels from './functions/setTransactionLabels.js';
 import getAccountInfoFromConfig from './functions/getAccountInfoFromConfig.js';
 import {createAccountFromTransactions} from './functions/createAccountFromTransactions.js';
 import insertAccountBalances from './functions/insertAccountBalance.js';
@@ -72,9 +72,9 @@ const protocolAccount = await createAccountFromTransactions(
 
 createdAccounts.push(protocolAccount);
 
+// Create the Payment Processor account
 let paymentProcessorAccount = null;
 if (paymentProcessorTransactions.length > 0) {
-    // Create the Payment Processor account
     paymentProcessorAccount = await createAccountFromTransactions(
         snapshotReport.id,
         getAccountInfoFromConfig(PAYMENT_PROCESSOR_ADDRESS),
@@ -87,11 +87,14 @@ if (paymentProcessorTransactions.length > 0) {
     createdAccounts.push(paymentProcessorAccount); 
 }
 
+const { allAccounts, upstreamDownstreamMap } = 
+    await createAccountsHierarchy(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
 
-let allAccountsInfo = await finalizeReportAccounts(snapshotReport, createdAccounts, protocolAccount.accountId, makerProtocolAddresses, knex);
+console.log('\nAll accounts:', ...allAccounts);
+console.log('\nUp/downstream map:', upstreamDownstreamMap);
 
 // Update snapshot report start and end dates 
-const rootAccount = allAccountsInfo.allAccounts.filter(a => a.type === 'Root')[0];
+const rootAccount = allAccounts.filter(a => a.type === 'Root')[0];
 await knex('Snapshot').update({
     start: rootAccount.timespan.start,
     end: rootAccount.timespan.end,
@@ -100,10 +103,10 @@ await knex('Snapshot').update({
 });
 
 // Update transaction labeling
-await setTxLabels(allAccountsInfo, knex);
+await setTransactionLabels(allAccounts, upstreamDownstreamMap, knex);
 
 // Save account balances for offChain included/excluded
-await insertAccountBalances(allAccountsInfo, true, knex);
-await insertAccountBalances(allAccountsInfo, false, knex);
+await insertAccountBalances(allAccounts, true, knex);
+await insertAccountBalances(allAccounts, false, knex);
 
 knex.destroy();

@@ -1,8 +1,4 @@
-const setTxLabels = async (allAccounts, knex) => {
-
-  const upstreamDownstream = allAccounts.upstreamDownstreamMap;
-  const allAccountsInfo = allAccounts.allAccounts;
-
+const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) => {
   const distinctInternalAddresses = Array.from(
     new Set(allAccountsInfo.map(item => item.offChainIncluded.internalAddresses).flat())
   );
@@ -23,7 +19,7 @@ const setTxLabels = async (allAccounts, knex) => {
       txLabel: 'Internal Transaction'
     });
 
-    await knex('SnapshotAccountTransaction')
+  await knex('SnapshotAccountTransaction')
     .whereIn('snapshotAccountId', flatIds)
     .whereNotIn('counterParty', distinctInternalAddresses)
     .update({
@@ -49,8 +45,6 @@ const setTxLabels = async (allAccounts, knex) => {
         }
       }
 
-      
-  
       if (internalAddressesList.length > 0) {
         for (const value of valueArray) {
           
@@ -94,8 +88,6 @@ const setTxLabels = async (allAccounts, knex) => {
         }
       }
 
-      
-  
       if (internalAddressesDownstreamList.length > 0) {
         for (const value of valueArray) {
           
@@ -122,4 +114,4 @@ const setTxLabels = async (allAccounts, knex) => {
   }
 };
 
-export default setTxLabels;
+export default setTransactionLabels;
