@@ -101,6 +101,8 @@ const initializeAllAccountsMapping =
         }
 
         // Clean up by removing some older collections (performance optimization)
+        delete result.initialBalanceByToken;
+        delete result.finalBalanceByToken;
         if (result.protocolTransactions) {
             delete result.protocolTransactions;
         }
@@ -418,9 +420,9 @@ const calculateParentFromDirectChildren = (childAccounts, parentId) => {
 
         timespan: {
             start: childAccounts.map(c => c.timespan.start)
-                .reduce((prev, next) => prev && (prev < next) ? prev : next, false),
+                .reduce((prev, next) => (prev && (prev < next)) || !next ? prev : next, null),
             end: childAccounts.map(c => c.timespan.end)
-                .reduce((prev, next) => prev && (prev > next) ? prev : next, false),
+                .reduce((prev, next) => (prev && (prev > next)) || !next ? prev : next, null),
         },
 
         offChainIncluded: {
@@ -431,7 +433,7 @@ const calculateParentFromDirectChildren = (childAccounts, parentId) => {
             internalIds: childAccounts.map(c => c.offChainIncluded.internalIds)
                 .reduce((prev, next) => prev.concat(next), [parentId]),
             internalAddresses: childAccounts.map(c => c.offChainIncluded.internalAddresses)
-            .reduce((prev, next) => prev.concat(next), []),
+                .reduce((prev, next) => prev.concat(next), []),
         },
 
         offChainExcluded: {
@@ -442,7 +444,7 @@ const calculateParentFromDirectChildren = (childAccounts, parentId) => {
             internalIds: childAccounts.map(c => c.offChainExcluded.internalIds)
                 .reduce((prev, next) => prev.concat(next), [parentId]),
             internalAddresses: childAccounts.map(c => c.offChainExcluded.internalAddresses)
-            .reduce((prev, next) => prev.concat(next), []),
+                .reduce((prev, next) => prev.concat(next), []),
         },
     };
 
