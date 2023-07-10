@@ -9,29 +9,6 @@ const aliases = {
     ]
 };
 
-const applyFlow = (txData, flow) => {
-    let result = null;
-
-    if (flow === 'outflow') {
-        result = {
-            accountAddress: txData.sender,
-            counterPartyAddress: txData.receiver,
-            amount: -txData.amount,
-            counterPartyInfo: getAccountInfoFromConfig(txData.receiver)
-        };
-
-    } else {
-        result = {
-            accountAddress: txData.receiver,
-            counterPartyAddress: txData.sender,
-            amount: txData.amount,
-            counterPartyInfo: getAccountInfoFromConfig(txData.sender)
-        };
-    }
-
-    return result;
-};
-
 const processTransactions = async (snapshotAccount, transactions, monthInfo, invertFlows, knex) => {
     const protocolTransactions = [];
     const paymentProcessorTransactions = [];
@@ -41,14 +18,21 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
     const invertedFlow = { inflow: 'outflow', outflow: 'inflow' };
     let addedTransactionsCount = 0;
     
-    console.log(`\nProcessing ${transactions.length} transactions for account ${snapshotAccount.id}: ${snapshotAccount.accountLabel} (${snapshotAccount.accountAddress})`);
+    console.log(`\nProcessing ${transactions.length} initial transactions for account ${snapshotAccount.id}: ${snapshotAccount.accountLabel} (${snapshotAccount.accountAddress})`);
     console.log(` ...inverted flows: ${invertFlows ? 'YES' : 'no'}`);
     console.log(` ...block range [${monthInfo.blockNumberRange.initial}-${monthInfo.blockNumberRange.final}] for month:${monthInfo.month}`)
     
-    for (let i = 0; i < transactions.length; i++) {
-        const txData = transactions[i];
+    const transactionsStack = [...transactions];
+    transactionsStack.sort((t1, t2) => (t2.timestamp < t1.timestamp ? -1 : 1));
+
+    let txData = null;
+    if (snapshotAccount.offChain) {
+        addOffChainTransactionsToStack(transactionsStack, txData, finalBalanceByToken, monthInfo.offChainBalances);
+    }
+    
+    while (txData = transactionsStack.pop()) {
         const relativeTxData = applyFlow(txData, (invertFlows ? invertedFlow[txData.flow] : txData.flow));
-        
+
         // Skip irrelevant transactions that belong to the counterparty wallet
         if (snapshotAccount.accountAddress !== relativeTxData.accountAddress) {
             if (!aliases[snapshotAccount.accountAddress] || 
@@ -115,14 +99,18 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
             protocolTransactions.push(txData);
         }
 
+        // If it's the end of the month, put a synthetic transaction on the stack to reconcile the 
+        // off-chain account with its balance.  
+        if (snapshotAccount.offChain) {
+            addOffChainTransactionsToStack(transactionsStack, txData, finalBalanceByToken, monthInfo.offChainBalances);
+        }
+
+        if (addedTransactionsCount > 9999) {
+            throw new Error('EXIT LOOP');
+        }
     }
 
     console.log(` ...added ${addedTransactionsCount} transaction(s)`);
-
-    if (addedTransactionsCount == 0) {
-        console.log(transactions);
-    };
-
     console.log(` ...detected ${protocolTransactions.length} transaction(s) with Protocol as counterparty`);
     console.log(` ...detected ${paymentProcessorTransactions.length} with Payment Processor as counterparty`);
     console.log(` ...calculated initial balance(s)`, initialBalanceByToken);
@@ -138,5 +126,76 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
         timespan
     };
 };
+
+const applyFlow = (txData, flow) => {
+    let result = null;
+
+    if (flow === 'outflow') {
+        result = {
+            accountAddress: txData.sender,
+            counterPartyAddress: txData.receiver,
+            amount: -txData.amount,
+            counterPartyInfo: getAccountInfoFromConfig(txData.receiver)
+        };
+
+    } else {
+        result = {
+            accountAddress: txData.receiver,
+            counterPartyAddress: txData.sender,
+            amount: txData.amount,
+            counterPartyInfo: getAccountInfoFromConfig(txData.sender)
+        };
+    }
+
+    return result;
+};
+
+const addOffChainTransactionsToStack = (transactionsStack, processedTransaction, calculatedBalanceByToken, offChainBalances) => {
+    const
+        currentTxMonth = processedTransaction ? processedTransaction.timestamp.slice(0, 7).replace('-', '/') : '0000/00', 
+        nextTransaction = (transactionsStack.length > 0 ? transactionsStack[transactionsStack.length-1] : null),
+        nextTxMonth = nextTransaction ? nextTransaction.timestamp.slice(0, 7).replace('-', '/') : '9999/99';
+
+    const originalTransactionCount = transactionsStack.length;
+    let transactionAdded = false;
+
+    if (currentTxMonth !== nextTxMonth) {
+        Object.keys(offChainBalances).forEach(month => {
+            if (!transactionAdded && currentTxMonth <= month && nextTxMonth > month) {
+                const calculatedBalance = calculatedBalanceByToken.DAI || 0;
+                const expectedBalance = offChainBalances[month].filter(b => b.token == 'USD')[0].newBalance;
+                
+                const syntheticTransaction = {
+                    block: processedTransaction ? processedTransaction.block : null,
+                    timestamp: (new Date(month.slice(0, 4), month.slice(5, 7), 0, 23, 59, 59)).toISOString(),
+                    tx_hash: null,
+                    token: 'DAI',
+                    label: 'Off-chain Payment(s)',
+                    code: 'EXT',
+                    type: 'payment-processor',
+                    balance: expectedBalance,
+                    flow: 'outflow',
+                    // Needs the reverted flow logic
+                    sender: '0xUNKNOWN',
+                    receiver: '0x3c267dfc8ba8f7359af0d8afc45b43731173236d', 
+                    amount: expectedBalance - calculatedBalance,
+                }
+
+                transactionsStack.push(syntheticTransaction);
+                delete offChainBalances[month];
+                console.log(` ...correcting off-chain balance with synthetic transaction (calculated: ${calculatedBalance} DAI; expected: ${expectedBalance} DAI):`, syntheticTransaction);
+                console.log(` ...${transactionsStack.length} more transaction(s) to be processed (previously: ${originalTransactionCount})`);
+
+                transactionAdded = true;
+            }
+
+            // Refrain from adding future balance corrections after 1
+            // TODO: properly check which future corrections should be included for the given month/block range
+            if (transactionAdded && nextTxMonth === '9999/99' && offChainBalances[month]) {
+                delete offChainBalances[month];
+            }
+        });
+    }
+}
 
 export default processTransactions;

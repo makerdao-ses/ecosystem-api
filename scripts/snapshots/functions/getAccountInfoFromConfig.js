@@ -18,6 +18,10 @@ const getAccountInfoFromConfig = (address) => {
     }
   }
 
+  if (result.address === '0xunknown') {
+    result.name = 'Unknown External Recipient(s)';
+  }
+
   return result;
 }
 
