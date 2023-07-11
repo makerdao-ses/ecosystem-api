@@ -1,10 +1,11 @@
 import getOffChainBalances from "./getOffChainBalances.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
+import blockNumbersSES from "../data/blockNumbers-SES.js";
 
 const ownerMapping = {
     'CoreUnit': {
         '0': 'peBalances',
-        '1': 'sesBalances',
+        '1': 'blockNumbersSES',
         '3': 'cesBalances',
         '9': 'rwfBalances',
         '11': 'oraBalances',
@@ -17,7 +18,8 @@ const ownerMapping = {
     }
 };
 const blockNumbersMapping = {
-    blockNumbersSAS: blockNumbersSAS
+    blockNumbersSAS,
+    blockNumbersSES
 };
 
 const getMonthInfo = (owner, month) => {
