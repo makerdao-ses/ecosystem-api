@@ -160,7 +160,7 @@ const addOffChainTransactionsToStack = (transactionsStack, processedTransaction,
     let transactionAdded = false;
 
     if (currentTxMonth !== nextTxMonth) {
-        Object.keys(offChainBalances).forEach(month => {
+        Object.keys(offChainBalances || {}).forEach(month => {
             if (!transactionAdded && currentTxMonth <= month && nextTxMonth > month) {
                 const calculatedBalance = calculatedBalanceByToken.DAI || 0;
                 const expectedBalance = offChainBalances[month].filter(b => b.token == 'USD')[0].newBalance;
