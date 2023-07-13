@@ -1,5 +1,20 @@
+import cesBalances from '../data/offChain-CES.js';
+import comBalances from '../data/offChain-COM.js';
+import dinBalances from '../data/offChain-DIN.js';
+import duxBalances from '../data/offChain-DUX.js';
+import eventsBalances from '../data/offChain-EVENTS.js';
+import groBalances from '../data/offChain-GRO.js';
+import oraBalances from '../data/offChain-ORA.js';
+import peBalances from '../data/offChain-PE.js';
+import riskBalances from '../data/offChain-RISK.js';
+import rwfBalances from '../data/offChain-RWF.js';
 import sesBalances from '../data/offChain-SES.js';
 import sasBalances from '../data/offChain-SAS.js';
+import shBalances from '../data/offChain-SH.js';
+import sneBalances from '../data/offChain-SNE.js';
+import techBalances from '../data/offChain-TECH.js';
+
+
 
 const ownerMapping = {
     'CoreUnit': {
@@ -17,8 +32,21 @@ const ownerMapping = {
     }
 };
 const dataMapping = {
+    cesBalances: cesBalances,
+    comBalances: comBalances,
+    dinBalances: dinBalances,
+    duxBalances: duxBalances,
+    eventsBalances: eventsBalances,
+    groBalances: groBalances,
+    oraBalances: oraBalances,
+    peBalances: peBalances,
+    riskBalances: riskBalances,
+    rwfBalances: rwfBalances,
     sesBalances: sesBalances,
-    sasBalances: sasBalances
+    sasBalances: sasBalances,
+    shBalances: shBalances,
+    sneBalances: sneBalances,
+    techBalances: techBalances
 };
 
 const getOffChainBalances = (ownerType, ownerId) => {
