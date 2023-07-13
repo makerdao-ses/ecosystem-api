@@ -325,7 +325,7 @@ export async function seed(knex) {
         {
             cuId: ecosystemActors[4].id,
             forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-jetstream/21054',
-            twitter: 'https://twitter.com/jetstream_gg',
+            twitter: 'https://twitter.com/jetstreamgg',
             discord: 'https://discord.gg/3qy8e2Q8',
             website: "https://dux.makerdao.network",
             github: 'https://github.com/makerdao-dux',
@@ -343,7 +343,7 @@ export async function seed(knex) {
             forumTag: 'https://forum.makerdao.com/u/pulluplabs/summary',
             twitter: '',
             discord: 'https://discord.gg/3qy8e2Q8',
-            website: "https://dux.makerdao.network",
+            website: '',
             github: 'https://github.com/makerdao',
         },
         {
@@ -370,7 +370,7 @@ export async function seed(knex) {
             website: "https://steakhouse.financial/",
             github: ''
         }
-    ])
+    ]);
 
     const scopesToAdd = [
         {
