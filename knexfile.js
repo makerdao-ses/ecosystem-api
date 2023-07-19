@@ -12,7 +12,10 @@ if (!process.env.PG_CONNECTION_STRING) {
 export default {
   development: {
     client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+    connection: {
+      connectionString: process.env.PG_CONNECTION_STRING,
+      ssl: { rejectUnauthorized: false }
+  },
     migrations: {
       tableName: 'knex_migrations'
     },
@@ -23,7 +26,10 @@ export default {
 
   staging: {
     client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+    connection: {
+      connectionString: process.env.PG_CONNECTION_STRING,
+      ssl: { rejectUnauthorized: false }
+  },
     migrations: {
       tableName: 'knex_migrations'
     },
@@ -34,7 +40,10 @@ export default {
 
   production: {
     client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+    connection: {
+      connectionString: process.env.PG_CONNECTION_STRING,
+      ssl: { rejectUnauthorized: false }
+  },
     migrations: {
       tableName: 'knex_migrations'
     },

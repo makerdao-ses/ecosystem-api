@@ -8,8 +8,7 @@
 export async function seed(knex) {
 
     // Inserting new Ecosystem Actors
-    const ecosystemActors = await knex('CoreUnit').insert([
-        {
+    const ecosystemActors = await knex('CoreUnit').insert([{
             code: 'L2B-001',
             shortCode: 'L2B',
             name: 'L2BEAT',
@@ -56,40 +55,41 @@ export async function seed(knex) {
             type: 'EcosystemActor',
             sentenceDescription: 'BA Labs provides a critical and clear understanding of the fast moving market dynamics in the DeFi ecosystem.',
             paragraphDescription: `# **About Us** #
-    The experience, skills, and professional expertise offered by our teams, enables BA Labs to meet the needs of different protocols, applications, and DAOs in the Maker ecosystem. We work in a variety of domains, including: consulting, dashboard development, improving data accessibility, data platform as a service, risk analysis, protocol assessments, and risk modeling.
 
-    Our products, services, and priorities going forward are highlighted below.
-
-    ### Endgame Scope Parameter Monitoring ###
-
-    Following our recent merger with DICU, we plan to incorporate additional information, such as Maker Teleport statistics and Maker governance data. This will serve as a useful tool to track a variety of protocol and governance changes, including: risk parameters, governance decisions, and an overview of the financial landscape of the Maker ecosystem.
-
-
-    ### Dashboards: Ongoing Maintenance and Developments ###
-
-    BA Labs currently maintains three critical dashboards related to the Maker Protocol
-
-    ### Planned Improvements ###
-
-    Relevant Endgame data and parameters will be added to the Maker Risk Dashboard and Makerburn dashboard. 
-
-    ### SubDAO Data Insights and Support ###
-
-    BA Labs offers the development and maintenance of sophisticated financial risk monitoring dashboards specifically tailored to the requirements of SubDAO projects.
-
-    ### Governance & Data Accessibility support ###
-
-    As continuation to the work of DICU, BA labs offers a free & public data api as well ad-hoc analysis and reporting to support governance and technical functions, such as delegate compensation calculations. Extending to the future needs of AVCs and Scopes.
-
-    ### Risk Monitoring & Parameter Proposals ###
-
-    Since 2019, BA Labs’ risk monitoring and risk mitigation strategies have been essential in maintaining Dai as the largest decentralized stablecoin in the Ethereum DeFi ecosystem. Demand for Dai has remained high, despite challenging, uncertain, and volatile market conditions in certain periods of 2022 and 2023. We believe that a key reason for this is the confidence that Dai holders have in MakerDAO’s smart contracts and risk mitigated collateral management provided by the @Risk-Core-Unit (BA Labs) as well as contributions of other MakerDAO teams.
-
-    ### Consultancy ###
-
-    - Scope Language and Content
-    - Risk Modeling
-    - Asset Liability Management (ALM)
+            The experience, skills, and professional expertise offered by our teams, enables BA Labs to meet the needs of different protocols, applications, and DAOs in the Maker ecosystem. We work in a variety of domains, including: consulting, dashboard development, improving data accessibility, data platform as a service, risk analysis, protocol assessments, and risk modeling.
+            
+            Our products, services, and priorities going forward are highlighted below.
+            
+            ### Endgame Scope Parameter Monitoring ###
+            
+            Following our recent merger with DICU, we plan to incorporate additional information, such as Maker Teleport statistics and Maker governance data. This will serve as a useful tool to track a variety of protocol and governance changes, including: risk parameters, governance decisions, and an overview of the financial landscape of the Maker ecosystem.
+            
+            
+            ### Dashboards: Ongoing Maintenance and Developments ###
+            
+            BA Labs currently maintains three critical dashboards related to the Maker Protocol
+            
+            ### Planned Improvements ###
+            
+            Relevant Endgame data and parameters will be added to the Maker Risk Dashboard and Makerburn dashboard. 
+            
+            ### SubDAO Data Insights and Support ###
+            
+            BA Labs offers the development and maintenance of sophisticated financial risk monitoring dashboards specifically tailored to the requirements of SubDAO projects.
+            
+            ### Governance & Data Accessibility support ###
+            
+            As continuation to the work of DICU, BA labs offers a free & public data api as well ad-hoc analysis and reporting to support governance and technical functions, such as delegate compensation calculations. Extending to the future needs of AVCs and Scopes.
+            
+            ### Risk Monitoring & Parameter Proposals ###
+            
+            Since 2019, BA Labs’ risk monitoring and risk mitigation strategies have been essential in maintaining Dai as the largest decentralized stablecoin in the Ethereum DeFi ecosystem. Demand for Dai has remained high, despite challenging, uncertain, and volatile market conditions in certain periods of 2022 and 2023. We believe that a key reason for this is the confidence that Dai holders have in MakerDAO’s smart contracts and risk mitigated collateral management provided by the @Risk-Core-Unit (BA Labs) as well as contributions of other MakerDAO teams.
+            
+            ### Consultancy ###
+            
+            - Scope Language and Content
+            - Risk Modeling
+            - Asset Liability Management (ALM)
                 `
         },
         {
@@ -99,24 +99,25 @@ export async function seed(knex) {
             category: '{ActiveEcosystemActor}',
             type: 'EcosystemActor',
             sentenceDescription: '',
-            paragraphDescription: `# **About Us** #
-    The new Powerhouse team plans to use its extensive knowledge and experience from its SES and Maker Foundation days to contribute to the development of efficient and scalable decentralized organizations. It aims to work not just for MakerDAO and its subDAOs, but as a fully independent service provider for the wider industry.
+            paragraphDescription: `
+                # **About Us** #
+                The new Powerhouse team plans to use its extensive knowledge and experience from its SES and Maker Foundation days to contribute to the development of efficient and scalable decentralized organizations. It aims to work not just for MakerDAO and its subDAOs, but as a fully independent service provider for the wider industry.
 
-    ### Services Offering ###
+                ### Services Offering ###
 
-    As an Ecosystem Actor, Powerhouse will offer three categories of paid consultancy services. These services will span a variety of operational areas going from project management, to finances and transparency reporting, to legal-operational matters.
+                As an Ecosystem Actor, Powerhouse will offer three categories of paid consultancy services. These services will span a variety of operational areas going from project management, to finances and transparency reporting, to legal-operational matters.
 
-    #### Decentralized org design and business process analysis ####
+                #### Decentralized org design and business process analysis ####
 
-    Open and decentralized organizations are an emerging paradigm that can be difficult to get right at first. MakerDAO has been one of the biggest pioneering experiments so far, achieving some successes but also laying bare the various challenges that these organizations may face.
+                Open and decentralized organizations are an emerging paradigm that can be difficult to get right at first. MakerDAO has been one of the biggest pioneering experiments so far, achieving some successes but also laying bare the various challenges that these organizations may face.
 
-    #### Open-source software development ####
+                #### Open-source software development ####
 
-    Software is a key factor that can easily determine the success or failure of open and decentralized organizations. To be successful, these organizations essentially need to trade traditional management oversight and extensive training programs with automated processes on their operational platform.
+                Software is a key factor that can easily determine the success or failure of open and decentralized organizations. To be successful, these organizations essentially need to trade traditional management oversight and extensive training programs with automated processes on their operational platform.
 
-    ### Operational support and coordination ####
+                ### Operational support and coordination ####
 
-    One of the challenges of decentralized organizations is that they can introduce a lot of inefficiencies by forcing the contributor teams to take care of operational overhead tasks outside of their core competencies.
+                One of the challenges of decentralized organizations is that they can introduce a lot of inefficiencies by forcing the contributor teams to take care of operational overhead tasks outside of their core competencies.
                     `
         },
         {
@@ -288,8 +289,7 @@ export async function seed(knex) {
     ]).returning('*');
 
     // Inserting new Social Media Channels
-    await knex('SocialMediaChannels').insert([
-        {
+    await knex('SocialMediaChannels').insert([{
             cuId: ecosystemActors[0].id,
             forumTag: 'https://forum.makerdao.com/u/l2beat/summary',
             twitter: 'https://twitter.com/l2beat',
@@ -325,7 +325,7 @@ export async function seed(knex) {
         {
             cuId: ecosystemActors[4].id,
             forumTag: 'https://forum.makerdao.com/t/professional-ecosystem-actor-introduction-jetstream/21054',
-            twitter: 'https://twitter.com/jetstream_gg',
+            twitter: 'https://twitter.com/jetstreamgg',
             discord: 'https://discord.gg/3qy8e2Q8',
             website: "https://dux.makerdao.network",
             github: 'https://github.com/makerdao-dux',
@@ -343,7 +343,7 @@ export async function seed(knex) {
             forumTag: 'https://forum.makerdao.com/u/pulluplabs/summary',
             twitter: '',
             discord: 'https://discord.gg/3qy8e2Q8',
-            website: "https://dux.makerdao.network",
+            website: '',
             github: 'https://github.com/makerdao',
         },
         {
@@ -370,10 +370,9 @@ export async function seed(knex) {
             website: "https://steakhouse.financial/",
             github: ''
         }
-    ])
+    ]);
 
-    const scopesToAdd = [
-        {
+    const scopesToAdd = [{
             shortCode: 'L2B',
             scopes: ['Protocol Scope']
         },
@@ -436,13 +435,20 @@ export async function seed(knex) {
     ]
 
     // // Adding categories to selected CUs
-    await knex('CoreUnit').update({ category: '{ScopeFacilitator}' }).whereIn('shortCode', ['SAS', 'SES', 'GOV', 'GRO', 'TECH']).returning('*');
+    await knex('CoreUnit').update({
+        category: '{ScopeFacilitator}'
+    }).whereIn('shortCode', ['SAS', 'SES', 'GOV', 'GRO', 'TECH']).returning('*');
 
     // Adding Scopes to Ecosystem Actors
     for (const scope of scopesToAdd) {
-        const [{ id }] = await knex.select('id').from('CoreUnit').where('shortCode', scope.shortCode)
+        const [{
+            id
+        }] = await knex.select('id').from('CoreUnit').where('shortCode', scope.shortCode)
         const scopes = await knex('AlignmentScope').whereIn('name', scope.scopes);
-        await knex('ContributorTeam_AlignmentScope').insert(scopes.map((scope) => ({ teamId: id, scopeId: scope.id })));
+        await knex('ContributorTeam_AlignmentScope').insert(scopes.map((scope) => ({
+            teamId: id,
+            scopeId: scope.id
+        })));
     }
 
 }

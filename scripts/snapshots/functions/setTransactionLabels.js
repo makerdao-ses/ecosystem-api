@@ -1,10 +1,6 @@
-const setTxLabel = async (allAccounts, knex) => {
-
-  const upstreamDownstream = allAccounts.upstreamDownstreamMap;
-  const allAccountsInfo = allAccounts.allAccounts;
-
+const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) => {
   const distinctInternalAddresses = Array.from(
-    new Set(allAccountsInfo.map(item => item.internalAddresses).flat())
+    new Set(allAccountsInfo.map(item => item.offChainIncluded.internalAddresses).flat())
   );
 
   const upstreamSet = upstreamDownstream.upstreamSet;
@@ -23,7 +19,7 @@ const setTxLabel = async (allAccounts, knex) => {
       txLabel: 'Internal Transaction'
     });
 
-    await knex('SnapshotAccountTransaction')
+  await knex('SnapshotAccountTransaction')
     .whereIn('snapshotAccountId', flatIds)
     .whereNotIn('counterParty', distinctInternalAddresses)
     .update({
@@ -37,9 +33,9 @@ const setTxLabel = async (allAccounts, knex) => {
       let internalAddressesList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.id === parseInt(key));
+        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
         if (obj) {
-          obj.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach(address => {
             if (!internalAddressesList.includes(address)) {
               internalAddressesList.push(address);
             }
@@ -49,8 +45,6 @@ const setTxLabel = async (allAccounts, knex) => {
         }
       }
 
-      
-  
       if (internalAddressesList.length > 0) {
         for (const value of valueArray) {
           
@@ -82,9 +76,9 @@ const setTxLabel = async (allAccounts, knex) => {
       let internalAddressesDownstreamList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.id === parseInt(key));
+        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
         if (obj) {
-          obj.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach(address => {
             if (!internalAddressesDownstreamList.includes(address)) {
               internalAddressesDownstreamList.push(address);
             }
@@ -94,8 +88,6 @@ const setTxLabel = async (allAccounts, knex) => {
         }
       }
 
-      
-  
       if (internalAddressesDownstreamList.length > 0) {
         for (const value of valueArray) {
           
@@ -122,4 +114,4 @@ const setTxLabel = async (allAccounts, knex) => {
   }
 };
 
-export default setTxLabel;
+export default setTransactionLabels;

@@ -143,7 +143,7 @@ const matchCategories = async (bs, m) => {
                 } else if (bsTotal != null || bsTotal != 0) {
                     wrong++;
                     console.log(m[j]);
-                    console.log(bsTotal);
+                    console.log(bs[i]);
                     diff = mTotal - bsTotal;
                 }
                 matchFound = true;

@@ -1,4 +1,5 @@
 import accounts from '../data/accounts.js';
+
 const ownerTypeMapping = {
     "delegates": "Delegates",
     "core-units": "CoreUnit",
@@ -8,6 +9,7 @@ const ownerTypeMapping = {
     "scopes": "EcosystemActor",
     "payment-processors": "EcosystemActor"
 };
+
 const getOwnerId = async (ownerType, idSegment, knex) => {
     if (ownerType === 'Delegates') {
         return null;
@@ -42,7 +44,11 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
 };
 
 const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
-    let segments = budgetPath.toLowerCase().split('/');
+    if (!budgetPath) {
+        throw new Error(`No budget path provided. Try running 'node ./syncSnapshotReport.js makerdao/core-units/SES-001' or similar.`);
+    }
+
+    const segments = budgetPath.toLowerCase().split('/');
 
     if (segments[0] != 'makerdao') {
         throw new Error(`Expected "makerdao" as first budget path segment but got "${segments[0]}"`);
@@ -50,14 +56,14 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
 
     let ownerType = ownerTypeMapping[segments[1]];
     if (!ownerType) {
-        throw new Error(`Expected owner type as second budget path segment but got "${segments[1]}"`);
+        throw new Error(`Expected owner type as second budget path segment but got "${segments[1]}". Valid owner types are: "${Object.keys(ownerTypeMapping).join('", "')}"`);
     }
 
     const idSegment = segments[2] || "";
     const scopesSegment = segments[3] || "";
-    let ownerId = await getOwnerId(ownerType, idSegment, knex);
-    console.log(segments);
-    let selectedAccounts = [];
+    const ownerId = await getOwnerId(ownerType, idSegment, knex);
+    
+    const selectedAccounts = [];
     for (let i = 0; i < accounts.length; i++) {
         if (
             accounts[i]['budget path 1'].toLowerCase() === 'makerdao' &&
@@ -65,7 +71,6 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
             accounts[i]['budget path 3'].toLowerCase() === idSegment.toLowerCase() &&
             accounts[i]['budget path 4'].toLowerCase() === scopesSegment.toLowerCase()
         ) {
-            console.log(accounts[i]);
             selectedAccounts.push({
                 type: accounts[i].Type,
                 label: accounts[i].Name,
@@ -75,10 +80,11 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
         }
     }
 
-
     return {
-        type: ownerType,
-        id: ownerId,
+        owner: {
+            type: ownerType,
+            id: ownerId,
+        },
         accounts: selectedAccounts
     };
 };
