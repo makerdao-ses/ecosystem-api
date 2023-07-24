@@ -59,6 +59,7 @@ const budgetStatementCaps = async () => {
     LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
     LEFT JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
     WHERE bs.month = bsli.month
+    AND bs."ownerCode" != 'DAIF-001'
     GROUP BY bsw.address, bs.month, bs."ownerCode"
     ORDER BY bs."ownerCode"`);
 
@@ -142,8 +143,8 @@ const matchCategories = async (bs, m) => {
                     diff = mTotal;
                 } else if (bsTotal != null || bsTotal != 0) {
                     wrong++;
-                    console.log(m[j]);
-                    console.log(bs[i]);
+                    console.log('Mip:',m[j]);
+                    console.log('Budget Statement: ',(bs[i]));
                     diff = mTotal - bsTotal;
                 }
                 matchFound = true;
