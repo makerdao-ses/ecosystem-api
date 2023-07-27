@@ -7,7 +7,37 @@
 
 export async function seed(knex) {
 
-    // Inserting new Ecosystem Actors
+    // Select new Ecosystem Actors
+    const Dracaena = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'Dracaena27'});
+
+    const Eliza = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'ElizaPancake'});
+
+    const rachel = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'rachel'});
+    
+    const mosanto = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'Mosanto'});
+
+    const juanbug = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'juanbug'});
+
+    const artautas = await knex
+    .select('id')
+    .from('User')
+    .where({username: 'artautas'});
+    
     const dewizAdmin = await knex
     .select('id')
     .from('User')
@@ -61,42 +91,75 @@ export async function seed(knex) {
     const baLabs = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'BAL'});
+    .where({shortCode: 'BA-LABS'});
 
     const l2b = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'L2B'});
+    .where({shortCode: 'L2BEAT'});
 
     const chl = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'CH'});
+    .where({shortCode: 'CHRONICLE'});
 
     const jst = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'JST'});
+    .where({shortCode: 'JETSTREAM'});
 
     const dp = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'DP'});
+    .where({shortCode: 'DEVPOOL'});
 
     const pl = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'PL'});
+    .where({shortCode: 'PULLUP'});
+
+    const ses = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'SES'})
+    .andWhere({type: 'EcosystemActor'});
+
+    const sas = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'SIDESTREAM'})
+    .andWhere({type: 'EcosystemActor'});
+
+    const tech = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'TECHOPS'})
+    .andWhere({type: 'EcosystemActor'});
 
     const phl = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'PHL'});
+    .where({shortCode: 'PHOENIX'});
+
+    const ph = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'POWERHOUSE'});
 
     const steak = await knex
     .select('id')
     .from('CoreUnit')
-    .where({shortCode: 'STEAK'});
+    .where({shortCode: 'STEAKHOUSE'});
+
+    const viridian = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'VIRIDIAN'});
+
+    const sol = await knex
+    .select('id')
+    .from('CoreUnit')
+    .where({shortCode: 'SOL'});
 
     const ecosystemActorAdmin = await knex
     .select('id')
@@ -105,7 +168,62 @@ export async function seed(knex) {
 
     
     //Add UserRoles
-    await knex('UserRole').insert([{
+    await knex('UserRole').insert([
+      {
+        userId: Dracaena[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: ph[0].id,
+      },
+      {
+        userId: Eliza[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: viridian[0].id,
+      },
+      {
+        userId: Eliza[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: pl[0].id,
+      },
+      {
+        userId: Eliza[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: phl[0].id,
+      },
+      {
+        userId: Eliza[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: ses[0].id,
+      },
+      { 
+        userId: rachel[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: chl[0].id,
+      },
+      { 
+        userId: mosanto[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: sas[0].id,
+      },
+      { 
+        userId: juanbug[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: steak[0].id,
+      },
+      { 
+        userId: artautas[0].id,
+        roleId: ecosystemActorAdmin[0].id,
+        resource: 'EcosystemActor',
+        resourceId: tech[0].id,
+      },
+      {
       userId: dewizAdmin[0].id,
       roleId: ecosystemActorAdmin[0].id,
       resource: 'EcosystemActor',
