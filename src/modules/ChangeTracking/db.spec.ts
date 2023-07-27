@@ -14,13 +14,13 @@ beforeAll(async () => {
 afterAll(async () => { await authModel.knex.destroy() })
 
 it('returns a change tracking event as last activity of a core unit', async () => {
-    const entry = await authModel.getCoreUnitLastActivity('11');
+    const entry = await authModel.getCoreUnitLastActivity('11', 'CoreUnit');
 
     expect(entry?.event).toMatch(/CU_BUDGET_STATEMENT/);
 });
 
 it('returns a string ID for Core Unit-related events', async () => {
-    const entry = await authModel.getCoreUnitLastActivity('11');
+    const entry = await authModel.getCoreUnitLastActivity('11', 'CoreUnit');
 
     expect(entry?.event).toMatch(/CU_BUDGET_STATEMENT/);
     expect(typeof (entry?.params as any).coreUnit.id).toBe('number');

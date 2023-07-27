@@ -62,18 +62,18 @@ export class ChangeTrackingModel {
             .andWhere('objectId', objectId)
     }
 
-    async getCoreUnitActivityFeed(cuId: string): Promise<ChangeTrackingEvent[]> {
+    async getCoreUnitActivityFeed(cuId: string, type: string): Promise<ChangeTrackingEvent[]> {
         return await this.knex('ChangeTrackingEvents_Index')
             .where('objectId', cuId)
-            .andWhere('objectType', 'CoreUnit')
+            .andWhere('objectType', type)
             .orderBy('eventId', 'desc')
             .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id');
     }
 
-    async getCoreUnitLastActivity(cuId: string): Promise<ChangeTrackingEvent | null> {
+    async getCoreUnitLastActivity(cuId: string, type: string): Promise<ChangeTrackingEvent | null> {
         const result = await this.knex('ChangeTrackingEvents_Index')
             .where('objectId', cuId)
-            .andWhere('objectType', 'CoreUnit')
+            .andWhere('objectType', type)
             .join('ChangeTrackingEvents', 'ChangeTrackingEvents_Index.eventId', '=', 'ChangeTrackingEvents.id')
             .orderBy('ChangeTrackingEvents.created_at', 'desc')
             .limit(1);
