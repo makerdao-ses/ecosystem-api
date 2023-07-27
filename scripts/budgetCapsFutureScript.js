@@ -6,42 +6,58 @@ const db = knex({
 });
 
 const getData = async () => {
-
     var bsCaps = await budgetStatementCaps();
     var mCaps = await mipCaps();
 
-    //Compare current budget statement caps and total mip caps per month and calculate the difference
+    // Compare current budget statement caps and total mip caps per month and calculate the difference
     var matched = await matchCategories(bsCaps, mCaps);
 
-    //Find the current payment topup value per budget statement (if it exists)
+    // Find the current payment topup value per budget statement (if it exists)
     var paymentTop = await paymentTopup();
 
-    //Structure the values to be updated
+    // Structure the values to be updated
     var updateVals = await mapValue(paymentTop, matched);
 
-    //Write entries to the database
+    // Write entries to the database
     await writeToDb(updateVals);
 
     console.log("Updating " + updateVals.length + " payment topup budget cap values...");
 
-    //Close connection
+    // Close connection
     return process.exit(0);
-
 };
 
 const paymentTopup = async () => {
-
-    //Retrieve current payment topup values
-
-    var result = await db.raw(`SELECT bsli.id as bsliid, bs.id as bsid, bsw.id as bswid, bsw.address, bs.month, bsli.month as bslimonth, bs."ownerCode", bsli."budgetCap" as "paymentTopupCap"
-    FROM "BudgetStatement" AS bs
-    LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
-    LEFT OUTER JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId" AND bs.month != bsli.month AND bsli."budgetCategory" = 'payment topup'
-    WHERE bs.month < CURRENT_DATE 
-    AND bsli.month NOTNULL
-    AND bs."ownerCode" != 'DAIF-001'
-    GROUP BY bsw.address, bs.month, bs."ownerCode", bsli."budgetCap", bsli.id, bs.id, bsw.id
-    ORDER BY "paymentTopupCap" DESC`);
+    // Retrieve current payment topup values
+    var result = await db.raw(`
+    SELECT
+      bsli.id AS bsliid,
+      bs.id AS bsid,
+      bsw.id AS bswid,
+      bsw.address,
+      bs.month,
+      bsli.month AS bslimonth,
+      bs."ownerCode",
+      bsli."budgetCap" AS "paymentTopupCap"
+    FROM
+      "BudgetStatement" AS bs
+      LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
+      LEFT OUTER JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId" AND bs.month != bsli.month AND bsli."budgetCategory" = 'payment topup'
+    WHERE
+      bs.month < CURRENT_DATE
+      AND bsli.month NOT NULL
+      AND bs."ownerCode" != 'DAIF-001'
+    GROUP BY
+      bsw.address,
+      bs.month,
+      bs."ownerCode",
+      bsli."budgetCap",
+      bsli.id,
+      bs.id,
+      bsw.id
+    ORDER BY
+      "paymentTopupCap" DESC
+  `);
 
     const formattedResult = result.rows.map(row => ({
         bsliId: row.bsliid,
@@ -55,20 +71,35 @@ const paymentTopup = async () => {
     }));
 
     return formattedResult;
-
 };
 
 const budgetStatementCaps = async () => {
-
-    //Retrieve current BudgetStatement Budget Cap values
-
-    var result = await db.raw(`SELECT bsw.address, bs.month, bs.id as bsid, bsw.id as bswid, bsli.month as bslimonth, bs."ownerCode", SUM(bsli."budgetCap") as "totalBudgetCap"
-    FROM "BudgetStatement" AS bs
-    LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
-    LEFT JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
-    WHERE bs.month != bsli.month
-    GROUP BY bsw.address, bs.month, bs."ownerCode", bslimonth, bs.id, bsw.id
-    ORDER BY bs."ownerCode"`);
+    // Retrieve current BudgetStatement Budget Cap values
+    var result = await db.raw(`
+    SELECT
+      bsw.address,
+      bs.month,
+      bs.id AS bsid,
+      bsw.id AS bswid,
+      bsli.month AS bslimonth,
+      bs."ownerCode",
+      SUM(bsli."budgetCap") AS "totalBudgetCap"
+    FROM
+      "BudgetStatement" AS bs
+      LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
+      LEFT JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
+    WHERE
+      bs.month != bsli.month
+    GROUP BY
+      bsw.address,
+      bs.month,
+      bs."ownerCode",
+      bslimonth,
+      bs.id,
+      bsw.id
+    ORDER BY
+      bs."ownerCode"
+  `);
 
     var results = [];
 
@@ -89,23 +120,38 @@ const budgetStatementCaps = async () => {
 };
 
 const mipCaps = async () => {
-
-    //Retrieve budget caps per the entries in the MIP tables
-
+    // Retrieve budget caps per the entries in the MIP tables
     var results = [];
-
-    var result = await db.raw(`SELECT "cu"."code", "cumip"."mipUrl", "m4w"."name", "m4w"."address", "m4w"."id", "m4bp"."budgetPeriodStart", "m4bp"."budgetPeriodEnd", SUM("m4bl"."budgetCap") AS "total"
-    FROM "public"."CuMip" AS "cumip"
-    LEFT JOIN "CoreUnit" AS "cu" ON "cumip"."cuId" = "cu"."id"
-    INNER JOIN "Mip40" AS "m4" ON "cumip"."id" = "m4"."cuMipId"
-    LEFT JOIN "Mip40BudgetPeriod" AS "m4bp" ON "m4"."id" = "m4bp"."mip40Id"
-    LEFT JOIN "Mip40Wallet" AS "m4w" ON "m4"."id" = "m4w"."mip40Id"
-    LEFT JOIN "Mip40BudgetLineItem" AS "m4bl" ON "m4w"."id" = "m4bl"."mip40WalletId"
-    WHERE "m4"."mkrOnly" IS NULL
-    GROUP BY "m4w"."id", "m4w"."name", "m4w"."address", "cu"."code", "cumip"."mipUrl", "m4bp"."budgetPeriodStart", "m4bp"."budgetPeriodEnd"
-    ORDER BY "m4bp"."budgetPeriodStart" DESC;
-    `);
-
+    var result = await db.raw(`
+    SELECT
+      "cu"."code",
+      "cumip"."mipUrl",
+      "m4w"."name",
+      "m4w"."address",
+      "m4w"."id",
+      "m4bp"."budgetPeriodStart",
+      "m4bp"."budgetPeriodEnd",
+      SUM("m4bl"."budgetCap") AS "total"
+    FROM
+      "public"."CuMip" AS "cumip"
+      LEFT JOIN "CoreUnit" AS "cu" ON "cumip"."cuId" = "cu"."id"
+      INNER JOIN "Mip40" AS "m4" ON "cumip"."id" = "m4"."cuMipId"
+      LEFT JOIN "Mip40BudgetPeriod" AS "m4bp" ON "m4"."id" = "m4bp"."mip40Id"
+      LEFT JOIN "Mip40Wallet" AS "m4w" ON "m4"."id" = "m4w"."mip40Id"
+      LEFT JOIN "Mip40BudgetLineItem" AS "m4bl" ON "m4w"."id" = "m4bl"."mip40WalletId"
+    WHERE
+      "m4"."mkrOnly" IS NULL
+    GROUP BY
+      "m4w"."id",
+      "m4w"."name",
+      "m4w"."address",
+      "cu"."code",
+      "cumip"."mipUrl",
+      "m4bp"."budgetPeriodStart",
+      "m4bp"."budgetPeriodEnd"
+    ORDER BY
+      "m4bp"."budgetPeriodStart" DESC;
+  `);
 
     for (var i = 0; i < result.rows.length; i++) {
         let add = result.rows[i].address;
@@ -125,7 +171,6 @@ const mipCaps = async () => {
     }
 
     return results;
-
 };
 
 const matchCategories = async (bs, m) => {
@@ -278,8 +323,8 @@ const writeToDb = async (updateVals) => {
 
             if (existingEntry) {
                 // Update the budget cap in the existing entry
-                
-                    await db.raw(`
+
+                await db.raw(`
                     UPDATE "BudgetStatementLineItem"
                     SET "budgetCap" = COALESCE("budgetCap", 0) + ${item.diff}
                     WHERE "id" = ${existingEntry.id}
@@ -287,7 +332,9 @@ const writeToDb = async (updateVals) => {
 
             } else {
                 // Create a new BudgetStatementLineItem entry
-                const { bsliId } = await db('BudgetStatementLineItem').insert({
+                const {
+                    bsliId
+                } = await db('BudgetStatementLineItem').insert({
                     budgetStatementWalletId: item.bsWid,
                     month: item.bslimonth,
                     budgetCategory: 'payment topup',
