@@ -497,7 +497,8 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId)
+                    const [typeResult] = await dataSources.db.CoreUnit.getTeams({ filter: { id: input[0].ownerId } })
+                    const allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, typeResult.type, input[0].ownerId)
                     if (parseInt(allowed[0].count) > 0) {
                         if (input.length < 1) {
                             throw new Error('No input data')
@@ -530,7 +531,7 @@ export const resolvers = {
                     const cuIdFromInput = input.pop()
                     let allowed = { count: 0 }
                     if (cuIdFromInput.ownerType !== 'Delegates') {
-                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId);
+                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, cuIdFromInput.ownerType, cuIdFromInput.cuId);
                     }
                     if (allowed.count > 0 || cuIdFromInput.ownerType === 'Delegates') {
                         //Tacking Change
@@ -603,7 +604,7 @@ export const resolvers = {
                     const cuIdFromInput = input.pop()
                     let allowed = { count: 0 }
                     if (cuIdFromInput.ownerType !== 'Delegates') {
-                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, 'CoreUnit', user.cuId);
+                        [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, cuIdFromInput.ownerType, cuIdFromInput.cuId);
                     }
                     if (allowed.count > 0 || cuIdFromInput.ownerType === 'Delegates') {
                         //Tacking Change
