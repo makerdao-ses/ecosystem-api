@@ -8,7 +8,7 @@ export async function up(knex) {
     const request = await knex('CoreUnit').where('code', 'DEL');
     const delId = request[0].id;
 
-    await knex('UserRole').where('resourceId', delId).del();
+    await knex('UserRole').where('resourceId', delId).update('resourceId', null);
     await knex('CoreUnit').where('code', 'DEL').del();
 }
 
