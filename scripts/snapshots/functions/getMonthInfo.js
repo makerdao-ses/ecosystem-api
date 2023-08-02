@@ -1,4 +1,5 @@
 import getOffChainBalances from "./getOffChainBalances.js";
+import blockNumbersIS from "../data/blockNumbers-IS.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
 import blockNumbersSES from "../data/blockNumbers-SES.js";
 
@@ -14,10 +15,12 @@ const ownerMapping = {
         '15': 'duxBalances',
         '16': 'sneBalances',
         '17': 'dinBalances',
+        '18': 'blockNumbersIS',
         '19': 'blockNumbersSAS'
     }
 };
 const blockNumbersMapping = {
+    blockNumbersIS,
     blockNumbersSAS,
     blockNumbersSES
 };
