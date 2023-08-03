@@ -8,8 +8,8 @@ const db = knex({
 });
 
 const getData = async () => {
-    var bsCaps = await budgetStatementCaps();
-    var mCaps = await mipCaps();
+    var bsCaps = await getBudgetStatementBudgetCaps();
+    var mCaps = await getMipBudgetCaps();
 
     //Compare current budget statement caps and total mip caps per month and calculate the difference
     var matched = await matchCategories(bsCaps, mCaps);
@@ -24,6 +24,103 @@ const getData = async () => {
     console.log("Updating " + updateVals.length + " payment topup budget cap values...");
 
     return process.exit(0);
+
+};
+
+const getBudgetStatementBudgetCaps = async () => {
+
+    var result = await db.raw(`
+    SELECT 
+        bsw.address, 
+        bs.month, 
+        bs."ownerCode", 
+        SUM(bsli."budgetCap") as "totalBudgetCap"
+    FROM 
+        "BudgetStatement" AS bs
+    LEFT JOIN 
+        "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
+    LEFT JOIN 
+        "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
+    WHERE 
+        bs.month = bsli.month
+    AND 
+        bs."ownerCode" != 'DAIF-001'
+    AND 
+        bs."ownerType" = 'CoreUnit'
+    GROUP BY 
+        bsw.address, 
+        bs.month, 
+        bs."ownerCode"
+    ORDER BY bs."ownerCode"`);
+
+    var results = [];
+
+    for (var i = 0; i < result.rows.length; i++) {
+        var entry = {
+            ownerCode: result.rows[i].ownerCode,
+            address: result.rows[i].address,
+            month: result.rows[i].month,
+            total: result.rows[i].totalBudgetCap
+        };
+        results.push(entry);
+    }
+
+    return results;
+};
+
+const getMipBudgetCaps = async () => {
+
+    var results = [];
+
+    var result = await db.raw(`
+    SELECT 
+        "cu"."code", 
+        "cumip"."mipUrl", 
+        "m4w"."name", 
+        "m4w"."address", 
+        "m4w"."id", 
+        "m4bp"."budgetPeriodStart", 
+        "m4bp"."budgetPeriodEnd", 
+        SUM("m4bl"."budgetCap") AS "total"
+    FROM 
+        "public"."CuMip" AS "cumip"
+    LEFT JOIN 
+        "CoreUnit" AS "cu" ON "cumip"."cuId" = "cu"."id"
+    INNER JOIN 
+        "Mip40" AS "m4" ON "cumip"."id" = "m4"."cuMipId"
+    LEFT JOIN 
+        "Mip40BudgetPeriod" AS "m4bp" ON "m4"."id" = "m4bp"."mip40Id"
+    LEFT JOIN 
+        "Mip40Wallet" AS "m4w" ON "m4"."id" = "m4w"."mip40Id"
+    LEFT JOIN 
+        "Mip40BudgetLineItem" AS "m4bl" ON "m4w"."id" = "m4bl"."mip40WalletId"
+    WHERE 
+        "m4"."mkrOnly" IS NULL
+    GROUP BY 
+        "m4w"."id", "m4w"."name", "m4w"."address", "cu"."code", "cumip"."mipUrl", "m4bp"."budgetPeriodStart", "m4bp"."budgetPeriodEnd"
+    ORDER BY 
+        "m4bp"."budgetPeriodStart" DESC;
+    `);
+
+
+    for (var i = 0; i < result.rows.length; i++) {
+        let add = result.rows[i].address;
+        if (add != null) {
+            var address = add.toLowerCase();
+            var entry = {
+                ownerCode: result.rows[i].code,
+                address: address,
+                name: result.rows[i].name,
+                mipUrl: result.rows[i].mipUrl,
+                start: result.rows[i].budgetPeriodStart,
+                end: result.rows[i].budgetPeriodEnd,
+                total: result.rows[i].total
+            };
+            results.push(entry);
+        }
+    }
+
+    return results;
 
 };
 
@@ -49,71 +146,8 @@ const paymentTopup = async () => {
 
     return formattedResult;
 
-
 };
 
-const budgetStatementCaps = async () => {
-
-    var result = await db.raw(`SELECT bsw.address, bs.month, bs."ownerCode", SUM(bsli."budgetCap") as "totalBudgetCap"
-    FROM "BudgetStatement" AS bs
-    LEFT JOIN "BudgetStatementWallet" AS bsw ON bs.id = bsw."budgetStatementId"
-    LEFT JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
-    WHERE bs.month = bsli.month
-    GROUP BY bsw.address, bs.month, bs."ownerCode"
-    ORDER BY bs."ownerCode"`);
-
-    var results = [];
-
-    for (var i = 0; i < result.rows.length; i++) {
-        var entry = {
-            ownerCode: result.rows[i].ownerCode,
-            address: result.rows[i].address,
-            month: result.rows[i].month,
-            total: result.rows[i].totalBudgetCap
-        };
-        results.push(entry);
-    }
-
-    return results;
-};
-
-const mipCaps = async () => {
-
-    var results = [];
-
-    var result = await db.raw(`SELECT "cu"."code", "cumip"."mipUrl", "m4w"."name", "m4w"."address", "m4w"."id", "m4bp"."budgetPeriodStart", "m4bp"."budgetPeriodEnd", SUM("m4bl"."budgetCap") AS "total"
-    FROM "public"."CuMip" AS "cumip"
-    LEFT JOIN "CoreUnit" AS "cu" ON "cumip"."cuId" = "cu"."id"
-    INNER JOIN "Mip40" AS "m4" ON "cumip"."id" = "m4"."cuMipId"
-    LEFT JOIN "Mip40BudgetPeriod" AS "m4bp" ON "m4"."id" = "m4bp"."mip40Id"
-    LEFT JOIN "Mip40Wallet" AS "m4w" ON "m4"."id" = "m4w"."mip40Id"
-    LEFT JOIN "Mip40BudgetLineItem" AS "m4bl" ON "m4w"."id" = "m4bl"."mip40WalletId"
-    WHERE "m4"."mkrOnly" IS NULL
-    GROUP BY "m4w"."id", "m4w"."name", "m4w"."address", "cu"."code", "cumip"."mipUrl", "m4bp"."budgetPeriodStart", "m4bp"."budgetPeriodEnd"
-    ORDER BY "m4bp"."budgetPeriodStart" DESC;
-    `);
-
-
-    for (var i = 0; i < result.rows.length; i++) {
-        let add = result.rows[i].address;
-        if (add != null) {
-            var address = add.toLowerCase();
-            var entry = {
-                ownerCode: result.rows[i].code,
-                address: address,
-                name: result.rows[i].name,
-                mipUrl: result.rows[i].mipUrl,
-                start: result.rows[i].budgetPeriodStart,
-                end: result.rows[i].budgetPeriodEnd,
-                total: result.rows[i].total
-            };
-            results.push(entry);
-        }
-    }
-
-    return results;
-
-};
 
 const matchCategories = async (bs, m) => {
     var empty = 0;
@@ -142,8 +176,8 @@ const matchCategories = async (bs, m) => {
                     diff = mTotal;
                 } else if (bsTotal != null || bsTotal != 0) {
                     wrong++;
-                    console.log(m[j]);
-                    console.log(bs[i]);
+                    console.log('Mip:',m[j]);
+                    console.log('Budget Statement: ',(bs[i]));
                     diff = mTotal - bsTotal;
                 }
                 matchFound = true;
@@ -184,6 +218,9 @@ const matchCategories = async (bs, m) => {
 
     return matched;
 };
+
+
+
 
 const mapValue = async (paymentTopupOutput, matchedCategoriesOutput) => {
     const outputList = [];

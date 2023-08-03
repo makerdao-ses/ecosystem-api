@@ -670,8 +670,119 @@ export default [{
     "budget path 4": "multichain-engeering",
     "Type": "Auditor",
     "Address": "0x868b44e8191a2574334deb8e7efa38910df941fa"
-},
-{
+}, {
+    "Name": "BALabs Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "BA-LABS",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0xDfe08A40054685E205Ed527014899d1EDe49B892"
+}, {
+    "Name": "Chronicle Labs Auditor ",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "CHRONICLE",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0x68D0ca2d5Ac777F6A9b0d1be44332BB3d5981C2f"
+}, {
+    "Name": "Dewiz Auditor",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "DEWIZ",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0xD8665628742cf54BBBB3b00B15d7E7a838a1b53a"
+}, {
+    "Name": "Dewiz Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "DEWIZ",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0xc37e6d18ee56440b186257968a295eb54036821a"
+}, {
+    "Name": "Jetstream Auditor",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "JETSTREAM",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0xF478A08C41ad06E8D957d5e6B6Bcde7452cEE962"
+}, {
+    "Name": "Jetstream Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "JETSTREAM",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x3214b48Fc628f33ed0034d66c634F72Af3dF6577"
+}, {
+    "Name": "Phoenix Labs Auditor",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PHOENIX",
+    "budget path 4": "",
+    "Type": "Auditor ",
+    "Address": "0x115F76A98C2268DaE6c1421eb6B08e4e1dF525dA"
+}, {
+    "Name": "Phoenix Labs Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PHOENIX",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x19891541842162AD4311f14055E7221406213D67"
+}, {
+    "Name": "PullUp Labs Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PULLUP",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x42aD911c75d25E21727E45eCa2A9d999D5A7f94c"
+}, {
+    "Name": "Sidestream Auction Services Auditor",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "SIDESTREAM",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0x87EcaaACEd3A02A37e7075dc45D3fEb49867d135"
+}, {
+    "Name": "Sidestream Auction Services Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "SIDESTREAM",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x852c61Ab6f70E5FbACdfB55ebE73a8D2cCAf4649"
+}, {
+    "Name": "Techops Operational ",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "TECHOPS",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x948777676ed54390889C219489927939D51A805A"
+}, {
+    "Name": "Viridian Protector Advisory Company Auditor",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "VIRIDIAN",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0xbB8AA212267477C3dbfF6643E497919ec2E3dEC9"
+}, {
+    "Name": "Viridian Protector Advisory Company",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "VIRIDIAN",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0xA1E62c6321eEd0ECFcF2f382c8c82FD940D83c07"
+},{
     "Name": "Accountable Payment Processor",
     "budget path 1": "makerdao",
     "budget path 2": "payment-processors",
