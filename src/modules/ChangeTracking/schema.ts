@@ -78,6 +78,11 @@ export const typeDefs = [gql`
         lastActivity: ChangeTrackingEvent
         activityFeed(limit: Int, offset: Int): [ChangeTrackingEvent]
     }
+
+    extend type Team {
+        lastActivity: ChangeTrackingEvent
+        activityFeed(limit: Int, offset: Int): [ChangeTrackingEvent]
+    }
 `];
 
 export const resolvers = {
@@ -136,10 +141,18 @@ export const resolvers = {
     },
     CoreUnit: {
         lastActivity: async (parent: any, _: any, { dataSources }: any) => {
-            return dataSources.db.ChangeTracking.getCoreUnitLastActivity(parent.id);
+            return dataSources.db.ChangeTracking.getCoreUnitLastActivity(parent.id, parent.type);
         },
         activityFeed: async (parent: any, _: any, { dataSources }: any) => {
-            return dataSources.db.ChangeTracking.getCoreUnitActivityFeed(parent.id);
+            return dataSources.db.ChangeTracking.getCoreUnitActivityFeed(parent.id, parent.type);
+        },
+    },
+    Team: {
+        lastActivity: async (parent: any, _: any, { dataSources }: any) => {
+            return dataSources.db.ChangeTracking.getCoreUnitLastActivity(parent.id, parent.type);
+        },
+        activityFeed: async (parent: any, _: any, { dataSources }: any) => {
+            return dataSources.db.ChangeTracking.getCoreUnitActivityFeed(parent.id, parent.type);
         },
     },
 };

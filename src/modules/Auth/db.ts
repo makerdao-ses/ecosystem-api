@@ -140,7 +140,7 @@ export class AuthModel {
             .where({
                 userId: userId,
                 'RolePermission.permission': 'Audit',
-                'RolePermission.resource': "CoreUnit"
+                'RolePermission.resource': resource
             })
             .orWhere({
                 userId: userId,

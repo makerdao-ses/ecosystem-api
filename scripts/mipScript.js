@@ -19,7 +19,7 @@ const db = knex({
 
 const fetchDB = async (mipDict) => {
     if (mipDict.length != 0) {
-        console.log(await db.insert(mipDict).into('CuMip'));
+        await db.insert(mipDict).into('CuMip');
     }
 };
 
@@ -150,7 +150,6 @@ const cuCodeParse = (tags) => {
         const tag = tags[i];
         const match = tag.match(/([a-z]{3,4}-001)$/);
         if (match) {
-            console.log(match);
             return match[1];
         }
     }

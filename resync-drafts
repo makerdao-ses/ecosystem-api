@@ -11,8 +11,6 @@ node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/SH-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/DUX-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/SNE-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/DIN-001
-node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/IS-001
-node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/SAS-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/DECO-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/SF-001
 node ./scripts/snapshots/syncSnapshotReport.js makerdao/core-units/TECH-001

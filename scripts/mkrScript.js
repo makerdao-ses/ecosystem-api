@@ -136,25 +136,25 @@ transferData.forEach(row => {
                   (err, res) => {
                     countTransfer++;
                   });
-                  //Write new entries
-                  /*pool.query(
-                    `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
-                      VALUES (${walletId}, ${requestAmount}, ${walletBalance})
-                  )
-                  INSERT INTO "BudgetStatementTransferRequest" ("budgetStatementWalletId", "requestAmount", "walletBalance")
-                  SELECT *
-                  FROM new_values
-                  WHERE NOT EXISTS (
-                      SELECT 1
-                      FROM "BudgetStatementTransferRequest"
-                      WHERE "budgetStatementWalletId" = new_values.budgetStatementWalletId
-                      AND "requestAmount" = new_values.requestAmount
-                      AND "walletBalance" = new_values.walletBalance
-                  );`,
-                    (err, res) => {
-                      countTransfer++;
-                      console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
-                    });*/
+                //Write new entries
+                /*pool.query(
+                  `WITH new_values (budgetStatementWalletId, requestAmount, walletBalance) AS (
+                    VALUES (${walletId}, ${requestAmount}, ${walletBalance})
+                )
+                INSERT INTO "BudgetStatementTransferRequest" ("budgetStatementWalletId", "requestAmount", "walletBalance")
+                SELECT *
+                FROM new_values
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM "BudgetStatementTransferRequest"
+                    WHERE "budgetStatementWalletId" = new_values.budgetStatementWalletId
+                    AND "requestAmount" = new_values.requestAmount
+                    AND "walletBalance" = new_values.walletBalance
+                );`,
+                  (err, res) => {
+                    countTransfer++;
+                    console.log(err ? err.stack : res.command + ' ' + countTransfer + ' rows affected');
+                  });*/
               }
             });
         }
