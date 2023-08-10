@@ -7,8 +7,6 @@ export const typeDefs = [gql`
         parentId: ID
         name: String
         code: String
-        start: DateTime
-        end: DateTime
         idPath: String
         codePath: String
         budgetCap: [BudgetCap]
@@ -18,6 +16,8 @@ export const typeDefs = [gql`
         id: ID!
         amount: Float
         currency: String
+        start: DateTime
+        end: DateTime
         expenseCategory: [ExpenseCategory]
     }
 
