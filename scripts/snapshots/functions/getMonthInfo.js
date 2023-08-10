@@ -2,27 +2,57 @@ import getOffChainBalances from "./getOffChainBalances.js";
 import blockNumbersIS from "../data/blockNumbers-IS.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
 import blockNumbersSES from "../data/blockNumbers-SES.js";
+import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
 
 const ownerMapping = {
     'CoreUnit': {
-        '0': 'peBalances',
+        '0': 'blockNumbersDRAFT',
         '1': 'blockNumbersSES',
-        '3': 'cesBalances',
-        '9': 'rwfBalances',
-        '11': 'oraBalances',
-        '12': 'comBalances',
-        '14': 'shBalances',
-        '15': 'duxBalances',
-        '16': 'sneBalances',
-        '17': 'dinBalances',
+        '3': 'blockNumbersDRAFT',
+        '7': 'blockNumbersDRAFT',
+        '8': 'blockNumbersDRAFT',
+        '9': 'blockNumbersDRAFT',
+        '10': 'blockNumbersDRAFT',
+        '11': 'blockNumbersDRAFT',
+        '12': 'blockNumbersDRAFT',
+        '13': 'blockNumbersDRAFT',
+        '14': 'blockNumbersDRAFT',
+        '15': 'blockNumbersDRAFT',
+        '16': 'blockNumbersDRAFT',
+        '17': 'blockNumbersDRAFT',
         '18': 'blockNumbersIS',
-        '19': 'blockNumbersSAS'
+        '19': 'blockNumbersSAS',
+        '20': 'blockNumbersDRAFT',
+        '21': 'blockNumbersDRAFT',
+        '22': 'blockNumbersDRAFT',
+        '38': 'blockNumbersDRAFT'
+    },
+    'EcosystemActor': {
+        '44':'blockNumbersDRAFT',
+        '45':'blockNumbersDRAFT',
+        '46':'blockNumbersDRAFT',
+        '47':'blockNumbersDRAFT',
+        '48':'blockNumbersDRAFT',
+        '49':'blockNumbersDRAFT',
+        '50':'blockNumbersDRAFT',
+        '51':'blockNumbersDRAFT',
+        '52':'blockNumbersDRAFT',
+        '53':'blockNumbersDRAFT',
+        '54':'blockNumbersDRAFT',
+        '55':'blockNumbersDRAFT',
+        '56':'blockNumbersDRAFT',
+        '57':'blockNumbersDRAFT',
+        '58':'blockNumbersDRAFT',
+        '59':'blockNumbersDRAFT',
+        '60':'blockNumbersDRAFT',
+        '61':'blockNumbersDRAFT',
     }
 };
 const blockNumbersMapping = {
     blockNumbersIS,
     blockNumbersSAS,
-    blockNumbersSES
+    blockNumbersSES,
+    blockNumbersDRAFT
 };
 
 const getMonthInfo = (owner, month) => {
