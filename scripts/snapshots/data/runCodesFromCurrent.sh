@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define the list of codes
-cu_codes=(
+codes=(
   "core-units/GOV-001"
   "core-units/RWF-001"
   "core-units/GRO-001"
@@ -23,9 +23,6 @@ cu_codes=(
   "spfs/SPF1"
   "spfs/SPF3"
   "spfs/SPF7"
-)
-
-ecosystem_codes=(
   "ecosystem-actors/BA-LABS"
   "ecosystem-actors/CHRONICLE"
   "ecosystem-actors/DEWIZ"
@@ -41,12 +38,8 @@ ecosystem_codes=(
 date=$(date +'%Y/%m')
 
 # Run the ecosystem actors codes only from April 2023 onwards
-for code in "${cu_codes[@]}"; do
+for code in "${codes[@]}"; do
   node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$date"
 done
 
 
-# Run the ecosystem actors codes only from April 2023 onwards
-for code in "${ecosystem_codes[@]}"; do
-  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$date"
-done
