@@ -1,4 +1,4 @@
-//See file adds data for non-auditor Core Units
+//Seed file adds data for auditor Core Units
 
 /**
  * @param { import("knex").Knex } knex
@@ -8,23 +8,53 @@ export async function seed(knex) {
 
 
   const auditorCusQuery = await knex.raw(`
-  SELECT cu.code, cu.id as cuid, bs.month, bsw.name, bs.id, bstr.id as bstrid, bsw.id as bswid,
-  (SELECT SUM(bsli2.forecast) FROM "BudgetStatementLineItem" as bsli2 WHERE bsw.id = bsli2."budgetStatementWalletId" AND bs.month != bsli2.month) AS sum_of_forecast
-
-FROM public."CoreUnit" as cu
-LEFT JOIN (
-  SELECT DISTINCT ur."resourceId"
-  FROM "UserRole" as ur
-  LEFT JOIN "Role" as r ON r.id = ur."roleId"
-  WHERE r."roleName" = 'CoreUnitAuditor' 
-) AS auditors ON auditors."resourceId" = cu.id
-LEFT JOIN "BudgetStatement" as bs ON bs."ownerId" = cu.id
-LEFT JOIN "BudgetStatementWallet" as bsw ON bsw."budgetStatementId" = bs.id
-LEFT JOIN "BudgetStatementTransferRequest" as bstr ON bstr."budgetStatementWalletId" = bsw.id
-LEFT JOIN "BudgetStatementLineItem" as bsli ON bsw.id = bsli."budgetStatementWalletId"
-WHERE auditors."resourceId" IS NOT NULL AND cu.code != 'DECO-001' AND bs.month NOTNULL
-GROUP BY cu.code, cu.id, bs.id, bs.month, bsw.name, bstr.id, bsw.id
-ORDER BY cu.code, bs.month DESC
+  SELECT
+    cu.code,
+    cu.id AS cuid,
+    bs.month,
+    bsw.name,
+    bs.id,
+    bstr.id AS bstrid,
+    bsw.id AS bswid,
+    (
+      SELECT SUM(bsli2.forecast)
+      FROM "BudgetStatementLineItem" AS bsli2
+      WHERE bsw.id = bsli2."budgetStatementWalletId"
+        AND bs.month != bsli2.month
+    ) AS sum_of_forecast
+  FROM
+    public."CoreUnit" AS cu
+  LEFT JOIN
+    (
+      SELECT DISTINCT ur."resourceId"
+      FROM "UserRole" AS ur
+      LEFT JOIN "Role" AS r ON r.id = ur."roleId"
+      WHERE r."roleName" = 'CoreUnitAuditor'
+    ) AS auditors ON auditors."resourceId" = cu.id
+  LEFT JOIN
+    "BudgetStatement" AS bs ON bs."ownerId" = cu.id
+  LEFT JOIN
+    "BudgetStatementWallet" AS bsw ON bsw."budgetStatementId" = bs.id
+  LEFT JOIN
+    "BudgetStatementTransferRequest" AS bstr ON bstr."budgetStatementWalletId" = bsw.id
+  LEFT JOIN
+    "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId"
+  WHERE
+    auditors."resourceId" IS NOT NULL
+    AND cu.code != 'DECO-001'
+    AND bs.month IS NOT NULL
+    AND bs.month > '2022-01-01'
+  GROUP BY
+    cu.code,
+    cu.id,
+    bs.id,
+    bs.month,
+    bsw.name,
+    bstr.id,
+    bsw.id
+  ORDER BY
+    cu.code,
+    bs.month DESC;
 `);
 
 const rows = auditorCusQuery.rows;

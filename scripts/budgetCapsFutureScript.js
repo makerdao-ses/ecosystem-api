@@ -45,7 +45,7 @@ const paymentTopup = async () => {
       LEFT OUTER JOIN "BudgetStatementLineItem" AS bsli ON bsw.id = bsli."budgetStatementWalletId" AND bs.month != bsli.month AND bsli."budgetCategory" = 'payment topup'
     WHERE
       bs.month < CURRENT_DATE
-      AND bsli.month NOT NULL
+      AND bsli.month NOTNULL
       AND bs."ownerCode" != 'DAIF-001'
     GROUP BY
       bsw.address,

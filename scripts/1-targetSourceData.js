@@ -114,8 +114,6 @@ console.log(`Adding ${formattedResult.length} values to the BudgetStatementTrans
 const insertOrUpdate = async (row) => {
   
   if (row.transferRequestId) {
-    console.log('updating ' +row.transferRequestId);
-    console.log(row);
     // Update existing row
     await db("BudgetStatementTransferRequest")
       .where({ id: row.transferRequestId })
