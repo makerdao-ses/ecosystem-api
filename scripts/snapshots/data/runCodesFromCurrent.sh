@@ -3,6 +3,9 @@
 # Define the list of codes
 codes=(
   "core-units/GOV-001"
+  "core-units/SES-001"
+  "core-units/SAS-001"
+  "core-units/IS-001"
   "core-units/RWF-001"
   "core-units/GRO-001"
   "core-units/ORA-001"
