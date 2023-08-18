@@ -40,7 +40,7 @@ current_year=$(date -u +'%Y')
 current_month=$(date -u +'%m')
 
 # Get the day of the month from the current UTC date
-day_of_month=11
+day_of_month=$(date -u +'%d')
 
 # Calculate the previous month and year
 if [ "$day_of_month" -lt 10 ]; then
