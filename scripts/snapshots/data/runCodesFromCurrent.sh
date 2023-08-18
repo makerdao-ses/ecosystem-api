@@ -34,12 +34,33 @@ codes=(
   "ecosystem-actors/VIRIDIAN"
 )
 
-# Get the current date in the format "YYYY/MM"
-date=$(date +'%Y/%m')
+# Get the current date in UTC
+current_utc_date=$(date -u +'%Y-%m-%d')
+current_year=$(date -u +'%Y')
+current_month=$(date -u +'%m')
+
+# Get the day of the month from the current UTC date
+day_of_month=11
+
+# Calculate the previous month and year
+if [ "$day_of_month" -lt 10 ]; then
+  if [ "$current_month" -eq 1 ]; then
+    previous_month=12
+    previous_year=$((current_year - 1))
+  else
+    previous_month=$((${current_month#0} - 1))
+    previous_month="0$previous_month"
+    previous_year=$current_year
+  fi
+else
+  previous_month=$current_month
+  previous_year=$current_year
+fi
+
+# Construct the date in "YYYY/MM" format for the previous month
+year_month_date="$previous_year/$previous_month"
 
 # Run the ecosystem actors codes only from April 2023 onwards
 for code in "${codes[@]}"; do
-  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$date"
+  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date"
 done
-
-
