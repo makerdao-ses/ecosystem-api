@@ -65,15 +65,7 @@ is_after_or_equal_start_date() {
   [[ "$1" > "$start_date" || "$1" == "$start_date" ]]
 }
 
-# Run the ecosystem actors codes only from April 2023 onwards
-for code in "${cu_codes[@]}"; do
-  current_date="2021/05"
-  while [[ "$current_date" != "$end_date" ]]; do
-    node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$current_date"
-    current_date=$(increment_date "$current_date")  # Update current_date using the function
-  done
-  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$end_date"
-done
+
 
 
 # Run the ecosystem actors codes only from April 2023 onwards
