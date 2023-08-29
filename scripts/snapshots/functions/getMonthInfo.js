@@ -58,6 +58,15 @@ const ownerMapping = {
         '59': 'blockNumbersDRAFT',
         '60': 'blockNumbersDRAFT',
         '61': 'blockNumbersDRAFT',
+    },
+    'Delegates': {
+        null: 'blockNumbersDRAFT'
+    },
+    'Keepers': {
+        null: 'blockNumbersDRAFT'
+    },
+    'SpecialPurposeFund': {
+        null: 'blockNumbersDRAFT'
     }
 };
 const blockNumbersMapping = {

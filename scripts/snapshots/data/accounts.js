@@ -343,6 +343,14 @@ export default [{
     "Type": "Auditor",
     "Address": "0x87acdd9208f73bfc9207e1f6f0fde906bca95cc6"
 }, {
+    "Name": "",
+    "budget path 1": "",
+    "budget path 2": "",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": ""
+}, {
     "Name": "Flip Flop Flap Delegate LLC",
     "budget path 1": "makerdao",
     "budget path 2": "delegates",
@@ -631,6 +639,14 @@ export default [{
     "Type": "",
     "Address": "0xbb819df169670dc71a16f58f55956fe642cc6bcd"
 }, {
+    "Name": "",
+    "budget path 1": "",
+    "budget path 2": "",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": ""
+}, {
     "Name": "MIP55c3-SP7: Special Purpose Fund for The Ambassador Program",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
@@ -655,6 +671,22 @@ export default [{
     "Type": "",
     "Address": "0xf34ac684ba2734039772f0c0d77bc2545e819212"
 }, {
+    "Name": "Ambassador Program",
+    "budget path 1": "makerdao",
+    "budget path 2": "spfs",
+    "budget path 3": "ambassador-program",
+    "budget path 4": "",
+    "Type": "Operational",
+    "Address": "0xF411d823a48D18B32e608274Df16a9957fE33E45"
+}, {
+    "Name": "",
+    "budget path 1": "",
+    "budget path 2": "",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": ""
+}, {
     "Name": "Governance Security Engineering",
     "budget path 1": "makerdao",
     "budget path 2": "scopes",
@@ -670,6 +702,38 @@ export default [{
     "budget path 4": "multichain-engeering",
     "Type": "Auditor",
     "Address": "0x868b44e8191a2574334deb8e7efa38910df941fa"
+}, {
+    "Name": "GAIT Bootstrap Funding",
+    "budget path 1": "makerdao",
+    "budget path 2": "scopes",
+    "budget path 3": "SUP",
+    "budget path 4": "gait-bootstrap-funding",
+    "Type": "",
+    "Address": "0x6E51E0b5813152880C1389E3e860e69E06aD04D9"
+}, {
+    "Name": "Launch Project",
+    "budget path 1": "makerdao",
+    "budget path 2": "scopes",
+    "budget path 3": "ACC",
+    "budget path 4": "launch-project",
+    "Type": "",
+    "Address": "0x3C5142F28567E6a0F172fd0BaaF1f2847f49D02F"
+}, {
+    "Name": "Blocktower",
+    "budget path 1": "makerdao",
+    "budget path 2": "scopes ",
+    "budget path 3": "STA",
+    "budget path 4": "BLOCKTOWER",
+    "Type": "Operational ",
+    "Address": "0xc4dB894A11B1eACE4CDb794d0753A3cB7A633767"
+}, {
+    "Name": "",
+    "budget path 1": "",
+    "budget path 2": "",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": ""
 }, {
     "Name": "BALabs Operational",
     "budget path 1": "makerdao",
@@ -782,7 +846,32 @@ export default [{
     "budget path 4": "",
     "Type": "Operational ",
     "Address": "0xA1E62c6321eEd0ECFcF2f382c8c82FD940D83c07"
-},{
+}, {
+    "Name": "",
+    "budget path 1": "",
+    "budget path 2": "",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": ""
+}, {
+    "Name": "Chainlink Automation",
+    "budget path 1": "makerdao",
+    "budget path 2": "keepers",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0xfB5e1D841BDA584Af789bDFABe3c6419140EC065"
+}, {
+    "Name": "Gelato Keeper Network",
+    "budget path 1": "makerdao",
+    "budget path 2": "keepers",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "Operational ",
+    "Address": "0x0B5a34D084b6A5ae4361de033d1e6255623b41eD"
+},
+{
     "Name": "Accountable Payment Processor",
     "budget path 1": "makerdao",
     "budget path 2": "payment-processors",
