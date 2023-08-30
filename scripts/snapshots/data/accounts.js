@@ -197,15 +197,15 @@ export default [{
     "budget path 3": "TECH-001",
     "budget path 4": "",
     "Type": "Operational",
-    "Address": "0x2dc0420a736d1f40893b9481d8968e4d7424bc0b"
+    "Address": "0x1a3da79ee7db30466ca752de6a75def5e635b2f6"
 }, {
     "Name": "TechOps Auditor Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "core-units",
     "budget path 3": "TECH-001",
     "budget path 4": "",
-    "Type": "Operational",
-    "Address": "0x1a3da79ee7db30466ca752de6a75def5e635b2f6"
+    "Type": "Auditor",
+    "Address": "0x2dc0420a736d1f40893b9481d8968e4d7424bc0b"
 }, {
     "Name": "Growth Operational Wallet",
     "budget path 1": "makerdao",
@@ -830,6 +830,15 @@ export default [{
     "budget path 4": "",
     "Type": "Operational ",
     "Address": "0x948777676ed54390889C219489927939D51A805A"
+},
+{
+    "Name": "TechOps Auditor Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "TECHOPS",
+    "budget path 4": "",
+    "Type": "Auditor",
+    "Address": "0x2dc0420a736d1f40893b9481d8968e4d7424bc0b"
 }, {
     "Name": "Viridian Protector Advisory Company Auditor",
     "budget path 1": "makerdao",

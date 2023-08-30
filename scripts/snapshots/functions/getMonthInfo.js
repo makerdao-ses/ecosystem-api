@@ -13,7 +13,8 @@ import blockNumbersRWF from "../data/blockNumbers-RWF.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
 import blockNumbersSES from "../data/blockNumbers-SES.js";
 import blockNumbersSNE from "../data/blockNumbers-SNE.js";
-import blockNumbersTECH from "../data/blockNumbers-TECH.js";
+import blockNumbersTECHCU from "../data/blockNumbers-TECH-CU.js";
+import blockNumbersTECHEA from "../data/blockNumbers-TECH-EA.js";
 import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
 
 const ownerMapping = {
@@ -36,7 +37,7 @@ const ownerMapping = {
         '19': 'blockNumbersSAS',
         '20': 'blockNumbersDRAFT',
         '21': 'blockNumbersDRAFT',
-        '22': 'blockNumbersTECH',
+        '22': 'blockNumbersTECHCU',
         '38': 'blockNumbersDRAFT'
     },
     'EcosystemActor': {
@@ -56,7 +57,7 @@ const ownerMapping = {
         '57': 'blockNumbersDRAFT',
         '58': 'blockNumbersDRAFT',
         '59': 'blockNumbersDRAFT',
-        '60': 'blockNumbersDRAFT',
+        '60': 'blockNumbersTECHEA',
         '61': 'blockNumbersDRAFT',
     },
     'Delegates': {
@@ -84,7 +85,8 @@ const blockNumbersMapping = {
     blockNumbersSAS,
     blockNumbersSES,
     blockNumbersSNE,
-    blockNumbersTECH,
+    blockNumbersTECHCU,
+    blockNumbersTECHEA,
     blockNumbersDRAFT
 };
 
