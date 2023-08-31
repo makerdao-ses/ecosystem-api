@@ -16,6 +16,7 @@ import blockNumbersSNE from "../data/blockNumbers-SNE.js";
 import blockNumbersTECHCU from "../data/blockNumbers-TECH-CU.js";
 import blockNumbersTECHEA from "../data/blockNumbers-TECH-EA.js";
 import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
+import blockNumbersDRAFT_KEEPERS from "../data/blockNumbers-DRAFT-KEEPERS.js";
 
 const ownerMapping = {
     'CoreUnit': {
@@ -64,7 +65,7 @@ const ownerMapping = {
         null: 'blockNumbersDRAFT'
     },
     'Keepers': {
-        null: 'blockNumbersDRAFT'
+        null: 'blockNumbersDRAFT_KEEPERS'
     },
     'SpecialPurposeFund': {
         null: 'blockNumbersDRAFT'
@@ -87,7 +88,8 @@ const blockNumbersMapping = {
     blockNumbersSNE,
     blockNumbersTECHCU,
     blockNumbersTECHEA,
-    blockNumbersDRAFT
+    blockNumbersDRAFT,
+    blockNumbersDRAFT_KEEPERS,
 };
 
 const getMonthInfo = (owner, month) => {
