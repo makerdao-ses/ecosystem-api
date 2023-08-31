@@ -2,6 +2,7 @@ import accounts from '../data/accounts.js';
 
 const ownerTypeMapping = {
     "delegates": "Delegates",
+    "keepers": "Keepers",
     "core-units": "CoreUnit",
     "spfs": "SpecialPurposeFund",
     "projects": "Project",
@@ -16,6 +17,10 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
     }
 
     if (ownerType === 'SpecialPurposeFund') {
+        return null;
+    }
+
+    if (ownerType === 'Keepers') {
         return null;
     }
 
