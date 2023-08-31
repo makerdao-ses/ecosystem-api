@@ -38,7 +38,7 @@ ecosystem_codes=(
 )
 
 # Define the start and end dates (in year/month format)
-start_date="2023/04"
+start_date="2023/01"
 end_date="2023/07"
 
 # Helper function to increment the date by one month
