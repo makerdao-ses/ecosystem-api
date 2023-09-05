@@ -48,6 +48,26 @@ const getData = async () => {
 
 };
 
+//Set old mips obsolete if a  MIP39c3 has been accepted 
+const setObsoleteMips = async () => {
+
+    const updatedRows = await db.raw(`
+        UPDATE "CuMip" as mip1
+        SET "obsolete" = mip2."accepted"
+        FROM (
+            SELECT "cuId", "accepted"
+            FROM "CuMip"
+            WHERE "mipCode" LIKE '%MIP39c3%'
+            AND "mipStatus" = 'Accepted'
+        ) as mip2
+        WHERE mip1."cuId" = mip2."cuId"
+        AND mip1."obsolete" IS NULL
+        AND mip1."mipCode" NOT LIKE '%MIP39c3%';
+    `);
+
+  console.log(`Updated ${updatedRows.rowCount} entries.`);
+};
+
 //Check for existence in the CU MIP table
 const checkUnique = (data, mip) => {
 
@@ -134,8 +154,10 @@ const cuMipTable = async (data) => {
     }
 
     await fetchDB(cuMipEntry);
+    await setObsoleteMips();
 
     console.log(cuMipEntry);
+
     if (cuMipEntry.length == 0) {
         console.log("CuMip table up-to-date for MIP entries");
     } else {
