@@ -1,5 +1,5 @@
 #!/bin/bash
-
+Edit to define end block number for each of the codes, use as additional input parameter that is optional 
 # Define the list of codes
 codes=(
   "core-units/GOV-001"
@@ -37,6 +37,9 @@ codes=(
   "ecosystem-actors/VIRIDIAN"
   "keepers"
 )
+
+
+TECH_end_number=17983665
 
 # Get the current date in UTC
 current_utc_date=$(date -u +'%Y-%m-%d')
@@ -101,6 +104,10 @@ for i in 0 1; do
 
   # Run the ecosystem actors codes only from April 2023 onwards
   for code in "${codes[@]}"; do
-    node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date"
+    if [ "$code" = "core-units/TECH-001" ]; then
+      node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date" "$TECH_end_number"
+    else
+      node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date"
+    fi
   done
 done
