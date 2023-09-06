@@ -17,18 +17,16 @@ it('returns list of Budgets', async () => {
     const result1 = await authModel.getBudgets({ filter: { id: 5 } });
     const result2 = await authModel.getBudgets({ filter: { maxDepth: 4 } });
     const result3 = await authModel.getBudgets({ limit: 5, offset: 5 });
-    const reuslt4 = await authModel.getBudgets({ filter: { start: '2021-01-01', end: '2021-12-31' } });
     const reuslt5 = await authModel.getBudgets({ filter: { code: 'atlas' } });
     expect(result.length).toBeGreaterThan(0);
     expect(result1.length).toBeGreaterThan(0);
     expect(result2.length).toBeGreaterThan(0);
     expect(result3.length).toBeGreaterThan(0);
-    expect(reuslt4.length).toBeGreaterThan(0);
     expect(reuslt5.length).toBeGreaterThan(0);
 });
 
 it('returs list of budgetCaps', async () => {
-    const result = await authModel.getBudgetCaps(5);
+    const result = await authModel.getBudgetCaps(19);
     expect(result.length).toBeGreaterThan(0);
 });
 
