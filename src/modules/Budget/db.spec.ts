@@ -42,8 +42,8 @@ it('returns list of expense categories', async () => {
 it('creates a budget, updates and deletes it', async () => {
     const result = await authModel.createBudget(undefined, 'test', 'test', '2021-01-01', '2021-12-31', 2, 100, 'USD');
     expect(result.length).toBeGreaterThan(0);
-    const updateResult = await authModel.updateBudget({ id: result[0].id, parentId: 5 });
-    expect(updateResult.parentId).toBe(5);
+    const updateResult = await authModel.updateBudget({ id: result[0].id, parentId: 19 });
+    expect(updateResult.parentId).toBe(19);
     const budgetCap = await authModel.getBudgetCaps(result[0].id);
     await authModel.deleteBudgetCap(budgetCap[0].id);
     const deleteResult = await authModel.deleteBudget(result[0].id);
@@ -51,8 +51,6 @@ it('creates a budget, updates and deletes it', async () => {
 });
 
 it('throws error when updating budget with circular dependency', async () => {
-    const result = await authModel.createBudget(undefined, 'test', 'test', '2021-01-01', '2021-12-31', 2, 100, 'USD');
-    const updateResult = authModel.updateBudget({ id: result[0].id, parentId: 5 });
+    const updateResult = authModel.updateBudget({ id: 19, parentId: 16 });
     await expect(updateResult).rejects.toThrowError();
-    await authModel.deleteBudget(result[0].id);
 });
