@@ -125,12 +125,10 @@ export class BudgetModel {
                 parentId,
                 name,
                 code,
-                start,
-                end
             })
             .returning('*');
         const { id } = budget[0];
-        await this.addBudgetCap(id, expenseCategoryId, amount, currency);
+        await this.addBudgetCap(id, expenseCategoryId, amount, currency, start, end);
         return budget
     }
 
@@ -166,13 +164,15 @@ export class BudgetModel {
     }
 
     // add a budget cap
-    async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
+    async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string, start: string, end: string) {
         return this.knex('BudgetCap')
             .insert({
                 budgetId,
                 expenseCategoryId,
                 amount,
-                currency
+                currency,
+                start,
+                end
             })
             .returning('*');
     };
