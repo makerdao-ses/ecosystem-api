@@ -2,7 +2,7 @@ import { Knex } from "knex";
 
 import { BudgetReportQueryEngine } from "../BudgetStatement/BudgetReportQueryEngine.js";
 import { DaoResolver } from "../BudgetStatement/ReportResolvers/DaoResolver.js";
-import { CoreUnitsResolver } from "../BudgetStatement//ReportResolvers/CoreUnitsResolver.js";
+import { ContributorTeamsResolver } from "../BudgetStatement//ReportResolvers/ContributorTeamsResolver.js";
 import { AccountsResolver } from "../BudgetStatement//ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "../BudgetStatement//ReportResolvers/PeriodResolver.js";
 import { BudgetReportQuery } from "../BudgetStatement/BudgetReportQuery.js";
@@ -21,7 +21,8 @@ export class TotalExpensesModel {
             new PeriodResolver(this.knex),
             new DaoResolver(),
             new DelegatesResolver(this.knex),
-            new CoreUnitsResolver(this.knex),
+            new ContributorTeamsResolver(this.knex, false),
+            new ContributorTeamsResolver(this.knex, true),
             new AccountsResolver(this.knex)
         ];
     

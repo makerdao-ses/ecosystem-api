@@ -1,6 +1,5 @@
 import initKnex from "../../../initKnex.js";
 import { Knex } from "knex";
-import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 import { BudgetReportPath } from "../BudgetReportPath.js";
 import { DaoResolver } from "./DaoResolver.js";
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";

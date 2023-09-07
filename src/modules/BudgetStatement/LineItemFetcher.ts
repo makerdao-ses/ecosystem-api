@@ -118,9 +118,10 @@ export class LineItemFetcher {
         this._knex = knex;
     }
 
-    public async getCaps(account:string, date:string): Promise<CapNumbers[]> {
+    public async getCaps(owner:string, account:string, date:string): Promise<CapNumbers[]> {
         const query = this._knex
             .select(
+                'CU.code as owner',
                 'MBP.budgetPeriodStart as start',
                 'MBP.budgetPeriodEnd as end'
             )
@@ -128,14 +129,21 @@ export class LineItemFetcher {
             .sum('MBLI.budgetCap as budgetCap')
 
             .from('public.Mip40Wallet AS MW')
+            
+            .innerJoin('public.Mip40 AS M40', 'M40.id', 'MW.mip40Id')
+            .innerJoin('public.CuMip AS CM', 'CM.id', 'M40.cuMipId')
+            .innerJoin('public.CoreUnit AS CU', 'CU.id', 'CM.cuId')
+
             .innerJoin('public.Mip40BudgetPeriod AS MBP', 'MBP.mip40Id', 'MW.mip40Id')
             .innerJoin('public.Mip40BudgetLineItem AS MBLI', 'MW.id', 'MBLI.mip40WalletId')
             
             .whereRaw('LOWER("MW"."address") = ?', account.toLowerCase())
             .whereRaw('"MBP"."budgetPeriodStart" <= ?', date)
             .whereRaw('"MBP"."budgetPeriodEnd" >= ?', date)
+            .where('CU.code', owner)
             
             .groupBy(
+                'CU.code',
                 'MW.address',
                 'MBP.budgetPeriodStart',
                 'MBP.budgetPeriodEnd'
@@ -167,15 +175,16 @@ export class LineItemFetcher {
         };
     }
 
-    public buildQuery(account:string, month:string) {
-        return this._knex
+    public buildQuery(owner:string, account:string, month:string) {
+        let q = this._knex
             .select(
                 'BSW.address as account',
                 'BSLI.month as month',
                 'BSLI.group as group',
                 'BSLI.headcountExpense as headcountExpense',
                 'BSLI.canonicalBudgetCategory as category',
-                'BS.month as report'
+                'BS.month as report',
+                'BS.ownerCode as owner'
             )
             .sum('BSLI.actual as actual')
             .sum('BSLI.forecast as forecast')
@@ -186,6 +195,7 @@ export class LineItemFetcher {
                 .leftJoin('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
                 .leftJoin('public.BudgetStatementLineItem as BSLI', 'BSLI.budgetStatementWalletId', 'BSW.id')
 
+            .where('BS.ownerCode', owner)
             .whereRaw('LOWER("BSW"."address") = LOWER(?)', account)
             .whereRaw('"BSLI"."month" = ?', month)
 
@@ -195,24 +205,27 @@ export class LineItemFetcher {
                 'BSLI.group',
                 'BSLI.headcountExpense',
                 'BSLI.canonicalBudgetCategory',
-                'BS.month'
+                'BS.month',
+                'BS.ownerCode'
             )
 
             .orderBy('group', 'ASC', 'first')
             .orderBy('headcountExpense', 'DESC', 'last')
             .orderBy('category', 'ASC', 'last')
             .orderBy('report', 'ASC');
+
+        return q;
     }
 
-    public async getLineItems(account:string, month:string, includeObsolete:boolean=false): Promise<LineItemGroup> {
-        const result = await this._readLineItemRecords(account, month);
+    public async getLineItems(owner: string, account:string, month:string, includeObsolete:boolean=false): Promise<LineItemGroup> {
+        const result = await this._readLineItemRecords(owner, account, month);
         
         if (!includeObsolete) {
             result.categories = result.categories.filter(c => !c.obsolete);
         }
 
         // Fill out the budget caps and FTE numbers
-        const capNumbers = await this.getCaps(account, result.month.startAsSqlDate());
+        const capNumbers = await this.getCaps(owner, account, result.month.startAsSqlDate());
         if (capNumbers.length > 0) {
             result.fteCap = capNumbers[0].fteCap;
 
@@ -242,7 +255,7 @@ export class LineItemFetcher {
         return result;
     }
 
-    private async _readLineItemRecords(account:string, month:string): Promise<LineItemGroup> {
+    private async _readLineItemRecords(owner:string, account:string, month:string): Promise<LineItemGroup> {
         const result: LineItemGroup = {
             account,
             month: this._parseDateStringAsMonthPeriod(month),
@@ -252,7 +265,7 @@ export class LineItemFetcher {
             categories: []
         };
 
-        const records = await this.buildQuery(account, month);
+        const records = await this.buildQuery(owner, account, month);
         let currentCategory: LineItemCategory | null = null;
         
         records.forEach((r: any) => {

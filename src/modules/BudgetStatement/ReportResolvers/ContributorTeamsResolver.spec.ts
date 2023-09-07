@@ -2,7 +2,7 @@ import initKnex from "../../../initKnex.js";
 import { Knex } from "knex";
 import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 import { BudgetReportPath } from "../BudgetReportPath.js";
-import { CoreUnitsResolver } from "./CoreUnitsResolver.js";
+import { ContributorTeamsResolver } from "./ContributorTeamsResolver.js";
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";
 
 let knex:Knex;
@@ -16,7 +16,7 @@ afterAll(async () => {
 });
 
 it ('works', async () => {
-    const resolver = new CoreUnitsResolver(knex);
+    const resolver = new ContributorTeamsResolver(knex);
     const period = ['2021/10', '2021/11', '2021/12'];
     const query = {
         start: period[0],

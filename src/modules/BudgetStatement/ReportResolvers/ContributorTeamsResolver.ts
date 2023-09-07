@@ -6,19 +6,23 @@ import { PeriodResolverData } from "./PeriodResolver.js";
 
 const DEBUG_OUTPUT = false;
 
-export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverData, AccountsResolverData> {
-    readonly name = 'CoreUnitsResolver';
+export class ContributorTeamsResolver extends BudgetReportResolverBase<PeriodResolverData, AccountsResolverData> {
+    readonly name: string;
 
-    private readonly _knex:Knex;
+    private readonly _knex: Knex;
+    private readonly _selectEcosystemActors: boolean;
 
-    constructor(knex:Knex) {
+    constructor(knex:Knex, selectEcosystemActors = false) {
         super();
+
+        this.name = (selectEcosystemActors ? 'EcosystemActorsResolver' : 'CoreUnitsResolver');
         this._knex = knex;
+        this._selectEcosystemActors = selectEcosystemActors;
     }
 
     public async execute(query:PeriodResolverData): Promise<ResolverOutput<AccountsResolverData>> {
         if (DEBUG_OUTPUT) {
-            console.log(`CoreUnitsResolver is resolving ${query.budgetPath.toString()}`);
+            console.log(`${this.name} is resolving ${query.budgetPath.toString()}`);
         }
 
         const pathInfo = {
@@ -30,10 +34,10 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
         const attachCoreUnitPathSegment = (pathInfo.coreUnitSegment.groups === null);
         const attachWalletPathSegment = (pathInfo.walletSegment.groups === null);
 
-        const coreUnitWallets = await this._buildCoreUnitWalletQuery(pathInfo.coreUnitSegment);
+        const wallets = await this._buildWalletsQuery(pathInfo.coreUnitSegment, this._selectEcosystemActors);
         const mip39c3s = await this._getMip39c3s();
         
-        const resolverInput: AccountsResolverData[] = coreUnitWallets.map(cuw => {
+        const resolverInput: AccountsResolverData[] = wallets.map(cuw => {
             const result = {
                 owner: cuw.coreUnitCode,
                 account: cuw.account,
@@ -91,7 +95,9 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
         return result;
     }
 
-    private _buildCoreUnitWalletQuery(segment: BudgetReportPathSegment) {
+    private _buildWalletsQuery(segment: BudgetReportPathSegment, selectEcosystemActors: boolean) {
+        const cuInversion = (selectEcosystemActors ? '' : 'NOT ');
+
         const query = this._knex
             .select(
                 'CU.id as coreUnitId',
@@ -108,6 +114,11 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
             
             .whereNotNull('BSW.address')
             .whereNot('CU.code', 'DEL')
+            .where(this._knex.raw(cuInversion + "(" +
+                "'ActiveEcosystemActor' = ANY(\"CU\".\"category\") OR " +
+                "'ScopeFacilitator' = ANY(\"CU\".\"category\") OR " +
+                "'AdvisoryCouncilMember' = ANY(\"CU\".\"category\")"
+            +")"))
             .groupBy('coreUnitId', 'coreUnitCode', 'account')
 
             .orderBy('coreUnitCode');
@@ -115,6 +126,10 @@ export class CoreUnitsResolver extends BudgetReportResolverBase<PeriodResolverDa
         if (segment.filters !== null) {
             const cuList = segment.filters.map(f => f.toUpperCase().trim());
             query.whereIn('CU.code', cuList);
+        }
+
+        if (DEBUG_OUTPUT) {
+            console.log(query.toString());
         }
 
         return query;
