@@ -66,7 +66,7 @@ export class AccountsResolver extends BudgetReportResolverBase<AccountsResolverD
         );
 
         for (const month of range) {
-            const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.account, month.startAsSqlDate());
+            const lineItemGroup: LineItemGroup = await this._lineItemFetcher.getLineItems(query.owner, query.account, month.startAsSqlDate());
             
             const outputRows:BudgetReportOutputRow[] = lineItemGroup.categories.map(c => {
                 const actualsReported = lineItemGroup.hasActuals 
