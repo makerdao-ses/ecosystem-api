@@ -92,7 +92,7 @@ const blockNumbersMapping = {
     blockNumbersDRAFT_KEEPERS,
 };
 
-const getMonthInfo = (owner, month) => {
+const getMonthInfo = (owner, month, endBlockNo) => {
 
     const result = {
         month: null,
@@ -133,10 +133,17 @@ const getMonthInfo = (owner, month) => {
 
         const nextMonth = convertMonthStringToDate(month, 1).toISOString().slice(0, 7).replace('-', '/');
         const endBlockNumber = blockNumbers[nextMonth];
+        console.log("END BLOCK NUMBER ", endBlockNumber)
+        console.log("END BLOCK NUMBER GIVEN", endBlockNo)
+
         if (!endBlockNumber) {
             const keys = Object.keys(blockNumbers);
+            console.log("KEYS ", keys[keys.length - 1])
             if (keys[keys.length - 1] != month) {
                 throw new Error(`Cannot find end block number for the month ${month} for ${owner.type}/${owner.id}`);
+            }
+            if(endBlockNo){
+                result.blockNumberRange.final = endBlockNo;
             }
         } else {
             result.blockNumberRange.final = endBlockNumber;

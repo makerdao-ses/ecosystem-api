@@ -120,17 +120,18 @@ export class BudgetModel {
         amount: number,
         currency: string
     ) {
+        const budgets = await this.getBudgets({});
+        const lastId = budgets[budgets.length - 1].id;
         const budget = await this.knex('Budget')
             .insert({
+                id: lastId + 1,
                 parentId,
                 name,
                 code,
-                start,
-                end
             })
             .returning('*');
         const { id } = budget[0];
-        await this.addBudgetCap(id, expenseCategoryId, amount, currency);
+        await this.addBudgetCap(id, expenseCategoryId, amount, currency, start, end);
         return budget
     }
 
@@ -139,7 +140,7 @@ export class BudgetModel {
         if (parentId) {
             const budgets = await this.getBudgets({})
             const budget = budgets.find((b: Budget) => b.id == id);
-            const idPath = budget.idPath.split('/');
+            const idPath = budget.idPath.split('/').map(Number);
             if (idPath.includes(parentId)) {
                 throw new Error(`Can't change parentId to ${parentId} because it would create a circular dependency`);
             }
@@ -166,13 +167,15 @@ export class BudgetModel {
     }
 
     // add a budget cap
-    async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
+    async addBudgetCap(budgetId: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string, start: string, end: string) {
         return this.knex('BudgetCap')
             .insert({
                 budgetId,
                 expenseCategoryId,
                 amount,
-                currency
+                currency,
+                start,
+                end
             })
             .returning('*');
     };

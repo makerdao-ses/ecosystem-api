@@ -20,13 +20,14 @@ const makerProtocolAddresses = [
 
 const budgetPath = process.argv[2] || null;
 const month = process.argv[3] || null;
+const endBlockNo = process.argv[4] || null;
 
 console.log(`Syncing the ${month||"draft"} snapshot report for ${budgetPath||'all budgets'}`);
 
 const knex = getKnexInstance();
 const apiToken = await getApiToken();
 const { owner, accounts } = await getOwnerAndAccountsFromBudgetPath(budgetPath, knex);
-const monthInfo = getMonthInfo(owner, month);
+const monthInfo = getMonthInfo(owner, month, endBlockNo);
 
 const snapshotReport = await createSnapshotReport(owner.type, owner.id, monthInfo.month, knex);
 
