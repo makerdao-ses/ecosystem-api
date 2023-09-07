@@ -14,16 +14,17 @@ beforeAll(async () => {
 afterAll(async () => { await authModel.knex.destroy() })
 
 it('returns a change tracking event as last activity of a core unit', async () => {
-    const entry = await authModel.getCoreUnitLastActivity('11', 'CoreUnit');
-
-    expect(entry?.event).toMatch(/CU_BUDGET_STATEMENT/);
+    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'SES');
+    const entry = await authModel.getCoreUnitLastActivity(cu.id, 'CoreUnit');
+    expect(entry?.event).toMatch(/TEAM_BUDGET_STATEMENT/);
 });
 
 it('returns a string ID for Core Unit-related events', async () => {
-    const entry = await authModel.getCoreUnitLastActivity('11', 'CoreUnit');
+    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'SES');
+    const entry = await authModel.getCoreUnitLastActivity(cu.id, 'CoreUnit');
 
-    expect(entry?.event).toMatch(/CU_BUDGET_STATEMENT/);
-    expect(typeof (entry?.params as any).coreUnit.id).toBe('number');
+    expect(entry?.event).toMatch(/TEAM_BUDGET_STATEMENT/);
+    expect(typeof (entry?.params as any).owner.id).toBe('number');
 });
 
 it('get bsEvent', async () => {
@@ -47,7 +48,7 @@ it('creates budgetStatementUpdated event', async () => {
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
     await authModel.knex('ChangeTrackingEvents').where('id', activity?.id).del();
     await authModel.knex('ChangeTrackingEvents_Index').where('eventId', activity?.id).del();
-    expect(activity.params.coreUnit.id).toEqual(cu.id);
+    expect(activity.params.owner.id).toEqual(cu.id);
 });
 
 it('creates budgetStatementCommentUpdate event', async () => {
