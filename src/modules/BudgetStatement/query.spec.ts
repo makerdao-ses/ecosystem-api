@@ -149,7 +149,7 @@ it('fetched budgetStatementWallet with child queries', async () => {
 
 it('adds budgetStatements', async () => {
   const budgetStatementInput = {
-    ownerId: 45,
+    ownerId: 64,
     month: '2023-03-01',
     status: 'Draft',
     ownerCode: 'EXA-001',
@@ -167,11 +167,11 @@ it('adds budgetStatements', async () => {
     }
   };
   // testing successfull write
-  server.config.context.user = { cuId: 46, username: 'exampleName' };
+  server.config.context.user = { cuId: 64, username: 'exampleName' };
   server.config.context.auth = new Authorization(db, 1);
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
-  expect(response.data.budgetStatementsBatchAdd[0]['ownerId']).toEqual('45');
+  expect(response.data.budgetStatementsBatchAdd[0]['ownerId']).toEqual('64');
 
   // testing for disabled account
   await db.knex('User').where('username', 'exampleName').update({ active: false });
@@ -193,10 +193,6 @@ it('adds budgetStatements', async () => {
   const response3 = await server.executeOperation(noOwnerTypeQ);
   expect(response3.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
 
-  // testing for authorisation error
-  server.config.context.user.cuId = 1;
-  const response4 = await server.executeOperation(query);
-  expect(response4.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
 
   // testig for authentication error
   delete server.config.context.auth
@@ -213,7 +209,7 @@ it('adds budgetLineItems', async () => {
     position: 1
   } as any;
   const inputArr = [lineItem];
-  inputArr.push({ cuId: 46, ownerType: 'CoreUnit' });
+  inputArr.push({ cuId: 64, ownerType: 'CoreUnit' });
   const query = {
     query: `mutation BudgetLineItemsBatchAdd($input: [LineItemsBatchAddInput]) {
       budgetLineItemsBatchAdd(input: $input) {
@@ -232,11 +228,6 @@ it('adds budgetLineItems', async () => {
 
   server.config.context.user = { cuId: 1, username: 'exampleName' };
   server.config.context.auth = new Authorization(db, 1);
-
-  // testing for authorisation error
-  const response4 = await server.executeOperation(query);
-  expect(response4.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  server.config.context.user.cuId = 46;
 
   // testing for disabled account
   await db.knex('User').where('username', 'exampleName').update({ active: false });

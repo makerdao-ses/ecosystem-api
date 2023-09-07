@@ -35,6 +35,7 @@ ecosystem_codes=(
   "ecosystem-actors/SIDESTREAM"
   "ecosystem-actors/TECHOPS"
   "ecosystem-actors/VIRIDIAN"
+  "keepers"
 )
 
 # Define the start and end dates (in year/month format)
