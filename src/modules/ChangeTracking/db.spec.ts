@@ -33,7 +33,7 @@ it('get bsEvent', async () => {
 });
 
 it('creates budgetStatementCreated event', async () => {
-    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'EXA');
+    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'SES');
     const [bs] = await authModel.knex('BudgetStatement').where('ownerId', cu.id).limit(1)
     await authModel.coreUnitBudgetStatementCreated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month, bs.ownerType)
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
@@ -42,7 +42,7 @@ it('creates budgetStatementCreated event', async () => {
 });
 
 it('creates budgetStatementUpdated event', async () => {
-    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'EXA');
+    const [cu] = await authModel.knex('CoreUnit').where('shortCode', 'SES');
     const [bs] = await authModel.knex('BudgetStatement').where('ownerId', cu.id).limit(1);
     await authModel.coreUnitBudgetStatementUpdated(cu.id, cu.cuCode, cu.shortCode, bs.id, bs.month, bs.ownerType);
     const [activity] = await authModel.knex('ChangeTrackingEvents').orderBy('id', 'desc').limit(1);
