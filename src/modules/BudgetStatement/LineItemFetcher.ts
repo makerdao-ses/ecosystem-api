@@ -195,7 +195,7 @@ export class LineItemFetcher {
                 .leftJoin('public.BudgetStatementWallet as BSW', 'BSW.budgetStatementId', 'BS.id')
                 .leftJoin('public.BudgetStatementLineItem as BSLI', 'BSLI.budgetStatementWalletId', 'BSW.id')
 
-            .where('BS.ownerCode', owner)
+            .whereRaw('(("BS"."ownerType" NOT IN (\'CoreUnit\', \'EcosystemActor\')) OR ("BS"."ownerCode" = ?))', owner)
             .whereRaw('LOWER("BSW"."address") = LOWER(?)', account)
             .whereRaw('"BSLI"."month" = ?', month)
 
