@@ -1,5 +1,5 @@
 #!/bin/bash
-Edit to define end block number for each of the codes, use as additional input parameter that is optional 
+
 # Define the list of codes
 codes=(
   "core-units/GOV-001"
