@@ -650,7 +650,7 @@ export default [{
     "Name": "MIP55c3-SP7: Special Purpose Fund for The Ambassador Program",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
-    "budget path 3": "SPF7",
+    "budget path 3": "",
     "budget path 4": "",
     "Type": "",
     "Address": "0x5e81c926643f630399aff9ce177eb47b3e274ece"
@@ -658,7 +658,7 @@ export default [{
     "Name": "MIP55c3-SP1: Adding Special Purpose Fund for Feasibility Study for Securitisation Framework in Singapore",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
-    "budget path 3": "SPF1",
+    "budget path 3": "",
     "budget path 4": "",
     "Type": "",
     "Address": "0x44d2509074993b858c54b6d276ebd3816fc93a68"
@@ -666,15 +666,15 @@ export default [{
     "Name": "MIP55c3-SP3: ETHAmsterdam Event SPF",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
-    "budget path 3": "SPF3",
+    "budget path 3": "",
     "budget path 4": "",
     "Type": "",
     "Address": "0xf34ac684ba2734039772f0c0d77bc2545e819212"
 }, {
-    "Name": "Ambassador Program",
+    "Name": "Ambassador Program Operational Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
-    "budget path 3": "ambassador-program",
+    "budget path 3": "",
     "budget path 4": "",
     "Type": "Operational",
     "Address": "0xF411d823a48D18B32e608274Df16a9957fE33E45"
