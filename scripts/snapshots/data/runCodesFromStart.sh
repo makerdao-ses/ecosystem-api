@@ -20,8 +20,8 @@ cu_codes=(
   "core-units/PE-001"
   "core-units/RISK-001"
   "delegates"
-  "spfs
-)
+  "spfs"
+  )
 
 ecosystem_codes=(
   "ecosystem-actors/BA-LABS"

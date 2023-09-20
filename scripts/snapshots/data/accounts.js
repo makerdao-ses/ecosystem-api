@@ -559,6 +559,14 @@ export default [{
     "Type": "",
     "Address": "0xe78658a8acfe982fde841abb008e57e6545e38b3"
 }, {
+    "Name": "Llama",
+    "budget path 1": "makerdao",
+    "budget path 2": "delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": "0x82cd339fa7d6f22242b31d5f7ea37c1b721db9c3"
+}, {
     "Name": "0xDefensor",
     "budget path 1": "makerdao",
     "budget path 2": "delegates",
