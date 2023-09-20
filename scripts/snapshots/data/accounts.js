@@ -567,6 +567,22 @@ export default [{
     "Type": "",
     "Address": "0x82cd339fa7d6f22242b31d5f7ea37c1b721db9c3"
 }, {
+    "Name": "coldiron.eth",
+    "budget path 1": "makerdao",
+    "budget path 2": "delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": "0x82cd339fa7d6f22242b31d5f7ea37c1b721db9c3"
+}, {
+    "Name": "HKUST EPI Blockchain",
+    "budget path 1": "makerdao",
+    "budget path 2": "delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    "Type": "",
+    "Address": "0x2da0d746938efa28c7dc093b1da286b3d8bac34a"
+}, {
     "Name": "0xDefensor",
     "budget path 1": "makerdao",
     "budget path 2": "delegates",
