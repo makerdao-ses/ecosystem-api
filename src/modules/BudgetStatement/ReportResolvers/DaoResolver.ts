@@ -17,8 +17,8 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
 
         path = path.reduce();        
         const budgetCategories = path.nextSegment();
-        if ((budgetCategories.filters || []).filter(f => !['core-units', 'delegates'].includes(f)).length > 0) {
-            throw new Error('Only budget categories \'core-units\' and \'delegates\' are supported.');
+        if ((budgetCategories.filters || []).filter(f => !['core-units', 'ecosystem-actors', 'delegates'].includes(f)).length > 0) {
+            throw new Error('Only budget categories \'core-units\', \'ecosystem-actors\', and \'delegates\' are supported.');
         }
 
         path = path.reduce();
@@ -36,11 +36,28 @@ export class DaoResolver extends BudgetReportResolverBase<PeriodResolverData, Pe
             result.nextResolversData.CoreUnitsResolver = this._getCoreUnitsResolverData(query, path, dao, budgetCategories);
         }
 
+        if (budgetCategories.filters === null || budgetCategories.filters.includes('ecosystem-actors')) {
+            result.nextResolversData.EcosystemActorsResolver = this._getEcosystemActorsResolverData(query, path, dao, budgetCategories);
+        }
+
         if (budgetCategories.filters === null || budgetCategories.filters.includes('delegates')) {
             result.nextResolversData.DelegatesResolver = this._getDelegatesResolverData(query, path, dao, budgetCategories);
         }
 
         return result;
+    }
+
+    private _getEcosystemActorsResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {
+        const groupPath = (budgetCategories.groups === null ? [dao, 'ecosystem-actors'] : [dao]);
+        return [{
+            start: query.start,
+            end: query.end,
+            period: query.period,
+            categoryPath: query.categoryPath,
+            budgetPath: path,
+            granularity: query.granularity,
+            groupPath
+        }];
     }
 
     private _getCoreUnitsResolverData(query:PeriodResolverData, path:BudgetReportPath, dao:BudgetReportPathSegment, budgetCategories:BudgetReportPathSegment) {

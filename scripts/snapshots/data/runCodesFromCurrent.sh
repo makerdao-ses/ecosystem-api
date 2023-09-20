@@ -1,5 +1,5 @@
 #!/bin/bash
-Edit to define end block number for each of the codes, use as additional input parameter that is optional 
+
 # Define the list of codes
 codes=(
   "core-units/GOV-001"
@@ -23,9 +23,7 @@ codes=(
   "core-units/PE-001"
   "core-units/RISK-001"
   "delegates"
-  "spfs/SPF1"
-  "spfs/SPF3"
-  "spfs/SPF7"
+  "spfs"
   "ecosystem-actors/BA-LABS"
   "ecosystem-actors/CHRONICLE"
   "ecosystem-actors/DEWIZ"

@@ -35,11 +35,15 @@ it('gets snapshotAccount with snapshotId', async () => {
 });
 
 it('gets snapshotAccountTransactions with snapshotAccountId', async () => {
-    const entry = await authModel.getSnapshotAccountTransactions(587);
+    const snapshots = await authModel.getSnapshots({});
+    const snapshotId = snapshots[snapshots.length - 1].id;
+    const entry = await authModel.getSnapshotAccountTransactions(snapshotId);
     expect(entry.length).toBeGreaterThan(0)
 });
 
 it('gets snapshotAccountBalances with snapshotAccountId', async () => {
-    const entry = await authModel.getSnapshotAccountBalances(1);
+    const snapshots = await authModel.getSnapshots({});
+    const snapshotId = snapshots[0].id;
+    const entry = await authModel.getSnapshotAccountBalances(snapshotId);
     expect(entry.length).toBeGreaterThan(0)
 });
