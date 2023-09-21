@@ -28,21 +28,23 @@ it('fetches snapshots', async () => {
     const snapshotsQuery = {
         query: `query Snapshots {
             snapshots {
+              id
+              period
+              snapshotAccount {
                 id
-                snapshotAccount {
-                    id
-                    snapshotId
-                    snapshotAccountTransaction {
-                      id
-                      snapshotAccountId
-                    }
-                    snapshotAccountBalance {
-                      id
-                      snapshotAccountId
-                    }
-                  }
+                accountLabel
+                accountType
+                snapshotAccountTransaction {
+                  id
+                  block
+                }
+                snapshotAccountBalance {
+                  id
+                }
+              }
             }
-        }`
+          }
+        `
     };
     const response = await server.executeOperation(snapshotsQuery)
     expect(response.errors).toBeUndefined()

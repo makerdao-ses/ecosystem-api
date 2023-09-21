@@ -3,7 +3,7 @@ import initKnex from "../../initKnex.js";
 import { BudgetReportGranularity, BudgetReportQuery } from "./BudgetReportQuery";
 import { BudgetReportQueryEngine } from "./BudgetReportQueryEngine";
 import { DaoResolver } from "./ReportResolvers/DaoResolver.js";
-import { CoreUnitsResolver } from "./ReportResolvers/CoreUnitsResolver.js";
+import { ContributorTeamsResolver } from "./ReportResolvers/ContributorTeamsResolver.js";
 import { AccountsResolver } from "./ReportResolvers/AccountsResolver.js";
 import { PeriodResolver } from "./ReportResolvers/PeriodResolver.js";
 import { BudgetReportPeriod } from "./BudgetReportPeriod.js";
@@ -26,7 +26,7 @@ it ('Correctly does basic validation of its configuration', async () => {
     const resolvers = [ 
         new PeriodResolver(knex),
         new DaoResolver(),
-        new CoreUnitsResolver(knex),
+        new ContributorTeamsResolver(knex),
         new AccountsResolver(knex)
     ];
 
@@ -74,7 +74,7 @@ it ('Configures the resolvers correctly and returns concatenated output.', async
     const resolvers = [ 
         new PeriodResolver(knex),
         new DaoResolver(),
-        new CoreUnitsResolver(knex),
+        new ContributorTeamsResolver(knex),
         new AccountsResolver(knex)
     ];
 
@@ -124,7 +124,7 @@ it ('Applies caching correctly.', async () => {
     const resolvers = [ 
         new PeriodResolver(knex),
         new DaoResolver(),
-        new CoreUnitsResolver(knex),
+        new ContributorTeamsResolver(knex),
         new DelegatesResolver(knex),
         new AccountsResolver(knex)
     ];
