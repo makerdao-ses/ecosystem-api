@@ -24,11 +24,11 @@ export class AnalyticsPath {
         };
     }
 
-    public toString():string {
-        return this._segments.map(s => s.toString()).join('/');
+    public toString(tail:string = ''):string {
+        return this._segments.map(s => s.toString()).join('/') + tail;
     }
 
-    public nextSegment(): AnalyticsPathSegment {
+    public firstSegment(): AnalyticsPathSegment {
         return (this._segments.length > 0) ? this._segments[0] : new AnalyticsPathSegment();
     }
 
