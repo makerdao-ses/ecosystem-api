@@ -6,11 +6,21 @@ import { AnalyticsMetric } from "./AnalyticsQuery.js";
 
 let knex: Knex;
 
+// Set to false during testing to see the resulting records in db
+const CLEAN_UP_DB = true;
+const TEST_SOURCE = AnalyticsPath.fromString('test/analytics/AnalyticsSeries.spec');
+
 beforeAll(async () => {
-    knex = initKnex()
+    knex = initKnex();
+    // Always clean up prior test data for deterministic results
+    await new AnalyticsSeries(knex).clearSourceValues(AnalyticsPath.fromString('test'));
 });
 
 afterAll(async () => {
+    if (CLEAN_UP_DB) {
+        await new AnalyticsSeries(knex).clearSourceValues(AnalyticsPath.fromString('test'), true);
+    }
+
     knex.destroy();
 });
 
@@ -37,7 +47,7 @@ it ('should query records', async () => {
         }
     });
 
-    console.log(JSON.stringify(results, null, 2));
+    //console.log(JSON.stringify(results, null, 2));
 });
 
 it('should add values without error', async () => {
@@ -46,7 +56,7 @@ it('should add values without error', async () => {
     await series.addValues([
         {
             start: new Date(),
-            source: AnalyticsPath.fromString('test/mips/MIP40c2-SP1'),
+            source: TEST_SOURCE,
             value: 10000,
             unit: 'DAI',
             metric: AnalyticsMetric.Budget,
@@ -57,7 +67,7 @@ it('should add values without error', async () => {
         }, {
             start: new Date(),
             end: new Date(2024, 0, 1),
-            source: AnalyticsPath.fromString('test/mips/MIP40c2-SP1'),
+            source: TEST_SOURCE,
             value: 210,
             unit: 'MKR',
             metric: AnalyticsMetric.Budget,
@@ -74,7 +84,7 @@ it('should add values without error', async () => {
 
     await series.addValue({
         start: new Date(2023, 0, 1),
-        source: AnalyticsPath.fromString('test/mips/MIP40c2-SP1'),
+        source: TEST_SOURCE,
         value: 5.8,
         metric: AnalyticsMetric.FTEs,
         dimensions: {}
@@ -82,7 +92,7 @@ it('should add values without error', async () => {
 
     await series.addValue({
         start: new Date(2023, 2, 1),
-        source: AnalyticsPath.fromString('test/mips/MIP40c2-SP1'),
+        source: TEST_SOURCE,
         value: -0.8,
         metric: AnalyticsMetric.FTEs,
         dimensions: {}

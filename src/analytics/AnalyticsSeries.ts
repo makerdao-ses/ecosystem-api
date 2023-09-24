@@ -10,6 +10,30 @@ export class AnalyticsSeries {
         this._knex = knex;
     }
 
+    public async clearSourceValues(source: AnalyticsPath, cleanUpDimensions: boolean = false) {
+        let result = await this._knex('AnalyticsSeries')
+            .whereLike('source', source.toString('/%'))
+            .delete();
+
+        if (cleanUpDimensions) {
+            result += await this.clearEmptyAnalyticsDimensions();
+        }
+
+        return result;
+    }
+
+    public async clearEmptyAnalyticsDimensions() {
+        const query = this._knex('AnalyticsDimension AS AD')
+            .whereNotExists(q => q
+                .select('*')
+                .from('AnalyticsSeries_AnalyticsDimension AS ASAD')
+                .where('ASAD.dimensionId', this._knex.ref('AD.id'))
+            )
+            .delete();
+
+        return await query;
+    }
+
     public async getValues(query: AnalyticsSeriesQuery): Promise<AnalyticsSeriesResult[]> {
         const analyticsView = this._buildViewQuery(
             'AV', 
