@@ -41,6 +41,16 @@ export class AnalyticsPath {
 
         return new AnalyticsPath(result);
     }
+
+    public applyLod(levelOfDetail: number): AnalyticsPath {
+        const segments = [... this._segments];
+
+        while (segments.length < levelOfDetail) {
+            segments.push(new AnalyticsPathSegment());
+        }
+
+        return new AnalyticsPath(segments.slice(0, levelOfDetail))
+    }
 }
 
 export class AnalyticsPathSegment {

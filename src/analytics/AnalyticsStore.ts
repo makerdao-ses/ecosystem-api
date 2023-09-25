@@ -1,16 +1,23 @@
 import { Knex } from "knex";
 import { AnalyticsPath } from "./AnalyticsPath.js";
 import { values } from "lodash";
-import { AnalyticsMetric, AnalyticsMetricString, AnalyticsSeriesQuery, getAnalyticsMetricEnum, getAnalyticsMetricString } from "./AnalyticsQuery.js";
+import { 
+    AnalyticsSeriesQuery,
+    AnalyticsSeries,
+    AnalyticsMetric, 
+    AnalyticsMetricString, 
+    getAnalyticsMetricEnum, 
+    getAnalyticsMetricString 
+} from "./AnalyticsQuery.js";
 
-export class AnalyticsSeries {
+export class AnalyticsStore {
     private _knex: Knex;
 
     public constructor(knex: Knex) {
         this._knex = knex;
     }
 
-    public async clearSourceValues(source: AnalyticsPath, cleanUpDimensions: boolean = false) {
+    public async clearSeriesBySource(source: AnalyticsPath, cleanUpDimensions: boolean = false) {
         let result = await this._knex('AnalyticsSeries')
             .whereLike('source', source.toString('/%'))
             .delete();
@@ -34,10 +41,10 @@ export class AnalyticsSeries {
         return await query;
     }
 
-    public async getValues(query: AnalyticsSeriesQuery): Promise<AnalyticsSeriesResult[]> {
+    public async getMatchingSeries(query: AnalyticsSeriesQuery): Promise<AnalyticsSeries[]> {
         const analyticsView = this._buildViewQuery(
             'AV', 
-            Object.keys(query.filter),
+            Object.keys(query.select),
             query.metrics.map(m => getAnalyticsMetricString(m)),
             query.currency.firstSegment().filters,
             query.end
@@ -46,7 +53,7 @@ export class AnalyticsSeries {
         const baseQuery = this._knex<AnalyticsSeriesRecord>(this._knex.raw(analyticsView)).select('*');
 
         // Add dimension filter(s)
-        for (const [dimension, paths] of Object.entries(query.filter)) {
+        for (const [dimension, paths] of Object.entries(query.select)) {
             if (paths.length == 1) {
                 baseQuery.andWhereLike(`dim_${dimension}`, paths[0].toString('/%'));
             } else if (paths.length > 1) {
@@ -57,14 +64,14 @@ export class AnalyticsSeries {
             }
         }
 
-        return this._formatQueryRecords(await baseQuery, Object.keys(query.filter));
+        return this._formatQueryRecords(await baseQuery, Object.keys(query.select));
     }
 
-    public async addValue(input: AnalyticsSeriesInput) {
-        return this.addValues([input]);
+    public async addSeriesValue(input: AnalyticsSeriesInput) {
+        return this.addSeriesValues([input]);
     }
 
-    public async addValues(inputs: AnalyticsSeriesInput[]) {
+    public async addSeriesValues(inputs: AnalyticsSeriesInput[]) {
         const dimensionsMap:DimensionsMap = {};
 
         for (let i=0; i<inputs.length; i++) {            
@@ -100,7 +107,7 @@ export class AnalyticsSeries {
         return values;
     }
 
-    private _formatQueryRecords(records: AnalyticsSeriesRecord[], dimensions: string[]): AnalyticsSeriesResult[] {
+    private _formatQueryRecords(records: AnalyticsSeriesRecord[], dimensions: string[]): AnalyticsSeries[] {
         return records.map((r: AnalyticsSeriesRecord) => {
             const result = {
                 id: r.id,
@@ -202,17 +209,4 @@ type AnalyticsSeriesRecord = {
     fn: string,
     params: Record<string, any> | null,
     [dimension: `dim_${string}`]: string
-}
-
-type AnalyticsSeriesResult = {
-    id: number,
-    source: AnalyticsPath,
-    start: Date,
-    end: Date | null,
-    metric: AnalyticsMetric,
-    value: number,
-    unit: string | null,
-    fn: string,
-    params: Record<string, any> | null,
-    dimensions: Record<string, AnalyticsPath>
 }

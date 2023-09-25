@@ -1,14 +1,28 @@
 import { AnalyticsPath } from "./AnalyticsPath.js"
 
-export enum AnalyticsGranularity {
-    Total,
-    Annual,
-    SemiAnnual,
-    Quarterly,
-    Monthly,
-    Weekly,
-    Daily,
-    Hourly
+export type AnalyticsSeriesQuery = {
+    start: Date | null,
+    end: Date | null,
+    metrics: AnalyticsMetric[],
+    currency: AnalyticsPath,
+    select: Record<string, AnalyticsPath[]>,
+}
+
+export type AnalyticsQuery = AnalyticsSeriesQuery & {
+    granularity: AnalyticsGranularity,
+    lod: Record<string, number|null>
+}
+
+export type AnalyticsSeries = {
+    source: AnalyticsPath,
+    start: Date,
+    end: Date | null,
+    metric: AnalyticsMetric,
+    value: number,
+    unit: string | null,
+    fn: string,
+    params: Record<string, any> | null,
+    dimensions: Record<string, AnalyticsPath>
 }
 
 export enum AnalyticsMetric {
@@ -63,15 +77,13 @@ export const getAnalyticsMetricString = (metric: AnalyticsMetric): AnalyticsMetr
     }
 }
 
-export type AnalyticsSeriesQuery = {
-    start: Date | null,
-    end: Date | null,
-    metrics: AnalyticsMetric[],
-    currency: AnalyticsPath,
-    filter: Record<string, AnalyticsPath[]>,
-}
-
-export type AnalyticsQuery = AnalyticsSeriesQuery | {
-    granularity: AnalyticsGranularity,
-    lod: Record<string, number|null>
+export enum AnalyticsGranularity {
+    Total,
+    Annual,
+    SemiAnnual,
+    Quarterly,
+    Monthly,
+    Weekly,
+    Daily,
+    Hourly
 }
