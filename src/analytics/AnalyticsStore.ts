@@ -82,7 +82,7 @@ export class AnalyticsStore {
                 metric: getAnalyticsMetricString(inputs[i].metric),
                 value: inputs[i].value,
                 unit: inputs[i].unit || null,
-                fn: inputs[i].fn || 'Immediate',
+                fn: inputs[i].fn || 'Single',
                 params: inputs[i].params || null,
             }, 'id');
 
