@@ -81,7 +81,7 @@ it('should query records', async () => {
     const engine = new AnalyticsQueryEngine(store);
     
     const query: AnalyticsQuery = {
-        start: null,
+        start: new Date('2022-09-01 00:00:00Z+0'),
         end: null,
         granularity: AnalyticsGranularity.Total,
         metrics: [

@@ -1,7 +1,8 @@
 import { AnalyticsPath } from "./AnalyticsPath.js";
-import { AnalyticsQuery, AnalyticsSeries, AnalyticsSeriesQuery } from "./AnalyticsQuery.js";
+import { AnalyticsGranularity, AnalyticsQuery, AnalyticsSeries, AnalyticsSeriesQuery } from "./AnalyticsQuery.js";
 import { AnalyticsQueryResult } from "./AnalyticsQueryResult.js";
 import { AnalyticsStore } from "./AnalyticsStore.js";
+import { AnalyticsRange, getPeriodSeries } from "./AnalyticsTimeSlicer.js";
 
 export class AnalyticsQueryEngine {
     private _analyticsStore: AnalyticsStore;
@@ -17,7 +18,42 @@ export class AnalyticsQueryEngine {
             dimensions: this._applyLods(result.dimensions, query.lod)
         }));
 
+        if (normalizedSeriesResults.length < 1) {
+            return [];
+        }
+
+        const periodSeries = getPeriodSeries(this._calculateRange(query.start, query.end, query.granularity, seriesResults));
+        //console.log(periodSeries.next(), periodSeries.next())
+
         return normalizedSeriesResults;
+    }
+
+    private _calculateRange(start: Date|null, end: Date|null, granularity: AnalyticsGranularity, results: AnalyticsSeries[]) {
+        let calculatedStart: Date|null = start || null;
+        let calculatedEnd: Date|null = end || null;
+        
+        if (calculatedStart == null || calculatedEnd == null) {
+            for (const r of results) {
+                if (calculatedStart == null) {
+                    calculatedStart = r.start;
+                }
+
+                const endValue = r.end || r.start;
+                if (calculatedEnd == null || (calculatedEnd as Date).getTime() < endValue.getTime()) {
+                    calculatedEnd = endValue;
+                }
+            }
+        }
+
+        if (calculatedStart == null || calculatedEnd == null) {
+            throw new Error('Cannot determine query start and/or end.');
+        }
+
+        return {
+            start: calculatedStart,
+            end: calculatedEnd,
+            granularity
+        } as AnalyticsRange;
     }
 
     private async _executeSeriesQuery(query: AnalyticsQuery): Promise<AnalyticsSeries[]> {
