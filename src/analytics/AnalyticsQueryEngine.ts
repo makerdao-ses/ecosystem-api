@@ -12,8 +12,11 @@ export class AnalyticsQueryEngine {
 
     public async execute(query: AnalyticsQuery): Promise<AnalyticsSeries[]> {
         const seriesResults = await this._executeSeriesQuery(query);
-        const normalizedSeriesResults = this._applyLods(seriesResults, query.lod);
-        
+        const normalizedSeriesResults = seriesResults.map(result => ({
+            ...result, 
+            dimensions: this._applyLods(result.dimensions, query.lod)
+        }));
+
         return normalizedSeriesResults;
     }
 
@@ -29,24 +32,14 @@ export class AnalyticsQueryEngine {
         return await this._analyticsStore.getMatchingSeries(seriesQuery);
     }
 
-    private _applyLods(results: AnalyticsSeries[], lods: Record<string, number | null>): AnalyticsSeries[] {
-
-        const applyLods = (dimensionMap: Record<string, AnalyticsPath>) => {
-            const result: Record<string, AnalyticsPath> = {};
-            for (const [dimension, lod] of Object.entries(lods)) {
-                if (lod !== null && dimensionMap[dimension]) {
-                    result[dimension] = dimensionMap[dimension].applyLod(lod);
-                }
+    private _applyLods(dimensionMap: Record<string, AnalyticsPath>, lods: Record<string, number | null>) {
+        const result: Record<string, AnalyticsPath> = {};
+        for (const [dimension, lod] of Object.entries(lods)) {
+            if (lod !== null && dimensionMap[dimension]) {
+                result[dimension] = dimensionMap[dimension].applyLod(lod);
             }
+        }
 
-            return result;
-        };
-
-        results = results.map(r => ({
-            ...r,
-            dimensions: applyLods(r.dimensions)
-        }));
-
-        return results;
+        return result;
     }
 }

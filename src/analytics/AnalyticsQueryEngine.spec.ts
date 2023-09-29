@@ -1,15 +1,15 @@
 import { Knex } from "knex";
 import initKnex from "../initKnex.js";
-import { AnalyticsStore } from "./AnalyticsStore.js";
-import { AnalyticsPath } from "./AnalyticsPath.js";
-import { AnalyticsGranularity, AnalyticsMetric } from "./AnalyticsQuery.js";
-import { AnalyticsQueryEngine } from "./AnalyticsQueryEngine.js";
+import { AnalyticsPath } from "./AnalyticsPath";
+import { AnalyticsGranularity, AnalyticsMetric, AnalyticsQuery } from "./AnalyticsQuery";
+import { AnalyticsQueryEngine } from "./AnalyticsQueryEngine";
+import { AnalyticsStore } from "./AnalyticsStore";
 
 let knex: Knex;
 
 // Set to false during testing to see the resulting records in db
 const CLEAN_UP_DB = true;
-const TEST_SOURCE = AnalyticsPath.fromString('test/analytics/AnalyticsStore.spec');
+const TEST_SOURCE = AnalyticsPath.fromString('test/analytics/AnalyticsQueryEngine.spec');
 
 beforeAll(async () => {
     knex = initKnex();
@@ -26,7 +26,7 @@ beforeAll(async () => {
             dimensions: {
                 budget: AnalyticsPath.fromString('atlas/legacy/core-units/SES-001'),
                 category: AnalyticsPath.fromString('atlas/headcount/CompensationAndBenefits/FrontEndEngineering'),
-                project: TEST_SOURCE
+                project: TEST_SOURCE,    
             }
         }, {
             start: new Date(),
@@ -42,7 +42,7 @@ beforeAll(async () => {
             dimensions: {
                 budget: AnalyticsPath.fromString('atlas/legacy/core-units/SES-001'),
                 category: AnalyticsPath.fromString('atlas/headcount/CompensationAndBenefits/SmartContractEngineering'),
-                project: TEST_SOURCE
+                project: TEST_SOURCE,
             }
         }
     ]);
@@ -53,7 +53,7 @@ beforeAll(async () => {
         value: 5.8,
         metric: AnalyticsMetric.FTEs,
         dimensions: {
-            project: TEST_SOURCE
+            project: TEST_SOURCE,
         }
     });
 
@@ -63,7 +63,7 @@ beforeAll(async () => {
         value: -0.8,
         metric: AnalyticsMetric.FTEs,
         dimensions: {
-            project: TEST_SOURCE
+            project: TEST_SOURCE,
         }
     });
 });
@@ -76,38 +76,45 @@ afterAll(async () => {
     knex.destroy();
 });
 
-it ('should query records', async () => {
-    const store = new AnalyticsStore(knex);
-    const queryEngine = new AnalyticsQueryEngine(store); 
-
-    const results = await store.getMatchingSeries({
+it('should query records', async () => {
+    const store = new AnalyticsStore(knex)
+    const engine = new AnalyticsQueryEngine(store);
+    
+    const query: AnalyticsQuery = {
         start: null,
         end: null,
-        currency: AnalyticsPath.fromString('MKR,DAI'),
+        granularity: AnalyticsGranularity.Total,
         metrics: [
-            AnalyticsMetric.Actuals,
             AnalyticsMetric.Budget,
+            AnalyticsMetric.Actuals,
             AnalyticsMetric.FTEs
         ],
+        currency: AnalyticsPath.fromString('DAI,MKR'),
         select: {
-            budget: [
-                AnalyticsPath.fromString('atlas/legacy/core-units/SES-001')
+            budget: [ 
+                AnalyticsPath.fromString('atlas/legacy/core-units/SES-001'),
+                AnalyticsPath.fromString('atlas/legacy/core-units/PE-001'), 
             ],
-            category: [ 
-                AnalyticsPath.fromString('atlas/headcount'),
-                AnalyticsPath.fromString('atlas/non-headcount') 
+            category: [
+                AnalyticsPath.fromString('atlas/headcount')
             ],
             project: [
                 TEST_SOURCE
             ]
+        },
+        lod: {
+            budget: 3,
+            category: 1,
+            project: 1
         }
-    });
+    };
 
-    expect(results.length).toBe(2);
-    expect(results.map(r => r.unit)).toEqual(['DAI', 'MKR']);
-    expect(results.map(r => r.dimensions.budget.toString())).toEqual([
-        'atlas/legacy/core-units/SES-001',
-        'atlas/legacy/core-units/SES-001'
+    const result = await engine.execute(query);
+
+    expect(result.length).toBe(2);
+    expect(result.map(r => r.unit)).toEqual(['DAI', 'MKR']);
+    expect(result.map(r => r.dimensions.budget.toString())).toEqual([
+        'atlas/legacy/core-units',
+        'atlas/legacy/core-units'
     ]);
 });
-
