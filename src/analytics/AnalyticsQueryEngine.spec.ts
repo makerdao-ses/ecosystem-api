@@ -8,7 +8,7 @@ import { AnalyticsStore } from "./AnalyticsStore";
 let knex: Knex;
 
 // Set to false during testing to see the resulting records in db
-const CLEAN_UP_DB = true;
+const CLEAN_UP_DB = false;
 const TEST_SOURCE = AnalyticsPath.fromString('test/analytics/AnalyticsQueryEngine.spec');
 
 beforeAll(async () => {
@@ -30,6 +30,17 @@ beforeAll(async () => {
             }
         }, {
             start: new Date(),
+            source: TEST_SOURCE,
+            value: 15000,
+            unit: 'DAI',
+            metric: AnalyticsMetric.Budget,
+            dimensions: {
+                budget: AnalyticsPath.fromString('atlas/legacy/core-units/PE-001'),
+                category: AnalyticsPath.fromString('atlas/headcount/CompensationAndBenefits/SmartContractEngineering'),
+                project: TEST_SOURCE,    
+            }
+        }, {
+            start: new Date(),
             end: new Date(2024, 0, 1),
             source: TEST_SOURCE,
             value: 210,
@@ -40,7 +51,7 @@ beforeAll(async () => {
                 cliff: new Date(2023, 11, 1)
             },
             dimensions: {
-                budget: AnalyticsPath.fromString('atlas/legacy/core-units/SES-001'),
+                budget: AnalyticsPath.fromString('atlas/legacy/core-units/PE-001'),
                 category: AnalyticsPath.fromString('atlas/headcount/CompensationAndBenefits/SmartContractEngineering'),
                 project: TEST_SOURCE,
             }
@@ -104,8 +115,8 @@ it('should query records', async () => {
         },
         lod: {
             budget: 3,
-            category: 1,
-            project: 1
+            category: 2,
+            project: 2
         }
     };
 

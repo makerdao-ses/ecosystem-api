@@ -41,7 +41,7 @@ export class AnalyticsStore {
         return await query;
     }
 
-    public async getMatchingSeries(query: AnalyticsSeriesQuery): Promise<AnalyticsSeries[]> {
+    public async getMatchingSeries(query: AnalyticsSeriesQuery): Promise<AnalyticsSeries<AnalyticsPath>[]> {
         const analyticsView = this._buildViewQuery(
             'AV', 
             Object.keys(query.select),
@@ -107,7 +107,7 @@ export class AnalyticsStore {
         return values;
     }
 
-    private _formatQueryRecords(records: AnalyticsSeriesRecord[], dimensions: string[]): AnalyticsSeries[] {
+    private _formatQueryRecords(records: AnalyticsSeriesRecord[], dimensions: string[]): AnalyticsSeries<AnalyticsPath>[] {
         return records.map((r: AnalyticsSeriesRecord) => {
             const result = {
                 id: r.id,

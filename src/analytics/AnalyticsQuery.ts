@@ -13,7 +13,7 @@ export type AnalyticsQuery = AnalyticsSeriesQuery & {
     lod: Record<string, number|null>
 }
 
-export type AnalyticsSeries = {
+export type AnalyticsSeries<D=string|AnalyticsPath> = {
     source: AnalyticsPath,
     start: Date,
     end: Date | null,
@@ -22,7 +22,7 @@ export type AnalyticsSeries = {
     unit: string | null,
     fn: string,
     params: Record<string, any> | null,
-    dimensions: Record<string, AnalyticsPath>
+    dimensions: Record<string, D>
 }
 
 export enum AnalyticsMetric {

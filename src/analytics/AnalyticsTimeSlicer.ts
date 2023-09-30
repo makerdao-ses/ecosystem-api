@@ -19,6 +19,19 @@ interface AnalyticsPeriodSeries {
     next(): AnalyticsPeriod | null
 }
 
+export const getPeriodSeriesArray = (range: AnalyticsRange): AnalyticsPeriod[] => {
+    const result: AnalyticsPeriod[] = [];
+    const series = getPeriodSeries(range);
+
+    let next = series.next();
+    while (next) {
+        result.push(next);
+        next = series.next();
+    }
+
+    return result;
+}
+
 export const getPeriodSeries = (range: AnalyticsRange): AnalyticsPeriodSeries => {
     return {
         ...range,

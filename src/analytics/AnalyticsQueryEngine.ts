@@ -1,8 +1,9 @@
+import { AnalyticsDiscretizer } from "./AnalyticsDiscretizer.js";
 import { AnalyticsPath } from "./AnalyticsPath.js";
-import { AnalyticsGranularity, AnalyticsQuery, AnalyticsSeries, AnalyticsSeriesQuery } from "./AnalyticsQuery.js";
+import { AnalyticsGranularity, AnalyticsQuery, AnalyticsSeries, AnalyticsSeriesQuery, getAnalyticsMetricString } from "./AnalyticsQuery.js";
 import { AnalyticsQueryResult } from "./AnalyticsQueryResult.js";
 import { AnalyticsStore } from "./AnalyticsStore.js";
-import { AnalyticsRange, getPeriodSeries } from "./AnalyticsTimeSlicer.js";
+import { AnalyticsRange, getPeriodSeriesArray } from "./AnalyticsTimeSlicer.js";
 
 export class AnalyticsQueryEngine {
     private _analyticsStore: AnalyticsStore;
@@ -11,7 +12,7 @@ export class AnalyticsQueryEngine {
         this._analyticsStore = store;
     }
 
-    public async execute(query: AnalyticsQuery): Promise<AnalyticsSeries[]> {
+    public async execute(query: AnalyticsQuery) {
         const seriesResults = await this._executeSeriesQuery(query);
         const normalizedSeriesResults = seriesResults.map(result => ({
             ...result, 
@@ -22,13 +23,18 @@ export class AnalyticsQueryEngine {
             return [];
         }
 
-        const periodSeries = getPeriodSeries(this._calculateRange(query.start, query.end, query.granularity, seriesResults));
-        //console.log(periodSeries.next(), periodSeries.next())
+        const dimensions = Object.keys(query.select);
+        const periodSeries = getPeriodSeriesArray(this._calculateRange(query.start, query.end, query.granularity, seriesResults));
+        const index = AnalyticsDiscretizer._buildIndex(normalizedSeriesResults, dimensions);
+        console.log('index', JSON.stringify(index, null, 2));
 
-        return normalizedSeriesResults;
+        const discretizedResults = AnalyticsDiscretizer._discretizeNode(index, {}, dimensions, periodSeries);
+        console.log('results', JSON.stringify(discretizedResults, null, 2));
+
+        return discretizedResults;
     }
 
-    private _calculateRange(start: Date|null, end: Date|null, granularity: AnalyticsGranularity, results: AnalyticsSeries[]) {
+    private _calculateRange(start: Date|null, end: Date|null, granularity: AnalyticsGranularity, results: AnalyticsSeries<any>[]) {
         let calculatedStart: Date|null = start || null;
         let calculatedEnd: Date|null = end || null;
         
@@ -56,7 +62,7 @@ export class AnalyticsQueryEngine {
         } as AnalyticsRange;
     }
 
-    private async _executeSeriesQuery(query: AnalyticsQuery): Promise<AnalyticsSeries[]> {
+    private async _executeSeriesQuery(query: AnalyticsQuery): Promise<AnalyticsSeries<AnalyticsPath>[]> {
         const seriesQuery: AnalyticsSeriesQuery = {
             start: query.start,
             end: query.end,
@@ -69,10 +75,10 @@ export class AnalyticsQueryEngine {
     }
 
     private _applyLods(dimensionMap: Record<string, AnalyticsPath>, lods: Record<string, number | null>) {
-        const result: Record<string, AnalyticsPath> = {};
+        const result: Record<string, string> = {};
         for (const [dimension, lod] of Object.entries(lods)) {
             if (lod !== null && dimensionMap[dimension]) {
-                result[dimension] = dimensionMap[dimension].applyLod(lod);
+                result[dimension] = dimensionMap[dimension].applyLod(lod).toString();
             }
         }
 
