@@ -122,9 +122,9 @@ it('should query records', async () => {
 
     const result = await engine.execute(query);
 
-    expect(result.length).toBe(2);
-    expect(result.map(r => r.unit)).toEqual(['DAI', 'MKR']);
-    expect(result.map(r => r.dimensions.budget.toString())).toEqual([
+    expect(result.length).toBe(1);
+    expect(result[0].rows.map(r => r.unit)).toEqual(['DAI', 'MKR']);
+    expect(result[0].rows.map(r => r.dimensions.budget.toString())).toEqual([
         'atlas/legacy/core-units',
         'atlas/legacy/core-units'
     ]);
