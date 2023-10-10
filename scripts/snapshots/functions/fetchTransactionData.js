@@ -7,22 +7,20 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
     let result = [];
     
     const token = 'DAI';
-    const fromUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${address}&skip=`;
-    const toUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&to_address=${address}&skip=`;
+    const url = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${address}&skip=`;
     const headers = {
-        'accept': 'application/json',
-        'Authorization': 'Bearer ' + apiToken
+        'accept': '*/*',
     };
     
     let response = null;
     let apiCalls = 0;
-    let skip = 0;
+    let skip = 1;
     let jsonData = null;
     
     // make the API call for from_address
     do {
         console.log(` ...API call ${apiCalls} - from_address: ${address} - fetching data...`);
-        response = await fetch(fromUrl + skip, {
+        response = await fetch(`https://cortex.blockanalitica.com/api/v1/tokens/dai/wallet-events?page=${skip}&wallet_address=${address}`, {
             method: 'GET',
             headers: headers
         });
@@ -33,35 +31,13 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
             throw new Error('API Error: Could not validate credentials');
         }
 
-        result = result.concat(jsonData);
-        skip += jsonData.length;
+        result = result.concat(jsonData.results);
+        skip += 1;
         apiCalls++;
 
-    } while (jsonData.length !== 0);
+        console.log(result)
 
-
-    // reset skip and make the API call for to_address
-    skip = 0;
-    jsonData = null;
-
-    do {
-        console.log(` ...API call ${apiCalls} -   to_address: ${address} - fetching data...`);
-        response = await fetch(toUrl + skip, {
-            method: 'GET',
-            headers: headers
-        });
-        
-        jsonData = await response.json(); // assign response to jsonData
-
-        if (jsonData.detail === 'Could not validate credentials') {
-            throw new Error('API Error: Could not validate credentials');
-        }
-
-        result = result.concat(jsonData);
-        skip += jsonData.length;
-        apiCalls++;
-        
-    } while (jsonData.length !== 0);
+    } while (jsonData.next_page !== null);
 
     return await filterByOwnerCode(result, ownerType, ownerId, knex);
 };
@@ -69,24 +45,7 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
 const filterByOwnerCode = async (data, ownerType, ownerId, knex) => {
     let formatData = [];
 
-    if(ownerType === 'CoreUnit') {
-        const query = 
-            await knex('CoreUnit')
-                .select('code')
-                .where('id', '=', ownerId);
-
-        const code = query[0].code;
-
-        for(let i = 0; i < data.length; i++){
-            if (data[i].code === code) {
-                formatData.push(data[i]);
-            } else {
-                console.log(` ...filtering out duplicate transaction for CoreUnit ${data[i].code} (${data[i].amount} ${data[i].token})`);
-            }
-        }
-
-        return formatData;
-    }
+   
     
     return data;
 };
