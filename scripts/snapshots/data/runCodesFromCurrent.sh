@@ -80,18 +80,22 @@ else
     months=("12" "$current_month")
     years=("$((current_year - 1))" "$current_year")
   else
-    if [ "$current_month" -gt 9 ]; then
-      months=("$((current_month - 1))" "$current_month")
-      years=("$current_year" "$current_year")
+    if [ "$current_month" -eq 10 ]; then
+    months=("0$((current_month - 1))" "$current_month")
+    years=("$current_year" "$current_year")
     else
-      previous_month=$((${current_month#0} - 1))
-      previous_month="0$previous_month"
-      months=("$previous_month" "$current_month")
-      years=("$current_year" "$current_year")
+      if [ "$current_month" -gt 9 ]; then
+        months=("$((current_month - 1))" "$current_month")
+        years=("$current_year" "$current_year")
+      else
+        previous_month=$((${current_month#0} - 1))
+        previous_month="0$previous_month"
+        months=("$previous_month" "$current_month")
+        years=("$current_year" "$current_year")
+      fi
     fi
   fi
 fi
-
 # Loop through PREVIOUS and CURRENT iterations
 for i in 0 1; do
   previous_month=${months[$i]}

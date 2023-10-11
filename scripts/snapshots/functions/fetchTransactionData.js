@@ -35,7 +35,7 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
         skip += 1;
         apiCalls++;
 
-        console.log(result)
+        console.log(jsonData);
 
     } while (jsonData.next_page !== null);
 
