@@ -8,6 +8,6 @@ export default {
     TotalExpenses: { enabled: true },
     Delegates: { enabled: true },
     Snapshot: { enabled: true },
-    Budget: {enabled: true}
-    // Roadmap: { enabled: true, require: ['CoreUnit'] },
+    Budget: { enabled: true },
+    Analytics: { enabled: true },
 };
