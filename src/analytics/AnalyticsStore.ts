@@ -1,6 +1,5 @@
 import { Knex } from "knex";
 import { AnalyticsPath } from "./AnalyticsPath.js";
-import { values } from "lodash";
 import { 
     AnalyticsSeriesQuery,
     AnalyticsSeries,
@@ -64,6 +63,8 @@ export class AnalyticsStore {
             }
         }
 
+        baseQuery.orderBy('start');
+
         return this._formatQueryRecords(await baseQuery, Object.keys(query.select));
     }
 
@@ -103,8 +104,6 @@ export class AnalyticsStore {
         for (const [dim, pathMap] of Object.entries(dimensionsMap)) {
             await this._linkDimensions(dim, pathMap);
         }
-        
-        return values;
     }
 
     private _formatQueryRecords(records: AnalyticsSeriesRecord[], dimensions: string[]): AnalyticsSeries<AnalyticsPath>[] {
