@@ -497,9 +497,15 @@ export const resolvers = {
                     if (userObj.active === false) {
                         throw new Error('Account disabled. Reach admin for more info.')
                     }
-                    const [typeResult] = await dataSources.db.CoreUnit.getTeams({ filter: { id: input[0].ownerId } })
-                    const allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, typeResult.type, input[0].ownerId)
-                    if (parseInt(allowed[0].count) > 0) {
+                    // Delegates push
+                    let allowed = { count: 0 } as any;
+                    if (input[0].ownerId === null) {
+                        allowed = await dataSources.db.Auth.canUpdate(userObj.id, 'Delegates', input[0].ownerId)
+                    } else {
+                        const [typeResult] = await dataSources.db.CoreUnit.getTeams({ filter: { id: input[0].ownerId } })
+                        allowed = await dataSources.db.Auth.canUpdateCoreUnit(userObj.id, typeResult.type, input[0].ownerId)
+                    }
+                    if (parseInt(allowed[0].count) > 0 || input[0].ownerId === null) {
                         if (input.length < 1) {
                             throw new Error('No input data')
                         }
