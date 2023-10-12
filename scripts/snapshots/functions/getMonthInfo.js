@@ -182,10 +182,16 @@ function getStartAndEndDates(month) {
 
 function convertMonthStringToDate(monthString, addMonths = 0) {
     // Split the month string into year and month parts
-    const [year, month] = monthString.split('/');
-
+    let [year, month] = monthString.split('/');
+    let date;
+    
     // Create a new Date object with the year and month values
-    const date = new Date(year, parseInt(month) + addMonths, 1);
+    if(month >= 9) {
+        date = new Date(year, parseInt(month) + addMonths, -1);
+    }
+    else {
+        date = new Date(year, parseInt(month) + addMonths, 1);
+    }
 
     return date;
 }
