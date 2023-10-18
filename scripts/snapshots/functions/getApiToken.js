@@ -4,6 +4,7 @@ const DIN_API_USER = process.env.DIN_API_USER;
 const DIN_API_PW = process.env.DIN_API_PW;
 
 const getToken = async () => {
+  /*
     const url = 'https://data-api.makerdao.network/v1/login/access-token';
 
     if(!DIN_API_USER){
@@ -34,6 +35,6 @@ const getToken = async () => {
     const data = await response.json();
     const token = data.access_token;
     return token;
-  };
+  */};
 
   export default getToken;
