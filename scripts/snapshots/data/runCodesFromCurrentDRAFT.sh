@@ -2,7 +2,7 @@
 
 # Define the list of codes
 codes=(
-  "core-units/SES-001"
+  "ecosystem-actors/JETSTREAM"
 )
 
 
@@ -12,8 +12,6 @@ TECH_end_number=17983665
 current_utc_date=$(date -u +'%Y-%m-%d')
 current_year=$(date -u +'%Y')
 current_month=$(date -u +'%m')
-
-echo $current_month
 
 # Get the day of the month from the current UTC date
 day_of_month=$(date -u +'%d')
@@ -67,7 +65,6 @@ else
     fi
   fi
 fi
-
 # Loop through PREVIOUS and CURRENT iterations
 for i in 0 1; do
   previous_month=${months[$i]}
