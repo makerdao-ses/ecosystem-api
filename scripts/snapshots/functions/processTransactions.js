@@ -23,7 +23,7 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
     console.log(` ...block range [${monthInfo.blockNumberRange.initial}-${monthInfo.blockNumberRange.final}] for month:${monthInfo.month}`)
     
     const transactionsStack = [...transactions];
-    transactionsStack.sort((t1, t2) => (t2.timestamp < t1.timestamp ? -1 : 1));
+    transactionsStack.sort((t1, t2) => (t2.datetime < t1.datetime ? -1 : 1));
 
     let txData = null;
     if (snapshotAccount.offChain) {
@@ -31,6 +31,12 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
     }
     
     while (txData = transactionsStack.pop()) {
+        if(txData.amount > 0){
+            txData.flow = 'inflow';
+        }
+        else {
+            txData.flow = 'outflow';
+        }
         const relativeTxData = applyFlow(txData, (invertFlows ? invertedFlow[txData.flow] : txData.flow));
 
         // Skip irrelevant transactions that belong to the counterparty wallet
@@ -69,7 +75,7 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
             await knex('SnapshotAccountTransaction').insert({
                 snapshotAccountId: snapshotAccount.id,
                 block: txData.block,
-                timestamp: txData.timestamp,
+                timestamp: txData.datetime,
                 txHash: txData.tx_hash,
                 token: txData.token,
                 counterParty: relativeTxData.counterPartyAddress,
@@ -79,13 +85,13 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
 
             addedTransactionsCount++;
 
-            // Keep track of the earliest and oldest timestamp
-            if (!timespan.start || txData.timestamp < timespan.start) {
-                timespan.start = txData.timestamp;
+            // Keep track of the earliest and oldest datetime
+            if (!timespan.start || txData.datetime < timespan.start) {
+                timespan.start = txData.datetime;
             }
 
-            if (!timespan.end || txData.timestamp > timespan.end) {
-                timespan.end = txData.timestamp;
+            if (!timespan.end || txData.datetime > timespan.end) {
+                timespan.end = txData.datetime;
             }
         }
 
@@ -152,9 +158,9 @@ const applyFlow = (txData, flow) => {
 
 const addOffChainTransactionsToStack = (transactionsStack, processedTransaction, calculatedBalanceByToken, offChainBalances) => {
     const
-        currentTxMonth = processedTransaction ? processedTransaction.timestamp.slice(0, 7).replace('-', '/') : '0000/00', 
+        currentTxMonth = processedTransaction ? processedTransaction.datetime.slice(0, 7).replace('-', '/') : '0000/00', 
         nextTransaction = (transactionsStack.length > 0 ? transactionsStack[transactionsStack.length-1] : null),
-        nextTxMonth = nextTransaction ? nextTransaction.timestamp.slice(0, 7).replace('-', '/') : '9999/99';
+        nextTxMonth = nextTransaction ? nextTransaction.datetime.slice(0, 7).replace('-', '/') : '9999/99';
 
     const originalTransactionCount = transactionsStack.length;
     let transactionAdded = false;
@@ -167,7 +173,7 @@ const addOffChainTransactionsToStack = (transactionsStack, processedTransaction,
                 
                 const syntheticTransaction = {
                     block: processedTransaction ? processedTransaction.block : null,
-                    timestamp: (new Date(month.slice(0, 4), month.slice(5, 7), 0, 23, 59, 59)).toISOString(),
+                    datetime: (new Date(month.slice(0, 4), month.slice(5, 7), 0, 23, 59, 59)).toISOString(),
                     tx_hash: null,
                     token: 'DAI',
                     label: 'Off-chain Payment(s)',
