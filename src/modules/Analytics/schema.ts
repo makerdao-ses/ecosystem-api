@@ -70,12 +70,13 @@ export const resolvers = {
     Query: {
         analytics: async (_: any, { filter }: any, { dataSources }: any) => {
 
+            console.log(filter)
             const queryEngine: AnalyticsModel = dataSources.db.Analytics;
-            const results = await queryEngine.query();
+            const results = await queryEngine.query(filter);
 
-            results.forEach(r => {
-                console.log(JSON.stringify(r, null, 2));
-            });
+            // results.forEach(r => {
+            //     console.log(JSON.stringify(r, null, 2));
+            // });
             
             return {
                 series: results.map(s => ({

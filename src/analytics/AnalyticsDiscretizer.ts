@@ -4,11 +4,11 @@ import { AnalyticsPeriod, AnalyticsRange, getPeriodSeriesArray } from "./Analyti
 export type GroupedPeriodResult = {
     period: string,
     start: Date,
-    end: Date, 
+    end: Date,
     rows: Array<{
         dimensions: Record<string, string>,
         metric: string,
-        unit: string|null,
+        unit: string | null,
         value: number,
         sum: number
     }>
@@ -18,20 +18,20 @@ export type GroupedPeriodResults = Array<GroupedPeriodResult>;
 
 export class AnalyticsDiscretizer {
 
-    public static discretize(series: AnalyticsSeries<string>[], dimensions: string[], start: Date|null, end: Date|null, granularity: AnalyticsGranularity): GroupedPeriodResults {
-        const 
+    public static discretize(series: AnalyticsSeries<string>[], dimensions: string[], start: Date | null, end: Date | null, granularity: AnalyticsGranularity): GroupedPeriodResults {
+        const
             index = this._buildIndex(series, dimensions),
             periods = getPeriodSeriesArray(this._calculateRange(start, end, granularity, series)),
             disretizedResults = this._discretizeNode(index, {}, dimensions, periods),
             groupedResults = this._groupResultsByPeriod(periods, disretizedResults);
-        
+
         return groupedResults;
     }
 
-    private static _calculateRange(start: Date|null, end: Date|null, granularity: AnalyticsGranularity, results: AnalyticsSeries<any>[]) {
-        let calculatedStart: Date|null = start || null;
-        let calculatedEnd: Date|null = end || null;
-        
+    private static _calculateRange(start: Date | null, end: Date | null, granularity: AnalyticsGranularity, results: AnalyticsSeries<any>[]) {
+        let calculatedStart: Date | null = start || null;
+        let calculatedEnd: Date | null = end || null;
+
         if (calculatedStart == null || calculatedEnd == null) {
             for (const r of results) {
                 if (calculatedStart == null) {
@@ -56,7 +56,7 @@ export class AnalyticsDiscretizer {
         } as AnalyticsRange;
     }
 
-    public static _groupResultsByPeriod(periods:AnalyticsPeriod[], dimensionedResults:DimensionedSeries[]): GroupedPeriodResults {
+    public static _groupResultsByPeriod(periods: AnalyticsPeriod[], dimensionedResults: DimensionedSeries[]): GroupedPeriodResults {
         const result: Record<string, GroupedPeriodResult> = {};
 
         for (const p of periods) {
@@ -83,13 +83,13 @@ export class AnalyticsDiscretizer {
         return Object.values(result);
     }
 
-    public static _discretizeNode(node:DiscretizerIndexNode, dimensionValues:Record<string, string>, remainingDimensions: string[], periods:AnalyticsPeriod[]): DimensionedSeries[] {
+    public static _discretizeNode(node: DiscretizerIndexNode, dimensionValues: Record<string, string>, remainingDimensions: string[], periods: AnalyticsPeriod[]): DimensionedSeries[] {
         const result: DimensionedSeries[] = [];
-    
+
         if (remainingDimensions.length > 0) {
             const subdimension = remainingDimensions[0] as string;
             Object.keys(node).forEach(subdimensionValue => {
-                const newDimensionValues = {...dimensionValues};
+                const newDimensionValues = { ...dimensionValues };
                 newDimensionValues[subdimension] = subdimensionValue;
                 result.push(
                     ...this._discretizeNode(node[subdimensionValue] as DiscretizerIndexNode, newDimensionValues, remainingDimensions.slice(1), periods)
@@ -107,7 +107,7 @@ export class AnalyticsDiscretizer {
         return result;
     }
 
-    public static _discretizeLeaf(leaf: DiscretizerIndexLeaf, periods: AnalyticsPeriod[], metric: string, dimensionValues:Record<string, string>): DimensionedSeries[] {
+    public static _discretizeLeaf(leaf: DiscretizerIndexLeaf, periods: AnalyticsPeriod[], metric: string, dimensionValues: Record<string, string>): DimensionedSeries[] {
         const result: DimensionedSeries[] = [];
 
         Object.keys(leaf).forEach(unit => {
@@ -148,7 +148,7 @@ export class AnalyticsDiscretizer {
     }
 
     public static _getValue(series: AnalyticsSeries<string>, when: Date): number {
-        switch(series.fn) {
+        switch (series.fn) {
             case 'Single':
                 return this._getSingleValue(series, when);
             case 'DssVest':
@@ -167,9 +167,9 @@ export class AnalyticsDiscretizer {
         return when.getTime() > series.start.getTime() ? series.value : 0.00;
     }
 
-    public static _buildIndex(series:AnalyticsSeries<string>[], dimensions:string[]): DiscretizerIndexNode {
+    public static _buildIndex(series: AnalyticsSeries<string>[], dimensions: string[]): DiscretizerIndexNode {
         const result: DiscretizerIndexNode = {};
-        const map:DiscretizerIndexLeaf = {};
+        const map: DiscretizerIndexLeaf = {};
         const dimName = dimensions[0] || '';
 
         for (const s of series) {
@@ -196,9 +196,9 @@ export class AnalyticsDiscretizer {
         return result;
     }
 
-    public static _buildMetricsIndex(series:AnalyticsSeries<string>[]): DiscretizerIndexNode {
+    public static _buildMetricsIndex(series: AnalyticsSeries<string>[]): DiscretizerIndexNode {
         const result: DiscretizerIndexNode = {};
-        
+
         const map: DiscretizerIndexLeaf = {};
         for (const s of series) {
             const metric = getAnalyticsMetricString(s.metric);
@@ -213,7 +213,7 @@ export class AnalyticsDiscretizer {
         return result;
     }
 
-    public static _buildUnitIndex(series:AnalyticsSeries<string>[]): DiscretizerIndexLeaf {
+    public static _buildUnitIndex(series: AnalyticsSeries<string>[]): DiscretizerIndexLeaf {
         const result: DiscretizerIndexLeaf = {};
 
         for (const s of series) {
@@ -229,8 +229,8 @@ export class AnalyticsDiscretizer {
     }
 }
 
-type DiscretizerIndexLeaf = { [k:string]: AnalyticsSeries<string>[] };
-type DiscretizerIndexNode = { [k:string]: DiscretizerIndexNode | DiscretizerIndexLeaf };
+type DiscretizerIndexLeaf = { [k: string]: AnalyticsSeries<string>[] };
+type DiscretizerIndexNode = { [k: string]: DiscretizerIndexNode | DiscretizerIndexLeaf };
 type Series = Record<string, { inc: number, sum: number }>;
 type DimensionedSeries = {
     unit: string,
