@@ -7,5 +7,10 @@ export class ProjectsModel {
         this.knex = knex;
     };
 
-    
+    async getProjects() {
+        
+    }
+
 }
+
+export default (knex: Knex) => new ProjectsModel(knex);

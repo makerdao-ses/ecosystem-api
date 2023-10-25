@@ -1,5 +1,4 @@
 import { gql } from 'apollo-server-core';
-import { ProjectsModel } from './db.js';
 
 export const typeDefs = [gql`
 
@@ -111,7 +110,7 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         projects: async (_: any, { filter }: any, { dataSources }: any) => {
-            const projects = await dataSources.projects.getProjects(filter);
+            const projects = await dataSources.db.Projects.getProjects(filter);
             return projects;
         }
     },
