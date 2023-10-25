@@ -114,4 +114,17 @@ export const resolvers = {
             return projects;
         }
     },
+    Indication: {
+        __resolveType: (obj: any) => {
+            if (obj.description) {
+                return 'InProgress';
+            } else if (obj.total && obj.completed) {
+                return 'StoryPoints';
+            } else if (obj.value) {
+                return 'Percentage';
+            } else {
+                throw new Error('Invalid value type');
+            }
+        }
+    }
 }

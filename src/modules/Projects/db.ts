@@ -1,4 +1,5 @@
 import { Knex } from 'knex';
+import { stubData } from './stubData.js'
 
 export class ProjectsModel {
     knex: Knex;
@@ -8,7 +9,7 @@ export class ProjectsModel {
     };
 
     async getProjects() {
-        
+        return stubData;
     }
 
 }
