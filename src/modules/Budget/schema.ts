@@ -9,6 +9,8 @@ export const typeDefs = [gql`
         code: String
         idPath: String
         codePath: String
+        image: String
+        description: String
         budgetCap: [BudgetCap]
     }
 
