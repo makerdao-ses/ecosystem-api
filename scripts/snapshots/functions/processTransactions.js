@@ -31,12 +31,18 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
     }
     
     while (txData = transactionsStack.pop()) {
+        
+        txData.amount = parseFloat(txData.amount);
         if(txData.amount > 0){
             txData.flow = 'inflow';
         }
         else {
             txData.flow = 'outflow';
         }
+
+        //Assign token properly
+        txData.token = 'DAI';
+
         const relativeTxData = applyFlow(txData, (invertFlows ? invertedFlow[txData.flow] : txData.flow));
 
         // Skip irrelevant transactions that belong to the counterparty wallet
@@ -58,14 +64,14 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
         
         // A block range is set and we haven't reached the first block yet 
         //   => don't include the transaction yet, but increase the balances
-        if (monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial) {
+        if (monthInfo.blockNumberRange.initial && txData.block_number < monthInfo.blockNumberRange.initial) {
             finalBalanceByToken[txData.token] += relativeTxData.amount;
             initialBalanceByToken[txData.token] += relativeTxData.amount;
 
         // No block range is set or we haven't hit the final block of the set range yet
         //   => include the transaction
         } else if (
-            (monthInfo.blockNumberRange.final && txData.block < monthInfo.blockNumberRange.final)
+            (monthInfo.blockNumberRange.final && txData.block_number < monthInfo.blockNumberRange.final)
             || !monthInfo.blockNumberRange.final
         ) {
             // Only add towards the final balance
@@ -74,7 +80,7 @@ const processTransactions = async (snapshotAccount, transactions, monthInfo, inv
             // Add the transaction to the selected account in the database
             await knex('SnapshotAccountTransaction').insert({
                 snapshotAccountId: snapshotAccount.id,
-                block: txData.block,
+                block: txData.block_number,
                 timestamp: txData.datetime,
                 txHash: txData.tx_hash,
                 token: txData.token,
@@ -143,8 +149,8 @@ const applyFlow = (txData, flow) => {
             amount: -txData.amount,
             counterPartyInfo: getAccountInfoFromConfig(txData.receiver)
         };
-
-    } else {
+    } 
+    else {
         result = {
             accountAddress: txData.receiver,
             counterPartyAddress: txData.sender,
