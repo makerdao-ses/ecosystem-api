@@ -37,8 +37,8 @@ export class AnalyticsModel {
                 category: [AnalyticsPath.fromString('atlas')]
             },
             lod: {
-                // budget: 4,
-                // category: 2
+                budget: 4,
+                category: 2
             }
         };
         return this.engine.execute(query);
