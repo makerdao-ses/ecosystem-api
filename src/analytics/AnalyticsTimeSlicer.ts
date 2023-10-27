@@ -1,5 +1,5 @@
 import { AnalyticsGranularity } from "./AnalyticsQuery.js"
-
+import { addMonths, endOfYear, endOfQuarter, isAfter, startOfMonth, format } from 'date-fns';
 
 export type AnalyticsRange = {
     start: Date,
@@ -21,6 +21,7 @@ interface AnalyticsPeriodSeries {
 }
 
 export const getPeriodSeriesArray = (range: AnalyticsRange): AnalyticsPeriod[] => {
+    console.log('getPeriodSeriesArray', range)
     const result: AnalyticsPeriod[] = [];
     const series = getPeriodSeries(range);
 
@@ -41,7 +42,7 @@ export const getPeriodSeries = (range: AnalyticsRange): AnalyticsPeriodSeries =>
 }
 
 const _createFactoryFn = (range: AnalyticsRange) => {
-    let current: Date|null = range.start;
+    let current: Date | null = range.start;
 
     return () => {
         if (current == null) {
@@ -51,7 +52,6 @@ const _createFactoryFn = (range: AnalyticsRange) => {
         let result: AnalyticsPeriod | null = null;
         switch (range.granularity) {
             case AnalyticsGranularity.Total:
-                console.log('calling total', current, range)
                 result = _nextTotalPeriod(current, range.end);
                 break;
             case AnalyticsGranularity.Annual:
@@ -104,13 +104,12 @@ const _nextTotalPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | n
 
 */
 // TODO: implement below functions for each period type
-const _nextAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+export const _nextAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
     }
 
     const oneYearLater = new Date(nextStart.getFullYear() + 1, 0, 0, 0, 0, 0);
-    console.log('_nextAnnualPeriod', nextStart, oneYearLater)
     return {
         period: 'annual',
         start: nextStart,
@@ -119,22 +118,105 @@ const _nextAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | 
 }
 
 
-const _nextSemiAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+export const _nextSemiAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
     }
 
-    const halfYearLater = new Date(nextStart.getFullYear() + 1, 0, 0, 0, 0, 0);
+    // setting half year mark
+    const july1st = (year: number): Date => {
+        return new Date(`${year}-07-01T00:00:00.000Z`)
+    };
+    const midYear = july1st(nextStart.getFullYear());
+
+    const startDate = new Date(nextStart);
+    const sixMonthsLater = addMonths(startDate, 6);
+
+    let endDate: Date;
+    if (sixMonthsLater.getFullYear() > startDate.getFullYear()) {
+        endDate = endOfYear(startDate);
+    } else {
+        endDate = addMonths(startDate, 6);
+        isAfter(endDate, midYear) ? endDate = midYear : endDate = endOfYear(startDate);
+    }
 
     return {
         period: 'semiAnnual',
         start: nextStart,
-        end: halfYearLater
+        end: endDate
     };
 }
 
-const _nextQuarterlyPeriod = _nextTotalPeriod;
-const _nextMonthlyPeriod = _nextTotalPeriod;
-const _nextWeeklyPeriod = _nextTotalPeriod;
-const _nextDailyPeriod = _nextTotalPeriod;
-const _nextHourlyPeriod = _nextTotalPeriod;
+export const _nextQuarterlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+    if (seriesEnd.getTime() <= nextStart.getTime()) {
+        return null;
+    }
+
+    const startDate = new Date(nextStart);
+    const nextQuarterStart = new Date(startDate);
+    const currentQuarter = Math.floor(nextQuarterStart.getMonth() / 3) + 1;
+    nextQuarterStart.setMonth((currentQuarter * 3) % 12);
+    nextQuarterStart.setFullYear(nextQuarterStart.getFullYear() + Math.floor(currentQuarter / 4));
+
+    let endDate: Date;
+    if (nextQuarterStart.getFullYear() > startDate.getFullYear()) {
+        endDate = endOfYear(startDate);
+    } else {
+        endDate = endOfQuarter(addMonths(nextQuarterStart, -1));
+    }
+
+    if (isAfter(endDate, seriesEnd)) {
+        endDate = seriesEnd;
+    }
+
+
+    return {
+        period: 'quarterly',
+        start: nextStart,
+        end: endDate
+    };
+}
+export const _nextMonthlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+    if (seriesEnd.getTime() <= nextStart.getTime()) {
+        return null;
+    }
+
+    return {
+        period: 'montly',
+        start: nextStart,
+        end: seriesEnd
+    };
+}
+export const _nextWeeklyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+    if (seriesEnd.getTime() <= nextStart.getTime()) {
+        return null;
+    }
+
+    return {
+        period: 'weekly',
+        start: nextStart,
+        end: seriesEnd
+    };
+}
+export const _nextDailyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+    if (seriesEnd.getTime() <= nextStart.getTime()) {
+        return null;
+    }
+
+    return {
+        period: 'daily',
+        start: nextStart,
+        end: seriesEnd
+    };
+}
+export const _nextHourlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
+    if (seriesEnd.getTime() <= nextStart.getTime()) {
+        return null;
+    }
+
+    return {
+        period: 'hourly',
+        start: nextStart,
+        end: seriesEnd
+    };
+}
