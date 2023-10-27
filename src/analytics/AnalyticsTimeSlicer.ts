@@ -57,8 +57,8 @@ const _createFactoryFn = (range: AnalyticsRange) => {
             case AnalyticsGranularity.Annual:
                 result = _nextAnnualPeriod(current, range.end);
                 break;
-                case AnalyticsGranularity.SemiAnnual:
-                console.log('calling annual', current, range)
+            case AnalyticsGranularity.SemiAnnual:
+                console.log('calling semiAnnual', current, range)
                 result = _nextSemiAnnualPeriod(current, range.end);
                 break;
             case AnalyticsGranularity.Quarterly:
@@ -109,7 +109,7 @@ export const _nextAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPe
         return null;
     }
 
-    const oneYearLater = new Date(`${nextStart.getFullYear() +1}-01-01T00:00:00.000Z`)
+    const oneYearLater = new Date(`${nextStart.getFullYear() + 1}-01-01T00:00:00.000Z`)
     return {
         period: 'annual',
         start: nextStart,
