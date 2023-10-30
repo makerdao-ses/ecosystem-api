@@ -1,5 +1,5 @@
 import { AnalyticsGranularity } from "./AnalyticsQuery.js"
-import { addMonths, endOfYear, endOfQuarter, isAfter, startOfMonth, format } from 'date-fns';
+import { addMonths, endOfYear, startOfMonth, isAfter, startOfWeek, addWeeks, isSameDay, addHours, addSeconds } from 'date-fns';
 
 export type AnalyticsRange = {
     start: Date,
@@ -21,7 +21,6 @@ interface AnalyticsPeriodSeries {
 }
 
 export const getPeriodSeriesArray = (range: AnalyticsRange): AnalyticsPeriod[] => {
-    console.log('getPeriodSeriesArray', range)
     const result: AnalyticsPeriod[] = [];
     const series = getPeriodSeries(range);
 
@@ -58,7 +57,6 @@ const _createFactoryFn = (range: AnalyticsRange) => {
                 result = _nextAnnualPeriod(current, range.end);
                 break;
             case AnalyticsGranularity.SemiAnnual:
-                console.log('calling semiAnnual', current, range)
                 result = _nextSemiAnnualPeriod(current, range.end);
                 break;
             case AnalyticsGranularity.Quarterly:
@@ -77,7 +75,7 @@ const _createFactoryFn = (range: AnalyticsRange) => {
                 result = _nextHourlyPeriod(current, range.end);
         }
 
-        current = (result == null ? null : result.end);
+        current = (result == null ? null : new Date(result.end.getTime() + 1));  // Update current to start of next period
         return result;
     };
 }
@@ -94,16 +92,6 @@ const _nextTotalPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | n
     };
 }
 
-/* We look at the year and split it into these time periods:
-
-- annual: 1 year, 01/01/2022/00:00:00 - 01/01/2023/00:00:00
-- semi annual: 6 months, 01/01/2022/00:00:00 - 01/07/2022/00:00:00, 01/07/2022/00:00:00 - 31/12/2022/23:59:59
-
-
-
-
-*/
-// TODO: implement below functions for each period type
 export const _nextAnnualPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
@@ -123,21 +111,18 @@ export const _nextSemiAnnualPeriod = (nextStart: Date, seriesEnd: Date): Analyti
         return null;
     }
 
-    // setting half year mark
-    const july1st = (year: number): Date => {
-        return new Date(`${year}-07-01T00:00:00.000Z`)
-    };
-    const midYear = july1st(nextStart.getFullYear());
-
-    const startDate = new Date(nextStart);
-    const sixMonthsLater = addMonths(startDate, 6);
+    const midYear = new Date(`${nextStart.getFullYear()}-07-01T00:00:00.000Z`);
+    const endYear = endOfYear(nextStart);
 
     let endDate: Date;
-    if (sixMonthsLater.getFullYear() > startDate.getFullYear()) {
-        endDate = endOfYear(startDate);
+    if (isAfter(midYear, nextStart)) {
+        endDate = midYear;
     } else {
-        endDate = addMonths(startDate, 6);
-        isAfter(endDate, midYear) ? endDate = midYear : endDate = endOfYear(startDate);
+        endDate = endYear;
+    }
+
+    if (isAfter(endDate, seriesEnd)) {
+        endDate = seriesEnd;
     }
 
     return {
@@ -145,6 +130,7 @@ export const _nextSemiAnnualPeriod = (nextStart: Date, seriesEnd: Date): Analyti
         start: nextStart,
         end: endDate
     };
+
 }
 
 export const _nextQuarterlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
@@ -152,23 +138,22 @@ export const _nextQuarterlyPeriod = (nextStart: Date, seriesEnd: Date): Analytic
         return null;
     }
 
-    const startDate = new Date(nextStart);
-    const nextQuarterStart = new Date(startDate);
-    const currentQuarter = Math.floor(nextQuarterStart.getMonth() / 3) + 1;
-    nextQuarterStart.setMonth((currentQuarter * 3) % 12);
-    nextQuarterStart.setFullYear(nextQuarterStart.getFullYear() + Math.floor(currentQuarter / 4));
-
     let endDate: Date;
-    if (nextQuarterStart.getFullYear() > startDate.getFullYear()) {
-        endDate = endOfYear(startDate);
+    const startMonth = nextStart.getMonth();
+
+    if (startMonth < 3) {
+        endDate = new Date(`${nextStart.getFullYear()}-04-01T00:00:00.000Z`);
+    } else if (startMonth < 6) {
+        endDate = new Date(`${nextStart.getFullYear()}-07-01T00:00:00.000Z`);
+    } else if (startMonth < 9) {
+        endDate = new Date(`${nextStart.getFullYear()}-10-01T00:00:00.000Z`);
     } else {
-        endDate = endOfQuarter(addMonths(nextQuarterStart, -1));
+        endDate = new Date(`${nextStart.getFullYear() + 1}-01-01T00:00:00.000Z`);
     }
 
     if (isAfter(endDate, seriesEnd)) {
         endDate = seriesEnd;
     }
-
 
     return {
         period: 'quarterly',
@@ -181,42 +166,103 @@ export const _nextMonthlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsP
         return null;
     }
 
+    // Get the first day of the next month
+    let endDate = startOfMonth(addMonths(nextStart, 1));
+
+    // If the end date is after the series end, then use the series end as the end date
+    if (isAfter(endDate, seriesEnd)) {
+        if (nextStart.getMonth() === seriesEnd.getMonth()) {
+            endDate
+        } else {
+            endDate = seriesEnd
+        }
+    }
+
+    // Otherwise, return the end date as the first day of the next month
     return {
-        period: 'montly',
+        period: 'monthly',
         start: nextStart,
-        end: seriesEnd
+        end: endDate
     };
 }
+
 export const _nextWeeklyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
     }
 
+
+    // Calculate the start of the next week (Monday) in UTC
+    const nextWeekStartUTC = addHours(startOfWeek(addWeeks(nextStart, 1), { weekStartsOn: 1 }), 1);
+
+    // If the calculated next week start is later or equal to the series end date, return the series end
+    if (isAfter(nextWeekStartUTC, seriesEnd) || isSameDay(nextWeekStartUTC, seriesEnd)) {
+        return {
+            period: 'weekly',
+            start: nextStart,
+            end: seriesEnd,
+        };
+    }
+
     return {
         period: 'weekly',
         start: nextStart,
-        end: seriesEnd
+        end: nextWeekStartUTC,
     };
 }
+
 export const _nextDailyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
     }
 
+    // Set the end date to the start of the next day
+    const endDate = new Date(nextStart.getFullYear(), nextStart.getMonth(), nextStart.getDate() + 1, 0, 0, 0, 0);
+
+    if (isAfter(endDate, seriesEnd)) {
+        endDate.setTime(seriesEnd.getTime());
+    }
+
     return {
         period: 'daily',
         start: nextStart,
-        end: seriesEnd
+        end: endDate
     };
 }
+
 export const _nextHourlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPeriod | null => {
     if (seriesEnd.getTime() <= nextStart.getTime()) {
         return null;
     }
 
+    // Define a counter outside the function to keep track of the hour offset
+    let hourOffset = 0;
+    const chunkSize = 24;  // Process one day's worth of hours at a time
+
+    // Reset hourOffset if nextStart has changed (i.e., a new day has started)
+    if (nextStart.getHours() === 0) {
+        hourOffset = 0;
+    }
+
+    let startDate = new Date(nextStart.getTime() + hourOffset * 60 * 60 * 1000);  // Increment by hourOffset hours
+    let endDate = new Date(startDate.getTime() + 60 * 60 * 1000);  // One hour later
+
+    if (isAfter(endDate, seriesEnd)) {
+        if (nextStart.getHours() === seriesEnd.getHours()) {
+            endDate
+        } else {
+            endDate = seriesEnd
+        }
+    }
+
+    hourOffset += 1;
+    if (hourOffset >= chunkSize) {
+        hourOffset = 0;  // Reset hourOffset after processing a chunk
+    }
+
     return {
         period: 'hourly',
-        start: nextStart,
-        end: seriesEnd
+        start: startDate,
+        end: endDate
     };
 }
