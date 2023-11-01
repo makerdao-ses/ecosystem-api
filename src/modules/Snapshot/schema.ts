@@ -9,6 +9,7 @@ export const typeDefs = [gql`
         end: DateTime
         ownerType: String
         ownerId: ID
+        created: DateTime
         snapshotAccount: [SnapshotAccount]
         actualsComparison: [ActualsComparison]
     }
