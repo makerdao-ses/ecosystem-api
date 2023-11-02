@@ -17,6 +17,7 @@ import blockNumbersTECHCU from "../data/blockNumbers-TECH-CU.js";
 import blockNumbersTECHEA from "../data/blockNumbers-TECH-EA.js";
 import blockNumbersSIDESTREAM from "../data/blockNumbers-SIDESTREAM.js";
 import blockNumbersJETSTREAM from "../data/blockNumbers-JETSTREAM.js";
+import blockNumbersDEWIZ from "../data/blockNumbers-DEWIZ.js";
 import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
 import blockNumbersDELEGATES from "../data/blockNumbers-DELEGATES.js";
 import blockNumbersDRAFT_KEEPERS from "../data/blockNumbers-DRAFT-KEEPERS.js";
@@ -56,7 +57,7 @@ const ownerMapping = {
         '52': 'blockNumbersDRAFT',
         '53': 'blockNumbersDRAFT',
         '54': 'blockNumbersDRAFT',
-        '55': 'blockNumbersDRAFT',
+        '55': 'blockNumbersDEWIZ',
         '56': 'blockNumbersDRAFT',
         '57': 'blockNumbersDRAFT',
         '58': 'blockNumbersDRAFT',
@@ -93,6 +94,7 @@ const blockNumbersMapping = {
     blockNumbersTECHEA,
     blockNumbersSIDESTREAM,
     blockNumbersJETSTREAM,
+    blockNumbersDEWIZ,
     blockNumbersDELEGATES,
     blockNumbersDRAFT,
     blockNumbersDRAFT_KEEPERS,
