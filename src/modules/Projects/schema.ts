@@ -9,7 +9,7 @@ export const typeDefs = [gql`
         title: String! 
         abstract: String
         status: ProjectStatus! 
-        progress: Progress
+        progress: Percentage
         imgUrl: String
         budgetType: BudgetType!
         deliverables: [Deliverable]
@@ -38,6 +38,7 @@ export const typeDefs = [gql`
         id: ID!
         title: String!
         status: DeliverableStatus!
+        progress: Progress
         owner: Owner!
         keyResults: [KeyResult]!
     }
@@ -49,15 +50,7 @@ export const typeDefs = [gql`
     }
 
 
-    type Progress {
-        status: DeliverableStatus!
-        indication: Indication
-    }
-    union Indication = InProgress | StoryPoints | Percentage
-
-    type InProgress {
-        description: String
-    }
+    union Progress =  StoryPoints | Percentage
 
     type StoryPoints {
         total: Int!
@@ -78,13 +71,13 @@ export const typeDefs = [gql`
 
     enum ProjectStatus {
         TODO
-        INPROGRESS
+        IN_PROGRESS
         FINISHED
     }
 
     enum DeliverableStatus {
         TODO
-        INPROGRESS
+        IN_PROGRESS
         DELIVERED
     }
 
@@ -114,11 +107,9 @@ export const resolvers = {
             return projects;
         }
     },
-    Indication: {
+    Progress: {
         __resolveType: (obj: any) => {
-            if (obj.description) {
-                return 'InProgress';
-            } else if (obj.total && obj.completed) {
+            if (obj.total && obj.completed) {
                 return 'StoryPoints';
             } else if (obj.value) {
                 return 'Percentage';
