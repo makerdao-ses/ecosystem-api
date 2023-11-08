@@ -40,7 +40,7 @@ const ownerMapping = {
         '17': 'blockNumbersDRAFT',
         '18': 'blockNumbersIS',
         '19': 'blockNumbersSAS',
-        '20': 'blockNumbersDRAFT',
+        '20': 'blockNumbersDECO',
         '21': 'blockNumbersDRAFT',
         '22': 'blockNumbersTECHCU',
         '38': 'blockNumbersDRAFT'
@@ -193,7 +193,11 @@ function convertMonthStringToDate(monthString, addMonths = 0) {
     if(month >= 9) {
         date = new Date(year, parseInt(month) + addMonths, -1);
     }
-    else {
+    else if (month === '01') {
+        date = new Date(year, parseInt(month) - 1 + addMonths, 1);
+    } 
+    else { 
+        month = parseInt(month, 10);
         date = new Date(year, parseInt(month) + addMonths, 1);
     }
 
