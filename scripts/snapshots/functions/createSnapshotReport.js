@@ -18,6 +18,7 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
         ...snapshotKey,
         start: null,
         end: null,
+        created: knex.fn.now()
       })
       .returning('id');
 

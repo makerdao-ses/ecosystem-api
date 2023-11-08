@@ -16,6 +16,8 @@ import blockNumbersSNE from "../data/blockNumbers-SNE.js";
 import blockNumbersTECHCU from "../data/blockNumbers-TECH-CU.js";
 import blockNumbersTECHEA from "../data/blockNumbers-TECH-EA.js";
 import blockNumbersSIDESTREAM from "../data/blockNumbers-SIDESTREAM.js";
+import blockNumbersJETSTREAM from "../data/blockNumbers-JETSTREAM.js";
+import blockNumbersDEWIZ from "../data/blockNumbers-DEWIZ.js";
 import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
 import blockNumbersDELEGATES from "../data/blockNumbers-DELEGATES.js";
 import blockNumbersDRAFT_KEEPERS from "../data/blockNumbers-DRAFT-KEEPERS.js";
@@ -38,7 +40,7 @@ const ownerMapping = {
         '17': 'blockNumbersDRAFT',
         '18': 'blockNumbersIS',
         '19': 'blockNumbersSAS',
-        '20': 'blockNumbersDRAFT',
+        '20': 'blockNumbersDECO',
         '21': 'blockNumbersDRAFT',
         '22': 'blockNumbersTECHCU',
         '38': 'blockNumbersDRAFT'
@@ -48,14 +50,14 @@ const ownerMapping = {
         '45': 'blockNumbersDRAFT',
         '46': 'blockNumbersDRAFT',
         '47': 'blockNumbersDRAFT',
-        '48': 'blockNumbersDRAFT',
+        '48': 'blockNumbersJETSTREAM',
         '49': 'blockNumbersDRAFT',
         '50': 'blockNumbersDRAFT',
         '51': 'blockNumbersDRAFT',
         '52': 'blockNumbersDRAFT',
         '53': 'blockNumbersDRAFT',
         '54': 'blockNumbersDRAFT',
-        '55': 'blockNumbersDRAFT',
+        '55': 'blockNumbersDEWIZ',
         '56': 'blockNumbersDRAFT',
         '57': 'blockNumbersDRAFT',
         '58': 'blockNumbersDRAFT',
@@ -91,6 +93,8 @@ const blockNumbersMapping = {
     blockNumbersTECHCU,
     blockNumbersTECHEA,
     blockNumbersSIDESTREAM,
+    blockNumbersJETSTREAM,
+    blockNumbersDEWIZ,
     blockNumbersDELEGATES,
     blockNumbersDRAFT,
     blockNumbersDRAFT_KEEPERS,
@@ -189,7 +193,11 @@ function convertMonthStringToDate(monthString, addMonths = 0) {
     if(month >= 9) {
         date = new Date(year, parseInt(month) + addMonths, -1);
     }
-    else {
+    else if (month === '01') {
+        date = new Date(year, parseInt(month) - 1 + addMonths, 1);
+    } 
+    else { 
+        month = parseInt(month, 10);
         date = new Date(year, parseInt(month) + addMonths, 1);
     }
 

@@ -10,4 +10,6 @@ export default {
     Snapshot: { enabled: true },
     Budget: { enabled: true },
     Analytics: { enabled: true },
+    Projects: { enabled: true },
+    // Roadmap: { enabled: true, require: ['CoreUnit'] },
 };
