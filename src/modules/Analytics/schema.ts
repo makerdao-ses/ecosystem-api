@@ -47,9 +47,18 @@ export const typeDefs = [gql`
     }
 
     input AnalyticsFilterDimension {
-        name: String,
-        select: String, 
-        lod: Int
+        select: SelectDimension!, 
+        lod: LevelofDetail!
+    }
+
+    input SelectDimension {
+        budget: String!,
+        category: String!,
+    }
+
+    input LevelofDetail {
+        budget: Int!,
+        category: Int!
     }
 
     input AnalyticsFilter {
@@ -57,7 +66,7 @@ export const typeDefs = [gql`
         end: String,
         granularity: AnalyticsGranularity,
         metrics: [AnalyticsMetric],
-        dimensions: [AnalyticsFilterDimension],
+        dimensions: AnalyticsFilterDimension,
         currency: String
     }
 
@@ -69,8 +78,9 @@ export const typeDefs = [gql`
 export const resolvers = {
     Query: {
         analytics: async (_: any, { filter }: any, { dataSources }: any) => {
-
-            console.log(filter)
+            if(!filter) {
+                throw new Error('No filter provided')
+            }
             const queryEngine: AnalyticsModel = dataSources.db.Analytics;
             const results = await queryEngine.query(filter);
 

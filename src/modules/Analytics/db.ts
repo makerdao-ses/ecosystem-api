@@ -10,7 +10,7 @@ type queryFilter = {
     end?: Date,
     granularity?: string,
     metrics?: AnalyticsMetric[],
-    dimensions?: Record<string, string>,
+    dimensions: Record<string, Record<string, string>>,
     currency?: string
 
 }
@@ -28,17 +28,15 @@ export class AnalyticsModel {
             start: filter.start ? new Date(filter.start) : null,
             end: filter.end ? new Date(filter.end) : null,
             granularity: getGranularity(filter.granularity),
-            metrics: [
-                AnalyticsMetric.Budget
-            ],
-            currency: AnalyticsPath.fromString('DAI'),
+            metrics: getMetrics(filter.metrics),
+            currency: getCurrency(filter.currency),
             select: {
-                budget: [AnalyticsPath.fromString('atlas')],
-                category: [AnalyticsPath.fromString('atlas')]
+                budget: [AnalyticsPath.fromString(filter.dimensions.select.budget)],
+                category: [AnalyticsPath.fromString(filter.dimensions.select.category)]
             },
             lod: {
-                budget: 4,
-                category: 2
+                budget: Number(filter.dimensions.lod.budget),
+                category: Number(filter.dimensions.lod.category)
             }
         };
         return this.engine.execute(query);
@@ -75,6 +73,49 @@ const getGranularity = (granularity: string | undefined): AnalyticsGranularity =
         }
         default: {
             return AnalyticsGranularity.Total;
+        }
+    }
+}
+
+const getMetrics = (metrics: any) => {
+    if (metrics === undefined || metrics.length < 1) {
+        throw new Error('No metrics provided')
+    }
+
+    const result = metrics.map((metric: string) => {
+        switch (metric) {
+            case 'budget': {
+                return AnalyticsMetric.Budget;
+            }
+            case 'forecast': {
+                return AnalyticsMetric.Forecast;
+            }
+            case 'actuals': {
+                return AnalyticsMetric.Actuals;
+            }
+            case 'netExpensesOnchain': {
+                return AnalyticsMetric.PaymentsOnChain;
+            }
+            case 'netExpensesOffchainIncluded': {
+                return AnalyticsMetric.PaymentsOffChainIncluded;
+            }
+        }
+    })
+
+    return result;
+}
+
+const getCurrency = (currency: string | undefined) => {
+
+    switch (currency) {
+        case 'DAI': {
+            return AnalyticsPath.fromString('DAI');
+        }
+        case 'MKR': {
+            return AnalyticsPath.fromString('MKR');
+        }
+        default: {
+            return AnalyticsPath.fromString('DAI');
         }
     }
 }
