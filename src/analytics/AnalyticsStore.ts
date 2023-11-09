@@ -98,7 +98,7 @@ export class AnalyticsStore {
                 }
 
                 dimensionsMap[dim][pKey].push(record[0].id);
-            };
+            }
         }
 
         for (const [dim, pathMap] of Object.entries(dimensionsMap)) {

@@ -56,7 +56,7 @@ export function up(knex) {
             table.integer('resourceId').notNullable();
         })
 
-};
+}
 
 
 export function down(knex) {
@@ -73,4 +73,4 @@ export function down(knex) {
         .raw('DROP TYPE "ResourceType"')
         .raw('DROP TYPE "Permission"')
 
-};
+}

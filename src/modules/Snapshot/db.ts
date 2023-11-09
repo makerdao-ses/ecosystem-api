@@ -28,7 +28,7 @@ export class SnapshotModel {
 
     constructor(knex: Knex) {
         this.knex = knex;
-    };
+    }
 
     async getSnapshots(filter: { limit?: number, offset?: number, filter?: SnapshotFilter }) {
         const where: {
@@ -84,7 +84,7 @@ export class SnapshotModel {
         }
 
         return result;
-    };
+    }
 
     async getActualsComparison(snapshotId: number, months: string[]) {
         return months.map(month => ({
@@ -109,7 +109,7 @@ export class SnapshotModel {
             .select('*')
             .from('SnapshotAccount')
             .where('snapshotId', snapshotId);
-    };
+    }
 
     async getSnapshotAccountTransactions(snapshotAccountId: number | string) {
         return this.knex
@@ -117,14 +117,14 @@ export class SnapshotModel {
             .from('SnapshotAccountTransaction')
             .where('snapshotAccountId', snapshotAccountId)
             .orderBy('id', 'desc');
-    };
+    }
 
     async getSnapshotAccountBalances(snapshotAccountId: number | string) {
         return this.knex
             .select('*')
             .from('SnapshotAccountBalance')
             .where('snapshotAccountId', snapshotAccountId);
-    };
-};
+    }
+}
 
 export default (knex: Knex,) => new SnapshotModel(knex);

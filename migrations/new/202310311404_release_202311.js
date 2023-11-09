@@ -31,4 +31,4 @@ export async function up(knex) {
 export async function down(knex) {
     console.log('Dropping PriceData table...');
     await knex.schema.dropTable('PriceData');
-};
+}

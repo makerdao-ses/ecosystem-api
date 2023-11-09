@@ -22,7 +22,7 @@ export async function up(knex) {
         { roleId: roles[0].id, resource: 'AlignedDelegates', permission: 'Update' },
         { roleId: roles[1].id, resource: 'AlignedDelegates', permission: 'Audit' }
     ]);
-};
+}
 
 //Down migration reverts the up migration change
 export async function down(knex) {
@@ -34,4 +34,4 @@ export async function down(knex) {
     await knex('Role').where('roleName', '=', 'AlignedDelegatesAdmin').del();
     await knex('Role').where('roleName', '=', 'AlignedDelegatesAuditor').del();
 
-};
+}

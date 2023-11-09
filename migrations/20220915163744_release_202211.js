@@ -99,7 +99,7 @@ export function up(knex) {
         })
 
 
-};
+}
 
 
 export function down(knex) {
@@ -120,4 +120,4 @@ export function down(knex) {
         .raw('DROP TYPE "ConfidenceLevel"')
         .raw('DROP TYPE "ReviewOutcome"')
 
-};
+}

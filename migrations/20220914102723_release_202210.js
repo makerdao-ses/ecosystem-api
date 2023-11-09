@@ -97,7 +97,7 @@ export function up(knex) {
             table.text('comments');
         })
 
-};
+}
 
 
 export function down(knex) {
@@ -115,4 +115,4 @@ export function down(knex) {
         .dropTable("AuditReport")
         .raw('DROP TYPE "AuditStatus"')
 
-};
+}

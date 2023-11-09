@@ -176,7 +176,7 @@ export class LineItemFetcher {
     }
 
     public buildQuery(owner:string, account:string, month:string) {
-        let q = this._knex
+        const q = this._knex
             .select(
                 'BSW.address as account',
                 'BSLI.month as month',

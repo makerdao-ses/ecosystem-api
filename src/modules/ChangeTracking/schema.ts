@@ -114,7 +114,7 @@ export const resolvers = {
                 } else {
                     if (input.timestamp === null || input.timestamp === undefined) {
                         input.timestamp = new Date().toISOString();
-                    };
+                    }
                     const lastActivity = await dataSources.db.ChangeTracking.getUserActivity('userId', input.userId);
                     const lastUserActivity = lastActivity[lastActivity.length - 1];
                     const [result] = await dataSources.db.ChangeTracking.userActivityCreate(input);

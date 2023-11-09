@@ -61,4 +61,4 @@ export async function seed(knex) {
   await knex('BudgetStatementComment_BudgetStatementCommentAuthor')
     .insert(comments_authors)
 
-};
+}

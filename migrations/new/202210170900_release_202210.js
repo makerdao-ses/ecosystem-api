@@ -52,7 +52,7 @@ export async function up(knex) {
         // Alter the BudgetStatement table to remove the old comments attributes - use knex raw as knex does not have a drop column if exists feature
         .raw('ALTER TABLE "BudgetStatement" DROP COLUMN IF EXISTS comments')
 
-    };
+    }
     
 
 // Down migration drops the BudgetStatementComment, BudgetStatementComment_BudgetStatementCommentAuthor and BudgetStatementCommentAuthor tables
@@ -66,4 +66,4 @@ export function down(knex) {
         .dropTable("BudgetStatementComment")
         .dropTable("BudgetStatementCommentAuthor")
 
-};
+}

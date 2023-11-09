@@ -5,7 +5,7 @@ export async function up(knex) {
     console.log('Adding BudgetOwner AlignedDelegates...');
 
     await knex.raw(`ALTER TYPE "BudgetOwner" ADD VALUE 'AlignedDelegates'`);
-};
+}
 
 //Down migration reverts the up migration change
 export async function down(knex) {
@@ -24,4 +24,4 @@ export async function down(knex) {
    
  `);
 
-};
+}

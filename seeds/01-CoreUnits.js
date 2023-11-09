@@ -183,4 +183,4 @@ export async function seed(knex) {
     {cuId: 1, cuCategoryId: 2}
   ])
 
-};
+}

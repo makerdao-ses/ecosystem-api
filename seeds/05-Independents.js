@@ -41,4 +41,4 @@
     {version: '1.0.1', link:'https://github.com/pcatana/budget-tool/releases/tag/v1.1.0'}
   ]);
 
-};
+}

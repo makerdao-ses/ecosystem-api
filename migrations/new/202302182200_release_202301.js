@@ -13,10 +13,10 @@ export async function up(knex) {
             // The cached data
             table.json('data');
         });
-};
+}
 
 //Down migration reverts the up migration change
 export async function down(knex) {
     console.log("Dropping the ResolverCache table... ")
     await knex.schema.dropTable("ResolverCache");
-};
+}

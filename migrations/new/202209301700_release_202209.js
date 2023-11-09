@@ -91,7 +91,7 @@ export async function up(knex) {
                 coreunit_id: coreUnitId
             }).into('ChangeTrackingEvents_CoreUnits')
         }
-    };
+    }
 
 //Down migration deletes all ChangeTrackingEvents and ChangeTrackingEvents_CoreUnits
 export function down(knex) {
@@ -100,4 +100,4 @@ export function down(knex) {
 
     return knex('ChangeTrackingEvents', 'ChangeTrackingEvents_CoreUnits').del()
 
-};
+}

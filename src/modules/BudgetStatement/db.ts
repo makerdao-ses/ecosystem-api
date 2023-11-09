@@ -193,7 +193,7 @@ export class BudgetStatementModel {
         this.knex = knex;
         this.coreUnitModel = coreUnitModel;
         this.authModel = authModel;
-    };
+    }
 
     async getBudgetStatements(filter: { limit?: number, offset?: number, filter?: BudgetStatementFilter }): Promise<BudgetStatement[]> {
         const baseQuery = this.knex
@@ -227,7 +227,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBSOwnerType(id: number | string) {
         return this.knex
@@ -254,7 +254,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBudgetStatementFTEs(filter?: BudgetStatementFteFilter): Promise<BudgetStatementFTEs[]> {
         const baseQuery = this.knex
@@ -272,7 +272,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBudgetStatementMKRVests(filter?: BudgetStatementMKRVEstFilter): Promise<BudgetStatementMKRVest[]> {
         const baseQuery = this.knex
@@ -294,7 +294,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBudgetStatementWallets(filter?: BudgetStatementWalletFilter): Promise<BudgetStatementWallet[]> {
         const baseQuery = this.knex
@@ -342,7 +342,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBudgetStatementPayments(filter?: BudgetStatementPaymentFilter): Promise<BudgetStatementPayment[]> {
         const baseQuery = this.knex
@@ -366,7 +366,7 @@ export class BudgetStatementModel {
             return baseQuery;
         }
 
-    };
+    }
 
     async getBudgetStatementTransferRequests(filter?: BudgetStatementTransferRequestFilter): Promise<BudgetStatementTransferRequest[]> {
         const baseQuery = this.knex
@@ -386,7 +386,7 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getBudgetStatementComments(
         paramName?: string | undefined,
@@ -405,28 +405,28 @@ export class BudgetStatementModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     // ------------------- Adding data --------------------------------
 
     async addBatchLineItems(rows: object[]) {
         const chunkSize = rows.length;
         return this.knex.batchInsert('BudgetStatementLineItem', rows, chunkSize).returning('*');
-    };
+    }
 
     async addBatchBudgetStatements(rows: object[]) {
         const chunkSize = rows.length;
         return this.knex.batchInsert('BudgetStatement', rows, chunkSize).returning('*');
-    };
+    }
 
     async addBudgetStatementWallets(rows: object[]) {
         const chunkSize = rows.length;
         return this.knex.batchInsert('BudgetStatementWallet', rows, chunkSize).returning('*');
-    };
+    }
 
     async addBudgetStatementFTE(input: FTE) {
         return this.knex('BudgetStatementFtes').insert({ budgetStatementId: input.budgetStatementId, month: input.month, ftes: input.ftes }).returning('*')
-    };
+    }
 
     async addBudgetStatementComment(authorId: number, budgetStatementId: number, comment: string, status: string | undefined | null): Promise<BudgetStatementComment[]> {
         const [statement] = await this.knex('BudgetStatement').where("id", budgetStatementId);
@@ -456,7 +456,7 @@ export class BudgetStatementModel {
         const trx = await this.knex.transaction();
         try {
             const result = await Promise.all(lineItems.map(lineItem => {
-                let id = lineItem.id;
+                const id = lineItem.id;
                 delete lineItem.id
                 return this.knex('BudgetStatementLineItem')
                     .where('id', id)
@@ -475,7 +475,7 @@ export class BudgetStatementModel {
         const trx = await this.knex.transaction();
         try {
             const result = await Promise.all(lineItems.map(lineItem => {
-                let id = lineItem.id;
+                const id = lineItem.id;
                 delete lineItem.id
                 return this.knex('BudgetStatementLineItem')
                     .where('id', id)
@@ -488,11 +488,11 @@ export class BudgetStatementModel {
         } catch (error) {
             await trx.rollback()
         }
-    };
+    }
 
     async budgetStatementCommentDelete(commentId: number) {
         return await this.knex('BudgetStatementComment').where('id', commentId).del().returning('*');
     }
-};
+}
 
 export default (knex: Knex, deps: { [key: string]: object }) => new BudgetStatementModel(knex, deps['CoreUnit'], deps['Auth'])
