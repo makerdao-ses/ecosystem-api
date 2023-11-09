@@ -14,7 +14,7 @@ export interface CoreUnit {
     contributorCommitment: object
     cuGithubContribution: object
     cuUpdates: object
-    type: String
+    type: string
 }
 
 export interface CuUpdate {
@@ -170,7 +170,7 @@ export class CoreUnitModel {
 
     constructor(knex: Knex) {
         this.knex = knex;
-    };
+    }
 
     async getCoreUnits(filter: { limit?: number, offset?: number, filter?: CoreUnitFilter }): Promise<CoreUnit[]> {
         const baseQuery = this.knex
@@ -192,7 +192,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery.where('type', 'CoreUnit');
         }
-    };
+    }
 
     async getTeams(filter: { limit?: number, offset?: number, filter?: CoreUnitFilter }): Promise<CoreUnit[]> {
         const baseQuery = this.knex
@@ -215,7 +215,7 @@ export class CoreUnitModel {
             baseQuery.where('type', filter.filter.type)
         }
         return baseQuery;
-    };
+    }
 
     async getCuUpdates(filter?: { id?: number, cuId?: number, updateTitle?: string, updateDate?: string, updateUrl?: string }): Promise<CuUpdate[]> {
         const baseQuery = this.knex
@@ -235,7 +235,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getSocialMediaChannels(filter?: SocialMediaChannelsFilter): Promise<SocialMediaChannels[]> {
         const baseQuery = this.knex
@@ -263,7 +263,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getContributorCommitments(filter?: ContributorCommitmentsFilter): Promise<ContributorCommitment[]> {
         const baseQuery = this.knex
@@ -287,7 +287,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery
         }
-    };
+    }
 
     async getCuGithubContributions(filter?: CuGithubContributionFilter): Promise<CuGithubContribution[]> {
         const baseQuery = this.knex
@@ -305,7 +305,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getContributors(filter: { limit?: number, offset?: number, filter?: ContributorFilter }): Promise<Contributor[]> {
         const baseQuery = this.knex
@@ -329,7 +329,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getGithubOrgs(filter: GithubOrgFilter): Promise<GithubOrg[]> {
         const baseQuery = this.knex
@@ -345,7 +345,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
         const baseQuery = this.knex
@@ -361,7 +361,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMakerGithubEcosystemAll(filter?: MakerGithubEcosystemFilter): Promise<MakerGithubEcosystem[]> {
         const baseQuery = this.knex
@@ -387,7 +387,7 @@ export class CoreUnitModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getScopesByTeamId(teamId: number): Promise<any> {
         const result = await this.knex

@@ -67,7 +67,7 @@ async function startApolloServer(app: express.Express, apiModules: ApiModules, o
     server.applyMiddleware({ app });
     await new Promise<void>(resolve => httpServer.listen(options, resolve));
     console.log(`Server ready at http://localhost:${options.port}${server.graphqlPath}`)
-};
+}
 
 dotenv.config();
 const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 4000;

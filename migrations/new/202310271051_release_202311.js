@@ -51,7 +51,7 @@ export async function up(knex) {
         table.string('title').notNullable();
         table.string('link').notNullable();
     });
-};
+}
 
 export async function down(knex) {
 
@@ -66,4 +66,4 @@ export async function down(knex) {
      await knex.raw('DROP TYPE IF EXISTS "ProjectStatus"');
      await knex.raw('DROP TYPE IF EXISTS "DeliverableStatus"');
      await knex.raw('DROP TYPE IF EXISTS "BudgetType"');
-};
+}

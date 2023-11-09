@@ -19,11 +19,11 @@ export async function up(knex) {
         version: '1.1.0',
         link: 'https://github.com/pcatana/budget-tool/releases/tag/v1.1.0'
     }).into('BudgetToolVersion');
-};
+}
 
 //Down migration deletes Core Unit and all root table
 export function down(knex) {
     console.log("Dropping table BudgetToolVersion");
     return knex.schema
         .dropTable("BudgetToolVersion");
-};
+}

@@ -128,7 +128,7 @@ export class AnalyticsDiscretizer {
         for (const s of series) {
             let oldSum = this._getValue(s, periods[0].start);
             for (const p of periods) {
-                let newSum = this._getValue(s, p.end);
+                const newSum = this._getValue(s, p.end);
 
                 if (result[p.period]) {
                     result[p.period].inc += newSum - oldSum;

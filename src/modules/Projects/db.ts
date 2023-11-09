@@ -6,7 +6,7 @@ export class ProjectsModel {
 
     constructor(knex: Knex) {
         this.knex = knex;
-    };
+    }
 
     async getProjects() {
         return stubData;

@@ -90,7 +90,7 @@ export const resolvers = {
     Query: {
         users: async (_: any, { input }: any, { user, auth, dataSources }: any) => {
             try {
-                const filter = new QueryParams(input) as any;;
+                const filter = new QueryParams(input) as any;
                 const userFilter = { active: true, rolesAndPermissions: false, id: undefined, username: undefined };
                 // User with System/Manage permission can list the inactive users including roles and permissions
                 if (await dataSources.db.Auth.userCanManage(user, 'System')) {

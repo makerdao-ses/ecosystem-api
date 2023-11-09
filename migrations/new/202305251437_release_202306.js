@@ -14,7 +14,7 @@ export async function up(knex) {
         { roleId: roles[0].id, resource: 'EcosystemActor', permission: 'Update' },
         { roleId: roles[1].id, resource: 'EcosystemActor', permission: 'Audit' }
     ]);
-};
+}
 
 //Down migration reverts the up migration change
 export async function down(knex) {
@@ -25,4 +25,4 @@ export async function down(knex) {
     // Delete Roles
     await knex('Role').where('roleName', '=', 'EcosystemActorAdmin').del();
     await knex('Role').where('roleName', '=', 'EcosystemActorAuditor').del();
-};
+}

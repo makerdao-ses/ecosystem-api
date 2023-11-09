@@ -23,18 +23,18 @@ export class AuthModel {
 
     constructor(knex: Knex) {
         this.knex = knex;
-    };
+    }
 
     async getUser(paramName: string, paramValue: string | number | boolean): Promise<User[]> {
         return this.knex('User').where(`${paramName}`, paramValue)
-    };
+    }
 
     async getResourceId(userId: number) {
         return this.knex
             .select('resourceId')
             .from('UserRole')
             .where('userId', userId)
-    };
+    }
 
     async canUpdate(userId: number, resourceType: string, resourceId: number): Promise<any> {
         return this.knex
@@ -51,7 +51,7 @@ export class AuthModel {
                 'RolePermission.resource': resourceType,
             })
             .orWhere({ "resourceId": resourceId || null })
-    };
+    }
 
     async canUpdateCoreUnit(userId: number, resourceType: string, resourceId: number): Promise<any> {
         return this.knex
@@ -72,9 +72,9 @@ export class AuthModel {
                 userId,
                 "UserRole.resourceId": null
             })
-    };
+    }
 
-    async userCanManage(user: { id: number } | undefined, resourceType: string): Promise<Boolean> {
+    async userCanManage(user: { id: number } | undefined, resourceType: string): Promise<boolean> {
         if (!user) {
             return false;
         }
@@ -93,7 +93,7 @@ export class AuthModel {
                 resourceId: null
             }) as any;
         return parseFloat(result[0]['count']) > 0
-    };
+    }
 
     async canManage(userId: number, resourceType: string): Promise<any> {
         return this.knex
@@ -110,7 +110,7 @@ export class AuthModel {
                 'RolePermission.resource': resourceType,
                 resourceId: null
             });
-    };
+    }
 
     async can(userId: number, permission: string, resourceType: string): Promise<any> {
         return this.knex
@@ -152,7 +152,7 @@ export class AuthModel {
 
     async changeUserPassword(username: string, password: string): Promise<any> {
         return this.knex('User').where('username', username).update('password', password).returning('*')
-    };
+    }
 
     async createUser(username: string, password: string): Promise<any> {
         const user = await this.knex('User').insert({ username, password, active: true }).returning("*");
@@ -162,7 +162,7 @@ export class AuthModel {
             active: user[0].active
         }
 
-    };
+    }
 
     async getSystemRoleMembers(roleName: string, resource: string, resourceId: number | null) {
         const baseQuery = this.knex
@@ -213,7 +213,7 @@ export class AuthModel {
         }
 
         return await baseQuery;
-    };
+    }
 
     async getUsersFiltered(filter: UserFilter): Promise<User[]> {
         if (filter.rolesAndPermissions) {
@@ -265,12 +265,12 @@ export class AuthModel {
 
     async setActiveFlag(userId: number, active: boolean): Promise<any> {
         return this.knex('User').where('id', userId).update({ active });
-    };
+    }
 
     async userDelete(userId: number | string): Promise<any> {
         await this.knex('UserRole').where('userId', userId).del();
         await this.knex('User').where('id', userId).del();
     }
-};
+}
 
 export default (knex: Knex) => new AuthModel(knex);

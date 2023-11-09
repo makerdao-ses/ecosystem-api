@@ -478,7 +478,7 @@
               accountCount++;
               accountId = insertedAccount[0].id;
             }
-          };
+          }
         
         // Insert the SnapshotAccountTransaction with the corresponding accountId
         const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
@@ -540,7 +540,7 @@
                       accountPCount++;
                       accountIdProtocol = insertedAccountProtocol[0].id;
                   }
-                };
+                }
                 
               if (accountIdProtocol) {
                 // Check if the transaction already exists for the protocol counterParty
@@ -609,7 +609,7 @@
           accountCount++;
           accountId = insertedAccount[0].id;
         }
-      };
+      }
     
     // Insert the SnapshotAccountTransaction with the corresponding accountId
     const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
@@ -671,7 +671,7 @@
                   accountPCount++;
                   accountIdProtocol = insertedAccountProtocol[0].id;
               }
-            };
+            }
             
           if (accountIdProtocol) {
             // Check if the transaction already exists for the protocol counterParty

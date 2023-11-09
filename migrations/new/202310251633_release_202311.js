@@ -7,7 +7,7 @@ export async function up(knex) {
         table.string('image');
         table.string('description');
     });
-};
+}
 
 export async function down(knex) {
     console.log('Removing image and description fields in Budget table...');
@@ -17,4 +17,4 @@ export async function down(knex) {
             table.dropColumn('image');
             table.dropColumn('description');
         });
-};
+}

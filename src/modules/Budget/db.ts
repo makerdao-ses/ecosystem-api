@@ -21,7 +21,7 @@ export class BudgetModel {
 
     constructor(knex: Knex) {
         this.knex = knex;
-    };
+    }
 
 
     processBudgets(budgets: Budget[], depth: number, parentId: number | string | null = null, idOrCode: IdOrCode = {}) {
@@ -65,21 +65,21 @@ export class BudgetModel {
         if (filter.limit || filter.offset) {
             return await baseQuery.limit(filter.limit as number).offset(filter.offset as number);
         } else {
-            let start = filter.filter?.start;
-            let end = filter.filter?.end;
+            const start = filter.filter?.start;
+            const end = filter.filter?.end;
 
             if (start && end) {
                 baseQuery.where(b => b.whereNull('start').orWhere('start', '<', end))
                 baseQuery.andWhere(b => b.whereNull('end').orWhere('end', '>', start))
             }
-            let idOrCode = {
+            const idOrCode = {
                 id: filter.filter?.id,
                 code: filter.filter?.code
             }
-            let parentId = filter.filter?.parentId || null;
-            let maxDepth = filter.filter?.maxDepth || Number.MAX_SAFE_INTEGER;
+            const parentId = filter.filter?.parentId || null;
+            const maxDepth = filter.filter?.maxDepth || Number.MAX_SAFE_INTEGER;
 
-            let result = await baseQuery;
+            const result = await baseQuery;
             this.addBudgetPaths(result, null, '', '');
             return this.processBudgets(result, maxDepth, parentId, idOrCode);
         }
@@ -91,7 +91,7 @@ export class BudgetModel {
             .select('*')
             .from('BudgetCap')
             .where('budgetId', budgetId);
-    };
+    }
 
     async getExpenseCategory(id: number, name?: string, headcountExpense?: boolean) {
         const baseQuery = this.knex
@@ -107,7 +107,7 @@ export class BudgetModel {
         }
         return baseQuery;
 
-    };
+    }
 
     // create budget
     async createBudget(
@@ -178,7 +178,7 @@ export class BudgetModel {
                 end
             })
             .returning('*');
-    };
+    }
 
     //update a budget cap
     async updateBudgetCap(id: number | string, expenseCategoryId: number | string | undefined, amount: number, currency: string) {
@@ -190,7 +190,7 @@ export class BudgetModel {
                 currency
             })
             .returning('*');
-    };
+    }
 
     // delete a budget cap
     async deleteBudgetCap(id: number | string) {
@@ -198,7 +198,7 @@ export class BudgetModel {
             .where('id', id)
             .returning('*')
             .del();
-    };
+    }
 
     // delete expense category (if no line items and caps exist)
     async deleteExpenseCategory(id: number | string) {

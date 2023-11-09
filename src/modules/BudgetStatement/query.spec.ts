@@ -54,7 +54,7 @@ it('fetches bsWallets', async () => {
 });
 
 it('fetches bsLineItems', async () => {
-  let bsLineItemsQuery = {
+  const bsLineItemsQuery = {
     query: `query BudgetStatementLineItems($filter: BudgetStatementLineItemFilter) {
           budgetStatementLineItems(filter: $filter) {
             id
@@ -180,14 +180,14 @@ it('adds budgetStatements', async () => {
   await db.knex('User').where('username', 'exampleName').update({ active: true });
 
   // testing wihtout input
-  let noInputQuery = JSON.parse(JSON.stringify(query));
+  const noInputQuery = JSON.parse(JSON.stringify(query));
   noInputQuery.variables.input = [];
   const response2 = await server.executeOperation(noInputQuery);
   expect(response2.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
 
   // testing without ownerType
-  let noOwnerTypeQ = JSON.parse(JSON.stringify(query));
-  let varsInput = JSON.parse(JSON.stringify(budgetStatementInput)) as any;
+  const noOwnerTypeQ = JSON.parse(JSON.stringify(query));
+  const varsInput = JSON.parse(JSON.stringify(budgetStatementInput)) as any;
   delete varsInput.ownerType;
   noOwnerTypeQ.variables.input = [varsInput];
   const response3 = await server.executeOperation(noOwnerTypeQ);

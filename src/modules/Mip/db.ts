@@ -17,7 +17,7 @@ export interface CuMip {
     mip40: object
     mip41: object
     mipReplaces: object
-};
+}
 
 export interface MipReplaces {
     id: string
@@ -187,7 +187,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMipReplaces(filter?: MipReplaceFilter): Promise<MipReplaces[]> {
         const baseQuery = this.knex
@@ -203,7 +203,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip39s(filter?: Mip39Filter): Promise<Mip39[]> {
         const baseQuery = this.knex
@@ -227,7 +227,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip40s(filter?: Mip40Filter): Promise<Mip40[]> {
         const baseQuery = this.knex
@@ -247,7 +247,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip40BudgetPeriods(filter: Mip40BudgetPeriodFilter): Promise<Mip40BudgetPeriod[]> {
         const baseQuery = this.knex
@@ -267,7 +267,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip40Wallets(filter?: Mip40WalletFilter): Promise<Mip40Wallet[]> {
         const baseQuery = this.knex
@@ -291,7 +291,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip40BudgetLineItems(filter?: Mip40BudgetLineItemFilter): Promise<Mip40BudgetLineItem[]> {
         const baseQuery = this.knex
@@ -317,7 +317,7 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
     async getMip41s(filter?: Mip41Filter): Promise<Mip41[]> {
         const baseQuery = this.knex
@@ -333,8 +333,8 @@ export class MipModel {
         } else {
             return baseQuery;
         }
-    };
+    }
 
-};
+}
 
 export default (knex: Knex, deps: { [key: string]: object }) => new MipModel(knex, deps['CoreUnit']);

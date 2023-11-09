@@ -59,4 +59,4 @@
     {roadmapId: 1, taskId: 2}
   ]);
 
-};
+}

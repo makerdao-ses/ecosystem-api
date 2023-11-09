@@ -244,7 +244,7 @@ export const _nextHourlyPeriod = (nextStart: Date, seriesEnd: Date): AnalyticsPe
         hourOffset = 0;
     }
 
-    let startDate = new Date(nextStart.getTime() + hourOffset * 60 * 60 * 1000);  // Increment by hourOffset hours
+    const startDate = new Date(nextStart.getTime() + hourOffset * 60 * 60 * 1000);  // Increment by hourOffset hours
     let endDate = new Date(startDate.getTime() + 60 * 60 * 1000);  // One hour later
 
     if (isAfter(endDate, seriesEnd)) {

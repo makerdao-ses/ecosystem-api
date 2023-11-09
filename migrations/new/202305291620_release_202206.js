@@ -7,7 +7,7 @@ export async function up(knex) {
     await knex.schema.alterTable('BudgetStatementLineItem', (table) => {
         table.string('currency').notNullable().defaultTo('DAI');
     });
-};
+}
 
 //Down migration reverts the up migration change
 export async function down(knex) {
@@ -17,4 +17,4 @@ export async function down(knex) {
     await knex.schema.alterTable('BudgetStatementLineItem', (table) => {
         table.dropColumn('currency');
     });
-};
+}
