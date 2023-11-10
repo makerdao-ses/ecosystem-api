@@ -23,185 +23,191 @@ import blockNumbersDELEGATES from "../data/blockNumbers-DELEGATES.js";
 import blockNumbersDRAFT_KEEPERS from "../data/blockNumbers-DRAFT-KEEPERS.js";
 
 const ownerMapping = {
-    'CoreUnit': {
-        '0': 'blockNumbersDRAFT',
-        '1': 'blockNumbersSES',
-        '3': 'blockNumbersCES',
-        '7': 'blockNumbersRISK',
-        '8': 'blockNumbersGOV',
-        '9': 'blockNumbersRWF',
-        '10': 'blockNumbersGRO',
-        '11': 'blockNumbersORA',
-        '12': 'blockNumbersCOM',
-        '13': 'blockNumbersDAIF',
-        '14': 'blockNumbersDRAFT',
-        '15': 'blockNumbersDUX',
-        '16': 'blockNumbersSNE',
-        '17': 'blockNumbersDRAFT',
-        '18': 'blockNumbersIS',
-        '19': 'blockNumbersSAS',
-        '20': 'blockNumbersDECO',
-        '21': 'blockNumbersDRAFT',
-        '22': 'blockNumbersTECHCU',
-        '38': 'blockNumbersDRAFT'
-    },
-    'EcosystemActor': {
-        '44': 'blockNumbersDRAFT',
-        '45': 'blockNumbersDRAFT',
-        '46': 'blockNumbersDRAFT',
-        '47': 'blockNumbersDRAFT',
-        '48': 'blockNumbersJETSTREAM',
-        '49': 'blockNumbersDRAFT',
-        '50': 'blockNumbersDRAFT',
-        '51': 'blockNumbersDRAFT',
-        '52': 'blockNumbersDRAFT',
-        '53': 'blockNumbersDRAFT',
-        '54': 'blockNumbersDRAFT',
-        '55': 'blockNumbersDEWIZ',
-        '56': 'blockNumbersDRAFT',
-        '57': 'blockNumbersDRAFT',
-        '58': 'blockNumbersDRAFT',
-        '59': 'blockNumbersSIDESTREAM',
-        '60': 'blockNumbersTECHEA',
-        '61': 'blockNumbersDRAFT',
-    },
-    'Delegates': {
-        null: 'blockNumbersDELEGATES'
-    },
-    'Keepers': {
-        null: 'blockNumbersDRAFT_KEEPERS'
-    },
-    'SpecialPurposeFund': {
-        null: 'blockNumbersDRAFT'
-    }
+  CoreUnit: {
+    0: "blockNumbersDRAFT",
+    1: "blockNumbersSES",
+    3: "blockNumbersCES",
+    7: "blockNumbersRISK",
+    8: "blockNumbersGOV",
+    9: "blockNumbersRWF",
+    10: "blockNumbersGRO",
+    11: "blockNumbersORA",
+    12: "blockNumbersCOM",
+    13: "blockNumbersDAIF",
+    14: "blockNumbersDRAFT",
+    15: "blockNumbersDUX",
+    16: "blockNumbersSNE",
+    17: "blockNumbersDRAFT",
+    18: "blockNumbersIS",
+    19: "blockNumbersSAS",
+    20: "blockNumbersDECO",
+    21: "blockNumbersDRAFT",
+    22: "blockNumbersTECHCU",
+    38: "blockNumbersDRAFT",
+  },
+  EcosystemActor: {
+    44: "blockNumbersDRAFT",
+    45: "blockNumbersDRAFT",
+    46: "blockNumbersDRAFT",
+    47: "blockNumbersDRAFT",
+    48: "blockNumbersJETSTREAM",
+    49: "blockNumbersDRAFT",
+    50: "blockNumbersDRAFT",
+    51: "blockNumbersDRAFT",
+    52: "blockNumbersDRAFT",
+    53: "blockNumbersDRAFT",
+    54: "blockNumbersDRAFT",
+    55: "blockNumbersDEWIZ",
+    56: "blockNumbersDRAFT",
+    57: "blockNumbersDRAFT",
+    58: "blockNumbersDRAFT",
+    59: "blockNumbersSIDESTREAM",
+    60: "blockNumbersTECHEA",
+    61: "blockNumbersDRAFT",
+  },
+  Delegates: {
+    null: "blockNumbersDELEGATES",
+  },
+  Keepers: {
+    null: "blockNumbersDRAFT_KEEPERS",
+  },
+  SpecialPurposeFund: {
+    null: "blockNumbersDRAFT",
+  },
 };
 const blockNumbersMapping = {
-    blockNumbersCES,
-    blockNumbersCOM,
-    blockNumbersDAIF,
-    blockNumbersDECO,
-    blockNumbersDUX,
-    blockNumbersGOV,
-    blockNumbersGRO,
-    blockNumbersIS,
-    blockNumbersORA,
-    blockNumbersRISK,
-    blockNumbersRWF,
-    blockNumbersSAS,
-    blockNumbersSES,
-    blockNumbersSNE,
-    blockNumbersTECHCU,
-    blockNumbersTECHEA,
-    blockNumbersSIDESTREAM,
-    blockNumbersJETSTREAM,
-    blockNumbersDEWIZ,
-    blockNumbersDELEGATES,
-    blockNumbersDRAFT,
-    blockNumbersDRAFT_KEEPERS,
+  blockNumbersCES,
+  blockNumbersCOM,
+  blockNumbersDAIF,
+  blockNumbersDECO,
+  blockNumbersDUX,
+  blockNumbersGOV,
+  blockNumbersGRO,
+  blockNumbersIS,
+  blockNumbersORA,
+  blockNumbersRISK,
+  blockNumbersRWF,
+  blockNumbersSAS,
+  blockNumbersSES,
+  blockNumbersSNE,
+  blockNumbersTECHCU,
+  blockNumbersTECHEA,
+  blockNumbersSIDESTREAM,
+  blockNumbersJETSTREAM,
+  blockNumbersDEWIZ,
+  blockNumbersDELEGATES,
+  blockNumbersDRAFT,
+  blockNumbersDRAFT_KEEPERS,
 };
 
 const getMonthInfo = (owner, month, endBlockNo) => {
+  const result = {
+    month: null,
+    firstDay: null,
+    lastDay: null,
+    offChainBalances: {},
+    blockNumberRange: {
+      initial: null,
+      final: null,
+    },
+  };
 
-    const result = {
-        month: null,
-        firstDay: null,
-        lastDay: null,
-        offChainBalances: {},
-        blockNumberRange: {
-            initial: null,
-            final: null
-        }
-    };
+  const pattern = /^[0-9]{4}\/[0-1][0-9]$/;
 
-    const pattern = /^[0-9]{4}\/[0-1][0-9]$/;
-
-    if (month) {
-        if (!pattern.test(month)) {
-            throw new Error(`Expected YYYY/MM as month format but got "${month}"`);
-        }
-        result.month = month;
-
-        const startAndEnd = getStartAndEndDates(convertMonthStringToDate(month));
-        result.firstDay = startAndEnd.firstDay;
-        result.lastDay = startAndEnd.lastDay;
-
-        if (!ownerMapping[owner.type][owner.id]) {
-            throw new Error(`Cannot find any block numbers for ${owner.type}/${owner.id}`);
-        }
-        const blockNumbers = blockNumbersMapping[ownerMapping[owner.type][owner.id]];
-        if (!blockNumbers) {
-            throw new Error(`Cannot find any block numbers for ${owner.type}/${owner.id}`);
-        }
-
-        const startBlockNumber = blockNumbers[month];
-        if (!startBlockNumber) {
-            throw new Error(`Cannot find start block number for the month ${month} for ${owner.type}/${owner.id}`);
-        }
-        result.blockNumberRange.initial = startBlockNumber;
-
-        const nextMonth = convertMonthStringToDate(month, 1).toISOString().slice(0, 7).replace('-', '/');
-        const endBlockNumber = blockNumbers[nextMonth];
-        console.log("END BLOCK NUMBER ", endBlockNumber)
-        console.log("END BLOCK NUMBER GIVEN", endBlockNo)
-
-        if (!endBlockNumber) {
-            const keys = Object.keys(blockNumbers);
-            console.log("KEYS ", keys[keys.length - 1])
-            if (keys[keys.length - 1] != month) {
-                throw new Error(`Cannot find end block number for the month ${month} for ${owner.type}/${owner.id}`);
-            }
-            if(endBlockNo){
-                result.blockNumberRange.final = endBlockNo;
-            }
-        } else {
-            result.blockNumberRange.final = endBlockNumber;
-        }
+  if (month) {
+    if (!pattern.test(month)) {
+      throw new Error(`Expected YYYY/MM as month format but got "${month}"`);
     }
-    result.offChainBalances = getOffChainBalances(owner.type, owner.id);
+    result.month = month;
 
-    return result;
+    const startAndEnd = getStartAndEndDates(convertMonthStringToDate(month));
+    result.firstDay = startAndEnd.firstDay;
+    result.lastDay = startAndEnd.lastDay;
 
+    if (!ownerMapping[owner.type][owner.id]) {
+      throw new Error(
+        `Cannot find any block numbers for ${owner.type}/${owner.id}`,
+      );
+    }
+    const blockNumbers =
+      blockNumbersMapping[ownerMapping[owner.type][owner.id]];
+    if (!blockNumbers) {
+      throw new Error(
+        `Cannot find any block numbers for ${owner.type}/${owner.id}`,
+      );
+    }
+
+    const startBlockNumber = blockNumbers[month];
+    if (!startBlockNumber) {
+      throw new Error(
+        `Cannot find start block number for the month ${month} for ${owner.type}/${owner.id}`,
+      );
+    }
+    result.blockNumberRange.initial = startBlockNumber;
+
+    const nextMonth = convertMonthStringToDate(month, 1)
+      .toISOString()
+      .slice(0, 7)
+      .replace("-", "/");
+    const endBlockNumber = blockNumbers[nextMonth];
+    console.log("END BLOCK NUMBER ", endBlockNumber);
+    console.log("END BLOCK NUMBER GIVEN", endBlockNo);
+
+    if (!endBlockNumber) {
+      const keys = Object.keys(blockNumbers);
+      console.log("KEYS ", keys[keys.length - 1]);
+      if (keys[keys.length - 1] != month) {
+        throw new Error(
+          `Cannot find end block number for the month ${month} for ${owner.type}/${owner.id}`,
+        );
+      }
+      if (endBlockNo) {
+        result.blockNumberRange.final = endBlockNo;
+      }
+    } else {
+      result.blockNumberRange.final = endBlockNumber;
+    }
+  }
+  result.offChainBalances = getOffChainBalances(owner.type, owner.id);
+
+  return result;
 };
 
 function getStartAndEndDates(month) {
+  // Get the year and month components from the provided date
 
-    // Get the year and month components from the provided date
+  // Get the year and month components from the provided date
+  const year = month.getUTCFullYear();
+  const monthIndex = month.getUTCMonth();
 
-    // Get the year and month components from the provided date
-    const year = month.getUTCFullYear();
-    const monthIndex = month.getUTCMonth();
+  // Create a new Date object for the first day of the month
+  const firstDay = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0));
 
-    // Create a new Date object for the first day of the month
-    const firstDay = new Date(Date.UTC(year, monthIndex, 1, 0, 0, 0));
+  // Create a new Date object for the last day of the month
+  const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999));
 
-    // Create a new Date object for the last day of the month
-    const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0, 23, 59, 59, 999));
-
-
-    return {
-        firstDay,
-        lastDay
-    };
+  return {
+    firstDay,
+    lastDay,
+  };
 }
 
 function convertMonthStringToDate(monthString, addMonths = 0) {
-    // Split the month string into year and month parts
-    let [year, month] = monthString.split('/');
-    let date;
-    
-    // Create a new Date object with the year and month values
-    if(month >= 9) {
-        date = new Date(year, parseInt(month) + addMonths, -1);
-    }
-    else if (month === '01') {
-        date = new Date(year, parseInt(month) - 1 + addMonths, 1);
-    } 
-    else { 
-        month = parseInt(month, 10);
-        date = new Date(year, parseInt(month) + addMonths, 1);
-    }
+  // Split the month string into year and month parts
+  let [year, month] = monthString.split("/");
+  let date;
 
-    return date;
+  // Create a new Date object with the year and month values
+  if (month >= 9) {
+    date = new Date(year, parseInt(month) + addMonths, -1);
+  } else if (month === "01") {
+    date = new Date(year, parseInt(month) - 1 + addMonths, 1);
+  } else {
+    month = parseInt(month, 10);
+    date = new Date(year, parseInt(month) + addMonths, 1);
+  }
+
+  return date;
 }
 
 export default getMonthInfo;

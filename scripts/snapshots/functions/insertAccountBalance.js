@@ -1,16 +1,15 @@
 const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
-    let formattedResponse = [];
-    let offChainKey = (offChainIncluded ? 'offChainIncluded' : 'offChainExcluded');
+  let formattedResponse = [];
+  let offChainKey = offChainIncluded ? "offChainIncluded" : "offChainExcluded";
 
-    console.log('Updating account balances...');
-    for (let i = 0; i < allAccounts.length; i++) {
+  console.log("Updating account balances...");
+  for (let i = 0; i < allAccounts.length; i++) {
+    const idsList = allAccounts[i][offChainKey].internalIds.join(", ");
+    const addressesList =
+      "'" + allAccounts[i][offChainKey].internalAddresses.join("', '") + "'";
 
-        const idsList = allAccounts[i][offChainKey].internalIds.join(', ');
-        const addressesList = "'" + allAccounts[i][offChainKey].internalAddresses.join("', '") + "'";
-
-        if (idsList.length > 0) {
-
-            const result = await knex.raw(`
+    if (idsList.length > 0) {
+      const result = await knex.raw(`
                 SELECT 
                     count(*),
                     round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 2) AS inflow,
@@ -23,44 +22,54 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
                     AND NOT lower(sat."counterParty") in (${addressesList})
             `);
 
-            console.log(allAccounts[i].label, result.rows, parseFloat(result.rows[0].inflow) + parseFloat(result.rows[0].outflow));
+      console.log(
+        allAccounts[i].label,
+        result.rows,
+        parseFloat(result.rows[0].inflow) + parseFloat(result.rows[0].outflow),
+      );
 
-            if (result) {
-                let initialBalance = 0;
+      if (result) {
+        let initialBalance = 0;
 
-                if(allAccounts[i][offChainKey].initialBalanceByToken && allAccounts[i][offChainKey].initialBalanceByToken.DAI){
-                    initialBalance = allAccounts[i][offChainKey].initialBalanceByToken.DAI;
-                }
-
-                formattedResponse.push({
-                    snapshotAccountId: allAccounts[i].accountId,
-                    totalAmount: parseFloat(result.rows[0].outflow || 0) + parseFloat(result.rows[0].inflow || 0),
-                    inflow: result.rows[0].inflow || 0.00,
-                    outflow: result.rows[0].outflow || 0.00,
-                    initialBalance
-                });
-
-            }
+        if (
+          allAccounts[i][offChainKey].initialBalanceByToken &&
+          allAccounts[i][offChainKey].initialBalanceByToken.DAI
+        ) {
+          initialBalance =
+            allAccounts[i][offChainKey].initialBalanceByToken.DAI;
         }
-    }
 
-    await Promise.all(formattedResponse.map(async (resp) => {
-        const query = knex('SnapshotAccountBalance').insert({
-            snapshotAccountId: resp.snapshotAccountId,
-            token: 'DAI',
-            initialBalance: resp.initialBalance,
-            newBalance: parseFloat(resp.initialBalance) + resp.totalAmount,
-            inflow: resp.inflow,
-            outflow: resp.outflow,
-            includesOffChain: offChainIncluded
+        formattedResponse.push({
+          snapshotAccountId: allAccounts[i].accountId,
+          totalAmount:
+            parseFloat(result.rows[0].outflow || 0) +
+            parseFloat(result.rows[0].inflow || 0),
+          inflow: result.rows[0].inflow || 0.0,
+          outflow: result.rows[0].outflow || 0.0,
+          initialBalance,
         });
+      }
+    }
+  }
 
-        console.log(query.toString());
-        return query;
-    }));
+  await Promise.all(
+    formattedResponse.map(async (resp) => {
+      const query = knex("SnapshotAccountBalance").insert({
+        snapshotAccountId: resp.snapshotAccountId,
+        token: "DAI",
+        initialBalance: resp.initialBalance,
+        newBalance: parseFloat(resp.initialBalance) + resp.totalAmount,
+        inflow: resp.inflow,
+        outflow: resp.outflow,
+        includesOffChain: offChainIncluded,
+      });
 
+      console.log(query.toString());
+      return query;
+    }),
+  );
 
-    return formattedResponse;
+  return formattedResponse;
 };
 
 export default insertAccountBalances;

@@ -1,14 +1,17 @@
-import knex from 'knex';
+import knex from "knex";
 
 const db = knex({
-    client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+  client: "pg",
+  connection: process.env.PG_CONNECTION_STRING,
 });
 
 const getData = async () => {
-  console.log("Adding targetSource data to the BudgetStatementTransferRequest...");
+  console.log(
+    "Adding targetSource data to the BudgetStatementTransferRequest...",
+  );
 
-  const bstrQuery = await db.raw(`SELECT cu.id as cuid, cu.code, bs.month, bstr.id as bstrid, cumip."mipCode", cumip."mipUrl", cumip."mipTitle"
+  const bstrQuery =
+    await db.raw(`SELECT cu.id as cuid, cu.code, bs.month, bstr.id as bstrid, cumip."mipCode", cumip."mipUrl", cumip."mipTitle"
 FROM public."CoreUnit" as cu
 LEFT JOIN "BudgetStatement" as bs on bs."ownerId" = cu.id
 LEFT JOIN "BudgetStatementWallet" as bsw on bsw."budgetStatementId" = bs.id
@@ -32,7 +35,7 @@ ORDER BY bstrid;
   // Create an empty array to hold the formatted results
   const formattedResult = [];
 
-  rows.forEach(row => {
+  rows.forEach((row) => {
     const formattedRow = {
       bstrid: row.bstrid,
       targetSourceCode: row.mipCode,
@@ -46,7 +49,7 @@ ORDER BY bstrid;
     // Update existing row
     await db("BudgetStatementTransferRequest")
       .where({
-        id: row.bstrid
+        id: row.bstrid,
       })
       .update({
         targetSourceCode: row.targetSourceCode,
@@ -58,7 +61,6 @@ ORDER BY bstrid;
   // Loop through each row and insert/update the data
   await Promise.all(formattedResult.map(insert));
   return process.exit(0);
-
 };
 
 getData();

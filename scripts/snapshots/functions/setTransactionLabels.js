@@ -1,6 +1,14 @@
-const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) => {
+const setTransactionLabels = async (
+  allAccountsInfo,
+  upstreamDownstream,
+  knex,
+) => {
   const distinctInternalAddresses = Array.from(
-    new Set(allAccountsInfo.map(item => item.offChainIncluded.internalAddresses).flat())
+    new Set(
+      allAccountsInfo
+        .map((item) => item.offChainIncluded.internalAddresses)
+        .flat(),
+    ),
   );
 
   const upstreamSet = upstreamDownstream.upstreamSet;
@@ -12,20 +20,19 @@ const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) =
   const combinedArray = [...upstreamFlat, ...downstreamFlat];
   const flatIds = Array.from(new Set(combinedArray));
 
-  await knex('SnapshotAccountTransaction')
-    .whereIn('snapshotAccountId', flatIds)
-    .whereIn('counterParty', distinctInternalAddresses)
+  await knex("SnapshotAccountTransaction")
+    .whereIn("snapshotAccountId", flatIds)
+    .whereIn("counterParty", distinctInternalAddresses)
     .update({
-      txLabel: 'Internal Transaction'
+      txLabel: "Internal Transaction",
     });
 
-  await knex('SnapshotAccountTransaction')
-    .whereIn('snapshotAccountId', flatIds)
-    .whereNotIn('counterParty', distinctInternalAddresses)
+  await knex("SnapshotAccountTransaction")
+    .whereIn("snapshotAccountId", flatIds)
+    .whereNotIn("counterParty", distinctInternalAddresses)
     .update({
-      txLabel: 'External Transaction'
+      txLabel: "External Transaction",
     });
-
 
   for (const key in upstreamSet) {
     if (upstreamSet.hasOwnProperty(key)) {
@@ -33,9 +40,11 @@ const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) =
       let internalAddressesList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
+        const obj = allAccountsInfo.find(
+          (item) => item.accountId === parseInt(key),
+        );
         if (obj) {
-          obj.offChainIncluded.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach((address) => {
             if (!internalAddressesList.includes(address)) {
               internalAddressesList.push(address);
             }
@@ -47,23 +56,22 @@ const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) =
 
       if (internalAddressesList.length > 0) {
         for (const value of valueArray) {
-          
-          await knex('SnapshotAccountTransaction')
-            .where('snapshotAccountId', value)
-            .where('txLabel', 'Internal Transaction')
-            .whereIn('counterParty', internalAddressesList)
-            .where('amount', '<=', 0)
+          await knex("SnapshotAccountTransaction")
+            .where("snapshotAccountId", value)
+            .where("txLabel", "Internal Transaction")
+            .whereIn("counterParty", internalAddressesList)
+            .where("amount", "<=", 0)
             .update({
-              txLabel: 'Top-up'
+              txLabel: "Top-up",
             });
-  
-          await knex('SnapshotAccountTransaction')
-            .where('snapshotAccountId', value)
-            .where('txLabel', 'Internal Transaction')
-            .whereIn('counterParty', internalAddressesList)
-            .where('amount', '>', 0)
+
+          await knex("SnapshotAccountTransaction")
+            .where("snapshotAccountId", value)
+            .where("txLabel", "Internal Transaction")
+            .whereIn("counterParty", internalAddressesList)
+            .where("amount", ">", 0)
             .update({
-              txLabel: 'Return of Excess Funds'
+              txLabel: "Return of Excess Funds",
             });
         }
       }
@@ -76,9 +84,11 @@ const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) =
       let internalAddressesDownstreamList = [];
 
       for (const value of valueArray) {
-        const obj = allAccountsInfo.find(item => item.accountId === parseInt(key));
+        const obj = allAccountsInfo.find(
+          (item) => item.accountId === parseInt(key),
+        );
         if (obj) {
-          obj.offChainIncluded.internalAddresses.forEach(address => {
+          obj.offChainIncluded.internalAddresses.forEach((address) => {
             if (!internalAddressesDownstreamList.includes(address)) {
               internalAddressesDownstreamList.push(address);
             }
@@ -90,23 +100,22 @@ const setTransactionLabels = async (allAccountsInfo, upstreamDownstream, knex) =
 
       if (internalAddressesDownstreamList.length > 0) {
         for (const value of valueArray) {
-          
-          await knex('SnapshotAccountTransaction')
-            .where('snapshotAccountId', value)
-            .where('txLabel', 'Internal Transaction')
-            .whereIn('counterParty', internalAddressesDownstreamList)
-            .where('amount', '>', 0)
+          await knex("SnapshotAccountTransaction")
+            .where("snapshotAccountId", value)
+            .where("txLabel", "Internal Transaction")
+            .whereIn("counterParty", internalAddressesDownstreamList)
+            .where("amount", ">", 0)
             .update({
-              txLabel: 'Top-up'
+              txLabel: "Top-up",
             });
-  
-          await knex('SnapshotAccountTransaction')
-            .where('snapshotAccountId', value)
-            .where('txLabel', 'Internal Transaction')
-            .whereIn('counterParty', internalAddressesDownstreamList)
-            .where('amount', '<=', 0)
+
+          await knex("SnapshotAccountTransaction")
+            .where("snapshotAccountId", value)
+            .where("txLabel", "Internal Transaction")
+            .whereIn("counterParty", internalAddressesDownstreamList)
+            .where("amount", "<=", 0)
             .update({
-              txLabel: 'Return of Excess Funds'
+              txLabel: "Return of Excess Funds",
             });
         }
       }

@@ -1,22 +1,18 @@
 //Up migration adds Delegates to ResourceType and adds the Role DelegatesAdmin
 export async function up(knex) {
-
-  console.log('Adding Delegates to ResourceType');
+  console.log("Adding Delegates to ResourceType");
   await knex.schema.raw(`
   ALTER TYPE "ResourceType" ADD VALUE 'Delegates';
   COMMIT;
 `);
 
-  await knex('Role').insert({
-    roleName: 'DelegatesAdmin'
+  await knex("Role").insert({
+    roleName: "DelegatesAdmin",
   });
-
 }
-
 
 //Down migration reverts the up migration change
 export async function down(knex) {
-
   //Revert ResourceType to original values
   await knex.schema.raw(`
   CREATE TYPE new_ResourceType AS ENUM ('System', 'CoreUnit');
@@ -33,8 +29,5 @@ export async function down(knex) {
   
 `);
 
-  await knex('Role')
-    .where('roleName', '=', 'DelegatesAdmin')
-    .delete();
-
+  await knex("Role").where("roleName", "=", "DelegatesAdmin").delete();
 }

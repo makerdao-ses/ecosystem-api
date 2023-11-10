@@ -1,49 +1,49 @@
-  import fetch from 'node-fetch';
-  import knex from 'knex';
+import fetch from "node-fetch";
+import knex from "knex";
 
-  const DIN_API_USER = process.env.DIN_API_USER;
-  const DIN_API_PW = process.env.DIN_API_PW;
+const DIN_API_USER = process.env.DIN_API_USER;
+const DIN_API_PW = process.env.DIN_API_PW;
 
-  // Connect to database selected in the .env file
-  const db = knex({
-    client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
-    idleTimeoutMillis: 0,
+// Connect to database selected in the .env file
+const db = knex({
+  client: "pg",
+  connection: process.env.PG_CONNECTION_STRING,
+  idleTimeoutMillis: 0,
+});
+
+// First Curl Request to get the Bearer token
+const getToken = async () => {
+  const url = "https://data-api.makerdao.network/v1/login/access-token";
+  const body = new URLSearchParams({
+    grant_type: "",
+    username: DIN_API_USER,
+    password: DIN_API_PW,
+    scope: "",
+    client_id: "",
+    client_secret: "",
   });
-
-  // First Curl Request to get the Bearer token
-  const getToken = async () => {
-    const url = 'https://data-api.makerdao.network/v1/login/access-token';
-    const body = new URLSearchParams({
-      'grant_type': '',
-      'username': DIN_API_USER,
-      'password': DIN_API_PW,
-      'scope': '',
-      'client_id': '',
-      'client_secret': ''
-    });
-    const headers = {
-      'accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
-    const response = await fetch(url, {
-      method: 'POST',
-      body: body,
-      headers: headers
-    });
-    const data = await response.json();
-    const token = data.access_token;
-    return token;
+  const headers = {
+    accept: "application/json",
+    "Content-Type": "application/x-www-form-urlencoded",
   };
+  const response = await fetch(url, {
+    method: "POST",
+    body: body,
+    headers: headers,
+  });
+  const data = await response.json();
+  const token = data.access_token;
+  return token;
+};
 
-  var transactionCount = 0;
-  var accountCount = 0;
-  var accountPCount = 0;
+var transactionCount = 0;
+var accountCount = 0;
+var accountPCount = 0;
 
-  //List of wallets to be sent to the DIN API
-  const cuWallets = ["0x01d26f8c5cc009868a4bf66e268c17b057ff7a73"];
-  
-  /*["0x25307ab59cd5d8b4e2c01218262ddf6a89ff86da",
+//List of wallets to be sent to the DIN API
+const cuWallets = ["0x01d26f8c5cc009868a4bf66e268c17b057ff7a73"];
+
+/*["0x25307ab59cd5d8b4e2c01218262ddf6a89ff86da",
   "0xd740882b8616b50d0b317fdff17ec3f4f853f44f",
   "0x1ee3eca7aef17d1e74ed7c447ccba61ac76adba9",
   "0x99e1696a680c0d9f426be20400e468089e7fdb0f",
@@ -111,527 +111,267 @@
   "0x1ef753934c40a72a60eab12a68b6f8854439aa78",
   "0x7ae109a63ff4dc852e063a673b40bed85d22e585",
   "0xe78658a8acfe982fde841abb008e57e6545e38b3"];*/
-  
-  // Core Unit Transfers
-  const coreUnitTransfers = async (addresses) => {
-    const token = 'DAI';
-    const headers = {
-      'accept': 'application/json',
-      'Authorization': 'Bearer ' + await getToken()
-    };
-    let data = [];
-    let skip = 0;
-    let response = null;
-    let jsonData = null; // declare jsonData variable
-    let apiCalls = 0;
 
-    let countGov = 0;
-    let countPe = 0;
-    let countOra = 0;
-  
-    // loop through each address
-    for (let i = 0; i < addresses.length; i++) {
+// Core Unit Transfers
+const coreUnitTransfers = async (addresses) => {
+  const token = "DAI";
+  const headers = {
+    accept: "application/json",
+    Authorization: "Bearer " + (await getToken()),
+  };
+  let data = [];
+  let skip = 0;
+  let response = null;
+  let jsonData = null; // declare jsonData variable
+  let apiCalls = 0;
 
-      if(addresses[i] != '0x01d26f8c5cc009868a4bf66e268c17b057ff7a73'){
-      skip = 0; 
+  let countGov = 0;
+  let countPe = 0;
+  let countOra = 0;
+
+  // loop through each address
+  for (let i = 0; i < addresses.length; i++) {
+    if (addresses[i] != "0x01d26f8c5cc009868a4bf66e268c17b057ff7a73") {
+      skip = 0;
 
       const fromUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${addresses[i]}&skip=`;
       const toUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&to_address=${addresses[i]}&skip=`;
-  
+
       // make the API call for from_address
       do {
         response = await fetch(fromUrl + skip, {
-          method: 'GET',
-          headers: headers
+          method: "GET",
+          headers: headers,
         });
         jsonData = await response.json(); // assign response to jsonData
-  
-        if (jsonData.detail === 'Could not validate credentials') {
-          console.log('Error: Could not validate credentials');
+
+        if (jsonData.detail === "Could not validate credentials") {
+          console.log("Error: Could not validate credentials");
           return data;
         }
         data = data.concat(jsonData);
-        
-        skip+=jsonData.length;
-        
+
+        skip += jsonData.length;
+
         apiCalls++;
 
-        console.log(`Address ${i+1}: API call ${apiCalls} - from_address - fetching data...`);
-        
+        console.log(
+          `Address ${
+            i + 1
+          }: API call ${apiCalls} - from_address - fetching data...`,
+        );
       } while (jsonData.length !== 0);
-  
+
       // reset skip and make the API call for to_address
       skip = 0;
       jsonData = null;
-  
+
       do {
         response = await fetch(toUrl + skip, {
-          method: 'GET',
-          headers: headers
+          method: "GET",
+          headers: headers,
         });
         jsonData = await response.json(); // assign response to jsonData
-  
-        if (jsonData.detail === 'Could not validate credentials') {
-          console.log('Error: Could not validate credentials');
+
+        if (jsonData.detail === "Could not validate credentials") {
+          console.log("Error: Could not validate credentials");
           return data;
         }
         data = data.concat(jsonData);
-        
-        skip+=jsonData.length;
-          
-        apiCalls++;
-        console.log(`Address ${i+1}: API call ${apiCalls} - to_address - fetching data...`);
-      } while (jsonData.length !== 0);
-      }
 
-      if (addresses[i] === '0x01d26f8c5cc009868a4bf66e268c17b057ff7a73'){
-        
-        skip = 0; 
-        
-
-      const fromUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${addresses[i]}&skip=`;
-      const toUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&to_address=${addresses[i]}&skip=`;
-  
-      // make the API call for from_address
-      do {
-        response = await fetch(fromUrl + skip, {
-          method: 'GET',
-          headers: headers
-        });
-        jsonData = await response.json(); // assign response to jsonData
-  
-        if (jsonData.detail === 'Could not validate credentials') {
-          console.log('Error: Could not validate credentials');
-          return data;
-        }
-        data = data.concat(jsonData);
-        
-        skip+=jsonData.length;
+        skip += jsonData.length;
 
         apiCalls++;
-        
-
-        console.log(`Address ${i+1}: API call ${apiCalls} - from_address - fetching data...`);
-        
+        console.log(
+          `Address ${
+            i + 1
+          }: API call ${apiCalls} - to_address - fetching data...`,
+        );
       } while (jsonData.length !== 0);
-  
-      // reset skip and make the API call for to_address
-      skip = 0;
-      jsonData = null;
-  
-      do {
-        response = await fetch(toUrl + skip, {
-          method: 'GET',
-          headers: headers
-        });
-        jsonData = await response.json(); // assign response to jsonData
-  
-        if (jsonData.detail === 'Could not validate credentials') {
-          console.log('Error: Could not validate credentials');
-          return data;
-        }
-        data = data.concat(jsonData);
-        
-        skip+=jsonData.length;
-        
-        apiCalls++;
-        console.log(`Address ${i+1}: API call ${apiCalls} - to_address - fetching data...`);
-      } while (jsonData.length !== 0);
-      }
     }
-    console.log(`Total transaction length: ${data.length}`);
-    return data;
-  };
 
-  // Check for existing SnapshotAccount entry
-  const snapshotEntryCheck = async (account) => {
+    if (addresses[i] === "0x01d26f8c5cc009868a4bf66e268c17b057ff7a73") {
+      skip = 0;
 
-    const existingAccount = await db('SnapshotAccount')
-      .select('SnapshotAccount.id')
-      .join('Snapshot', 'Snapshot.id', '=', 'SnapshotAccount.snapshotId')
-      .where({ 
-        accountAddress: account
-      });
+      const fromUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${addresses[i]}&skip=`;
+      const toUrl = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&to_address=${addresses[i]}&skip=`;
 
-    return existingAccount || null;
-  };
+      // make the API call for from_address
+      do {
+        response = await fetch(fromUrl + skip, {
+          method: "GET",
+          headers: headers,
+        });
+        jsonData = await response.json(); // assign response to jsonData
 
-  // Check for existing SnapshotAccount Protocol entry
-  const snapshotProtocolEntryCheck = async (account, code) => {
+        if (jsonData.detail === "Could not validate credentials") {
+          console.log("Error: Could not validate credentials");
+          return data;
+        }
+        data = data.concat(jsonData);
 
-    const existingAccount = await db('SnapshotAccount')
-    .select('SnapshotAccount.id')
-    .join('Snapshot', 'Snapshot.id', '=', 'SnapshotAccount.snapshotId')
-    .join({ cu: 'CoreUnit' }, 'cu.id', '=', 'Snapshot.ownerId')
+        skip += jsonData.length;
+
+        apiCalls++;
+
+        console.log(
+          `Address ${
+            i + 1
+          }: API call ${apiCalls} - from_address - fetching data...`,
+        );
+      } while (jsonData.length !== 0);
+
+      // reset skip and make the API call for to_address
+      skip = 0;
+      jsonData = null;
+
+      do {
+        response = await fetch(toUrl + skip, {
+          method: "GET",
+          headers: headers,
+        });
+        jsonData = await response.json(); // assign response to jsonData
+
+        if (jsonData.detail === "Could not validate credentials") {
+          console.log("Error: Could not validate credentials");
+          return data;
+        }
+        data = data.concat(jsonData);
+
+        skip += jsonData.length;
+
+        apiCalls++;
+        console.log(
+          `Address ${
+            i + 1
+          }: API call ${apiCalls} - to_address - fetching data...`,
+        );
+      } while (jsonData.length !== 0);
+    }
+  }
+  console.log(`Total transaction length: ${data.length}`);
+  return data;
+};
+
+// Check for existing SnapshotAccount entry
+const snapshotEntryCheck = async (account) => {
+  const existingAccount = await db("SnapshotAccount")
+    .select("SnapshotAccount.id")
+    .join("Snapshot", "Snapshot.id", "=", "SnapshotAccount.snapshotId")
     .where({
       accountAddress: account,
-      'cu.code': code
     });
 
-    return existingAccount || null;
-  };
+  return existingAccount || null;
+};
 
-  // Insert Snapshot data into the table
-  const insertSnapshotData = async (data) => {
+// Check for existing SnapshotAccount Protocol entry
+const snapshotProtocolEntryCheck = async (account, code) => {
+  const existingAccount = await db("SnapshotAccount")
+    .select("SnapshotAccount.id")
+    .join("Snapshot", "Snapshot.id", "=", "SnapshotAccount.snapshotId")
+    .join({ cu: "CoreUnit" }, "cu.id", "=", "Snapshot.ownerId")
+    .where({
+      accountAddress: account,
+      "cu.code": code,
+    });
 
-    //Reset gov transaction entries
-    const govDeletedEntries = await db('SnapshotAccountTransaction')
-  .whereIn('snapshotAccountId', function() {
-    this.select('id')
-      .from('SnapshotAccount')
-      .where('accountAddress', '0x01d26f8c5cc009868a4bf66e268c17b057ff7a73');
-  })
-  .del();
+  return existingAccount || null;
+};
 
-    console.log('Cleared '+govDeletedEntries+' GOV entries');
-    
-    for (let i = 0; i < data.length; i++) {
-      const txData = data[i];
-      const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-      const transactionTime = txData.timestamp;
-      let code = txData.code;
+// Insert Snapshot data into the table
+const insertSnapshotData = async (data) => {
+  //Reset gov transaction entries
+  const govDeletedEntries = await db("SnapshotAccountTransaction")
+    .whereIn("snapshotAccountId", function () {
+      this.select("id")
+        .from("SnapshotAccount")
+        .where("accountAddress", "0x01d26f8c5cc009868a4bf66e268c17b057ff7a73");
+    })
+    .del();
 
-      //Handle delegates
-      if (txData.type === 'delegates') {
-        await delWallet(txData);
-        continue;
-      }
-      
-      //Handle GOV
-      if (account === '0x01d26f8c5cc009868a4bf66e268c17b057ff7a73') {
-        await govWallet(txData);
-        continue;
-      }
-      
+  console.log("Cleared " + govDeletedEntries + " GOV entries");
 
-      // Check if the account already exists in the SnapshotAccount table
-      const [existingAccount] = await snapshotEntryCheck(account);
-      
-      // Retrieve Snapshot ids - For Core Units
-      const snapshots = await db
-        .select('Snapshot.id')
-        .from('Snapshot')
-        .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-        .innerJoin('CoreUnit', 'Snapshot.ownerId', 'CoreUnit.id')
-        .andWhere('CoreUnit.code', '=', code);
-
-      
-      let snapshotId;
-      try {
-        snapshotId = snapshots[0].id;
-      } catch (error) {
-        console.error(`Snapshot not found for account: ${account} and code: ${code}`);
-        continue;
-      }
-
-      
-
-      let accountId;
-      if (existingAccount) {
-        accountId = existingAccount.id;
-      } else {
-        // Insert a new account and retrieve the id
-          
-          if (snapshotId != null) {
-            const insertedAccount = await db('SnapshotAccount')
-              .insert({
-                snapshotId: snapshotId,
-                accountType: 'singular',
-                accountAddress: account,
-                accountLabel: code
-              })
-              .returning('id');
-            accountCount++;
-            accountId = insertedAccount[0].id;
-          }
-        }
-
-      // Insert the SnapshotAccountTransaction with the corresponding accountId
-      const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-      const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
-
-      //Drop records for same transaction hash for account (filter account + transaction hash)
-      if (accountId) {
-        // Check if the transaction already exists
-        const [existingTransaction] = await db('SnapshotAccountTransaction')
-          .where({
-            snapshotAccountId: accountId
-          })
-          .andWhere({tx_hash: txData.tx_hash})
-          .andWhere({amount: amount})
-          .andWhere({counterParty: counterParty})
-          .andWhere({timestamp: transactionTime})
-          .andWhere({block: txData.block});
-          
-
-        if (!existingTransaction) {
-          // If the transaction does not exist, insert it
-          await db('SnapshotAccountTransaction').insert({
-            block: txData.block,
-            timestamp: txData.timestamp,
-            tx_hash: txData.tx_hash,
-            token: txData.token,
-            counterParty: counterParty,
-            amount: amount,
-            snapshotAccountId: accountId,
-          });
-          transactionCount++;
-
-          //Check MakerProtocol addressses
-          if (counterParty.toLowerCase() === '0x0048fc4357db3c0f45adea433a07a20769ddb0cf' ||
-            counterParty.toLowerCase() === '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb' ||
-            counterParty.toLowerCase() === '0x0000000000000000000000000000000000000000') {
-
-            const [existingAccountP] = await snapshotProtocolEntryCheck(counterParty, code);
-
-            let accountIdProtocol;
-
-            if (existingAccountP) {
-              accountIdProtocol = existingAccountP.id;
-            } else {
-                if (snapshotId != null) {
-                  let insertedAccountProtocol = await db('SnapshotAccount')
-                    .insert({
-                      snapshotId: snapshotId,
-                      accountType: 'singular',
-                      accountAddress: counterParty,
-                      accountLabel: code
-                    })
-                    .returning('id');
-                    accountIdProtocol = insertedAccountProtocol[0].id;
-                    accountPCount++;
-                  
-                }
-              }
-            
-
-            if (accountIdProtocol) {
-              // Check if the transaction already exists for the protocol counterParty
-              const [existingProtocolTransaction] = await db('SnapshotAccountTransaction')
-                .where({
-                  snapshotAccountId: accountIdProtocol,
-                })
-                .andWhere({tx_hash: txData.tx_hash})
-                .andWhere({amount: -amount})
-                .andWhere({counterParty: account});
-
-              if (!existingProtocolTransaction) {
-                // If the transaction does not exist, insert it
-                await db('SnapshotAccountTransaction').insert({
-                  block: txData.block,
-                  timestamp: txData.timestamp,
-                  tx_hash: txData.tx_hash,
-                  token: txData.token,
-                  counterParty: account,
-                  amount: -amount,
-                  snapshotAccountId: accountIdProtocol,
-                });
-                transactionCount++;
-              }
-            }
-          }
-        }
-      }
-    }
-          
-
-    console.log(transactionCount +" transactions added to the DB");
-    console.log(accountCount +" accounts added to the DB");
-    console.log(accountPCount +" Maker Protocol accounts added to the DB");
-  };
-
-  //Handle delegate wallets
-  const delWallet = async (txData) => {
-      
-        const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-        const transactionTime = txData.timestamp;
-        let code = txData.code;
-        let label = txData.label;
-
-        let owner = 'DEL';
-  
-        // Check if the account already exists in the SnapshotAccount table
-        const [existingAccount] = await snapshotEntryCheck(account);
-        
-        // Retrieve Snapshot ids - For Core Units
-        const snapshots = await db('Snapshot')
-        .select('Snapshot.id')
-        .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-        .where('Snapshot.ownerType', '=', 'DelegatesDraft');
-      
-        let snapshotId = snapshots[0].id;
-  
-        let accountId;
-        
-        if (existingAccount) {
-          accountId = existingAccount.id;
-        } else {
-            if (snapshotId != null) {
-              const insertedAccount = await db('SnapshotAccount')
-                .insert({
-                  snapshotId: snapshotId,
-                  accountType: 'singular',
-                  accountAddress: account,
-                  accountLabel: label
-                })
-                .returning('id');
-              accountCount++;
-              accountId = insertedAccount[0].id;
-            }
-          }
-        
-        // Insert the SnapshotAccountTransaction with the corresponding accountId
-        const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-        const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
-  
-        //Drop records for same transaction hash for account (filter account + transaction hash)
-        if (accountId) {
-          // Check if the transaction already exists
-          const [existingTransaction] = await db('SnapshotAccountTransaction')
-            .where({
-              snapshotAccountId: accountId
-            })
-            .andWhere({tx_hash: txData.tx_hash})
-            .andWhere({amount: amount})
-            .andWhere({counterParty: counterParty})
-            .andWhere({timestamp: transactionTime})
-            .andWhere({block: txData.block});
-            
-  
-          if (!existingTransaction) {
-            // If the transaction does not exist, insert it
-            await db('SnapshotAccountTransaction').insert({
-              block: txData.block,
-              timestamp: txData.timestamp,
-              tx_hash: txData.tx_hash,
-              token: txData.token,
-              counterParty: counterParty,
-              amount: amount,
-              snapshotAccountId: accountId,
-            });
-            transactionCount++;
-  
-            //Check MakerProtocol addressses
-            if (counterParty.toLowerCase() === '0x0048fc4357db3c0f45adea433a07a20769ddb0cf' ||
-              counterParty.toLowerCase() === '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb' ||
-              counterParty.toLowerCase() === '0x0000000000000000000000000000000000000000') {
-  
-  
-              const [existingAccountP] = await db('Snapshot')
-              .select('SnapshotAccount.id')
-              .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-              .where('Snapshot.ownerType', '=', 'DelegatesDraft')
-              .andWhere('SnapshotAccount.accountAddress', '=', counterParty);
-            
-              let accountIdProtocol;
-  
-              if (existingAccountP) {
-                accountIdProtocol = existingAccountP.id;
-              } else {
-                  if (snapshotId != null) {
-                    const insertedAccountProtocol = await db('SnapshotAccount')
-                      .insert({
-                        snapshotId: snapshotId,
-                        accountType: 'singular',
-                        accountAddress: counterParty,
-                        accountLabel: owner
-                      })
-                      .returning('id');
-                      accountPCount++;
-                      accountIdProtocol = insertedAccountProtocol[0].id;
-                  }
-                }
-                
-              if (accountIdProtocol) {
-                // Check if the transaction already exists for the protocol counterParty
-                const [existingProtocolTransaction] = await db('SnapshotAccountTransaction')
-                  .where({
-                    snapshotAccountId: accountIdProtocol,
-                  })
-                  .andWhere({tx_hash: txData.tx_hash})
-                  .andWhere({amount: -amount})
-                  .andWhere({counterParty: account});
-  
-                if (!existingProtocolTransaction) {
-                  // If the transaction does not exist, insert it
-                  await db('SnapshotAccountTransaction').insert({
-                    block: txData.block,
-                    timestamp: txData.timestamp,
-                    tx_hash: txData.tx_hash,
-                    token: txData.token,
-                    counterParty: account,
-                    amount: -amount,
-                    snapshotAccountId: accountIdProtocol,
-                  });
-                  transactionCount++;
-                }
-              }
-            }
-          }
-        }
-      };
-
-  //Handle spf wallets - TO DO 
-  const spfWallet = async (txData) => {
-      
-    const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
+  for (let i = 0; i < data.length; i++) {
+    const txData = data[i];
+    const account = txData.flow === "outflow" ? txData.sender : txData.receiver;
     const transactionTime = txData.timestamp;
     let code = txData.code;
-    let label = txData.label;
 
-    let owner = 'DEL';
+    //Handle delegates
+    if (txData.type === "delegates") {
+      await delWallet(txData);
+      continue;
+    }
+
+    //Handle GOV
+    if (account === "0x01d26f8c5cc009868a4bf66e268c17b057ff7a73") {
+      await govWallet(txData);
+      continue;
+    }
 
     // Check if the account already exists in the SnapshotAccount table
     const [existingAccount] = await snapshotEntryCheck(account);
-    
+
     // Retrieve Snapshot ids - For Core Units
-    const snapshots = await db('Snapshot')
-    .select('Snapshot.id')
-    .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-    .where('Snapshot.ownerType', '=', 'DelegatesDraft');
-  
-    let snapshotId = snapshots[0].id;
+    const snapshots = await db
+      .select("Snapshot.id")
+      .from("Snapshot")
+      .leftJoin("SnapshotAccount", "Snapshot.id", "SnapshotAccount.snapshotId")
+      .innerJoin("CoreUnit", "Snapshot.ownerId", "CoreUnit.id")
+      .andWhere("CoreUnit.code", "=", code);
+
+    let snapshotId;
+    try {
+      snapshotId = snapshots[0].id;
+    } catch (error) {
+      console.error(
+        `Snapshot not found for account: ${account} and code: ${code}`,
+      );
+      continue;
+    }
 
     let accountId;
-    
     if (existingAccount) {
       accountId = existingAccount.id;
     } else {
-        if (snapshotId != null) {
-          const insertedAccount = await db('SnapshotAccount')
-            .insert({
-              snapshotId: snapshotId,
-              accountType: 'singular',
-              accountAddress: account,
-              accountLabel: label
-            })
-            .returning('id');
-          accountCount++;
-          accountId = insertedAccount[0].id;
-        }
+      // Insert a new account and retrieve the id
+
+      if (snapshotId != null) {
+        const insertedAccount = await db("SnapshotAccount")
+          .insert({
+            snapshotId: snapshotId,
+            accountType: "singular",
+            accountAddress: account,
+            accountLabel: code,
+          })
+          .returning("id");
+        accountCount++;
+        accountId = insertedAccount[0].id;
       }
-    
+    }
+
     // Insert the SnapshotAccountTransaction with the corresponding accountId
-    const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-    const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
+    const counterParty =
+      txData.flow === "inflow" ? txData.sender : txData.receiver;
+    const amount = txData.flow === "inflow" ? txData.amount : -txData.amount;
 
     //Drop records for same transaction hash for account (filter account + transaction hash)
     if (accountId) {
       // Check if the transaction already exists
-      const [existingTransaction] = await db('SnapshotAccountTransaction')
+      const [existingTransaction] = await db("SnapshotAccountTransaction")
         .where({
-          snapshotAccountId: accountId
+          snapshotAccountId: accountId,
         })
-        .andWhere({tx_hash: txData.tx_hash})
-        .andWhere({amount: amount})
-        .andWhere({counterParty: counterParty})
-        .andWhere({timestamp: transactionTime})
-        .andWhere({block: txData.block});
-        
+        .andWhere({ tx_hash: txData.tx_hash })
+        .andWhere({ amount: amount })
+        .andWhere({ counterParty: counterParty })
+        .andWhere({ timestamp: transactionTime })
+        .andWhere({ block: txData.block });
 
       if (!existingTransaction) {
         // If the transaction does not exist, insert it
-        await db('SnapshotAccountTransaction').insert({
+        await db("SnapshotAccountTransaction").insert({
           block: txData.block,
           timestamp: txData.timestamp,
           tx_hash: txData.tx_hash,
@@ -643,49 +383,53 @@
         transactionCount++;
 
         //Check MakerProtocol addressses
-        if (counterParty.toLowerCase() === '0x0048fc4357db3c0f45adea433a07a20769ddb0cf' ||
-          counterParty.toLowerCase() === '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb' ||
-          counterParty.toLowerCase() === '0x0000000000000000000000000000000000000000') {
+        if (
+          counterParty.toLowerCase() ===
+            "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" ||
+          counterParty.toLowerCase() ===
+            "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb" ||
+          counterParty.toLowerCase() ===
+            "0x0000000000000000000000000000000000000000"
+        ) {
+          const [existingAccountP] = await snapshotProtocolEntryCheck(
+            counterParty,
+            code,
+          );
 
-
-          const [existingAccountP] = await db('Snapshot')
-          .select('SnapshotAccount.id')
-          .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-          .where('Snapshot.ownerType', '=', 'DelegatesDraft')
-          .andWhere('SnapshotAccount.accountAddress', '=', counterParty);
-        
           let accountIdProtocol;
 
           if (existingAccountP) {
             accountIdProtocol = existingAccountP.id;
           } else {
-              if (snapshotId != null) {
-                const insertedAccountProtocol = await db('SnapshotAccount')
-                  .insert({
-                    snapshotId: snapshotId,
-                    accountType: 'singular',
-                    accountAddress: counterParty,
-                    accountLabel: owner
-                  })
-                  .returning('id');
-                  accountPCount++;
-                  accountIdProtocol = insertedAccountProtocol[0].id;
-              }
+            if (snapshotId != null) {
+              let insertedAccountProtocol = await db("SnapshotAccount")
+                .insert({
+                  snapshotId: snapshotId,
+                  accountType: "singular",
+                  accountAddress: counterParty,
+                  accountLabel: code,
+                })
+                .returning("id");
+              accountIdProtocol = insertedAccountProtocol[0].id;
+              accountPCount++;
             }
-            
+          }
+
           if (accountIdProtocol) {
             // Check if the transaction already exists for the protocol counterParty
-            const [existingProtocolTransaction] = await db('SnapshotAccountTransaction')
+            const [existingProtocolTransaction] = await db(
+              "SnapshotAccountTransaction",
+            )
               .where({
                 snapshotAccountId: accountIdProtocol,
               })
-              .andWhere({tx_hash: txData.tx_hash})
-              .andWhere({amount: -amount})
-              .andWhere({counterParty: account});
+              .andWhere({ tx_hash: txData.tx_hash })
+              .andWhere({ amount: -amount })
+              .andWhere({ counterParty: account });
 
             if (!existingProtocolTransaction) {
               // If the transaction does not exist, insert it
-              await db('SnapshotAccountTransaction').insert({
+              await db("SnapshotAccountTransaction").insert({
                 block: txData.block,
                 timestamp: txData.timestamp,
                 tx_hash: txData.tx_hash,
@@ -700,134 +444,419 @@
         }
       }
     }
-  };
+  }
 
+  console.log(transactionCount + " transactions added to the DB");
+  console.log(accountCount + " accounts added to the DB");
+  console.log(accountPCount + " Maker Protocol accounts added to the DB");
+};
 
-  //Handle GOV wallet
-  const govWallet = async (txData) => {
-    
-      const account = txData.flow === 'outflow' ? txData.sender : txData.receiver;
-      let code = txData.code;
+//Handle delegate wallets
+const delWallet = async (txData) => {
+  const account = txData.flow === "outflow" ? txData.sender : txData.receiver;
+  const transactionTime = txData.timestamp;
+  let code = txData.code;
+  let label = txData.label;
 
-      // Check if the account already exists in the SnapshotAccount table
-      const existingAccount = await snapshotEntryCheck(account);
-      
-      // Retrieve Snapshot ids - For Core Units
-      const snapshots = await db('Snapshot')
-      .distinct('Snapshot.id')
-      .leftJoin('SnapshotAccount', 'Snapshot.id', 'SnapshotAccount.snapshotId')
-      .innerJoin('CoreUnit', 'Snapshot.ownerId', 'CoreUnit.id')
-      .where('CoreUnit.code', '=', code);
+  let owner = "DEL";
 
-      
-      let snapshotId;
+  // Check if the account already exists in the SnapshotAccount table
+  const [existingAccount] = await snapshotEntryCheck(account);
 
-      try {
-        snapshotId = snapshots[0].id;
-      } catch (error) {
-        console.error(`Snapshot not found for account: ${account}`);
-      }
+  // Retrieve Snapshot ids - For Core Units
+  const snapshots = await db("Snapshot")
+    .select("Snapshot.id")
+    .leftJoin("SnapshotAccount", "Snapshot.id", "SnapshotAccount.snapshotId")
+    .where("Snapshot.ownerType", "=", "DelegatesDraft");
 
-      let accountId;
+  let snapshotId = snapshots[0].id;
 
-      if (existingAccount) {
-        accountId = existingAccount[0].id;
-      } else {
-        // Insert a new account and retrieve the id
-          
+  let accountId;
+
+  if (existingAccount) {
+    accountId = existingAccount.id;
+  } else {
+    if (snapshotId != null) {
+      const insertedAccount = await db("SnapshotAccount")
+        .insert({
+          snapshotId: snapshotId,
+          accountType: "singular",
+          accountAddress: account,
+          accountLabel: label,
+        })
+        .returning("id");
+      accountCount++;
+      accountId = insertedAccount[0].id;
+    }
+  }
+
+  // Insert the SnapshotAccountTransaction with the corresponding accountId
+  const counterParty =
+    txData.flow === "inflow" ? txData.sender : txData.receiver;
+  const amount = txData.flow === "inflow" ? txData.amount : -txData.amount;
+
+  //Drop records for same transaction hash for account (filter account + transaction hash)
+  if (accountId) {
+    // Check if the transaction already exists
+    const [existingTransaction] = await db("SnapshotAccountTransaction")
+      .where({
+        snapshotAccountId: accountId,
+      })
+      .andWhere({ tx_hash: txData.tx_hash })
+      .andWhere({ amount: amount })
+      .andWhere({ counterParty: counterParty })
+      .andWhere({ timestamp: transactionTime })
+      .andWhere({ block: txData.block });
+
+    if (!existingTransaction) {
+      // If the transaction does not exist, insert it
+      await db("SnapshotAccountTransaction").insert({
+        block: txData.block,
+        timestamp: txData.timestamp,
+        tx_hash: txData.tx_hash,
+        token: txData.token,
+        counterParty: counterParty,
+        amount: amount,
+        snapshotAccountId: accountId,
+      });
+      transactionCount++;
+
+      //Check MakerProtocol addressses
+      if (
+        counterParty.toLowerCase() ===
+          "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" ||
+        counterParty.toLowerCase() ===
+          "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb" ||
+        counterParty.toLowerCase() ===
+          "0x0000000000000000000000000000000000000000"
+      ) {
+        const [existingAccountP] = await db("Snapshot")
+          .select("SnapshotAccount.id")
+          .leftJoin(
+            "SnapshotAccount",
+            "Snapshot.id",
+            "SnapshotAccount.snapshotId",
+          )
+          .where("Snapshot.ownerType", "=", "DelegatesDraft")
+          .andWhere("SnapshotAccount.accountAddress", "=", counterParty);
+
+        let accountIdProtocol;
+
+        if (existingAccountP) {
+          accountIdProtocol = existingAccountP.id;
+        } else {
           if (snapshotId != null) {
-            const insertedAccount = await db('SnapshotAccount')
+            const insertedAccountProtocol = await db("SnapshotAccount")
               .insert({
                 snapshotId: snapshotId,
-                accountType: 'singular',
-                accountAddress: account,
-                accountLabel: code
+                accountType: "singular",
+                accountAddress: counterParty,
+                accountLabel: owner,
               })
-              .returning('id');
-            accountCount++;
-            accountId = insertedAccount[0].id;
+              .returning("id");
+            accountPCount++;
+            accountIdProtocol = insertedAccountProtocol[0].id;
           }
         }
 
-      // Insert the SnapshotAccountTransaction with the corresponding accountId
-      const counterParty = txData.flow === 'inflow' ? txData.sender : txData.receiver;
-      const amount = txData.flow === 'inflow' ? txData.amount : -txData.amount;
+        if (accountIdProtocol) {
+          // Check if the transaction already exists for the protocol counterParty
+          const [existingProtocolTransaction] = await db(
+            "SnapshotAccountTransaction",
+          )
+            .where({
+              snapshotAccountId: accountIdProtocol,
+            })
+            .andWhere({ tx_hash: txData.tx_hash })
+            .andWhere({ amount: -amount })
+            .andWhere({ counterParty: account });
 
-      //Drop records for same transaction hash for account (filter account + transaction hash)
-      if (accountId) {
-    
-          await db('SnapshotAccountTransaction').insert({
+          if (!existingProtocolTransaction) {
+            // If the transaction does not exist, insert it
+            await db("SnapshotAccountTransaction").insert({
+              block: txData.block,
+              timestamp: txData.timestamp,
+              tx_hash: txData.tx_hash,
+              token: txData.token,
+              counterParty: account,
+              amount: -amount,
+              snapshotAccountId: accountIdProtocol,
+            });
+            transactionCount++;
+          }
+        }
+      }
+    }
+  }
+};
+
+//Handle spf wallets - TO DO
+const spfWallet = async (txData) => {
+  const account = txData.flow === "outflow" ? txData.sender : txData.receiver;
+  const transactionTime = txData.timestamp;
+  let code = txData.code;
+  let label = txData.label;
+
+  let owner = "DEL";
+
+  // Check if the account already exists in the SnapshotAccount table
+  const [existingAccount] = await snapshotEntryCheck(account);
+
+  // Retrieve Snapshot ids - For Core Units
+  const snapshots = await db("Snapshot")
+    .select("Snapshot.id")
+    .leftJoin("SnapshotAccount", "Snapshot.id", "SnapshotAccount.snapshotId")
+    .where("Snapshot.ownerType", "=", "DelegatesDraft");
+
+  let snapshotId = snapshots[0].id;
+
+  let accountId;
+
+  if (existingAccount) {
+    accountId = existingAccount.id;
+  } else {
+    if (snapshotId != null) {
+      const insertedAccount = await db("SnapshotAccount")
+        .insert({
+          snapshotId: snapshotId,
+          accountType: "singular",
+          accountAddress: account,
+          accountLabel: label,
+        })
+        .returning("id");
+      accountCount++;
+      accountId = insertedAccount[0].id;
+    }
+  }
+
+  // Insert the SnapshotAccountTransaction with the corresponding accountId
+  const counterParty =
+    txData.flow === "inflow" ? txData.sender : txData.receiver;
+  const amount = txData.flow === "inflow" ? txData.amount : -txData.amount;
+
+  //Drop records for same transaction hash for account (filter account + transaction hash)
+  if (accountId) {
+    // Check if the transaction already exists
+    const [existingTransaction] = await db("SnapshotAccountTransaction")
+      .where({
+        snapshotAccountId: accountId,
+      })
+      .andWhere({ tx_hash: txData.tx_hash })
+      .andWhere({ amount: amount })
+      .andWhere({ counterParty: counterParty })
+      .andWhere({ timestamp: transactionTime })
+      .andWhere({ block: txData.block });
+
+    if (!existingTransaction) {
+      // If the transaction does not exist, insert it
+      await db("SnapshotAccountTransaction").insert({
+        block: txData.block,
+        timestamp: txData.timestamp,
+        tx_hash: txData.tx_hash,
+        token: txData.token,
+        counterParty: counterParty,
+        amount: amount,
+        snapshotAccountId: accountId,
+      });
+      transactionCount++;
+
+      //Check MakerProtocol addressses
+      if (
+        counterParty.toLowerCase() ===
+          "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" ||
+        counterParty.toLowerCase() ===
+          "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb" ||
+        counterParty.toLowerCase() ===
+          "0x0000000000000000000000000000000000000000"
+      ) {
+        const [existingAccountP] = await db("Snapshot")
+          .select("SnapshotAccount.id")
+          .leftJoin(
+            "SnapshotAccount",
+            "Snapshot.id",
+            "SnapshotAccount.snapshotId",
+          )
+          .where("Snapshot.ownerType", "=", "DelegatesDraft")
+          .andWhere("SnapshotAccount.accountAddress", "=", counterParty);
+
+        let accountIdProtocol;
+
+        if (existingAccountP) {
+          accountIdProtocol = existingAccountP.id;
+        } else {
+          if (snapshotId != null) {
+            const insertedAccountProtocol = await db("SnapshotAccount")
+              .insert({
+                snapshotId: snapshotId,
+                accountType: "singular",
+                accountAddress: counterParty,
+                accountLabel: owner,
+              })
+              .returning("id");
+            accountPCount++;
+            accountIdProtocol = insertedAccountProtocol[0].id;
+          }
+        }
+
+        if (accountIdProtocol) {
+          // Check if the transaction already exists for the protocol counterParty
+          const [existingProtocolTransaction] = await db(
+            "SnapshotAccountTransaction",
+          )
+            .where({
+              snapshotAccountId: accountIdProtocol,
+            })
+            .andWhere({ tx_hash: txData.tx_hash })
+            .andWhere({ amount: -amount })
+            .andWhere({ counterParty: account });
+
+          if (!existingProtocolTransaction) {
+            // If the transaction does not exist, insert it
+            await db("SnapshotAccountTransaction").insert({
+              block: txData.block,
+              timestamp: txData.timestamp,
+              tx_hash: txData.tx_hash,
+              token: txData.token,
+              counterParty: account,
+              amount: -amount,
+              snapshotAccountId: accountIdProtocol,
+            });
+            transactionCount++;
+          }
+        }
+      }
+    }
+  }
+};
+
+//Handle GOV wallet
+const govWallet = async (txData) => {
+  const account = txData.flow === "outflow" ? txData.sender : txData.receiver;
+  let code = txData.code;
+
+  // Check if the account already exists in the SnapshotAccount table
+  const existingAccount = await snapshotEntryCheck(account);
+
+  // Retrieve Snapshot ids - For Core Units
+  const snapshots = await db("Snapshot")
+    .distinct("Snapshot.id")
+    .leftJoin("SnapshotAccount", "Snapshot.id", "SnapshotAccount.snapshotId")
+    .innerJoin("CoreUnit", "Snapshot.ownerId", "CoreUnit.id")
+    .where("CoreUnit.code", "=", code);
+
+  let snapshotId;
+
+  try {
+    snapshotId = snapshots[0].id;
+  } catch (error) {
+    console.error(`Snapshot not found for account: ${account}`);
+  }
+
+  let accountId;
+
+  if (existingAccount) {
+    accountId = existingAccount[0].id;
+  } else {
+    // Insert a new account and retrieve the id
+
+    if (snapshotId != null) {
+      const insertedAccount = await db("SnapshotAccount")
+        .insert({
+          snapshotId: snapshotId,
+          accountType: "singular",
+          accountAddress: account,
+          accountLabel: code,
+        })
+        .returning("id");
+      accountCount++;
+      accountId = insertedAccount[0].id;
+    }
+  }
+
+  // Insert the SnapshotAccountTransaction with the corresponding accountId
+  const counterParty =
+    txData.flow === "inflow" ? txData.sender : txData.receiver;
+  const amount = txData.flow === "inflow" ? txData.amount : -txData.amount;
+
+  //Drop records for same transaction hash for account (filter account + transaction hash)
+  if (accountId) {
+    await db("SnapshotAccountTransaction").insert({
+      block: txData.block,
+      timestamp: txData.timestamp,
+      tx_hash: txData.tx_hash,
+      token: txData.token,
+      counterParty: counterParty,
+      amount: amount,
+      snapshotAccountId: accountId,
+    });
+    transactionCount++;
+
+    //Check MakerProtocol addressses
+    if (
+      counterParty.toLowerCase() ===
+        "0x0048fc4357db3c0f45adea433a07a20769ddb0cf" ||
+      counterParty.toLowerCase() ===
+        "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb" ||
+      counterParty.toLowerCase() ===
+        "0x0000000000000000000000000000000000000000"
+    ) {
+      const [existingAccountP] = await snapshotProtocolEntryCheck(
+        counterParty,
+        code,
+      );
+      let accountIdProtocol;
+
+      if (existingAccountP) {
+        accountIdProtocol = existingAccountP.id;
+      } else {
+        if (snapshotId != null) {
+          let insertedAccountProtocol = await db("SnapshotAccount")
+            .insert({
+              snapshotId: snapshotId,
+              accountType: "singular",
+              accountAddress: counterParty,
+              accountLabel: code,
+            })
+            .returning("id");
+          accountIdProtocol = insertedAccountProtocol[0].id;
+          accountPCount++;
+        }
+      }
+
+      if (accountIdProtocol) {
+        // Check if the transaction already exists for the protocol counterParty
+        const [existingProtocolTransaction] = await db(
+          "SnapshotAccountTransaction",
+        )
+          .where({
+            snapshotAccountId: accountIdProtocol,
+          })
+          .andWhere({ tx_hash: txData.tx_hash })
+          .andWhere({ amount: -amount })
+          .andWhere({ counterParty: account });
+
+        if (!existingProtocolTransaction) {
+          // If the transaction does not exist, insert it
+          await db("SnapshotAccountTransaction").insert({
             block: txData.block,
             timestamp: txData.timestamp,
             tx_hash: txData.tx_hash,
             token: txData.token,
-            counterParty: counterParty,
-            amount: amount,
-            snapshotAccountId: accountId,
+            counterParty: account,
+            amount: -amount,
+            snapshotAccountId: accountIdProtocol,
           });
           transactionCount++;
-
-          //Check MakerProtocol addressses
-          if (counterParty.toLowerCase() === '0x0048fc4357db3c0f45adea433a07a20769ddb0cf' ||
-            counterParty.toLowerCase() === '0xbe8e3e3618f7474f8cb1d074a26affef007e98fb' ||
-            counterParty.toLowerCase() === '0x0000000000000000000000000000000000000000') {
-
-
-            const [existingAccountP] = await snapshotProtocolEntryCheck(counterParty, code);
-            let accountIdProtocol;
-
-            if (existingAccountP) {
-              accountIdProtocol = existingAccountP.id;
-            } else {
-                if (snapshotId != null) {
-                  let insertedAccountProtocol = await db('SnapshotAccount')
-                    .insert({
-                      snapshotId: snapshotId,
-                      accountType: 'singular',
-                      accountAddress: counterParty,
-                      accountLabel: code
-                    })
-                    .returning('id');
-                  accountIdProtocol = insertedAccountProtocol[0].id;
-                  accountPCount++;
-                }
-              }
-              
-
-            if (accountIdProtocol) {
-              // Check if the transaction already exists for the protocol counterParty
-              const [existingProtocolTransaction] = await db('SnapshotAccountTransaction')
-                .where({
-                  snapshotAccountId: accountIdProtocol,
-                })
-                .andWhere({tx_hash: txData.tx_hash})
-                .andWhere({amount: -amount})
-                .andWhere({counterParty: account});
-
-              if (!existingProtocolTransaction) {
-                // If the transaction does not exist, insert it
-                await db('SnapshotAccountTransaction').insert({
-                  block: txData.block,
-                  timestamp: txData.timestamp,
-                  tx_hash: txData.tx_hash,
-                  token: txData.token,
-                  counterParty: account,
-                  amount: -amount,
-                  snapshotAccountId: accountIdProtocol,
-                });
-                transactionCount++;
-              }
-            }
-          }
         }
-      };
+      }
+    }
+  }
+};
 
-
-
-  // Call the function to get the JSON response
-  //const tokens = ['DAI', 'USDC', 'USDT', 'GUSD', 'TUSD', 'MKR', 'ETH', 'WETH', 'STETH', 'cDAI'];
-  coreUnitTransfers(cuWallets).then(async (data) => {
-    await insertSnapshotData(data);
-    console.log('Data inserted successfully');
-    process.exit(0);
-  });
+// Call the function to get the JSON response
+//const tokens = ['DAI', 'USDC', 'USDT', 'GUSD', 'TUSD', 'MKR', 'ETH', 'WETH', 'STETH', 'cDAI'];
+coreUnitTransfers(cuWallets).then(async (data) => {
+  await insertSnapshotData(data);
+  console.log("Data inserted successfully");
+  process.exit(0);
+});

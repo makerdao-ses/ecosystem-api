@@ -1,9 +1,9 @@
-import linkApiModules from '../factory';
-import EcosystemDatabase from '../EcosystemDatabase';
-import initKnex from '../../initKnex';
-import defaultSettings from '../default.config';
-import { ApolloServer } from 'apollo-server-express';
-import { Authorization } from '../Auth/authorization';
+import linkApiModules from "../factory";
+import EcosystemDatabase from "../EcosystemDatabase";
+import initKnex from "../../initKnex";
+import defaultSettings from "../default.config";
+import { ApolloServer } from "apollo-server-express";
+import { Authorization } from "../Auth/authorization";
 
 let server: any, db: any;
 
@@ -12,18 +12,18 @@ beforeAll(async () => {
   const { typeDefs, resolvers } = await linkApiModules(db, defaultSettings);
   const context = {
     dataSources: { db },
-    user: { cuId: 46, username: 'exampleName' },
-    auth: new Authorization(db, 1)
-  }
-  server = new ApolloServer({ typeDefs, resolvers, context })
+    user: { cuId: 46, username: "exampleName" },
+    auth: new Authorization(db, 1),
+  };
+  server = new ApolloServer({ typeDefs, resolvers, context });
 });
 
 afterAll(async () => {
-  await server.stop()
-  await db.knex.destroy()
+  await server.stop();
+  await db.knex.destroy();
 });
 
-it('fetches budgetStatements', async () => {
+it("fetches budgetStatements", async () => {
   const budgetStatementsQuery = {
     query: `query BudgetStatements {
           budgetStatements {
@@ -31,14 +31,14 @@ it('fetches budgetStatements', async () => {
               ownerId
               month
           }
-      }`
+      }`,
   };
-  const response = await server.executeOperation(budgetStatementsQuery)
-  expect(response.errors).toBeUndefined()
-  expect(response.data.budgetStatements.length).toBeGreaterThan(0)
+  const response = await server.executeOperation(budgetStatementsQuery);
+  expect(response.errors).toBeUndefined();
+  expect(response.data.budgetStatements.length).toBeGreaterThan(0);
 });
 
-it('fetches bsWallets', async () => {
+it("fetches bsWallets", async () => {
   const bsWalletsQuery = {
     query: `query BudgetStatementWallets {
           budgetStatementWallets {
@@ -46,14 +46,14 @@ it('fetches bsWallets', async () => {
             budgetStatementId
             name
           }
-      }`
+      }`,
   };
-  const response = await server.executeOperation(bsWalletsQuery)
-  expect(response.errors).toBeUndefined()
-  expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0)
+  const response = await server.executeOperation(bsWalletsQuery);
+  expect(response.errors).toBeUndefined();
+  expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0);
 });
 
-it('fetches bsLineItems', async () => {
+it("fetches bsLineItems", async () => {
   const bsLineItemsQuery = {
     query: `query BudgetStatementLineItems($filter: BudgetStatementLineItemFilter) {
           budgetStatementLineItems(filter: $filter) {
@@ -64,23 +64,23 @@ it('fetches bsLineItems', async () => {
         }`,
     variables: {
       filter: {
-        budgetStatementWalletId: 100
-      }
-    }
+        budgetStatementWalletId: 100,
+      },
+    },
   } as any;
-  const response1 = await server.executeOperation(bsLineItemsQuery)
+  const response1 = await server.executeOperation(bsLineItemsQuery);
   bsLineItemsQuery.variables.filter = {
     ...bsLineItemsQuery.variables.filter,
-    month: '2022-01',
+    month: "2022-01",
     position: 1,
-  }
+  };
   const response2 = await server.executeOperation(bsLineItemsQuery);
-  expect(response2.errors).toBeDefined()
-  expect(response1.errors).toBeUndefined()
-  expect(response1.data.budgetStatementLineItems.length).toBeGreaterThan(0)
+  expect(response2.errors).toBeDefined();
+  expect(response1.errors).toBeUndefined();
+  expect(response1.data.budgetStatementLineItems.length).toBeGreaterThan(0);
 });
 
-it('fetches CoreUnits with budgetStatements', async () => {
+it("fetches CoreUnits with budgetStatements", async () => {
   const coreUnitBStatementsQuery = {
     query: `query CoreUnits {
           coreUnits {
@@ -90,14 +90,14 @@ it('fetches CoreUnits with budgetStatements', async () => {
               ownerId
             }
           }
-      }`
+      }`,
   };
   const response = await server.executeOperation(coreUnitBStatementsQuery);
   expect(response.errors).toBeUndefined();
   expect(response.data.coreUnits.length).toBeGreaterThan(0);
 });
 
-it('fetches budgetStatement with child queries', async () => {
+it("fetches budgetStatement with child queries", async () => {
   const bsWithChildQuries = {
     query: `query BudgetStatements {
           budgetStatements {
@@ -118,14 +118,14 @@ it('fetches budgetStatement with child queries', async () => {
               id
             }
           }
-      }`
+      }`,
   };
   const response = await server.executeOperation(bsWithChildQuries);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatements.length).toBeGreaterThan(0);
 });
 
-it('fetched budgetStatementWallet with child queries', async () => {
+it("fetched budgetStatementWallet with child queries", async () => {
   const bsWalletWithChildQueries = {
     query: `query BudgetStatementWallets {
           budgetStatementWallets {
@@ -140,20 +140,20 @@ it('fetched budgetStatementWallet with child queries', async () => {
               id
             }
           }
-      }`
-  }
+      }`,
+  };
   const response = await server.executeOperation(bsWalletWithChildQueries);
   expect(response.errors).toBeUndefined();
   expect(response.data.budgetStatementWallets.length).toBeGreaterThan(0);
 });
 
-it('adds budgetStatements', async () => {
+it("adds budgetStatements", async () => {
   const budgetStatementInput = {
     ownerId: 64,
-    month: '2023-03-01',
-    status: 'Draft',
-    ownerCode: 'EXA-001',
-    ownerType: 'CoreUnit'
+    month: "2023-03-01",
+    status: "Draft",
+    ownerCode: "EXA-001",
+    ownerType: "CoreUnit",
   };
   const query = {
     query: `mutation BudgetStatementsBatchAdd($input: [BudgetStatementBatchAddInput]) {
@@ -163,27 +163,33 @@ it('adds budgetStatements', async () => {
       }
     }`,
     variables: {
-      input: [budgetStatementInput]
-    }
+      input: [budgetStatementInput],
+    },
   };
   // testing successfull write
-  server.config.context.user = { cuId: 64, username: 'exampleName' };
+  server.config.context.user = { cuId: 64, username: "exampleName" };
   server.config.context.auth = new Authorization(db, 1);
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
-  expect(response.data.budgetStatementsBatchAdd[0]['ownerId']).toEqual('64');
+  expect(response.data.budgetStatementsBatchAdd[0]["ownerId"]).toEqual("64");
 
   // testing for disabled account
-  await db.knex('User').where('username', 'exampleName').update({ active: false });
+  await db
+    .knex("User")
+    .where("username", "exampleName")
+    .update({ active: false });
   const response1 = await server.executeOperation(query);
-  expect(response1.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  await db.knex('User').where('username', 'exampleName').update({ active: true });
+  expect(response1.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
+  await db
+    .knex("User")
+    .where("username", "exampleName")
+    .update({ active: true });
 
   // testing wihtout input
   const noInputQuery = JSON.parse(JSON.stringify(query));
   noInputQuery.variables.input = [];
   const response2 = await server.executeOperation(noInputQuery);
-  expect(response2.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  expect(response2.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
 
   // testing without ownerType
   const noOwnerTypeQ = JSON.parse(JSON.stringify(query));
@@ -191,25 +197,27 @@ it('adds budgetStatements', async () => {
   delete varsInput.ownerType;
   noOwnerTypeQ.variables.input = [varsInput];
   const response3 = await server.executeOperation(noOwnerTypeQ);
-  expect(response3.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-
+  expect(response3.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
 
   // testig for authentication error
-  delete server.config.context.auth
-  delete server.config.context.user
+  delete server.config.context.auth;
+  delete server.config.context.user;
   const response5 = await server.executeOperation(query);
-  expect(response5.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  await db.knex('BudgetStatement').where('id', response.data.budgetStatementsBatchAdd[0]['id']).del();
+  expect(response5.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
+  await db
+    .knex("BudgetStatement")
+    .where("id", response.data.budgetStatementsBatchAdd[0]["id"])
+    .del();
 });
 
-it('adds budgetLineItems', async () => {
+it("adds budgetLineItems", async () => {
   const lineItem = {
     budgetStatementWalletId: 1177,
-    month: '2023-01-01',
-    position: 1
+    month: "2023-01-01",
+    position: 1,
   } as any;
   const inputArr = [lineItem];
-  inputArr.push({ cuId: 64, ownerType: 'CoreUnit' });
+  inputArr.push({ cuId: 64, ownerType: "CoreUnit" });
   const query = {
     query: `mutation BudgetLineItemsBatchAdd($input: [LineItemsBatchAddInput]) {
       budgetLineItemsBatchAdd(input: $input) {
@@ -218,33 +226,52 @@ it('adds budgetLineItems', async () => {
       }
     }`,
     variables: {
-      input: inputArr
-    }
+      input: inputArr,
+    },
   };
 
   // test without credentials
   const response0 = await server.executeOperation(query);
-  expect(response0.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
+  expect(response0.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
 
-  server.config.context.user = { cuId: 1, username: 'exampleName' };
+  server.config.context.user = { cuId: 1, username: "exampleName" };
   server.config.context.auth = new Authorization(db, 1);
 
   // testing for disabled account
-  await db.knex('User').where('username', 'exampleName').update({ active: false });
+  await db
+    .knex("User")
+    .where("username", "exampleName")
+    .update({ active: false });
   const response1 = await server.executeOperation(query);
-  expect(response1.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  await db.knex('User').where('username', 'exampleName').update({ active: true });
+  expect(response1.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
+  await db
+    .knex("User")
+    .where("username", "exampleName")
+    .update({ active: true });
 
   // testing for disabled commenting
-  const [wallet] = await db.knex('BudgetStatementWallet').where('id', 1177);
-  const [bStatement] = await db.knex('BudgetStatement').where('id', wallet.budgetStatementId);
-  await db.knex('BudgetStatement').where('id', bStatement.id).update({ status: 'Final' });
+  const [wallet] = await db.knex("BudgetStatementWallet").where("id", 1177);
+  const [bStatement] = await db
+    .knex("BudgetStatement")
+    .where("id", wallet.budgetStatementId);
+  await db
+    .knex("BudgetStatement")
+    .where("id", bStatement.id)
+    .update({ status: "Final" });
   const response2 = await server.executeOperation(query);
-  expect(response2.errors[0]['extensions'].code).toEqual('UNAUTHENTICATED');
-  await db.knex('BudgetStatement').where('id', bStatement.id).update({ status: 'Draft' });
+  expect(response2.errors[0]["extensions"].code).toEqual("UNAUTHENTICATED");
+  await db
+    .knex("BudgetStatement")
+    .where("id", bStatement.id)
+    .update({ status: "Draft" });
 
   const response = await server.executeOperation(query);
   expect(response.errors).toBeUndefined();
-  expect(response.data.budgetLineItemsBatchAdd[0]['budgetStatementWalletId']).toEqual('1177');
-  await db.knex('BudgetStatementLineItem').where('id', response.data.budgetLineItemsBatchAdd[0]['id']).del();
+  expect(
+    response.data.budgetLineItemsBatchAdd[0]["budgetStatementWalletId"],
+  ).toEqual("1177");
+  await db
+    .knex("BudgetStatementLineItem")
+    .where("id", response.data.budgetLineItemsBatchAdd[0]["id"])
+    .del();
 });
