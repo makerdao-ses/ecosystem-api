@@ -1,9 +1,9 @@
-import fetch from 'node-fetch';
-import knex from 'knex';
+import fetch from "node-fetch";
+import knex from "knex";
 
 // Connect to database selected in the .env file
 const db = knex({
-  client: 'pg',
+  client: "pg",
   connection: process.env.PG_CONNECTION_STRING,
 });
 
@@ -21,19 +21,16 @@ const endTimestamp = (month) => {
   date.setUTCMonth(date.getUTCMonth() + 2);
   date.setUTCHours(12, 0, 0, 0);
   return date.toISOString();
-}
+};
 
 const fillSnapshotTable = async () => {
-
-  
   const now = new Date();
   now.setUTCHours(12, 0, 0, 0);
   const newestMonth = now.toISOString();
-  const oldestMonth = '2021-01-01T12:00:00.000Z';
-  
+  const oldestMonth = "2021-01-01T12:00:00.000Z";
 
-  const ownerTypesAndIds = await db('BudgetStatement')
-    .distinct('ownerType', 'ownerId')
+  const ownerTypesAndIds = await db("BudgetStatement")
+    .distinct("ownerType", "ownerId")
     .select();
 
   console.log(oldestMonth);
@@ -42,13 +39,16 @@ const fillSnapshotTable = async () => {
   let sCount = 0;
 
   for (const { ownerType, ownerId } of ownerTypesAndIds) {
-    for (let d = new Date(oldestMonth); d <= new Date(newestMonth); d.setUTCMonth(d.getUTCMonth() + 1)) {
-      
+    for (
+      let d = new Date(oldestMonth);
+      d <= new Date(newestMonth);
+      d.setUTCMonth(d.getUTCMonth() + 1)
+    ) {
       const start = startTimestamp(d.toISOString());
       const end = endTimestamp(d.toISOString());
-  
-      const existingSnapshot = await db('Snapshot')
-        .select('id')
+
+      const existingSnapshot = await db("Snapshot")
+        .select("id")
         .where({
           start,
           end,
@@ -56,27 +56,24 @@ const fillSnapshotTable = async () => {
           ownerId,
         })
         .first();
-  
+
       if (existingSnapshot) {
         continue; // Row already exists, skip inserting
       }
-  
-      await db('Snapshot')
-        .insert({
-          start,
-          end,
-          ownerType,
-          ownerId,
-        });
-  
+
+      await db("Snapshot").insert({
+        start,
+        end,
+        ownerType,
+        ownerId,
+      });
+
       sCount++;
     }
   }
-  
 
   console.log(`${sCount} rows inserted into Snapshot table`);
 };
-
 
 const fillSnapshotAccountTable = async () => {
   const rows = await db.raw(`
@@ -88,11 +85,14 @@ const fillSnapshotAccountTable = async () => {
     WHERE bsw.address NOTNULL
   `);
 
-  const snapshots = await db('Snapshot')
-    .select('id', 'start', 'end', 'ownerType', 'ownerId');
+  const snapshots = await db("Snapshot").select(
+    "id",
+    "start",
+    "end",
+    "ownerType",
+    "ownerId",
+  );
 
-  
-  
   const snapshotAccounts = [];
 
   for (const snapshot of snapshots) {
@@ -106,8 +106,7 @@ const fillSnapshotAccountTable = async () => {
     });
 
     for (const row of filteredRows) {
-      
-      const existingAccount = await db('SnapshotAccount')
+      const existingAccount = await db("SnapshotAccount")
         .where({
           snapshotId: snapshot.id,
           accountAddress: row.address,
@@ -120,25 +119,27 @@ const fillSnapshotAccountTable = async () => {
 
       snapshotAccounts.push({
         snapshotId: snapshot.id,
-        accountType: 'singular',
+        accountType: "singular",
         accountAddress: row.address,
         accountLabel: row.code,
       });
     }
   }
 
-  await db('SnapshotAccount').insert(snapshotAccounts);
+  await db("SnapshotAccount").insert(snapshotAccounts);
 
-  console.log(`${snapshotAccounts.length} rows inserted into SnapshotAccount table`);
+  console.log(
+    `${snapshotAccounts.length} rows inserted into SnapshotAccount table`,
+  );
 };
 
 fillSnapshotTable()
   .then(() => {
-    console.log('Snapshot table filled successfully');
+    console.log("Snapshot table filled successfully");
     return fillSnapshotAccountTable();
   })
   .then(() => {
-    console.log('SnapshotAccount table filled successfully');
+    console.log("SnapshotAccount table filled successfully");
   })
   .catch((error) => console.error(error))
   .finally(() => db.destroy());

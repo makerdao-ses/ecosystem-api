@@ -1,17 +1,16 @@
-import { Knex } from 'knex';
-import { stubData } from './stubData.js'
+import { Knex } from "knex";
+import { stubData } from "./stubData.js";
 
 export class ProjectsModel {
-    knex: Knex;
+  knex: Knex;
 
-    constructor(knex: Knex) {
-        this.knex = knex;
-    }
+  constructor(knex: Knex) {
+    this.knex = knex;
+  }
 
-    async getProjects() {
-        return stubData;
-    }
-
+  async getProjects() {
+    return stubData;
+  }
 }
 
 export default (knex: Knex) => new ProjectsModel(knex);

@@ -1,105 +1,106 @@
-import { gql } from 'apollo-server-core';
-import { AnalyticsModel } from './db.js';
+import { gql } from "apollo-server-core";
+import { AnalyticsModel } from "./db.js";
 
-export const typeDefs = [gql`
-
+export const typeDefs = [
+  gql`
     type AnalyticsResult {
-        series: [AnalyticsPeriod]
+      series: [AnalyticsPeriod]
     }
 
     type AnalyticsPeriod {
-        period: String,
-        start: DateTime,
-        end: DateTime,
-        rows: [AnalyticsSeries]
+      period: String
+      start: DateTime
+      end: DateTime
+      rows: [AnalyticsSeries]
     }
 
     type AnalyticsSeries {
-        dimensions: [AnalyticsSeriesDimension],
-        metric: String,
-        unit: String, 
-        value: Float,
-        sum: Float
+      dimensions: [AnalyticsSeriesDimension]
+      metric: String
+      unit: String
+      value: Float
+      sum: Float
     }
 
     type AnalyticsSeriesDimension {
-        name: String,
-        value: String
+      name: String
+      value: String
     }
 
     enum AnalyticsMetric {
-        budget,
-        forecast,
-        actuals,
-        netExpensesOnchain,
-        netExpensesOffchainIncluded
+      budget
+      forecast
+      actuals
+      netExpensesOnchain
+      netExpensesOffchainIncluded
     }
 
     enum AnalyticsGranularity {
-        hourly,
-        daily,
-        weekly,
-        monthly, 
-        quarterly,
-        semiAnnual,
-        annual,
-        total
+      hourly
+      daily
+      weekly
+      monthly
+      quarterly
+      semiAnnual
+      annual
+      total
     }
 
     input AnalyticsFilterDimension {
-        select: SelectDimension!, 
-        lod: LevelofDetail!
+      select: SelectDimension!
+      lod: LevelofDetail!
     }
 
     input SelectDimension {
-        budget: String!,
-        category: String!,
+      budget: String!
+      category: String!
     }
 
     input LevelofDetail {
-        budget: Int!,
-        category: Int!
+      budget: Int!
+      category: Int!
     }
 
     input AnalyticsFilter {
-        start: String,
-        end: String,
-        granularity: AnalyticsGranularity,
-        metrics: [AnalyticsMetric],
-        dimensions: AnalyticsFilterDimension,
-        currency: String
+      start: String
+      end: String
+      granularity: AnalyticsGranularity
+      metrics: [AnalyticsMetric]
+      dimensions: AnalyticsFilterDimension
+      currency: String
     }
 
     extend type Query {
-        analytics(filter: AnalyticsFilter): AnalyticsResult
+      analytics(filter: AnalyticsFilter): AnalyticsResult
     }
-`]
+  `,
+];
 
 export const resolvers = {
-    Query: {
-        analytics: async (_: any, { filter }: any, { dataSources }: any) => {
-            if(!filter) {
-                throw new Error('No filter provided')
-            }
-            const queryEngine: AnalyticsModel = dataSources.db.Analytics;
-            const results = await queryEngine.query(filter);
+  Query: {
+    analytics: async (_: any, { filter }: any, { dataSources }: any) => {
+      if (!filter) {
+        throw new Error("No filter provided");
+      }
+      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
+      const results = await queryEngine.query(filter);
 
-            // results.forEach(r => {
-            //     console.log(JSON.stringify(r, null, 2));
-            // });
-            
-            return {
-                series: results.map(s => ({
-                    ...s,
-                    rows: s.rows.map(r => ({
-                        ...r,
-                        dimensions: Object.keys(r.dimensions).map(d => ({
-                            name: d,
-                            value: r.dimensions[d]
-                        }))
-                    })) 
-                }))
-            }
-        },
-    }
-}
+      // results.forEach(r => {
+      //     console.log(JSON.stringify(r, null, 2));
+      // });
+
+      return {
+        series: results.map((s) => ({
+          ...s,
+          rows: s.rows.map((r) => ({
+            ...r,
+            dimensions: Object.keys(r.dimensions).map((d) => ({
+              name: d,
+              value: r.dimensions[d],
+            })),
+          })),
+        })),
+      };
+    },
+  },
+};
