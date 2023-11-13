@@ -47,18 +47,9 @@ export const typeDefs = [
     }
 
     input AnalyticsFilterDimension {
-      select: SelectDimension!
-      lod: LevelofDetail!
-    }
-
-    input SelectDimension {
-      budget: String!
-      category: String!
-    }
-
-    input LevelofDetail {
-      budget: Int!
-      category: Int!
+      name: String!
+      select: String!
+      lod: Int!
     }
 
     input AnalyticsFilter {
@@ -66,12 +57,13 @@ export const typeDefs = [
       end: String
       granularity: AnalyticsGranularity
       metrics: [AnalyticsMetric]
-      dimensions: AnalyticsFilterDimension
+      dimensions: [AnalyticsFilterDimension]
       currency: String
     }
 
     extend type Query {
       analytics(filter: AnalyticsFilter): AnalyticsResult
+      analyticsDimensions: [String]
     }
   `,
 ];
@@ -102,5 +94,9 @@ export const resolvers = {
         })),
       };
     },
+
+    analyticsDimensions: async (_: any, __: any, { dataSources }: any) => {
+      return dataSources.db.Analytics.getDimensions();
+    }
   },
 };

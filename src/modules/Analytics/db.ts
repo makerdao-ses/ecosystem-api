@@ -14,35 +14,49 @@ type queryFilter = {
   end?: Date;
   granularity?: string;
   metrics?: AnalyticsMetric[];
-  dimensions: Record<string, Record<string, string>>;
+  dimensions: [Record<string, string>];
   currency?: string;
 };
 
 export class AnalyticsModel {
   engine: AnalyticsQueryEngine;
+  knex: Knex;
 
   constructor(knex: Knex) {
+    this.knex = knex;
     const store = new AnalyticsStore(knex);
     this.engine = new AnalyticsQueryEngine(store);
   }
 
   public async query(filter: queryFilter) {
+
     const query: AnalyticsQuery = {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
       granularity: getGranularity(filter.granularity),
       metrics: getMetrics(filter.metrics),
       currency: getCurrency(filter.currency),
-      select: {
-        budget: [AnalyticsPath.fromString(filter.dimensions.select.budget)],
-        category: [AnalyticsPath.fromString(filter.dimensions.select.category)],
-      },
-      lod: {
-        budget: Number(filter.dimensions.lod.budget),
-        category: Number(filter.dimensions.lod.category),
-      },
+      select: {},
+      lod: {},
     };
+
+    if (filter.dimensions.length < 1) {
+      throw new Error("No dimensions provided");
+    } else {
+      filter.dimensions.forEach(dimension => {
+        query.select[dimension.name] = [AnalyticsPath.fromString(dimension.select)];
+        query.lod[dimension.name] = Number(dimension.lod);
+      });
+    }
     return this.engine.execute(query);
+
+  }
+
+  public async getDimensions() {
+    const list = await this.knex("AnalyticsDimension").select("dimension");
+    const filtered = list.map((l) => l.dimension);
+    const unique = Array.from(new Set(filtered));
+    return unique;
   }
 }
 
