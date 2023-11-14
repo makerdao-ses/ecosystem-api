@@ -1,7 +1,15 @@
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
-const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex) => {
-    console.log(`\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`);
+const fetchTransactionData = async (
+  address,
+  ownerType,
+  ownerId,
+  apiToken,
+  knex,
+) => {
+  console.log(
+    `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`,
+  );
 
     address = address.toLowerCase();
     let result = [];
@@ -27,9 +35,9 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
 
         jsonData = await response.json(); // assign response to jsonData
 
-        if (jsonData.detail === 'Could not validate credentials') {
-            throw new Error('API Error: Could not validate credentials');
-        }
+    if (jsonData.detail === "Could not validate credentials") {
+      throw new Error("API Error: Could not validate credentials");
+    }
 
         result = result.concat(jsonData.results);
         skip += 1;
@@ -37,11 +45,11 @@ const fetchTransactionData = async (address, ownerType, ownerId, apiToken, knex)
 
     } while (jsonData.next_page !== null);
 
-    return await filterByOwnerCode(result, ownerType, ownerId, knex);
+  return await filterByOwnerCode(result, ownerType, ownerId, knex);
 };
 
 const filterByOwnerCode = async (data, ownerType, ownerId, knex) => {
-    let formatData = [];
+  let formatData = [];
 
    
     

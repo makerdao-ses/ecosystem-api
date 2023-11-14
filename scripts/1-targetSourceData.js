@@ -1,12 +1,11 @@
-import knex from 'knex';
+import knex from "knex";
 
 const db = knex({
-    client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+  client: "pg",
+  connection: process.env.PG_CONNECTION_STRING,
 });
 
 const getData = async () => {
-
   const auditorCusQuery = await db.raw(`
   SELECT
     cu.code,
@@ -57,95 +56,94 @@ const getData = async () => {
     bs.month DESC;
 `);
 
-const rows = auditorCusQuery.rows;
+  const rows = auditorCusQuery.rows;
 
+  // Create an empty array to hold the formatted results
+  const formattedResult = [];
 
-// Create an empty array to hold the formatted results
-const formattedResult = [];
+  // Loop through each row and format the result
+  rows.forEach((row) => {
+    //Format date string (targetCalculation)
+    const currentMonth = row.month.getMonth();
+    const months = [
+      (currentMonth + 1) % 12,
+      (currentMonth + 2) % 12,
+      (currentMonth + 3) % 12,
+    ];
+    const monthNames = months.map((m) =>
+      new Date(row.month.getFullYear(), m, 1).toLocaleString("en-us", {
+        month: "short",
+      }),
+    );
+    const targetCalculation = `${monthNames.join(" + ")} forecast`;
 
-// Loop through each row and format the result
-rows.forEach(row => {
+    //Retrieve walletBalanceTimestamo
+    const timestamp = new Date(
+      Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12),
+    );
+    const walletBalanceTimestamp = timestamp.toLocaleString();
 
-  //Format date string (targetCalculation)
-const currentMonth = row.month.getMonth();
-const months = [(currentMonth + 1) % 12, (currentMonth + 2) % 12, (currentMonth + 3) % 12];
-const monthNames = months.map(m => new Date(row.month.getFullYear(), m, 1).toLocaleString('en-us', { month: 'short' }));
-const targetCalculation = `${monthNames.join(' + ')} forecast`;
+    const adjustedDate = new Date(row.month);
+    adjustedDate.setMinutes(
+      row.month.getMinutes() - row.month.getTimezoneOffset(),
+    );
 
+    const formattedRow = {
+      code: row.code,
+      month: adjustedDate,
+      walletName: row.name,
+      walletId: row.bswid,
+      statementId: row.id,
+      transferRequestId: row.bstrid,
+      targetAmount: row.sum_of_forecast,
+      targetCalculation: targetCalculation,
+      targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
+      targetSourceCode: null,
+      targetSourceUrl: null,
+      targetSourceTitle: null,
+      walletBalanceTimestamp: walletBalanceTimestamp,
+    };
 
-  //Retrieve walletBalanceTimestamo
-  const timestamp = new Date(Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12));
-  const walletBalanceTimestamp = timestamp.toLocaleString();
+    formattedResult.push(formattedRow);
+  });
 
-  
-  const adjustedDate = new Date(row.month);
-  adjustedDate.setMinutes(row.month.getMinutes() - row.month.getTimezoneOffset());
+  // Push the formattedResult array to the database
+  console.log(
+    `Adding ${formattedResult.length} values to the BudgetStatementTransferRequest table...`,
+  );
 
-
-  const formattedRow = {
-    code: row.code,
-    month: adjustedDate,
-    walletName: row.name,
-    walletId: row.bswid,
-    statementId: row.id,
-    transferRequestId: row.bstrid,
-    targetAmount: row.sum_of_forecast,
-    targetCalculation: targetCalculation,
-    targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
-    targetSourceCode: null,
-    targetSourceUrl: null,
-    targetSourceTitle: null,
-    walletBalanceTimestamp: walletBalanceTimestamp
-  };
-  
-
-  formattedResult.push(formattedRow);
-
-
-});
-
-
-
-
-
-// Push the formattedResult array to the database
-console.log(`Adding ${formattedResult.length} values to the BudgetStatementTransferRequest table...`);
-
-const insertOrUpdate = async (row) => {
-  
-  if (row.transferRequestId) {
-    // Update existing row
-    await db("BudgetStatementTransferRequest")
-      .where({ id: row.transferRequestId })
-      .update({
+  const insertOrUpdate = async (row) => {
+    if (row.transferRequestId) {
+      // Update existing row
+      await db("BudgetStatementTransferRequest")
+        .where({ id: row.transferRequestId })
+        .update({
+          targetAmount: row.targetAmount,
+          targetCalculation: row.targetCalculation,
+          targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
+          targetSourceCode: null,
+          targetSourceUrl: null,
+          targetSourceTitle: null,
+          walletBalanceTimestamp: row.walletBalanceTimestamp,
+        });
+    } else {
+      // Insert new row
+      await db("BudgetStatementTransferRequest").insert({
+        budgetStatementWalletId: row.walletId,
         targetAmount: row.targetAmount,
         targetCalculation: row.targetCalculation,
         targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
         targetSourceCode: null,
         targetSourceUrl: null,
         targetSourceTitle: null,
-        walletBalanceTimestamp: row.walletBalanceTimestamp
+        walletBalanceTimestamp: row.walletBalanceTimestamp,
       });
-  } else {
-    // Insert new row
-    await db("BudgetStatementTransferRequest").insert({
-      budgetStatementWalletId: row.walletId, 
-      targetAmount: row.targetAmount,
-      targetCalculation: row.targetCalculation,
-      targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
-      targetSourceCode: null,
-      targetSourceUrl: null,
-      targetSourceTitle: null,
-      walletBalanceTimestamp: row.walletBalanceTimestamp
-    });
-  }
-};
+    }
+  };
 
-// Loop through each row and insert/update the data
-await Promise.all(formattedResult.map(insertOrUpdate));
-return process.exit(0);
+  // Loop through each row and insert/update the data
+  await Promise.all(formattedResult.map(insertOrUpdate));
+  return process.exit(0);
 };
 
 getData();
-
-

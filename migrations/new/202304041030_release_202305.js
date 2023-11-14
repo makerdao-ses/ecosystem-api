@@ -1,16 +1,17 @@
 //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
 export async function up(knex) {
-
   console.log("Adding EcosytemActor ResourceType and BudgetOwner...");
 
-  await knex.raw("ALTER TYPE \"BudgetOwner\" ADD VALUE IF NOT EXISTS 'EcosystemActor'");
-  await knex.raw("ALTER TYPE \"ResourceType\" ADD VALUE IF NOT EXISTS 'EcosystemActor'");
-
+  await knex.raw(
+    "ALTER TYPE \"BudgetOwner\" ADD VALUE IF NOT EXISTS 'EcosystemActor'",
+  );
+  await knex.raw(
+    "ALTER TYPE \"ResourceType\" ADD VALUE IF NOT EXISTS 'EcosystemActor'",
+  );
 }
 
 //Down migration reverts the up migration change
 export async function down(knex) {
-
   console.log("Removing EcosystemActor values...");
 
   //Revert ResourceType to original values
@@ -42,5 +43,4 @@ export async function down(knex) {
    ALTER TYPE new_BudgetOwner RENAME TO "BudgetOwner";
    
  `);
-
 }
