@@ -53,10 +53,9 @@ export class AnalyticsModel {
   }
 
   public async getDimensions() {
-    const list = await this.knex("AnalyticsDimension").select("dimension");
+    const list = await this.knex("AnalyticsDimension").select('dimension').distinct().whereNotNull('dimension');
     const filtered = list.map((l) => l.dimension);
-    const unique = Array.from(new Set(filtered));
-    return unique;
+    return filtered;
   }
 }
 
