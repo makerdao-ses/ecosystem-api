@@ -8,6 +8,7 @@ import {
   getAnalyticsMetricEnum,
   getAnalyticsMetricString,
 } from "./AnalyticsQuery.js";
+import { start } from "repl";
 
 export class AnalyticsStore {
   private _knex: Knex;
@@ -72,7 +73,9 @@ export class AnalyticsStore {
         });
       }
     }
-
+    if (query.start) {
+      baseQuery.where("start", ">=", query.start);
+    }
     baseQuery.orderBy("start");
 
     return this._formatQueryRecords(await baseQuery, Object.keys(query.select));

@@ -85,7 +85,8 @@ export class AnalyticsDiscretizer {
     const result: Record<string, GroupedPeriodResult> = {};
 
     for (const p of periods) {
-      result[p.period] = {
+      const id = p.start.toISOString() + "-" + p.period;
+      result[id] = {
         period: p.period,
         start: p.start,
         end: p.end,
@@ -176,12 +177,13 @@ export class AnalyticsDiscretizer {
       let oldSum = this._getValue(s, periods[0].start);
       for (const p of periods) {
         const newSum = this._getValue(s, p.end);
-
-        if (result[p.period]) {
-          result[p.period].inc += newSum - oldSum;
-          result[p.period].sum += newSum;
+        const id = `${p.start.toISOString()}-${p.period}`;
+        // const id = p.period;
+        if (result[id]) {
+          result[id].inc += newSum - oldSum;
+          result[id].sum += newSum;
         } else {
-          result[p.period] = {
+          result[id] = {
             inc: newSum - oldSum,
             sum: newSum,
           };
