@@ -1,6 +1,10 @@
 /**
  * @type {import('jest').Config}
  */
+
+import dotenv from "dotenv";
+dotenv.config();
+
 export default {
   verbose: true,
   roots: ["./src/"],
