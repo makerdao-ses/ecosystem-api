@@ -31,7 +31,6 @@ export class AnalyticsQueryEngine {
               query.end,
               query.granularity,
             );
-
     return discretizedResult;
   }
 
