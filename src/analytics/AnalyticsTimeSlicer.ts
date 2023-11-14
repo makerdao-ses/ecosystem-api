@@ -224,10 +224,9 @@ export const _nextWeeklyPeriod = (
   }
 
   // Calculate the start of the next week (Monday) in UTC
-  const nextWeekStartUTC = addHours(
-    startOfWeek(addWeeks(nextStart, 1), { weekStartsOn: 1 }),
-    1,
-  );
+  const nextWeekStartUTC = startOfWeek(addWeeks(nextStart, 1), {
+    weekStartsOn: 1,
+  });
 
   // If the calculated next week start is later or equal to the series end date, return the series end
   if (
