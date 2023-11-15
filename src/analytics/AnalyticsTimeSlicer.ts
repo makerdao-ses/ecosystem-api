@@ -136,7 +136,9 @@ export const _nextSemiAnnualPeriod = (
   }
 
   const midYear = new Date(`${nextStart.getFullYear()}-07-01T00:00:00.000Z`);
-  const endYear = endOfYear(nextStart);
+  const endYear = new Date(
+    `${nextStart.getFullYear() + 1}-01-01T00:00:00.000Z`,
+  );
 
   let endDate: Date;
   if (isAfter(midYear, nextStart)) {

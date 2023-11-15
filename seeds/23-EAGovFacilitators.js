@@ -29,7 +29,7 @@ export async function seed(knex) {
     shortCode: 'GALLAGHER',
     name: 'Gallagher',
     type: 'EcosystemActor',
-    image: 'https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/GALLAGHER/GALLAGHER_logo.png',
+    image: 'https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/GALLAGHER/GALLAGHER_logo.jpeg',
     category: '{ActiveEcosystemActor}',
     sentenceDescription: 'Gallagher is a leading insurance and reinsurance broker offering an extensive range of insurance, self-insurance, risk management, claims administration, and employee benefits products and services through highly specialized companies.',
     paragraphDescription: `As the first member of the Resilience Fund Technical Committee, Gallagher oversees the administration, assessment, processing, and investigation of claims.
@@ -73,8 +73,6 @@ export async function seed(knex) {
     scopeId: SUPid,
   });
 
-  console.log(votewizard);
-  console.log(votewizardId);
   await knex('ContributorTeam_AlignmentScope').insert({
     teamId: votewizardId,
     scopeId: SUPid,
