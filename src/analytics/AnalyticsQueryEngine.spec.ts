@@ -13,7 +13,7 @@ import {
   GroupedPeriodResults,
 } from "./AnalyticsDiscretizer.js";
 
-let knex: Knex;
+const knex = initKnex();
 
 // Set to false during testing to see the resulting records in db
 const CLEAN_UP_DB = false;
@@ -21,9 +21,10 @@ const TEST_SOURCE = AnalyticsPath.fromString(
   "test/analytics/AnalyticsQueryEngine.spec",
 );
 
+const store = new AnalyticsStore(knex);
+const engine = new AnalyticsQueryEngine(store);
+
 beforeAll(async () => {
-  knex = initKnex();
-  const store = new AnalyticsStore(knex);
   await store.clearSeriesBySource(TEST_SOURCE);
 
   // budget
@@ -33,6 +34,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 10000,
       unit: "DAI",
+      params: {},
       metric: AnalyticsMetric.Budget,
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
@@ -71,7 +73,7 @@ beforeAll(async () => {
       },
     },
     {
-      start: new Date(),
+      start: new Date(2023, 0, 1),
       end: new Date(2024, 0, 1),
       source: TEST_SOURCE,
       value: 210,
@@ -162,10 +164,6 @@ it("should query records", async () => {
 });
 
 describe("totals of different granularities", () => {
-  knex = initKnex();
-  const store = new AnalyticsStore(knex);
-  const engine = new AnalyticsQueryEngine(store);
-
   let total = 0;
 
   it("should return one row on total granularity", async () => {
@@ -266,4 +264,37 @@ describe("totals of different granularities", () => {
 
     return sum;
   };
+});
+
+describe("dss vesting", () => {
+  it.only("should return values linear proportional to the time passed", async () => {
+    const start = new Date(2023, 0, 1);
+    const end = new Date(2024, 0, 1);
+    const query: AnalyticsQuery = {
+      start,
+      end,
+      granularity: AnalyticsGranularity.Monthly,
+      metrics: [AnalyticsMetric.Budget, AnalyticsMetric.Actuals],
+      currency: AnalyticsPath.fromString("MKR"),
+      select: {
+        budget: [AnalyticsPath.fromString("atlas/legacy/core-units/PE-001")],
+        category: [
+          AnalyticsPath.fromString(
+            "atlas/headcount/CompensationAndBenefits/SmartContractEngineering",
+          ),
+        ],
+        project: [TEST_SOURCE],
+      },
+      lod: {
+        budget: 3,
+        category: 2,
+        project: 2,
+      },
+    };
+
+    const result = await engine.execute(query);
+    expect(result.length).toBe(12);
+  });
+
+  it("if cliff is provided it should start vesting when cliff is reached", async () => {});
 });

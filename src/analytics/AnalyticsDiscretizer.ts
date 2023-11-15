@@ -219,7 +219,16 @@ export class AnalyticsDiscretizer {
     series: AnalyticsSeries<string>,
     when: Date,
   ): number {
-    return when.getTime() > series.start.getTime() ? series.value : 0.0;
+    const now = when.getTime();
+    const start = series.start.getTime();
+    const end = series.end!.getTime();
+    if (now <= start) {
+      return 0.0;
+    } else if (now > end) {
+      return series.value;
+    }
+
+    return ((now - start) / (end - start)) * series.value;
   }
 
   public static _buildIndex(
