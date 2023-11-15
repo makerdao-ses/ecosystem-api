@@ -222,7 +222,10 @@ export class AnalyticsDiscretizer {
     const now = when.getTime();
     const start = series.start.getTime();
     const end = series.end!.getTime();
-    if (now <= start) {
+    const cliff = series.params?.cliff
+      ? new Date(series.params.cliff!).getTime()
+      : null;
+    if (now < start || (cliff && now < cliff)) {
       return 0.0;
     } else if (now > end) {
       return series.value;

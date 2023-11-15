@@ -76,7 +76,7 @@ beforeAll(async () => {
       start: new Date(2023, 0, 1),
       end: new Date(2024, 0, 1),
       source: TEST_SOURCE,
-      value: 210,
+      value: 240,
       unit: "MKR",
       metric: AnalyticsMetric.Budget,
       fn: "DssVest",
@@ -267,7 +267,7 @@ describe("totals of different granularities", () => {
 });
 
 describe("dss vesting", () => {
-  it.only("should return values linear proportional to the time passed", async () => {
+  it("should return values linear proportional to the time passed", async () => {
     const start = new Date(2023, 0, 1);
     const end = new Date(2024, 0, 1);
     const query: AnalyticsQuery = {
@@ -294,7 +294,12 @@ describe("dss vesting", () => {
 
     const result = await engine.execute(query);
     expect(result.length).toBe(12);
-  });
+    const january = result[0].rows[0];
+    const november = result[10].rows[0];
+    const december = result[11].rows[0];
 
-  it("if cliff is provided it should start vesting when cliff is reached", async () => {});
+    expect(january.value).toBe(0);
+    expect(november.value.toFixed(0)).toBe("220"); // vest everything until cliff date
+    expect(december.value.toFixed(0)).toBe("20"); // vest normal amount
+  });
 });
