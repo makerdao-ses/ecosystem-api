@@ -230,14 +230,14 @@ describe("total of different granularities", () => {
   });
 
   const getResultsForGranularity = async (
-    granualarity: AnalyticsGranularity = AnalyticsGranularity.Annual,
+    granularity: AnalyticsGranularity = AnalyticsGranularity.Annual,
     start: Date = new Date("2022-01-01 00:00:00Z+0"),
     end: Date = new Date("2023-06-01 00:00:00Z+0"),
   ): Promise<GroupedPeriodResults> => {
     const query: AnalyticsQuery = {
       start,
       end,
-      granularity: granualarity,
+      granularity,
       metrics: [AnalyticsMetric.Budget, AnalyticsMetric.Actuals],
       currency: AnalyticsPath.fromString("DAI"),
       select: {
