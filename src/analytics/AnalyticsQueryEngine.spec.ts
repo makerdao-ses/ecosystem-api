@@ -161,7 +161,7 @@ it("should query records", async () => {
   ]);
 });
 
-describe("total of different granularities", () => {
+describe("totals of different granularities", () => {
   knex = initKnex();
   const store = new AnalyticsStore(knex);
   const engine = new AnalyticsQueryEngine(store);
