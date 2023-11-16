@@ -30,6 +30,9 @@ export class AnalyticsModel {
 
   public async query(filter: queryFilter) {
 
+    if (!filter) {
+      return [];
+    }
     const query: AnalyticsQuery = {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
@@ -53,8 +56,33 @@ export class AnalyticsModel {
   }
 
   public async getDimensions() {
-    const list = await this.knex("AnalyticsDimension").select('dimension').distinct().whereNotNull('dimension');
-    const filtered = list.map((l) => l.dimension);
+    const list = await this.knex
+      .select(this.knex.raw('distinct on ("dimension") dimension, path'))
+      .from('AnalyticsDimension')
+      .whereNotNull('path')
+      .whereNot('path', '')
+      .whereNot('path', '/')
+      .orderBy('dimension', 'asc');
+    const result = list.map(l => {
+      return {
+        name: l.dimension,
+        values: {
+          path: l.path
+        }
+      }
+    })
+    return result;
+  }
+
+  public async getMetrics() {
+    const list = await this.knex("AnalyticsSeries").select('metric').distinct().whereNotNull('metric');
+    const filtered = list.map((l) => l.metric.toLowerCase());
+    const metrics = ['budget', 'forecast', 'actuals', 'paymentsonchain', 'paymentsoffchainincluded'];
+    metrics.forEach(metric => {
+      if (!filtered.includes(metric)) {
+        filtered.push(metric);
+      }
+    });
     return filtered;
   }
 }
@@ -101,7 +129,7 @@ const getMetrics = (metrics: any) => {
   }
 
   const result = metrics.map((metric: string) => {
-    switch (metric) {
+    switch (metric.toLowerCase()) {
       case "budget": {
         return AnalyticsMetric.Budget;
       }
@@ -111,10 +139,10 @@ const getMetrics = (metrics: any) => {
       case "actuals": {
         return AnalyticsMetric.Actuals;
       }
-      case "netExpensesOnchain": {
+      case "paymentsonchain": {
         return AnalyticsMetric.PaymentsOnChain;
       }
-      case "netExpensesOffchainIncluded": {
+      case "paymentsoffchainincluded": {
         return AnalyticsMetric.PaymentsOffChainIncluded;
       }
     }
