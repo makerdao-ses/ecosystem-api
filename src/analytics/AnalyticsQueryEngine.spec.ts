@@ -3,7 +3,6 @@ import initKnex from "../initKnex.js";
 import { AnalyticsPath } from "./AnalyticsPath";
 import {
   AnalyticsGranularity,
-  AnalyticsMetric,
   AnalyticsQuery,
 } from "./AnalyticsQuery";
 import { AnalyticsQueryEngine } from "./AnalyticsQueryEngine";
@@ -16,7 +15,7 @@ import {
 const knex = initKnex();
 
 // Set to false during testing to see the resulting records in db
-const CLEAN_UP_DB = false;
+const CLEAN_UP_DB = true;
 const TEST_SOURCE = AnalyticsPath.fromString(
   "test/analytics/AnalyticsQueryEngine.spec",
 );
@@ -35,7 +34,7 @@ beforeAll(async () => {
       value: 10000,
       unit: "DAI",
       params: {},
-      metric: AnalyticsMetric.Budget,
+      metric: 'budget',
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -49,7 +48,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 10000,
       unit: "DAI",
-      metric: AnalyticsMetric.Budget,
+      metric: 'budget',
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -63,7 +62,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 15000,
       unit: "DAI",
-      metric: AnalyticsMetric.Budget,
+      metric: 'budget',
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -78,7 +77,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 240,
       unit: "MKR",
-      metric: AnalyticsMetric.Budget,
+      metric: 'budget',
       fn: "DssVest",
       params: {
         cliff: new Date(2023, 11, 1),
@@ -99,7 +98,7 @@ beforeAll(async () => {
       start: new Date(2023, 0, 1),
       source: TEST_SOURCE,
       value: 5.8,
-      metric: AnalyticsMetric.FTEs,
+      metric: "FTEs",
       dimensions: {
         project: TEST_SOURCE,
       },
@@ -108,7 +107,7 @@ beforeAll(async () => {
       start: new Date(2023, 2, 1),
       source: TEST_SOURCE,
       value: -0.8,
-      metric: AnalyticsMetric.FTEs,
+      metric: "FTEs",
       dimensions: {
         project: TEST_SOURCE,
       },
@@ -133,9 +132,9 @@ it("should query records", async () => {
     end: null,
     granularity: AnalyticsGranularity.Total,
     metrics: [
-      AnalyticsMetric.Budget,
-      AnalyticsMetric.Actuals,
-      AnalyticsMetric.FTEs,
+      "Budget",
+      "Actuals",
+      "FTEs"
     ],
     currency: AnalyticsPath.fromString("DAI,MKR"),
     select: {
@@ -236,7 +235,7 @@ describe("totals of different granularities", () => {
       start,
       end,
       granularity,
-      metrics: [AnalyticsMetric.Budget, AnalyticsMetric.Actuals],
+      metrics: ["Budget", "Actuals"],
       currency: AnalyticsPath.fromString("DAI"),
       select: {
         budget: [AnalyticsPath.fromString("atlas/legacy/core-units/PE-001")],
@@ -274,7 +273,7 @@ describe("dss vesting", () => {
       start,
       end,
       granularity: AnalyticsGranularity.Monthly,
-      metrics: [AnalyticsMetric.Budget, AnalyticsMetric.Actuals],
+      metrics: ["Budget", "Actuals"],
       currency: AnalyticsPath.fromString("MKR"),
       select: {
         budget: [AnalyticsPath.fromString("atlas/legacy/core-units/PE-001")],

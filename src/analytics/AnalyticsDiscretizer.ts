@@ -1,7 +1,6 @@
 import {
   AnalyticsGranularity,
   AnalyticsSeries,
-  getAnalyticsMetricString,
 } from "./AnalyticsQuery.js";
 import {
   AnalyticsPeriod,
@@ -272,7 +271,7 @@ export class AnalyticsDiscretizer {
 
     const map: DiscretizerIndexLeaf = {};
     for (const s of series) {
-      const metric = getAnalyticsMetricString(s.metric);
+      const metric = s.metric;
       if (undefined === map[metric]) {
         map[metric] = [];
       }
