@@ -72,6 +72,25 @@ beforeAll(async () => {
       },
     },
     {
+      start: new Date(2022, 0, 1),
+      end: new Date(2023, 0, 1),
+      source: TEST_SOURCE,
+      value: 240,
+      unit: "MKR",
+      metric: AnalyticsMetric.Budget,
+      fn: "DssVest",
+      params: {
+        cliff: new Date(2023, 11, 1),
+      },
+      dimensions: {
+        budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
+        category: AnalyticsPath.fromString(
+          "atlas/headcount/CompensationAndBenefits/SmartContractEngineering",
+        ),
+        project: TEST_SOURCE,
+      },
+    },
+    {
       start: new Date(2023, 0, 1),
       end: new Date(2024, 0, 1),
       source: TEST_SOURCE,
@@ -169,6 +188,7 @@ describe("totals of different granularities", () => {
     const result = await getResultsForGranularity(AnalyticsGranularity.Total);
     expect(result.length).toBe(1);
     expect(result[0].rows[0].sum).toBe(25000);
+    expect(result[0].period).toBe("total");
     total = result[0].rows[0].sum;
   });
 
@@ -177,6 +197,7 @@ describe("totals of different granularities", () => {
     expect(result.length).toBe(2);
     expect(getTotalSumOfResults(result)).toBe(total);
     expect(result[result.length - 1].rows[0].sum).toBe(25000);
+    expect(result[result.length - 1].period).toBe("2023");
   });
 
   it("should correct sum up on semi annual granularity", async () => {
@@ -186,6 +207,7 @@ describe("totals of different granularities", () => {
     expect(result.length).toBe(3);
     expect(getTotalSumOfResults(result)).toBe(total);
     expect(result[result.length - 1].rows[0].sum).toBe(25000);
+    expect(result[result.length - 1].period).toBe("2023/H1");
   });
 
   it("should correct sum up on monthly granularity", async () => {
@@ -193,6 +215,7 @@ describe("totals of different granularities", () => {
     expect(result.length).toBe(17);
     expect(getTotalSumOfResults(result)).toBe(total);
     expect(result[result.length - 1].rows[0].sum).toBe(25000);
+    expect(result[0].period).toBe("2022/1");
   });
 
   it("should correct sum up on weekly granularity", async () => {
@@ -200,6 +223,7 @@ describe("totals of different granularities", () => {
     expect(result.length).toBe(75);
     expect(getTotalSumOfResults(result)).toBe(total);
     expect(result[result.length - 1].rows[0].sum).toBe(25000);
+    expect(result[0].period).toBe("2021/W52");
   });
 
   it("should correct sum up on daily granularity", async () => {
@@ -212,6 +236,7 @@ describe("totals of different granularities", () => {
     );
     expect(result.length).toBe(6);
     expect(result[result.length - 1].rows[0].sum).toBe(10000);
+    expect(result[0].period).toBe("2021/12/30");
   });
 
   it("should correct sum up on hourly granularity", async () => {
@@ -224,6 +249,7 @@ describe("totals of different granularities", () => {
     );
     expect(result.length).toBe(6);
     expect(result[result.length - 1].rows[0].sum).toBe(10000);
+    expect(result[0].period).toBe("2021/12/31/23");
   });
 
   const getResultsForGranularity = async (
