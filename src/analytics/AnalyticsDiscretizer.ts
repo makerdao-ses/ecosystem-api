@@ -1,13 +1,4 @@
-import {
-  getDay,
-  getDayOfYear,
-  getISODay,
-  getMonth,
-  getQuarter,
-  getWeek,
-  getWeekYear,
-  getYear,
-} from "date-fns";
+import { getMonth, getQuarter, getWeek, getWeekYear, getYear } from "date-fns";
 import {
   AnalyticsGranularity,
   AnalyticsSeries,
@@ -18,7 +9,6 @@ import {
   AnalyticsRange,
   getPeriodSeriesArray,
 } from "./AnalyticsTimeSlicer.js";
-import getDaysInYear from "date-fns/esm/fp/getDaysInYear/index.js";
 
 export type GroupedPeriodResult = {
   period: string;
@@ -121,35 +111,34 @@ export class AnalyticsDiscretizer {
     return Object.values(result);
   }
   static _getPeriodString(p: AnalyticsPeriod) {
-    if (p.period === "annual") {
-      return getYear(p.start).toString();
-    } else if (p.period === "semiAnnual") {
-      const half = p.start.getMonth() < 6 ? "H1" : "H2";
-      return `${getYear(p.start)}/${half}`;
-    } else if (p.period === "quarterly") {
-      const quarter = getQuarter(p.start);
-      return `${getYear(p.start)}/Q${quarter}`;
-    } else if (p.period === "monthly") {
-      return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
-    } else if (p.period === "weekly") {
-      return `${getWeekYear(p.start, {
-        weekStartsOn: 1,
-        firstWeekContainsDate: 6,
-      })}/W${getWeek(p.start, {
-        weekStartsOn: 1,
-        firstWeekContainsDate: 6,
-      })}`;
-    } else if (p.period === "daily") {
-      return `${getYear(p.start)}/${
-        getMonth(p.start) + 1
-      }/${p.start.getDate()}`;
-    } else if (p.period === "hourly") {
-      return `${getYear(p.start)}/${
-        getMonth(p.start) + 1
-      }/${p.start.getDate()}/${p.start.getHours()}`;
+    switch (p.period) {
+      case "annual":
+        return getYear(p.start).toString();
+      case "semiAnnual":
+        return `${getYear(p.start)}/${p.start.getMonth() < 6 ? "H1" : "H2"}`;
+      case "quarterly":
+        return `${getYear(p.start)}/Q${getQuarter(p.start)}`;
+      case "monthly":
+        return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
+      case "weekly":
+        return `${getWeekYear(p.start, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 6,
+        })}/W${getWeek(p.start, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 6,
+        })}`;
+      case "daily":
+        return `${getYear(p.start)}/${
+          getMonth(p.start) + 1
+        }/${p.start.getDate()}`;
+      case "hourly":
+        return `${getYear(p.start)}/${
+          getMonth(p.start) + 1
+        }/${p.start.getDate()}/${p.start.getHours()}`;
+      default:
+        return p.period;
     }
-
-    return p.period;
   }
 
   public static _discretizeNode(
