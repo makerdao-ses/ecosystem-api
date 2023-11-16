@@ -38,8 +38,8 @@ export const typeDefs = [
       path: Int
       parentId: ID
       code: String
-      start: DateTime
-      end: DateTime
+      start: String
+      end: String
     }
 
     input AddBudgetCapInput {

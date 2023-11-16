@@ -34,7 +34,6 @@ export class BudgetModel {
     if (depth === 0) {
       return result;
     }
-
     for (const budget of budgets) {
       if (
         (idOrCode.id && budget.id == idOrCode.id) ||
@@ -76,21 +75,28 @@ export class BudgetModel {
   }
 
   async getBudgets(filter: { limit?: number; offset?: number; filter?: any }) {
-    const baseQuery = this.knex.select("*").from("Budget").orderBy("id", "asc");
+    const baseQuery = this.knex
+      .select("*")
+      .from("Budget").orderBy("Budget.id", "asc");
 
     if (filter.limit || filter.offset) {
       return await baseQuery
         .limit(filter.limit as number)
         .offset(filter.offset as number);
     } else {
-      const start = filter.filter?.start;
-      const end = filter.filter?.end;
+      const start = filter.filter?.start
+      const end = filter.filter?.end
 
+      let ids: any = [];
       if (start && end) {
-        baseQuery.where((b) => b.whereNull("start").orWhere("start", "<", end));
-        baseQuery.andWhere((b) =>
-          b.whereNull("end").orWhere("end", ">", start),
-        );
+        const startEndQuery = await this.knex
+          .select("Budget.id")
+          .from("Budget").orderBy("Budget.id", "asc")
+          .join('BudgetCap', 'Budget.id', '=', 'BudgetCap.budgetId')
+          .where('BudgetCap.start', '>=', start)
+          .andWhere('BudgetCap.end', '<=', end)
+          .distinct();
+        ids = startEndQuery.map((b: any) => b.id);
       }
       const idOrCode = {
         id: filter.filter?.id,
@@ -101,7 +107,11 @@ export class BudgetModel {
 
       const result = await baseQuery;
       this.addBudgetPaths(result, null, "", "");
-      return this.processBudgets(result, maxDepth, parentId, idOrCode);
+      const processedBudgets = this.processBudgets(result, maxDepth, parentId, idOrCode);
+      if(ids.length !== 0) {
+        return processedBudgets.filter((b: any) => ids.includes(b.id));
+      }
+      return processedBudgets;
     }
   }
 
