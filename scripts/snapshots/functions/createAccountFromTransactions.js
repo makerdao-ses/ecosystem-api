@@ -20,6 +20,7 @@ const createAccountFromTransactions = async (
     accountInfo,
     knex,
   );
+  
   const txsProcessingInfo = await processTransactions(
     snapshotAccount,
     transactions,

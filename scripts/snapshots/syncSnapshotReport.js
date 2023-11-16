@@ -52,8 +52,7 @@ for (let i = 0; i < accounts.length; i++) {
     accounts[i].address,
     owner.type,
     owner.id,
-    apiToken,
-    knex,
+    apiToken
   );
 
   if (transactions.length > 0) {

@@ -1,59 +1,69 @@
 import fetch from "node-fetch";
+import { json } from "stream/consumers";
 
 const fetchTransactionData = async (
   address,
   ownerType,
   ownerId,
+  //apiToken not in use but may return in the future
   apiToken,
-  knex,
 ) => {
   console.log(
-    `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`,
+    `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`
   );
 
     address = address.toLowerCase();
     let result = [];
     
-    const token = 'DAI';
-    const url = `https://data-api.makerdao.network/v1/core_units/transfers?token=${token}&from_address=${address}&skip=`;
     const headers = {
         'accept': '*/*',
     };
     
     let response = null;
     let apiCalls = 0;
-    let skip = 1;
+    let page = 1;
     let jsonData = null;
     
     // make the API call for from_address
     do {
-        console.log(` ...API call ${apiCalls} - from_address: ${address} - fetching data...`);
-        response = await fetch(`https://cortex.blockanalitica.com/api/v1/tokens/dai/wallet-events?page=${skip}&wallet_address=${address}`, {
-            method: 'GET',
-            headers: headers
-        });
 
-        jsonData = await response.json(); // assign response to jsonData
+      console.log(` ...API call ${apiCalls} - from_address: ${address} - fetching data...`);
+      response = await fetch(`https://cortex.blockanalitica.com/api/v1/tokens/dai/wallet-events?page=${page}&wallet_address=${address}`, {
+        method: 'GET',
+        headers: headers
+      });
 
-    if (jsonData.detail === "Could not validate credentials") {
+      jsonData = await response.json(); // assign response to jsonData
+
+      if (jsonData.detail === "Could not validate credentials") {
       throw new Error("API Error: Could not validate credentials");
-    }
+      }
 
-        result = result.concat(jsonData.results);
-        skip += 1;
-        apiCalls++;
+      result = result.concat(jsonData.results);
+      page = jsonData.next_page;
+      apiCalls++;
 
-    } while (jsonData.next_page !== null);
+    } while (page);
 
-  return await filterByOwnerCode(result, ownerType, ownerId, knex);
+  return formatResults(result, 'DAI');
 };
 
-const filterByOwnerCode = async (data, ownerType, ownerId, knex) => {
-  let formatData = [];
+const formatResults = (data, token) => {
 
-   
-    
-    return data;
+  return data.map(r => ({
+    block: r.block_number,
+    timestamp: r.datetime,
+    //_originalTimestamp: r.datetime,
+    tx_hash: r.tx_hash,
+    token: token,
+    flow: (r.amount[0]==='-'?'outflow':'inflow'),
+    amount: Math.abs(parseFloat(r.amount)),
+    balance: parseFloat(r.balance),
+    sender: r.sender,
+    receiver: r.receiver,
+    wallet: r.wallet_address
+  }));
+
 };
 
 export default fetchTransactionData;

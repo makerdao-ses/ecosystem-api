@@ -75,14 +75,14 @@ const processTransactions = async (
         
         // A block range is set and we haven't reached the first block yet 
         //   => don't include the transaction yet, but increase the balances
-        if (monthInfo.blockNumberRange.initial && txData.block_number < monthInfo.blockNumberRange.initial) {
+        if (monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial) {
             finalBalanceByToken[txData.token] += relativeTxData.amount;
             initialBalanceByToken[txData.token] += relativeTxData.amount;
 
         // No block range is set or we haven't hit the final block of the set range yet
         //   => include the transaction
         } else if (
-            (monthInfo.blockNumberRange.final && txData.block_number < monthInfo.blockNumberRange.final)
+            (monthInfo.blockNumberRange.final && txData.block < monthInfo.blockNumberRange.final)
             || !monthInfo.blockNumberRange.final
         ) {
             // Only add towards the final balance
@@ -91,8 +91,8 @@ const processTransactions = async (
             // Add the transaction to the selected account in the database
             await knex('SnapshotAccountTransaction').insert({
                 snapshotAccountId: snapshotAccount.id,
-                block: txData.block_number,
-                timestamp: txData.datetime,
+                block: txData.block,
+                timestamp: txData.timestamp,
                 txHash: txData.tx_hash,
                 token: txData.token,
                 counterParty: relativeTxData.counterPartyAddress,
@@ -102,13 +102,13 @@ const processTransactions = async (
 
       addedTransactionsCount++;
 
-            // Keep track of the earliest and oldest datetime
-            if (!timespan.start || txData.datetime < timespan.start) {
-                timespan.start = txData.datetime;
+            // Keep track of the earliest and oldest timestamp
+            if (!timespan.start || txData.timestamp < timespan.start) {
+                timespan.start = txData.timestamp;
             }
 
-            if (!timespan.end || txData.datetime > timespan.end) {
-                timespan.end = txData.datetime;
+            if (!timespan.end || txData.timestamp > timespan.end) {
+                timespan.end = txData.timestamp;
             }
         }
 
@@ -133,17 +133,17 @@ const processTransactions = async (
       );
     }
 
-    if (addedTransactionsCount > 9999) {
+    if (addedTransactionsCount > 99999) {
       throw new Error("EXIT LOOP");
     }
   }
 
   console.log(` ...added ${addedTransactionsCount} transaction(s)`);
   console.log(
-    ` ...detected ${protocolTransactions.length} transaction(s) with Protocol as counterparty`,
+    ` ...detected ${protocolTransactions.length} transaction(s) with Protocol as counterparty`
   );
   console.log(
-    ` ...detected ${paymentProcessorTransactions.length} with Payment Processor as counterparty`,
+    ` ...detected ${paymentProcessorTransactions.length} with Payment Processor as counterparty`
   );
   console.log(` ...calculated initial balance(s)`, initialBalanceByToken);
   console.log(` ...calculated final balance(s)`, finalBalanceByToken);
