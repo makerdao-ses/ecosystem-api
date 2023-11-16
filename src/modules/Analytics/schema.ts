@@ -26,7 +26,7 @@ export const typeDefs = [
 
     type AnalyticsSeriesDimension {
       name: String
-      value: Value
+      path: String
     }
 
     type Dimension {
@@ -80,11 +80,7 @@ export const resolvers = {
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.query(filter);
       const metrics = await queryEngine.getMetrics();
-      const dimensions = await queryEngine.getDimensions();
-
-      // results.forEach(r => {
-      //     console.log(JSON.stringify(r, null, 2));
-      // });
+      const contextDimensions = await queryEngine.getDimensions();
 
       return {
         series: results.map((s) => ({
@@ -93,12 +89,12 @@ export const resolvers = {
             ...r,
             dimensions: Object.keys(r.dimensions).map((d) => ({
               name: d,
-              value: r.dimensions[d],
+              path: r.dimensions[d],
             })),
           })),
         })),
         metrics,
-        dimensions
+        dimensions: contextDimensions
       };
     }
   },
