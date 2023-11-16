@@ -77,7 +77,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 240,
       unit: "MKR",
-      metric: AnalyticsMetric.Budget,
+      metric: "Budget",
       fn: "DssVest",
       params: {
         cliff: new Date(2023, 11, 1),
