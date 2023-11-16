@@ -1,9 +1,11 @@
 // Read the postgres connection string from the environment variables.
 // Format: postgresql://user:password@host/dbname
 if (!process.env.PG_CONNECTION_STRING) {
-  console.error("ATTENTION: PG_CONNECTION_STRING not set! Run PG_CONNECTION_STRING=postgresql://makerdao:pwd@localhost/EcosystemApi or similar.");
+  console.error(
+    "ATTENTION: PG_CONNECTION_STRING not set! Run PG_CONNECTION_STRING=postgresql://makerdao:pwd@localhost/EcosystemApi or similar.",
+  );
 } else {
-  console.debug("PG_CONNECTION_STRING: " + process.env.PG_CONNECTION_STRING)
+  console.debug("PG_CONNECTION_STRING: " + process.env.PG_CONNECTION_STRING);
 }
 
 /**
@@ -11,44 +13,44 @@ if (!process.env.PG_CONNECTION_STRING) {
  */
 export default {
   development: {
-    client: 'pg',
+    client: "pg",
     connection: {
       connectionString: process.env.PG_CONNECTION_STRING,
-      ssl: { rejectUnauthorized: false }
-  },
+      ssl: { rejectUnauthorized: false },
+    },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: "knex_migrations",
     },
     seeds: {
-      directory: './seeds'
-    }
+      directory: "./seeds",
+    },
   },
 
   staging: {
-    client: 'pg',
+    client: "pg",
     connection: {
       connectionString: process.env.PG_CONNECTION_STRING,
-      ssl: { rejectUnauthorized: false }
-  },
+      ssl: { rejectUnauthorized: false },
+    },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: "knex_migrations",
     },
     seeds: {
-      directory: './seeds'
-    }
+      directory: "./seeds",
+    },
   },
 
   production: {
-    client: 'pg',
+    client: "pg",
     connection: {
       connectionString: process.env.PG_CONNECTION_STRING,
-      ssl: { rejectUnauthorized: false }
-  },
+      ssl: { rejectUnauthorized: false },
+    },
     migrations: {
-      tableName: 'knex_migrations'
+      tableName: "knex_migrations",
     },
     seeds: {
-      directory: './seeds'
-    }
-  }
+      directory: "./seeds",
+    },
+  },
 };

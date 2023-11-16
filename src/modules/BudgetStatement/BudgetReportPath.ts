@@ -1,134 +1,146 @@
 import { JsonSerializerTypes } from "./JsonSerializerTypes.js";
 
 export class BudgetReportPath {
-    get segments(): BudgetReportPathSegment[] { return this._segments; }
-    
-    private _segments: BudgetReportPathSegment[];
+  get segments(): BudgetReportPathSegment[] {
+    return this._segments;
+  }
 
-    public static fromString(path: string): BudgetReportPath {
-        const segments = 
-            parseSeparatedList(path, '/')
-            .map(segment => BudgetReportPathSegment.fromString(segment));
+  private _segments: BudgetReportPathSegment[];
 
-        return new BudgetReportPath(segments);
+  public static fromString(path: string): BudgetReportPath {
+    const segments = parseSeparatedList(path, "/").map((segment) =>
+      BudgetReportPathSegment.fromString(segment),
+    );
+
+    return new BudgetReportPath(segments);
+  }
+
+  constructor(segments: BudgetReportPathSegment[]) {
+    this._segments = segments;
+  }
+
+  public toJSON() {
+    return {
+      _t: JsonSerializerTypes.BudgetReportPath,
+      _v: this.toString(),
+    };
+  }
+
+  public toString(): string {
+    return this._segments.map((s) => s.toString()).join("/");
+  }
+
+  public nextSegment(): BudgetReportPathSegment {
+    return this._segments.length > 0
+      ? this._segments[0]
+      : new BudgetReportPathSegment();
+  }
+
+  public reduce(): BudgetReportPath {
+    const result = this._segments.slice(1);
+
+    if (result.length < 1) {
+      result.push(new BudgetReportPathSegment());
     }
 
-    constructor(segments:BudgetReportPathSegment[]) {
-        this._segments = segments;
-    }
-
-    public toJSON() {
-        return {
-            _t: JsonSerializerTypes.BudgetReportPath,
-            _v: this.toString()
-        };
-    }
-
-    public toString():string {
-        return this._segments.map(s => s.toString()).join('/');
-    }
-
-    public nextSegment(): BudgetReportPathSegment {
-        return (this._segments.length > 0) ? this._segments[0] : new BudgetReportPathSegment();
-    }
-
-    public reduce(): BudgetReportPath {
-        const result = this._segments.slice(1);
-        
-        if (result.length < 1) {
-            result.push(new BudgetReportPathSegment())
-        }
-
-        return new BudgetReportPath(result);
-    }
+    return new BudgetReportPath(result);
+  }
 }
 
 export class BudgetReportPathSegment {
-    get filters(): NullableStrings { return this._filters; }
-    get groups(): NullableStrings { return this._groups; }
+  get filters(): NullableStrings {
+    return this._filters;
+  }
+  get groups(): NullableStrings {
+    return this._groups;
+  }
 
-    private _filters: NullableStrings = null;
-    private _groups: NullableStrings = null;
-    
-    public static fromString(segment: string): BudgetReportPathSegment {
-        const elements = parseSeparatedList(segment, ':');
+  private _filters: NullableStrings = null;
+  private _groups: NullableStrings = null;
 
-        let filtersArg: NullableStrings;
-        if (elements[0] === '*') {
-            filtersArg = null;
-        } else {
-            filtersArg = 
-                parseSeparatedList(elements[0], ',')
-                .map(f => BudgetReportPathSegment.unescape(f));
-        }
+  public static fromString(segment: string): BudgetReportPathSegment {
+    const elements = parseSeparatedList(segment, ":");
 
-        let groupsArg: NullableStrings;
-        if (elements[1] === undefined || elements[1].length < 1) {
-            groupsArg = [];
-        } else if (elements[1] === '*') {
-            groupsArg = null;
-        } else {
-            groupsArg = 
-                parseSeparatedList(elements[1], ',')
-                .map(g => BudgetReportPathSegment.unescape(g));
-        }
-
-        return new BudgetReportPathSegment(filtersArg, groupsArg);
+    let filtersArg: NullableStrings;
+    if (elements[0] === "*") {
+      filtersArg = null;
+    } else {
+      filtersArg = parseSeparatedList(elements[0], ",").map((f) =>
+        BudgetReportPathSegment.unescape(f),
+      );
     }
 
-    public static escape(segment: string): string {
-        // Put a backslash in front of the control characters \ : / and ,
-        return segment.replace(/(\\|\:|\/|\,)/gi, "\\$1");
+    let groupsArg: NullableStrings;
+    if (elements[1] === undefined || elements[1].length < 1) {
+      groupsArg = [];
+    } else if (elements[1] === "*") {
+      groupsArg = null;
+    } else {
+      groupsArg = parseSeparatedList(elements[1], ",").map((g) =>
+        BudgetReportPathSegment.unescape(g),
+      );
     }
 
-    public static unescape(segment: string): string {
-        // Remove backslashes in front of any character
-        return segment.replace(/\\(.)/gi, "$1");
+    return new BudgetReportPathSegment(filtersArg, groupsArg);
+  }
+
+  public static escape(segment: string): string {
+    // Put a backslash in front of the control characters \ : / and ,
+    return segment.replace(/(\\|:|\/|,)/gi, "\\$1");
+  }
+
+  public static unescape(segment: string): string {
+    // Remove backslashes in front of any character
+    return segment.replace(/\\(.)/gi, "$1");
+  }
+
+  constructor(filters: NullableStrings = null, groups: NullableStrings = []) {
+    this._filters = filters;
+    this._groups = groups;
+  }
+
+  public toJSON() {
+    return {
+      _t: JsonSerializerTypes.BudgetReportPathSegment,
+      _v: this.toString(),
+    };
+  }
+
+  public toString(): string {
+    let result = "";
+
+    if (this._filters === null) {
+      result += "*";
+    } else {
+      result += this._filters
+        .map((f) => BudgetReportPathSegment.escape(f))
+        .join(",");
     }
 
-    constructor(filters:NullableStrings = null, groups:NullableStrings = []) {
-        this._filters = filters;
-        this._groups = groups;
+    if (this._groups === null) {
+      result += ":*";
+    } else if (this._groups.length > 0) {
+      result +=
+        ":" +
+        this._groups.map((g) => BudgetReportPathSegment.escape(g)).join(",");
     }
 
-    public toJSON() {
-        return {
-            _t: JsonSerializerTypes.BudgetReportPathSegment,
-            _v: this.toString()
-        };
-    }
-
-    public toString():string {
-        let result = '';
-
-        if (this._filters === null) {
-            result += '*';
-        } else {
-            result += this._filters.map(f => BudgetReportPathSegment.escape(f)).join(',');
-        }
-
-        if (this._groups === null) {
-            result += ':*';
-        } else if (this._groups.length > 0) {
-            result += ':' + this._groups.map(g => BudgetReportPathSegment.escape(g)).join(',');
-        }
-
-        return result;
-    }
+    return result;
+  }
 }
 
 type NullableStrings = string[] | null;
-type PathSeparator = '/' | ':' | ',';
+type PathSeparator = "/" | ":" | ",";
 
 // Defining constant regexes instead of dynamic patterns for compiler optimization
 const unescapedSeparatorPattern = {
-    ":": /(?<!\\):/, 
-    ",": /(?<!\\),/,
-    "/": /(?<!\\)\//,
+  ":": /(?<!\\):/,
+  ",": /(?<!\\),/,
+  "/": /(?<!\\)\//,
 };
 
 function parseSeparatedList(list: string, separator: PathSeparator): string[] {
-    /*
+  /*
         The basic mechanism is that we split the string by commas that 
         aren't escaped with a backslash, using the unescapedSeparatorPattern:
 
@@ -156,13 +168,13 @@ function parseSeparatedList(list: string, separator: PathSeparator): string[] {
         - Etc.
     */
 
-    let substituteString = '@@';
-    while (list.indexOf(substituteString) > -1) {
-        substituteString += '@';
-    }
+  let substituteString = "@@";
+  while (list.indexOf(substituteString) > -1) {
+    substituteString += "@";
+  }
 
-    return list
-        .replaceAll('\\\\', substituteString)
-        .split(unescapedSeparatorPattern[separator])
-        .map(e => e.replaceAll(substituteString, '\\\\'));
+  return list
+    .replace("\\\\", substituteString)
+    .split(unescapedSeparatorPattern[separator])
+    .map((e) => e.replace(substituteString, "\\\\"));
 }

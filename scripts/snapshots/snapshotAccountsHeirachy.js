@@ -1,9 +1,9 @@
-import fs from 'fs';
-import knex from 'knex';
+import fs from "fs";
+import knex from "knex";
 
 // Connect to the database
 const db = knex({
-  client: 'pg',
+  client: "pg",
   connection: process.env.PG_CONNECTION_STRING,
 });
 
@@ -15,12 +15,12 @@ const data = JSON.parse(jsonData);
 
 // Process the data
 data.forEach(async (row) => {
-  if (row.group === 'Y') {
+  if (row.group === "Y") {
     // Find the Snapshot with matching CoreUnit code
-    const snapshot = await db('Snapshot')
-      .join('CoreUnit', 'CoreUnit.id', '=', 'Snapshot.ownerId')
-      .where('CoreUnit.code', '=', row['budget path 3'])
-      .select('Snapshot.id')
+    const snapshot = await db("Snapshot")
+      .join("CoreUnit", "CoreUnit.id", "=", "Snapshot.ownerId")
+      .where("CoreUnit.code", "=", row["budget path 3"])
+      .select("Snapshot.id")
       .first();
 
     if (snapshot) {
@@ -28,18 +28,18 @@ data.forEach(async (row) => {
       const groupAccount = {
         snapshotId: snapshot.id,
         accountAddress: null,
-        accountLabel: 'Group Account',
-        accountType: 'group'
+        accountLabel: "Group Account",
+        accountType: "group",
       };
 
-      await db('SnapshotAccount').insert(groupAccount);
+      await db("SnapshotAccount").insert(groupAccount);
 
       // Update existing SnapshotAccount with group values
-      await db('SnapshotAccount')
-        .where('accountAddress', '=', row.Address)
-        .andWhere('snapshotId', '=', snapshot.id)
+      await db("SnapshotAccount")
+        .where("accountAddress", "=", row.Address)
+        .andWhere("snapshotId", "=", snapshot.id)
         .update({
-          accountType: 'group',
+          accountType: "group",
           groupAccountId: snapshot.id,
         });
     }

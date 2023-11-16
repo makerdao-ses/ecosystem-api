@@ -10,26 +10,30 @@ import { DelegatesResolver } from "../BudgetStatement/ReportResolvers/DelegatesR
 import { ResolverCache } from "../BudgetStatement/ResolverCache.js";
 
 export class TotalExpensesModel {
-    knex: Knex;
+  knex: Knex;
 
-    constructor(knex: Knex) {
-        this.knex = knex;
-    }
+  constructor(knex: Knex) {
+    this.knex = knex;
+  }
 
-    async query(query:BudgetReportQuery) {
-        const resolvers = [ 
-            new PeriodResolver(this.knex),
-            new DaoResolver(),
-            new DelegatesResolver(this.knex),
-            new ContributorTeamsResolver(this.knex, false),
-            new ContributorTeamsResolver(this.knex, true),
-            new AccountsResolver(this.knex)
-        ];
-    
-        const engine = new BudgetReportQueryEngine(resolvers, 'PeriodResolver', new ResolverCache(this.knex));
+  async query(query: BudgetReportQuery) {
+    const resolvers = [
+      new PeriodResolver(this.knex),
+      new DaoResolver(),
+      new DelegatesResolver(this.knex),
+      new ContributorTeamsResolver(this.knex, false),
+      new ContributorTeamsResolver(this.knex, true),
+      new AccountsResolver(this.knex),
+    ];
 
-        return engine.execute(query);
-    }
+    const engine = new BudgetReportQueryEngine(
+      resolvers,
+      "PeriodResolver",
+      new ResolverCache(this.knex),
+    );
+
+    return engine.execute(query);
+  }
 }
 
 export default (knex: Knex) => new TotalExpensesModel(knex);
