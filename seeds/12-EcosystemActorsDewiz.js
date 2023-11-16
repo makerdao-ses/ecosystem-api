@@ -1,27 +1,29 @@
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
 
 //Add AlignedDelegates and DEWIZ Ecosystem Actor
 
 export async function seed(knex) {
+  await knex("CoreUnit").insert({
+    code: "ALD-001",
+    shortCode: "ALD",
+    name: "Aligned Delegates",
+    type: "AlignedDelegates",
+  });
 
-  await knex('CoreUnit').insert({
-    code: 'ALD-001',
-    shortCode: 'ALD',
-    name: 'Aligned Delegates',
-    type: 'AlignedDelegates'
-});
-
-    const [dewizCuId] = await knex('CoreUnit').insert({
-        code: 'DEWIZ-001',
-        shortCode: 'DEWIZ',
-        name: 'Dewiz',
-        image: 'https://makerdao-ses.github.io/ecosystem-dashboard/core-units/dewiz-001/dewiz_logo.png',
-        category: '{Technical}',
-        sentenceDescription: 'Dewiz is a team of engineers with a proven track record of delivering high-quality, secure, and reliable smart contracts for the premier DeFi projects.',
-        paragraphDescription: `# **About Us**
+  const [dewizCuId] = await knex("CoreUnit")
+    .insert({
+      code: "DEWIZ-001",
+      shortCode: "DEWIZ",
+      name: "Dewiz",
+      image:
+        "https://makerdao-ses.github.io/ecosystem-dashboard/core-units/dewiz-001/dewiz_logo.png",
+      category: "{Technical}",
+      sentenceDescription:
+        "Dewiz is a team of engineers with a proven track record of delivering high-quality, secure, and reliable smart contracts for the premier DeFi projects.",
+      paragraphDescription: `# **About Us**
 
         Dewiz DeFi Engineering Services provides organizations flexible access to battle-tested smart contract engineers that confront the wizardry of DeFi protocols.
         
@@ -59,56 +61,68 @@ export async function seed(knex) {
         
         In addition to the team’s technical expertise, Dewiz also supports a strong understanding of the principles, operations, and values of both traditional and decentralized organizations. Dewiz is dedicated to working closely with DAOs, SubDAOs, projects, and traditional organizations to ensure that its team of engineers supports the transparency, communications, and preferred delivery method of smart contracts for clients. Our payment options and cycles are flexible to support a variety of engagement types, ranging from streams, on-chain payments, and integrations with payment platforms.
         `,
-        type: 'EcosystemActor'
-    }).returning('id');
+      type: "EcosystemActor",
+    })
+    .returning("id");
 
-    await knex('SocialMediaChannels').insert({
-        cuId: dewizCuId.id,
-        forumTag: 'https://forum.makerdao.com/u/dewiz/summary',
-        twitter: 'https://twitter.com/dewiz_xyz',
-        discord: 'https://discord.com/invite/sZQPFJxDYf',
-        website: 'https://dewiz.xyz/',
-      });
+  await knex("SocialMediaChannels").insert({
+    cuId: dewizCuId.id,
+    forumTag: "https://forum.makerdao.com/u/dewiz/summary",
+    twitter: "https://twitter.com/dewiz_xyz",
+    discord: "https://discord.com/invite/sZQPFJxDYf",
+    website: "https://dewiz.xyz/",
+  });
 
-      //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
-  
-    // First, find the user with username "Dracaena27" and get their id
-  const user = await knex('User').select('id').where({ username: 'DewizAdmin' }).first();
+  //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
+
+  // First, find the user with username "Dracaena27" and get their id
+  const user = await knex("User")
+    .select("id")
+    .where({ username: "DewizAdmin" })
+    .first();
   const userId = user.id;
-  
+
   // Find Delegates resourceId
-  const dewiz = await knex('CoreUnit').select('id').where({ code: 'DEWIZ-001' }).first();
+  const dewiz = await knex("CoreUnit")
+    .select("id")
+    .where({ code: "DEWIZ-001" })
+    .first();
   const dewizId = dewiz.id;
 
-  const role = await knex('Role').select('id').where({roleName: 'EcosystemActorAdmin'}).first();
+  const role = await knex("Role")
+    .select("id")
+    .where({ roleName: "EcosystemActorAdmin" })
+    .first();
   const roleId = role.id;
 
-  const supScope = await knex('AlignmentScope').select('id').where({code: 'SUP'}).first();
+  const supScope = await knex("AlignmentScope")
+    .select("id")
+    .where({ code: "SUP" })
+    .first();
   const supId = supScope.id;
 
-  const proScope = await knex('AlignmentScope').select('id').where({code: 'PRO'}).first();
+  const proScope = await knex("AlignmentScope")
+    .select("id")
+    .where({ code: "PRO" })
+    .first();
   const proId = proScope.id;
-  
+
   // Finally, insert the new user role record with the appropriate values
-  await knex('UserRole').insert({
+  await knex("UserRole").insert({
     roleId: roleId,
-    resource: 'EcosystemActor',
+    resource: "EcosystemActor",
     resourceId: dewizId,
-    userId: userId
+    userId: userId,
   });
 
-  await knex('ContributorTeam_AlignmentScope').insert({
-    teamId: dewizId,
-    scopeId: supId,
-  },
-  {
-    teamId: dewizId,
-    scopeId: proId,
-
-  });
-  
-
-
-
-
+  await knex("ContributorTeam_AlignmentScope").insert(
+    {
+      teamId: dewizId,
+      scopeId: supId,
+    },
+    {
+      teamId: dewizId,
+      scopeId: proId,
+    },
+  );
 }

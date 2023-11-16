@@ -1,14 +1,13 @@
-import knex from 'knex';
+import knex from "knex";
 
 const db = knex({
-    client: 'pg',
-    connection: process.env.PG_CONNECTION_STRING,
+  client: "pg",
+  connection: process.env.PG_CONNECTION_STRING,
 });
 
 const getData = async () => {
-
-
-  const nonAuditors = await db.raw(`SELECT cu.code, cu.id as cuid, bs.month, bsw.name, bs.id, bstr.id as bstrid, bsw.id as bswid
+  const nonAuditors =
+    await db.raw(`SELECT cu.code, cu.id as cuid, bs.month, bsw.name, bs.id, bstr.id as bstrid, bsw.id as bswid
   FROM public."CoreUnit" as cu
   LEFT JOIN (
     SELECT DISTINCT ur."resourceId"
@@ -29,13 +28,12 @@ const getData = async () => {
   // Create an empty array to hold the formatted results
   const formattedResult = [];
 
-
-
   // Loop through each row and format the result
-  rows.forEach(row => {
-
+  rows.forEach((row) => {
     //Retrieve walletBalanceTimestamo
-    const timestamp = new Date(Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12));
+    const timestamp = new Date(
+      Date.UTC(row.month.getFullYear(), row.month.getMonth() + 1, 0, 12),
+    );
     const walletBalanceTimestamp = timestamp.toLocaleString();
 
     const formattedRow = {
@@ -44,24 +42,24 @@ const getData = async () => {
       transferRequestId: row.bstrid,
       targetAmount: null,
       targetDescription: `Core Unit ${row.code} currently does not work with an Core Unit Auditor to top up its operational wallet but streams funds directly from the Maker protocol.`,
-      targetCalculation: 'N/A',
-      walletBalanceTimestamp: walletBalanceTimestamp
+      targetCalculation: "N/A",
+      walletBalanceTimestamp: walletBalanceTimestamp,
     };
 
     formattedResult.push(formattedRow);
   });
 
-
-
   // Push the formattedResult array to the database
-  console.log(`Adding ${formattedResult.length} values to the BudgetStatementTransferRequest table...`);
+  console.log(
+    `Adding ${formattedResult.length} values to the BudgetStatementTransferRequest table...`,
+  );
 
   const insertOrUpdate = async (row) => {
     if (row.transferRequestId !== null) {
       // Update existing row
       await db("BudgetStatementTransferRequest")
         .where({
-          id: row.transferRequestId
+          id: row.transferRequestId,
         })
         .update({
           targetAmount: row.targetAmount,
@@ -70,7 +68,7 @@ const getData = async () => {
           targetSourceCode: null,
           targetSourceUrl: null,
           targetSourceTitle: null,
-          walletBalanceTimestamp: row.walletBalanceTimestamp
+          walletBalanceTimestamp: row.walletBalanceTimestamp,
         });
     } else {
       // Insert new row
@@ -82,7 +80,7 @@ const getData = async () => {
         targetSourceCode: null,
         targetSourceUrl: null,
         targetSourceTitle: null,
-        walletBalanceTimestamp: row.walletBalanceTimestamp
+        walletBalanceTimestamp: row.walletBalanceTimestamp,
       });
     }
   };
@@ -90,7 +88,6 @@ const getData = async () => {
   // Loop through each row and insert/update the data
   await Promise.all(formattedResult.map(insertOrUpdate));
   return process.exit(0);
-  
 };
 
 getData();

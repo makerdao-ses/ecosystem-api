@@ -1,431 +1,462 @@
 import { gql } from "apollo-server-core";
 
-export const typeDefs = [gql`
-
+export const typeDefs = [
+  gql`
     "Core Unit or Cross Core Unit Intitiatives"
     type Roadmap {
-        "Auto generated id field"
-        id: ID!
-        "Roadmap owner. Null value is for Cross Core Unit Initiative"
-        ownerCuId: ID
-        "An alphanumeric code representing the roadmap. Ex: SES-Q2-O3 SES Quarter 2 Objective 3"
-        roadmapCode: String
-        "Identifying name of a roadmap"
-        roadmapName: String
-        comments: String
-        "Todo, InProgress or Done"
-        roadmapStatus: RoadmapStatus
-        strategicInitiative: Boolean
-        roadmapSummary: String
-        "Involved stakehodlders in the roadmap"
-        roadmapStakeholder: [RoadmapStakeholder]
-        "Links to documents showcasing the results of the roadmap"
-        roadmapOutput: [RoadmapOutput]
-        milestone: [Milestone]
+      "Auto generated id field"
+      id: ID!
+      "Roadmap owner. Null value is for Cross Core Unit Initiative"
+      ownerCuId: ID
+      "An alphanumeric code representing the roadmap. Ex: SES-Q2-O3 SES Quarter 2 Objective 3"
+      roadmapCode: String
+      "Identifying name of a roadmap"
+      roadmapName: String
+      comments: String
+      "Todo, InProgress or Done"
+      roadmapStatus: RoadmapStatus
+      strategicInitiative: Boolean
+      roadmapSummary: String
+      "Involved stakehodlders in the roadmap"
+      roadmapStakeholder: [RoadmapStakeholder]
+      "Links to documents showcasing the results of the roadmap"
+      roadmapOutput: [RoadmapOutput]
+      milestone: [Milestone]
     }
-
-
 
     enum RoadmapStatus {
-        Todo
-        InProgress
-        Done
+      Todo
+      InProgress
+      Done
     }
-
 
     "Roadmap stakeholders can be independent contributors or core unit contributors"
     type RoadmapStakeholder {
-        id: ID!
-        stakeholderId: ID!
-        roadmapId: ID!
-        stakeholderRoleId: ID!
-        stakeholderRole: [StakeholderRole]
-        stakeholder: [Stakeholder]
+      id: ID!
+      stakeholderId: ID!
+      roadmapId: ID!
+      stakeholderRoleId: ID!
+      stakeholderRole: [StakeholderRole]
+      stakeholder: [Stakeholder]
     }
 
     "Individual stakehodlers that can be under a core unit, or independent."
     type Stakeholder {
-        id: ID!
-        name: String
-        stakeholderContributorId: ID
-        stakeholderCuCode: String
-        roadmapStakeholder: [RoadmapStakeholder]
+      id: ID!
+      name: String
+      stakeholderContributorId: ID
+      stakeholderCuCode: String
+      roadmapStakeholder: [RoadmapStakeholder]
     }
 
     type StakeholderRole {
-        id: ID!
-        stakeholderRoleName: String!
+      id: ID!
+      stakeholderRoleName: String!
     }
 
     type RoadmapOutput {
-        id: ID!
-        outputId: ID
-        roadmapId: ID
-        outputTypeId: ID
-        output: [Output]
-        outputType: [OutputType]
+      id: ID!
+      outputId: ID
+      roadmapId: ID
+      outputTypeId: ID
+      output: [Output]
+      outputType: [OutputType]
     }
 
     "Links to documents showcasing the output of a given roadmap"
     type Output {
-        id: ID!
-        name: String
-        outputUrl: String
-        outputDate: String
+      id: ID!
+      name: String
+      outputUrl: String
+      outputDate: String
     }
 
     type OutputType {
-        id: ID!
-        outputType: String
+      id: ID!
+      outputType: String
     }
-
 
     "Parent task under a certain roadmap that can have many sub tasks"
     type Milestone {
-        id: ID!
-        roadmapId: ID!
-        taskId: ID!
-        task: [Task]
+      id: ID!
+      roadmapId: ID!
+      taskId: ID!
+      task: [Task]
     }
 
     "Task under a milestone. It can also be a subtask if parentId is not null"
     type Task {
-        id: ID!
-        "ParentId represents the taskId of the parent task. If parentId is present, the current task is a sub task of another task with same Id as parentID "
-        parentId: ID
-        taskName: String
-        taskStatus: TaskStatus
-        ownerStakeholderId: ID
-        startDate: String
-        target: String
-        completedPercentage: Float
-        confidenceLevel: ConfidenceLevel
-        comments: String
-        review: [Review]
+      id: ID!
+      "ParentId represents the taskId of the parent task. If parentId is present, the current task is a sub task of another task with same Id as parentID "
+      parentId: ID
+      taskName: String
+      taskStatus: TaskStatus
+      ownerStakeholderId: ID
+      startDate: String
+      target: String
+      completedPercentage: Float
+      confidenceLevel: ConfidenceLevel
+      comments: String
+      review: [Review]
     }
 
     enum TaskStatus {
-        ToDo
-        InProgress
-        Done
-        WontDo
-        Blocked
-        Backlog
+      ToDo
+      InProgress
+      Done
+      WontDo
+      Blocked
+      Backlog
     }
-    
+
     enum ConfidenceLevel {
-        High
-        Medium
-        Low
+      High
+      Medium
+      Low
     }
 
     "Review of a certain task"
     type Review {
-        id: ID!
-        taskId: ID!
-        reviewDate: String!
-        "Red,yellow or green."
-        reviewOutcome: ReviewOutcome!
+      id: ID!
+      taskId: ID!
+      reviewDate: String!
+      "Red,yellow or green."
+      reviewOutcome: ReviewOutcome!
     }
 
     enum ReviewOutcome {
-        Red
-        Yellow
-        Green
+      Red
+      Yellow
+      Green
     }
 
     input RoadmapFilter {
-        id: ID
-        ownerCuId: ID
-        roadmapCode: String
-        roadmapName: String
-        comments: String
-        roadmapStatus: RoadmapStatus
-        strategicInitiative: Boolean
+      id: ID
+      ownerCuId: ID
+      roadmapCode: String
+      roadmapName: String
+      comments: String
+      roadmapStatus: RoadmapStatus
+      strategicInitiative: Boolean
     }
 
     input RoadmapOutputFilter {
-        id: ID
-        outputId: ID
-        roadmapId: ID
-        outputTypeId: ID
+      id: ID
+      outputId: ID
+      roadmapId: ID
+      outputTypeId: ID
     }
 
     input StakeholderFilter {
-        id: ID
-        name: String
-        stakeholderContributorId: ID
-        stakeholderCuCode: String
+      id: ID
+      name: String
+      stakeholderContributorId: ID
+      stakeholderCuCode: String
     }
 
     input RoadmapStakeholderFilter {
-        id: ID
-        stakeholderId: ID
-        roadmapId: ID
-        stakeholderRoleId: ID
+      id: ID
+      stakeholderId: ID
+      roadmapId: ID
+      stakeholderRoleId: ID
     }
 
     input StakeholderRoleFilter {
-        id: ID
-        stakeholderRoleName: String
+      id: ID
+      stakeholderRoleName: String
     }
 
     input OutputFilter {
-        id: ID
-        name: String
-        outputDate: String
-        outputUrl: String
+      id: ID
+      name: String
+      outputDate: String
+      outputUrl: String
     }
 
     input OutputTypeFilter {
-        id: ID
-        outputType: String
+      id: ID
+      outputType: String
     }
 
     input MilestoneFilter {
-        id: ID
-        roadmapId: ID
-        taskId: ID
+      id: ID
+      roadmapId: ID
+      taskId: ID
     }
 
     input TaskFilter {
-        id: ID
-        parentId: ID
-        taskName: String
-        taskStatus: TaskStatus
-        ownerStakeholderId: ID
-        startDate: String
-        target: String
-        completedPercentage: Float
-        confidenceLevel: ConfidenceLevel
+      id: ID
+      parentId: ID
+      taskName: String
+      taskStatus: TaskStatus
+      ownerStakeholderId: ID
+      startDate: String
+      target: String
+      completedPercentage: Float
+      confidenceLevel: ConfidenceLevel
     }
 
     input ReviewFilter {
-        id: ID
-        taskId: ID
-        reviewDate: String
-        reviewOutcome: ReviewOutcome
+      id: ID
+      taskId: ID
+      reviewDate: String
+      reviewOutcome: ReviewOutcome
     }
 
     extend type Query {
-        roadmaps(filter: RoadmapFilter): [Roadmap]
-        roadmapStakeholders(filter: RoadmapStakeholderFilter): [RoadmapStakeholder]
-        stakeholders(filter: StakeholderFilter): [Stakeholder]
-        stakeholderRoles(filter: StakeholderRoleFilter): [StakeholderRole]
-        outputs(filter: OutputFilter): [Output]
-        outputTypes(filter: OutputTypeFilter): [OutputType]
-        milestones(filter: MilestoneFilter): [Milestone]
-        tasks(filter: TaskFilter): [Task],
-        reviews(filter: ReviewFilter): [Review]
-        roadmapOutputs(filter: RoadmapOutputFilter): [RoadmapOutput]
+      roadmaps(filter: RoadmapFilter): [Roadmap]
+      roadmapStakeholders(
+        filter: RoadmapStakeholderFilter
+      ): [RoadmapStakeholder]
+      stakeholders(filter: StakeholderFilter): [Stakeholder]
+      stakeholderRoles(filter: StakeholderRoleFilter): [StakeholderRole]
+      outputs(filter: OutputFilter): [Output]
+      outputTypes(filter: OutputTypeFilter): [OutputType]
+      milestones(filter: MilestoneFilter): [Milestone]
+      tasks(filter: TaskFilter): [Task]
+      reviews(filter: ReviewFilter): [Review]
+      roadmapOutputs(filter: RoadmapOutputFilter): [RoadmapOutput]
     }
 
     extend type CoreUnit {
-        "Access details on the roadmap (work performed and planned) of a Core Unit"
-        roadMap: [Roadmap]
+      "Access details on the roadmap (work performed and planned) of a Core Unit"
+      roadMap: [Roadmap]
     }
-`];
+  `,
+];
 
 export const resolvers = {
-    Query: {
-        roadmaps: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getRoadmaps(paramName, paramValue)
-        },
-        roadmapStakeholders: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getRoadmapStakeholders(paramName, paramValue)
-        },
-        stakeholders: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getStakeholders(paramName, paramValue)
-        },
-        stakeholderRoles: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return dataSources.db.Roadmap.getStakeholderRoles(paramName, paramValue)
-        },
-        roadmapOutputs: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getRoadmapOutputs(paramName, paramValue);
-        },
-        outputs: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getOutputs(paramName, paramValue)
-        },
-        outputTypes: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getOutputTypes(paramName, paramValue);
-        },
-        milestones: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return dataSources.db.Roadmap.getMilestones(paramName, paramValue)
-        },
-        tasks: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return await dataSources.db.Roadmap.getTasks(paramName, paramValue);
-        },
-        reviews: async (_: any, { filter }: any, { dataSources }: any) => {
-            let paramName: string | undefined = undefined;
-            let paramValue: string | undefined = undefined;
-            if (filter !== undefined) {
-                const queryParams = Object.keys(filter);
-                if (queryParams.length > 1) {
-                    throw "Choose one parameter only"
-                }
-                paramName = queryParams[0];
-                paramValue = filter[queryParams[0]];
-            }
-            return dataSources.db.Roadmap.getReviews(paramName, paramValue)
+  Query: {
+    roadmaps: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getRoadmaps(paramName, paramValue);
     },
-    Roadmap: {
-        roadmapStakeholder: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapStakeholders('roadmapId', id)
-            return result
-        },
-        roadmapOutput: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapOutputs('roadmapId', id)
-            return result
-        },
-        milestone: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getMilestones('roadmapId', id);
-            return result;
+    roadmapStakeholders: async (
+      _: any,
+      { filter }: any,
+      { dataSources }: any,
+    ) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getRoadmapStakeholders(
+        paramName,
+        paramValue,
+      );
     },
-    RoadmapStakeholder: {
-        stakeholderRole: async (parent: any, __: any, { dataSources }: any) => {
-            const { stakeholderRoleId } = parent;
-            const result = await dataSources.db.Roadmap.getStakeholderRoles(stakeholderRoleId);
-            return result
-        },
-        stakeholder: async (parent: any, __: any, { dataSources }: any) => {
-            const { stakeholderId } = parent;
-            const result = await dataSources.db.Roadmap.getStakeholders('id', stakeholderId);
-            return result;
+    stakeholders: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getStakeholders(
+        paramName,
+        paramValue,
+      );
     },
-    Stakeholder: {
-        roadmapStakeholder: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmapStakeholders('stakeholderId', id)
-            return result
+    stakeholderRoles: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return dataSources.db.Roadmap.getStakeholderRoles(paramName, paramValue);
     },
-    RoadmapOutput: {
-        output: async (parent: any, __: any, { dataSources }: any) => {
-            const { outputId } = parent;
-            const result = await dataSources.db.Roadmap.getOutputs('id', outputId);
-            return result;
-        },
-        outputType: async (parent: any, __: any, { dataSources }: any) => {
-            const { outputTypeId } = parent;
-            const result = await dataSources.db.Roadmap.getOutputTypes('id', outputTypeId);
-            return result;
+    roadmapOutputs: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getRoadmapOutputs(
+        paramName,
+        paramValue,
+      );
     },
-    Milestone: {
-        task: async (parent: any, __: any, { dataSources }: any) => {
-            const { taskId } = parent;
-            const result = await dataSources.db.Roadmap.getTasks('id', taskId)
-            return result;
+    outputs: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getOutputs(paramName, paramValue);
     },
-    Task: {
-        review: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getReviews('taskId', id);
-            return result
+    outputTypes: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
         }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getOutputTypes(paramName, paramValue);
     },
-    CoreUnit: {
-        roadMap: async (parent: any, __: any, { dataSources }: any) => {
-            const { id } = parent;
-            const result = await dataSources.db.Roadmap.getRoadmaps('ownerCuId', id);
-            return result;
-        },
-    }
-}
+    milestones: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
+        }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return dataSources.db.Roadmap.getMilestones(paramName, paramValue);
+    },
+    tasks: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
+        }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return await dataSources.db.Roadmap.getTasks(paramName, paramValue);
+    },
+    reviews: async (_: any, { filter }: any, { dataSources }: any) => {
+      let paramName: string | undefined = undefined;
+      let paramValue: string | undefined = undefined;
+      if (filter !== undefined) {
+        const queryParams = Object.keys(filter);
+        if (queryParams.length > 1) {
+          throw "Choose one parameter only";
+        }
+        paramName = queryParams[0];
+        paramValue = filter[queryParams[0]];
+      }
+      return dataSources.db.Roadmap.getReviews(paramName, paramValue);
+    },
+  },
+  Roadmap: {
+    roadmapStakeholder: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getRoadmapStakeholders(
+        "roadmapId",
+        id,
+      );
+      return result;
+    },
+    roadmapOutput: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getRoadmapOutputs(
+        "roadmapId",
+        id,
+      );
+      return result;
+    },
+    milestone: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getMilestones(
+        "roadmapId",
+        id,
+      );
+      return result;
+    },
+  },
+  RoadmapStakeholder: {
+    stakeholderRole: async (parent: any, __: any, { dataSources }: any) => {
+      const { stakeholderRoleId } = parent;
+      const result =
+        await dataSources.db.Roadmap.getStakeholderRoles(stakeholderRoleId);
+      return result;
+    },
+    stakeholder: async (parent: any, __: any, { dataSources }: any) => {
+      const { stakeholderId } = parent;
+      const result = await dataSources.db.Roadmap.getStakeholders(
+        "id",
+        stakeholderId,
+      );
+      return result;
+    },
+  },
+  Stakeholder: {
+    roadmapStakeholder: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getRoadmapStakeholders(
+        "stakeholderId",
+        id,
+      );
+      return result;
+    },
+  },
+  RoadmapOutput: {
+    output: async (parent: any, __: any, { dataSources }: any) => {
+      const { outputId } = parent;
+      const result = await dataSources.db.Roadmap.getOutputs("id", outputId);
+      return result;
+    },
+    outputType: async (parent: any, __: any, { dataSources }: any) => {
+      const { outputTypeId } = parent;
+      const result = await dataSources.db.Roadmap.getOutputTypes(
+        "id",
+        outputTypeId,
+      );
+      return result;
+    },
+  },
+  Milestone: {
+    task: async (parent: any, __: any, { dataSources }: any) => {
+      const { taskId } = parent;
+      const result = await dataSources.db.Roadmap.getTasks("id", taskId);
+      return result;
+    },
+  },
+  Task: {
+    review: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getReviews("taskId", id);
+      return result;
+    },
+  },
+  CoreUnit: {
+    roadMap: async (parent: any, __: any, { dataSources }: any) => {
+      const { id } = parent;
+      const result = await dataSources.db.Roadmap.getRoadmaps("ownerCuId", id);
+      return result;
+    },
+  },
+};

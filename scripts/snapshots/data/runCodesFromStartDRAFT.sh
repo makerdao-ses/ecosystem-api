@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ecosystem_codes=(
-  "delegates"
+  "ecosystem-actors/SIDESTREAM"
 )
 
 # Define the start and end dates (in year/month format)
-start_date="2023/03"
-end_date="2023/03"
+start_date="2023/06"
+end_date="2023/10"
 
 # Helper function to increment the date by one month
 increment_date() {

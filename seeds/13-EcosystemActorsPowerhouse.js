@@ -1,20 +1,21 @@
 /**
  * @param { import("knex").Knex } knex
- * @returns { Promise<void> } 
+ * @returns { Promise<void> }
  */
 
 //Set delegate budget caps
 
 export async function seed(knex) {
-
-    const [dewizCuId] = await knex('CoreUnit').insert({
-        code: 'PH-001',
-        shortCode: 'PH',
-        name: 'Powerhouse',
-        image: '',
-        category: '{Technical, Operational}',
-        sentenceDescription: 'Dewiz is a team of engineers with a proven track record of delivering high-quality, secure, and reliable smart contracts for the premier DeFi projects.',
-        paragraphDescription: `# **About Us**
+  const [dewizCuId] = await knex("CoreUnit")
+    .insert({
+      code: "PH-001",
+      shortCode: "PH",
+      name: "Powerhouse",
+      image: "",
+      category: "{Technical, Operational}",
+      sentenceDescription:
+        "Dewiz is a team of engineers with a proven track record of delivering high-quality, secure, and reliable smart contracts for the premier DeFi projects.",
+      paragraphDescription: `# **About Us**
 
         Dewiz DeFi Engineering Services provides organizations flexible access to battle-tested smart contract engineers that confront the wizardry of DeFi protocols.
         
@@ -52,40 +53,45 @@ export async function seed(knex) {
         
         In addition to the team’s technical expertise, Dewiz also supports a strong understanding of the principles, operations, and values of both traditional and decentralized organizations. Dewiz is dedicated to working closely with DAOs, SubDAOs, projects, and traditional organizations to ensure that its team of engineers supports the transparency, communications, and preferred delivery method of smart contracts for clients. Our payment options and cycles are flexible to support a variety of engagement types, ranging from streams, on-chain payments, and integrations with payment platforms.
         `,
-    }).returning('id');
+    })
+    .returning("id");
 
-    await knex('SocialMediaChannels').insert({
-        cuId: dewizCuId.id,
-        forumTag: 'https://forum.makerdao.com/u/dewiz/summary',
-        twitter: 'https://twitter.com/dewiz_xyz',
-        discord: 'https://discord.com/invite/sZQPFJxDYf',
-        website: 'https://dewiz.xyz/',
-        github: 'https://github.com/EXA'
-      });
+  await knex("SocialMediaChannels").insert({
+    cuId: dewizCuId.id,
+    forumTag: "https://forum.makerdao.com/u/dewiz/summary",
+    twitter: "https://twitter.com/dewiz_xyz",
+    discord: "https://discord.com/invite/sZQPFJxDYf",
+    website: "https://dewiz.xyz/",
+    github: "https://github.com/EXA",
+  });
 
-      //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
-  
-    // First, find the user with username "Dracaena27" and get their id
-  const user = await knex('User').select('id').where({ username: 'DewizAdmin' }).first();
+  //Up migration adds targetSourceCode, targetSourceUrl, targetSourceTitle
+
+  // First, find the user with username "Dracaena27" and get their id
+  const user = await knex("User")
+    .select("id")
+    .where({ username: "DewizAdmin" })
+    .first();
   const userId = user.id;
-  
+
   // Find Delegates resourceId
-  const dewiz = await knex('CoreUnit').select('id').where({ code: 'DEWIZ-001' }).first();
+  const dewiz = await knex("CoreUnit")
+    .select("id")
+    .where({ code: "DEWIZ-001" })
+    .first();
   const dewizId = dewiz.id;
 
-  const role = await knex('Role').select('id').where({roleName: 'EcosystemActorAdmin'}).first();
-  const roleId = role.id
-  
+  const role = await knex("Role")
+    .select("id")
+    .where({ roleName: "EcosystemActorAdmin" })
+    .first();
+  const roleId = role.id;
+
   // Finally, insert the new user role record with the appropriate values
-  await knex('UserRole').insert({
+  await knex("UserRole").insert({
     roleId: roleId,
-    resource: 'EcosystemActor',
+    resource: "EcosystemActor",
     resourceId: dewizId,
-    userId: userId
+    userId: userId,
   });
-  
-
-
-
-
 }
