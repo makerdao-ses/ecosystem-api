@@ -5,6 +5,7 @@ import {
   getMonth,
   getQuarter,
   getWeek,
+  getWeekYear,
   getYear,
 } from "date-fns";
 import {
@@ -131,7 +132,13 @@ export class AnalyticsDiscretizer {
     } else if (p.period === "monthly") {
       return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
     } else if (p.period === "weekly") {
-      return `${getYear(p.start)}/${getWeek(p.start)}`;
+      return `${getWeekYear(p.start, {
+        weekStartsOn: 1,
+        firstWeekContainsDate: 6,
+      })}/W${getWeek(p.start, {
+        weekStartsOn: 1,
+        firstWeekContainsDate: 6,
+      })}`;
     } else if (p.period === "daily") {
       return `${getYear(p.start)}/${
         getMonth(p.start) + 1
