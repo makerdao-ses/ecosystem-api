@@ -1,4 +1,13 @@
 import {
+  getDay,
+  getDayOfYear,
+  getISODay,
+  getMonth,
+  getQuarter,
+  getWeek,
+  getYear,
+} from "date-fns";
+import {
   AnalyticsGranularity,
   AnalyticsSeries,
   getAnalyticsMetricString,
@@ -8,6 +17,7 @@ import {
   AnalyticsRange,
   getPeriodSeriesArray,
 } from "./AnalyticsTimeSlicer.js";
+import getDaysInYear from "date-fns/esm/fp/getDaysInYear/index.js";
 
 export type GroupedPeriodResult = {
   period: string;
@@ -86,8 +96,9 @@ export class AnalyticsDiscretizer {
 
     for (const p of periods) {
       const id = p.start.toISOString() + "-" + p.period;
+      const period = AnalyticsDiscretizer._getPeriodString(p);
       result[id] = {
-        period: p.period,
+        period: period,
         start: p.start,
         end: p.end,
         rows: [],
@@ -107,6 +118,31 @@ export class AnalyticsDiscretizer {
     }
 
     return Object.values(result);
+  }
+  static _getPeriodString(p: AnalyticsPeriod) {
+    if (p.period === "annual") {
+      return getYear(p.start).toString();
+    } else if (p.period === "semiAnnual") {
+      const half = p.start.getMonth() < 6 ? "H1" : "H2";
+      return `${getYear(p.start)}/${half}`;
+    } else if (p.period === "quarterly") {
+      const quarter = getQuarter(p.start);
+      return `${getYear(p.start)}/Q${quarter}`;
+    } else if (p.period === "monthly") {
+      return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
+    } else if (p.period === "weekly") {
+      return `${getYear(p.start)}/${getWeek(p.start)}`;
+    } else if (p.period === "daily") {
+      return `${getYear(p.start)}/${
+        getMonth(p.start) + 1
+      }/${p.start.getDate()}`;
+    } else if (p.period === "hourly") {
+      return `${getYear(p.start)}/${
+        getMonth(p.start) + 1
+      }/${p.start.getDate()}/${p.start.getHours()}`;
+    }
+
+    return p.period;
   }
 
   public static _discretizeNode(
