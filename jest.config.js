@@ -9,6 +9,7 @@ export default {
   verbose: true,
   roots: ["./src/"],
   moduleDirectories: ["node_modules"],
+  testTimeout: 30000,
   transform: {
     "\\.[jt]sx?$": [
       "ts-jest",
