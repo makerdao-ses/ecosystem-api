@@ -1,10 +1,7 @@
 import { Knex } from "knex";
 import initKnex from "../initKnex.js";
 import { AnalyticsPath } from "./AnalyticsPath";
-import {
-  AnalyticsGranularity,
-  AnalyticsQuery,
-} from "./AnalyticsQuery";
+import { AnalyticsGranularity, AnalyticsQuery } from "./AnalyticsQuery";
 import { AnalyticsQueryEngine } from "./AnalyticsQueryEngine";
 import { AnalyticsStore } from "./AnalyticsStore";
 import {
@@ -34,7 +31,7 @@ beforeAll(async () => {
       value: 10000,
       unit: "DAI",
       params: {},
-      metric: 'budget',
+      metric: "budget",
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -48,7 +45,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 10000,
       unit: "DAI",
-      metric: 'budget',
+      metric: "budget",
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -62,7 +59,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 15000,
       unit: "DAI",
-      metric: 'budget',
+      metric: "budget",
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -96,7 +93,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 240,
       unit: "MKR",
-      metric: 'budget',
+      metric: "budget",
       fn: "DssVest",
       params: {
         cliff: new Date(2023, 11, 1),
@@ -150,11 +147,7 @@ it("should query records", async () => {
     start: new Date("2022-09-01 00:00:00Z+0"),
     end: null,
     granularity: AnalyticsGranularity.Total,
-    metrics: [
-      "Budget",
-      "Actuals",
-      "FTEs"
-    ],
+    metrics: ["Budget", "Actuals", "FTEs"],
     currency: AnalyticsPath.fromString("DAI,MKR"),
     select: {
       budget: [
@@ -326,5 +319,42 @@ describe("dss vesting", () => {
     expect(january.value).toBe(0);
     expect(november.value.toFixed(0)).toBe("220"); // vest everything until cliff date
     expect(december.value.toFixed(0)).toBe("20"); // vest normal amount
+  });
+
+  it("should return vesting if start and end date > query date", async () => {
+    const start = new Date(2022, 2, 1);
+    const end = new Date(2022, 5, 1);
+    const query: AnalyticsQuery = {
+      start,
+      end,
+      granularity: AnalyticsGranularity.Monthly,
+      metrics: ["Budget", "Actuals"],
+      currency: AnalyticsPath.fromString("MKR"),
+      select: {
+        budget: [AnalyticsPath.fromString("atlas/legacy/core-units/PE-001")],
+        category: [
+          AnalyticsPath.fromString(
+            "atlas/headcount/CompensationAndBenefits/SmartContractEngineering",
+          ),
+        ],
+        project: [TEST_SOURCE],
+      },
+      lod: {
+        budget: 3,
+        category: 2,
+        project: 2,
+      },
+    };
+
+    const result = await engine.execute(query);
+    expect(result.length).toBe(3);
+    const feb = result[0].rows[0];
+    const march = result[1].rows[0];
+    const april = result[2].rows[0];
+    const may = result[3].rows[0];
+
+    expect(feb.value).toBe(0);
+    // expect(november.value.toFixed(0)).toBe("220"); // vest everything until cliff date
+    // expect(december.value.toFixed(0)).toBe("20"); // vest normal amount
   });
 });
