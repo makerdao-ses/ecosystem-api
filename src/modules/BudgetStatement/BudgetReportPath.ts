@@ -86,7 +86,7 @@ export class BudgetReportPathSegment {
 
   public static escape(segment: string): string {
     // Put a backslash in front of the control characters \ : / and ,
-    return segment.replace(/(\\|:|\/|,)/gi, "\\$1");
+    return segment.replaceAll(/(\\|:|\/|\,)/gi, "\\$1");
   }
 
   public static unescape(segment: string): string {
@@ -174,7 +174,7 @@ function parseSeparatedList(list: string, separator: PathSeparator): string[] {
   }
 
   return list
-    .replace("\\\\", substituteString)
+    .replaceAll("\\\\", substituteString)
     .split(unescapedSeparatorPattern[separator])
-    .map((e) => e.replace(substituteString, "\\\\"));
+    .map((e) => e.replaceAll(substituteString, "\\\\"));
 }

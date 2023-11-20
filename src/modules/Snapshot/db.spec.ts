@@ -46,8 +46,6 @@ it("gets snapshotAccountTransactions with snapshotAccountId", async () => {
 });
 
 it("gets snapshotAccountBalances with snapshotAccountId", async () => {
-  const snapshots = await authModel.getSnapshots({});
-  const snapshotId = snapshots[0].id;
-  const entry = await authModel.getSnapshotAccountBalances(snapshotId);
+  const entry = await authModel.getSnapshotAccountBalances(1);
   expect(entry.length).toBeGreaterThan(0);
 });
