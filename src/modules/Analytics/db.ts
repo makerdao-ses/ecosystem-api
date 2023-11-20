@@ -5,6 +5,7 @@ import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
   AnalyticsQuery,
+  toPascalCase
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
 
@@ -36,7 +37,7 @@ export class AnalyticsModel {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
       granularity: getGranularity(filter.granularity),
-      metrics: filter.metrics,
+      metrics: filter.metrics.map((metric) => toPascalCase(metric)),
       currency: getCurrency(filter.currency),
       select: {},
       lod: {},
