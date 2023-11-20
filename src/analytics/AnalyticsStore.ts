@@ -3,7 +3,7 @@ import { AnalyticsPath } from "./AnalyticsPath.js";
 import {
   AnalyticsSeriesQuery,
   AnalyticsSeries,
-  toPascalCase
+  toPascalCase,
 } from "./AnalyticsQuery.js";
 
 export class AnalyticsStore {
@@ -70,7 +70,12 @@ export class AnalyticsStore {
       }
     }
     if (query.start) {
-      baseQuery.where("start", ">=", query.start);
+      baseQuery.where((q) => {
+        q.where("start", ">=", query.start).andWhere("fn", "Single");
+        q.orWhere("end", ">", query.start).andWhere("fn", "DssVest");
+
+        return q;
+      });
     }
     baseQuery.orderBy("start");
 
@@ -140,9 +145,9 @@ export class AnalyticsStore {
 
       dimensions.forEach(
         (d) =>
-        (result.dimensions[d] = AnalyticsPath.fromString(
-          r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?",
-        )),
+          (result.dimensions[d] = AnalyticsPath.fromString(
+            r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?",
+          )),
       );
 
       return result;

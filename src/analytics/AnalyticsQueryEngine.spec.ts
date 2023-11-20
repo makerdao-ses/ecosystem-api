@@ -76,9 +76,6 @@ beforeAll(async () => {
       unit: "MKR",
       metric: "Budget",
       fn: "DssVest",
-      params: {
-        cliff: new Date(2023, 11, 1),
-      },
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/PE-001"),
         category: AnalyticsPath.fromString(
@@ -167,7 +164,7 @@ it("should query records", async () => {
   const result = await engine.execute(query);
 
   expect(result.length).toBe(1);
-  expect(result[0].rows.map((r) => r.unit)).toEqual(["DAI", "MKR"]);
+  expect(result[0].rows.map((r) => r.unit)).toEqual(["MKR", "DAI"]);
   expect(result[0].rows.map((r) => r.dimensions.budget.toString())).toEqual([
     "atlas/legacy/core-units",
     "atlas/legacy/core-units",
@@ -351,10 +348,9 @@ describe("dss vesting", () => {
     const feb = result[0].rows[0];
     const march = result[1].rows[0];
     const april = result[2].rows[0];
-    const may = result[3].rows[0];
 
-    expect(feb.value).toBe(0);
-    // expect(november.value.toFixed(0)).toBe("220"); // vest everything until cliff date
-    // expect(december.value.toFixed(0)).toBe("20"); // vest normal amount
+    expect(feb.value.toFixed(0)).toBe("20");
+    expect(march.sum).toBe(feb.sum + march.value);
+    expect(april.sum).toBe(march.sum + april.value);
   });
 });
