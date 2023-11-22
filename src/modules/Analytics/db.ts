@@ -5,7 +5,6 @@ import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
   AnalyticsQuery,
-  toPascalCase
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
 
