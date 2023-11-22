@@ -33,11 +33,16 @@ export class AnalyticsModel {
     if (!filter) {
       return [];
     }
+    const metrics = await this.getMetrics();
+    const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
+    if(filteredMetrics.length < 1){
+      throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
+    }
     const query: AnalyticsQuery = {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
       granularity: getGranularity(filter.granularity),
-      metrics: filter.metrics.map((metric) => toPascalCase(metric)),
+      metrics: filter.metrics,
       currency: getCurrency(filter.currency),
       select: {},
       lod: {},
