@@ -27,6 +27,9 @@ export const typeDefs = [
     type AnalyticsSeriesDimension {
       name: String
       path: String
+      label: String
+      description: String
+      icon: String
     }
 
     type Dimension {
@@ -36,6 +39,9 @@ export const typeDefs = [
 
     type Value {
       path: String
+      label: String
+      description: String
+      icon: String
     }
 
     enum AnalyticsGranularity {
