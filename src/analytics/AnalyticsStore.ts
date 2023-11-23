@@ -54,10 +54,17 @@ export class AnalyticsStore {
 
     const baseQuery = this._knex<AnalyticsSeriesRecord>(
       this._knex.raw(analyticsView),
-    ).select("*");
+    ).select("AV.*");
 
     // Add dimension filter(s)
     for (const [dimension, paths] of Object.entries(query.select)) {
+      baseQuery.leftJoin(`AnalyticsDimension as ${dimension}`, (q) => {
+        q.on(`${dimension}.path`, `dim_budget`);
+      });
+      baseQuery.select(`${dimension}.icon as ${dimension}_icon`);
+      baseQuery.select(`${dimension}.description as ${dimension}_description`);
+      baseQuery.select(`${dimension}.label as ${dimension}_label`);
+      // baseQuery.select(`${dimension}.icon as icon_${dimension}`)
       if (paths.length == 1) {
         baseQuery.andWhereLike(`dim_${dimension}`, paths[0].toString("/%"));
       } else if (paths.length > 1) {
