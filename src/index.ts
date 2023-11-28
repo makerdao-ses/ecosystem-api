@@ -1,6 +1,5 @@
 import { ApolloServer, AuthenticationError } from "apollo-server-express";
 import {
-  ApolloServerPluginCacheControl,
   ApolloServerPluginDrainHttpServer,
 } from "apollo-server-core";
 import express from "express";
@@ -48,12 +47,7 @@ async function startApolloServer(
     resolvers: apiModules.resolvers,
   });
 
-  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer })];
-
-  if (!process.env.CACHE_DISABLED) {
-    plugins.push(ApolloServerPluginCacheControl({ defaultMaxAge: 0 }));
-    plugins.push((responseCachePlugin as any).default());
-  }
+  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), (responseCachePlugin as any).default()];
 
   const server = new ApolloServer({
     schema,
