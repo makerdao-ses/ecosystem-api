@@ -51,7 +51,7 @@ async function startApolloServer(
   const plugins = [ApolloServerPluginDrainHttpServer({ httpServer })];
 
   if (!process.env.CACHE_DISABLED) {
-    plugins.push(ApolloServerPluginCacheControl({ defaultMaxAge: 600 }));
+    plugins.push(ApolloServerPluginCacheControl({ defaultMaxAge: 0 }));
     plugins.push((responseCachePlugin as any).default());
   }
 
