@@ -3,7 +3,7 @@ import { AnalyticsPath } from "./AnalyticsPath.js";
 export type AnalyticsSeriesQuery = {
   start: Date | null;
   end: Date | null;
-  metrics: AnalyticsMetric[];
+  metrics: string[];
   currency: AnalyticsPath;
   select: Record<string, AnalyticsPath[]>;
 };
@@ -17,7 +17,7 @@ export type AnalyticsSeries<D = string | AnalyticsPath> = {
   source: AnalyticsPath;
   start: Date;
   end: Date | null;
-  metric: AnalyticsMetric;
+  metric: string;
   value: number;
   unit: string | null;
   fn: string;
@@ -79,6 +79,14 @@ export const getAnalyticsMetricString = (
       return "FTEs";
   }
 };
+
+export function toPascalCase(str: string) {
+  return str
+    .replace(/\w+/g, function (word) {
+      return word[0].toUpperCase() + word.slice(1);
+    })
+    .replace(/\s+/g, '');
+}
 
 export enum AnalyticsGranularity {
   Total,

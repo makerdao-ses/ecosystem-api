@@ -28,7 +28,7 @@ it("returns list of Budgets", async () => {
 });
 
 it("returs list of budgetCaps", async () => {
-  const result = await authModel.getBudgetCaps(19);
+  const result = await authModel.getBudgetCaps(57);
   expect(result.length).toBeGreaterThan(0);
 });
 

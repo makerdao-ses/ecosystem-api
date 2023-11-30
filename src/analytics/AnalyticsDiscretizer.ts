@@ -1,7 +1,7 @@
+import { getMonth, getQuarter, getWeek, getWeekYear, getYear } from "date-fns";
 import {
   AnalyticsGranularity,
   AnalyticsSeries,
-  getAnalyticsMetricString,
 } from "./AnalyticsQuery.js";
 import {
   AnalyticsPeriod,
@@ -86,8 +86,9 @@ export class AnalyticsDiscretizer {
 
     for (const p of periods) {
       const id = p.start.toISOString() + "-" + p.period;
+      const period = AnalyticsDiscretizer._getPeriodString(p);
       result[id] = {
-        period: p.period,
+        period: period,
         start: p.start,
         end: p.end,
         rows: [],
@@ -107,6 +108,36 @@ export class AnalyticsDiscretizer {
     }
 
     return Object.values(result);
+  }
+  static _getPeriodString(p: AnalyticsPeriod) {
+    switch (p.period) {
+      case "annual":
+        return getYear(p.start).toString();
+      case "semiAnnual":
+        return `${getYear(p.start)}/${p.start.getMonth() < 6 ? "H1" : "H2"}`;
+      case "quarterly":
+        return `${getYear(p.start)}/Q${getQuarter(p.start)}`;
+      case "monthly":
+        return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
+      case "weekly":
+        return `${getWeekYear(p.start, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 6,
+        })}/W${getWeek(p.start, {
+          weekStartsOn: 1,
+          firstWeekContainsDate: 6,
+        })}`;
+      case "daily":
+        return `${getYear(p.start)}/${
+          getMonth(p.start) + 1
+        }/${p.start.getDate()}`;
+      case "hourly":
+        return `${getYear(p.start)}/${
+          getMonth(p.start) + 1
+        }/${p.start.getDate()}/${p.start.getHours()}`;
+      default:
+        return p.period;
+    }
   }
 
   public static _discretizeNode(
@@ -272,7 +303,7 @@ export class AnalyticsDiscretizer {
 
     const map: DiscretizerIndexLeaf = {};
     for (const s of series) {
-      const metric = getAnalyticsMetricString(s.metric);
+      const metric = s.metric;
       if (undefined === map[metric]) {
         map[metric] = [];
       }

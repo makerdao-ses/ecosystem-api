@@ -9,6 +9,7 @@ interface Budget {
   end: string | null;
   idPath?: string;
   codePath?: string;
+  budgetCap?: any;
 }
 
 interface IdOrCode {
@@ -77,7 +78,7 @@ export class BudgetModel {
   async getBudgets(filter: { limit?: number; offset?: number; filter?: any }) {
     const baseQuery = this.knex
       .select("*")
-      .from("Budget").orderBy("Budget.id", "asc");
+      .from("Budget").orderBy("Budget.id", "asc")
 
     if (filter.limit || filter.offset) {
       return await baseQuery
@@ -87,17 +88,20 @@ export class BudgetModel {
       const start = filter.filter?.start
       const end = filter.filter?.end
 
-      let ids: any = [];
-      if (start && end) {
-        const startEndQuery = await this.knex
-          .select("Budget.id")
-          .from("Budget").orderBy("Budget.id", "asc")
-          .join('BudgetCap', 'Budget.id', '=', 'BudgetCap.budgetId')
-          .where('BudgetCap.start', '>=', start)
-          .andWhere('BudgetCap.end', '<=', end)
-          .distinct();
-        ids = startEndQuery.map((b: any) => b.id);
-      }
+      let ids: any[] = [];
+      const budgetCaps = await this.knex
+        .select("*")
+        .from("BudgetCap")
+        .where(function () {
+          if (start && end) {
+            this.where('BudgetCap.start', '>=', start)
+              .andWhere(function () {
+                this.where('BudgetCap.end', '<=', end).orWhereNull('BudgetCap.end');
+              });
+          }
+        });
+      ids = budgetCaps.map((budgetCap: any) => budgetCap.budgetId)
+
       const idOrCode = {
         id: filter.filter?.id,
         code: filter.filter?.code,
@@ -108,7 +112,16 @@ export class BudgetModel {
       const result = await baseQuery;
       this.addBudgetPaths(result, null, "", "");
       const processedBudgets = this.processBudgets(result, maxDepth, parentId, idOrCode);
-      if(ids.length !== 0) {
+
+      processedBudgets.forEach((budget: any) => {
+        budget.budgetCap = [];
+        budgetCaps.forEach((budgetCap: any) => {
+          if (budget.id === budgetCap.budgetId) {
+            budget.budgetCap.push(budgetCap);
+          }
+        })
+      })
+      if (start && end) {
         return processedBudgets.filter((b: any) => ids.includes(b.id));
       }
       return processedBudgets;

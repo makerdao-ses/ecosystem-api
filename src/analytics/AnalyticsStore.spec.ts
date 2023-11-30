@@ -24,7 +24,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 10000,
       unit: "DAI",
-      metric: AnalyticsMetric.Budget,
+      metric: "Budget",
       dimensions: {
         budget: AnalyticsPath.fromString("atlas/legacy/core-units/SES-001"),
         category: AnalyticsPath.fromString(
@@ -39,7 +39,7 @@ beforeAll(async () => {
       source: TEST_SOURCE,
       value: 210,
       unit: "MKR",
-      metric: AnalyticsMetric.Budget,
+      metric: "Budget",
       fn: "DssVest",
       params: {
         cliff: new Date(2023, 11, 1),
@@ -58,7 +58,7 @@ beforeAll(async () => {
     start: new Date(2023, 0, 1),
     source: TEST_SOURCE,
     value: 5.8,
-    metric: AnalyticsMetric.FTEs,
+    metric: "FTEs",
     dimensions: {
       project: TEST_SOURCE,
     },
@@ -68,7 +68,7 @@ beforeAll(async () => {
     start: new Date(2023, 2, 1),
     source: TEST_SOURCE,
     value: -0.8,
-    metric: AnalyticsMetric.FTEs,
+    metric: "FTEs",
     dimensions: {
       project: TEST_SOURCE,
     },
@@ -92,9 +92,9 @@ it("should query records", async () => {
     end: null,
     currency: AnalyticsPath.fromString("MKR,DAI"),
     metrics: [
-      AnalyticsMetric.Actuals,
-      AnalyticsMetric.Budget,
-      AnalyticsMetric.FTEs,
+      "Actuals",
+      "Budget",	
+      "FTEs",
     ],
     select: {
       budget: [AnalyticsPath.fromString("atlas/legacy/core-units/SES-001")],
