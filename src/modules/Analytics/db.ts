@@ -4,8 +4,8 @@ import { AnalyticsQueryEngine } from "../../analytics/AnalyticsQueryEngine.js";
 import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
-  AnalyticsMetric,
   AnalyticsQuery,
+  toPascalCase
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
 
@@ -13,7 +13,7 @@ type queryFilter = {
   start?: Date;
   end?: Date;
   granularity?: string;
-  metrics?: AnalyticsMetric[];
+  metrics: string[];
   dimensions: [Record<string, string>];
   currency?: string;
 };
@@ -30,11 +30,14 @@ export class AnalyticsModel {
 
   public async query(filter: queryFilter) {
 
+    if (!filter) {
+      return [];
+    }
     const query: AnalyticsQuery = {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
       granularity: getGranularity(filter.granularity),
-      metrics: getMetrics(filter.metrics),
+      metrics: filter.metrics.map((metric) => toPascalCase(metric)),
       currency: getCurrency(filter.currency),
       select: {},
       lod: {},
@@ -53,8 +56,33 @@ export class AnalyticsModel {
   }
 
   public async getDimensions() {
-    const list = await this.knex("AnalyticsDimension").select('dimension').distinct().whereNotNull('dimension');
-    const filtered = list.map((l) => l.dimension);
+    const list = await this.knex
+      .select(this.knex.raw('distinct on ("dimension") dimension, path'))
+      .from('AnalyticsDimension')
+      .whereNotNull('path')
+      .whereNot('path', '')
+      .whereNot('path', '/')
+      .orderBy('dimension', 'asc');
+    const result = list.map(l => {
+      return {
+        name: l.dimension,
+        values: {
+          path: l.path
+        }
+      }
+    })
+    return result;
+  }
+
+  public async getMetrics() {
+    const list = await this.knex("AnalyticsSeries").select('metric').distinct().whereNotNull('metric');
+    const filtered = list.map((l) => l.metric);
+    const metrics = ['Budget', 'Forecast', 'Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'];
+    metrics.forEach(metric => {
+      if (!filtered.includes(metric)) {
+        filtered.push(metric);
+      }
+    });
     return filtered;
   }
 }
@@ -93,34 +121,6 @@ const getGranularity = (
       return AnalyticsGranularity.Total;
     }
   }
-};
-
-const getMetrics = (metrics: any) => {
-  if (metrics === undefined || metrics.length < 1) {
-    throw new Error("No metrics provided");
-  }
-
-  const result = metrics.map((metric: string) => {
-    switch (metric) {
-      case "budget": {
-        return AnalyticsMetric.Budget;
-      }
-      case "forecast": {
-        return AnalyticsMetric.Forecast;
-      }
-      case "actuals": {
-        return AnalyticsMetric.Actuals;
-      }
-      case "netExpensesOnchain": {
-        return AnalyticsMetric.PaymentsOnChain;
-      }
-      case "netExpensesOffchainIncluded": {
-        return AnalyticsMetric.PaymentsOffChainIncluded;
-      }
-    }
-  });
-
-  return result;
 };
 
 const getCurrency = (currency: string | undefined) => {

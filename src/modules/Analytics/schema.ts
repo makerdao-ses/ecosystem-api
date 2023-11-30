@@ -5,6 +5,8 @@ export const typeDefs = [
   gql`
     type AnalyticsResult {
       series: [AnalyticsPeriod]
+      metrics: [String]
+      dimensions: [Dimension]
     }
 
     type AnalyticsPeriod {
@@ -24,15 +26,16 @@ export const typeDefs = [
 
     type AnalyticsSeriesDimension {
       name: String
-      value: String
+      path: String
     }
 
-    enum AnalyticsMetric {
-      budget
-      forecast
-      actuals
-      netExpensesOnchain
-      netExpensesOffchainIncluded
+    type Dimension {
+      name: String
+      values: Value
+    }
+
+    type Value {
+      path: String
     }
 
     enum AnalyticsGranularity {
@@ -55,31 +58,29 @@ export const typeDefs = [
     input AnalyticsFilter {
       start: String
       end: String
+      "Period to group by"
       granularity: AnalyticsGranularity
-      metrics: [AnalyticsMetric]
+      "List of metrics to filter by, such as 'budget' or 'actuals'"
+      metrics: [String]
+      "List of dimensions to filter by, such as 'budget' or 'project'"
       dimensions: [AnalyticsFilterDimension]
       currency: String
     }
 
     extend type Query {
       analytics(filter: AnalyticsFilter): AnalyticsResult
-      analyticsDimensions: [String]
     }
   `,
 ];
 
 export const resolvers = {
   Query: {
+    // (parent, args, context, info) => {}
     analytics: async (_: any, { filter }: any, { dataSources }: any) => {
-      if (!filter) {
-        throw new Error("No filter provided");
-      }
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.query(filter);
-
-      // results.forEach(r => {
-      //     console.log(JSON.stringify(r, null, 2));
-      // });
+      const metrics = await queryEngine.getMetrics();
+      const contextDimensions = await queryEngine.getDimensions();
 
       return {
         series: results.map((s) => ({
@@ -88,15 +89,13 @@ export const resolvers = {
             ...r,
             dimensions: Object.keys(r.dimensions).map((d) => ({
               name: d,
-              value: r.dimensions[d],
+              path: r.dimensions[d],
             })),
           })),
         })),
+        metrics,
+        dimensions: contextDimensions
       };
-    },
-
-    analyticsDimensions: async (_: any, __: any, { dataSources }: any) => {
-      return dataSources.db.Analytics.getDimensions();
     }
   },
 };

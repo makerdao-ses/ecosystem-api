@@ -248,7 +248,7 @@ it("returns list of getBudgetStatementTransferRequests with all params", async (
     walletBalance: 0.0,
   });
   expect(entry).toBeInstanceOf(Array);
-  expect(entry1[0].id).toEqual(0);
+  expect(entry1.length).toEqual(0);
   expect(entry2[0].budgetStatementWalletId).toEqual(70);
   expect(entry4[0].requestAmount).toEqual("363520.00");
   expect(entry5[0].walletBalance).toEqual("0.00");

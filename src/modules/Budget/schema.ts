@@ -104,12 +104,6 @@ export const resolvers = {
       );
     },
   },
-
-  Budget: {
-    budgetCap: async (parent: any, _: any, { dataSources }: any) => {
-      return await dataSources.db.Budget.getBudgetCaps(parent.id);
-    },
-  },
   BudgetCap: {
     expenseCategory: async (parent: any, _: any, { dataSources }: any) => {
       return await dataSources.db.Budget.getExpenseCategories(

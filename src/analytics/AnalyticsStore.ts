@@ -3,12 +3,8 @@ import { AnalyticsPath } from "./AnalyticsPath.js";
 import {
   AnalyticsSeriesQuery,
   AnalyticsSeries,
-  AnalyticsMetric,
-  AnalyticsMetricString,
-  getAnalyticsMetricEnum,
-  getAnalyticsMetricString,
+  toPascalCase,
 } from "./AnalyticsQuery.js";
-import { start } from "repl";
 
 export class AnalyticsStore {
   private _knex: Knex;
@@ -51,7 +47,7 @@ export class AnalyticsStore {
     const analyticsView = this._buildViewQuery(
       "AV",
       Object.keys(query.select),
-      query.metrics.map((m) => getAnalyticsMetricString(m)),
+      query.metrics.map((m) => m),
       query.currency.firstSegment().filters,
       query.end,
     );
@@ -74,7 +70,12 @@ export class AnalyticsStore {
       }
     }
     if (query.start) {
-      baseQuery.where("start", ">=", query.start);
+      baseQuery.where((q) => {
+        q.where("start", ">=", query.start).andWhere("fn", "Single");
+        q.orWhere("end", ">", query.start).andWhere("fn", "DssVest");
+
+        return q;
+      });
     }
     baseQuery.orderBy("start");
 
@@ -96,7 +97,7 @@ export class AnalyticsStore {
           start: inputs[i].start,
           end: inputs[i].end || null,
           source: inputs[i].source.toString("/"),
-          metric: getAnalyticsMetricString(inputs[i].metric),
+          metric: toPascalCase(inputs[i].metric),
           value: inputs[i].value,
           unit: inputs[i].unit || null,
           fn: inputs[i].fn || "Single",
@@ -134,7 +135,7 @@ export class AnalyticsStore {
         source: AnalyticsPath.fromString(r.source.slice(0, -1)),
         start: r.start,
         end: r.end,
-        metric: getAnalyticsMetricEnum(r.metric),
+        metric: r.metric,
         value: r.value,
         unit: r.unit,
         fn: r.fn,
@@ -231,7 +232,7 @@ type AnalyticsSeriesInput = {
   start: Date;
   end?: Date | null;
   source: AnalyticsPath;
-  metric: AnalyticsMetric;
+  metric: string;
   value: number;
   unit?: string | null;
   fn?: string | null;
@@ -244,7 +245,7 @@ type AnalyticsSeriesRecord = {
   source: string;
   start: Date;
   end: Date | null;
-  metric: AnalyticsMetricString;
+  metric: string;
   value: number;
   unit: string | null;
   fn: string;
