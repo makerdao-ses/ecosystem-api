@@ -38,7 +38,6 @@ export class AnalyticsDiscretizer {
       ),
       disretizedResults = this._discretizeNode(index, {}, dimensions, periods),
       groupedResults = this._groupResultsByPeriod(periods, disretizedResults);
-
     return groupedResults;
   }
 
@@ -158,7 +157,7 @@ export class AnalyticsDiscretizer {
 
     if (remainingDimensions.length > 0) {
       const subdimension = remainingDimensions[0] as string;
-      Object.keys(node).forEach((subdimensionValue) => {
+      Object.keys(node).forEach((subdimensionValue, index, arr) => {
         const newDimensionValues = { ...dimensionValues };
         newDimensionValues[subdimension] = subdimensionValue;
         result.push(
@@ -195,10 +194,18 @@ export class AnalyticsDiscretizer {
     const result: DimensionedSeries[] = [];
 
     Object.keys(leaf).forEach((unit) => {
+      const metaDimensions = {
+        budget: {
+          path: leaf[unit][0].dimensions.budget,
+          icon: leaf[unit][0].dimensions.icon,
+          label: leaf[unit][0].dimensions.label,
+          description: leaf[unit][0].dimensions.description,
+        }
+      }
       result.push({
         unit,
         metric,
-        dimensions: dimensionValues,
+        dimensions: metaDimensions as any,
         series: this._discretizeSeries(leaf[unit], periods),
       });
     });
@@ -277,7 +284,7 @@ export class AnalyticsDiscretizer {
     series: AnalyticsSeries<string>[],
     dimensions: string[],
   ): DiscretizerIndexNode {
-    const result: DiscretizerIndexNode = {};
+    const result: DiscretizerIndexNode | any = {};
     const map: DiscretizerIndexLeaf = {};
     const dimName = dimensions[0] || "";
 
@@ -286,10 +293,9 @@ export class AnalyticsDiscretizer {
       if (undefined === map[dimValue]) {
         map[dimValue] = [];
       }
-
       map[dimValue].push(s);
     }
-
+    
     if (dimensions.length > 1) {
       const newDimensions = dimensions.slice(1);
       Object.keys(map).forEach((k) => {

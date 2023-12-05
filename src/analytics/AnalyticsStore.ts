@@ -61,9 +61,9 @@ export class AnalyticsStore {
       baseQuery.leftJoin(`AnalyticsDimension as ${dimension}`, (q) => {
         q.on(`${dimension}.path`, `dim_budget`);
       });
-      baseQuery.select(`${dimension}.icon as ${dimension}_icon`);
-      baseQuery.select(`${dimension}.description as ${dimension}_description`);
-      baseQuery.select(`${dimension}.label as ${dimension}_label`);
+      baseQuery.select(`${dimension}.icon as dim_icon`);
+      baseQuery.select(`${dimension}.description as dim_description`);
+      baseQuery.select(`${dimension}.label as dim_label`);
       // baseQuery.select(`${dimension}.icon as icon_${dimension}`)
       if (paths.length == 1) {
         baseQuery.andWhereLike(`dim_${dimension}`, paths[0].toString("/%"));
@@ -85,7 +85,6 @@ export class AnalyticsStore {
       });
     }
     baseQuery.orderBy("start");
-
     return this._formatQueryRecords(await baseQuery, Object.keys(query.select));
   }
 
@@ -147,16 +146,16 @@ export class AnalyticsStore {
         unit: r.unit,
         fn: r.fn,
         params: r.params,
-        dimensions: {} as Record<string, AnalyticsPath>,
+        dimensions: {} as Record<string, AnalyticsPath> | any,
       };
 
-      dimensions.forEach(
-        (d) =>
-          (result.dimensions[d] = AnalyticsPath.fromString(
-            r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?",
-          )),
+      dimensions.forEach((d) => (result.dimensions[d] = {
+          path: AnalyticsPath.fromString(r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?"),
+          icon: AnalyticsPath.fromString(r[`dim_icon`] ? r[`dim_icon`] : ""),
+          label: AnalyticsPath.fromString(r[`dim_label`] ? r[`dim_label`] : ""),
+          description: AnalyticsPath.fromString(r[`dim_description`] ? r[`dim_description`] : ""),
+        }),
       );
-
       return result;
     });
   }
