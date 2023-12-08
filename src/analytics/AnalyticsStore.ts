@@ -151,9 +151,9 @@ export class AnalyticsStore {
 
       dimensions.forEach((d) => (result.dimensions[d] = {
           path: AnalyticsPath.fromString(r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?"),
-          icon: AnalyticsPath.fromString(r[`dim_icon`] ? r[`dim_icon`] : ""),
-          label: AnalyticsPath.fromString(r[`dim_label`] ? r[`dim_label`] : ""),
-          description: AnalyticsPath.fromString(r[`dim_description`] ? r[`dim_description`] : ""),
+          icon: r[`dim_icon`] ? r[`dim_icon`] : "",
+          label: r[`dim_label`] ? r[`dim_label`] : "",
+          description: r[`dim_description`] ? r[`dim_description`] : "",
         }),
       );
       return result;
