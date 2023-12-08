@@ -129,6 +129,15 @@ export class AnalyticsStore {
     for (const [dim, pathMap] of Object.entries(dimensionsMap)) {
       await this._linkDimensions(dim, pathMap);
     }
+
+    // Adding dimension metadata
+    for (let i = 0; i < inputs.length; i++) {
+      const metaDimension: any = inputs[i].dimensionMetadata
+      if (!metaDimension) {
+        continue
+      }
+      await this.addDimensionMetadata(metaDimension.path, metaDimension.icon, metaDimension.label, metaDimension.description)
+    }
   }
 
   private _formatQueryRecords(
@@ -150,11 +159,11 @@ export class AnalyticsStore {
       };
 
       dimensions.forEach((d) => (result.dimensions[d] = {
-          path: AnalyticsPath.fromString(r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?"),
-          icon: r[`dim_icon`] ? r[`dim_icon`] : "",
-          label: r[`dim_label`] ? r[`dim_label`] : "",
-          description: r[`dim_description`] ? r[`dim_description`] : "",
-        }),
+        path: AnalyticsPath.fromString(r[`dim_${d}`] ? r[`dim_${d}`].slice(0, -1) : "?"),
+        icon: r[`dim_icon`] ? r[`dim_icon`] : "",
+        label: r[`dim_label`] ? r[`dim_label`] : "",
+        description: r[`dim_description`] ? r[`dim_description`] : "",
+      }),
       );
       return result;
     });
@@ -230,6 +239,30 @@ export class AnalyticsStore {
     );
     return result[0].id;
   }
+
+  private async addDimensionMetadata(
+    path: string,
+    icon: string | null | undefined,
+    label: string | null | undefined,
+    description: string | null | undefined,
+  ) {
+
+    if (!icon && !label && !description) {
+      return
+    }
+    try {
+      await this._knex("AnalyticsDimension")
+        .where("path", `${path.toString()}/`)
+        .update({
+          icon: icon ? icon : '',
+          label: label ? label : '',
+          description: description ? description : '',
+        })
+    } catch (error) {
+      console.error('Error updating AnalyticsDimension:', error);
+    }
+  }
+
 }
 
 type DimensionsMap = Record<string, Record<string, number[]>>;
@@ -244,6 +277,7 @@ type AnalyticsSeriesInput = {
   fn?: string | null;
   params?: Record<string, any> | null;
   dimensions: Record<string, AnalyticsPath>;
+  dimensionMetadata?: Record<string, string>;
 };
 
 type AnalyticsSeriesRecord = {
@@ -257,4 +291,5 @@ type AnalyticsSeriesRecord = {
   fn: string;
   params: Record<string, any> | null;
   [dimension: `dim_${string}`]: string;
+  dimensionMetadata?: Record<string, string>;
 };
