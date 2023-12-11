@@ -34,7 +34,7 @@ export const typeDefs = [
 
     type Dimension {
       name: String
-      values: Value
+      values: [Value]
     }
 
     type Value {

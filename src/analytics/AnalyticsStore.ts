@@ -264,22 +264,38 @@ export class AnalyticsStore {
   }
 
   public async getDimensions() {
-    const list = await this._knex
-      .select(this._knex.raw('distinct on ("dimension") dimension, path'))
+    // Fetch all rows from the database
+    const rows = await this._knex
+      .select('dimension', 'path', 'icon', 'label', 'description')
       .from('AnalyticsDimension')
       .whereNotNull('path')
       .whereNot('path', '')
-      .whereNot('path', '/')
-      .orderBy('dimension', 'asc');
-    const result = list.map(l => {
-      return {
-        name: l.dimension,
-        values: {
-          path: l.path
-        }
+      .whereNot('path', '/');
+
+    // Process the rows to group them by dimension and format them
+    const grouped = rows.reduce((acc, row) => {
+      // If the dimension is not yet in the accumulator, add it
+      if (!acc[row.dimension]) {
+        acc[row.dimension] = {
+          name: row.dimension,
+          values: [],
+        };
       }
-    })
-    return result;
+
+      // Add the path, icon, label, and description to the dimension's values
+      acc[row.dimension].values.push({
+        path: row.path,
+        icon: row.icon,
+        label: row.label,
+        description: row.description,
+      });
+
+      return acc;
+    }, {});
+
+    // Convert the grouped object to an array
+    const dimensionPaths: any = Object.values(grouped);
+    return dimensionPaths;
   }
 
   public async getMetrics() {
