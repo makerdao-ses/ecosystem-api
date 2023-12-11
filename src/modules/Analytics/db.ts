@@ -60,34 +60,11 @@ export class AnalyticsModel {
   }
 
   public async getDimensions() {
-    const list = await this.knex
-      .select(this.knex.raw('distinct on ("dimension") dimension, path'))
-      .from('AnalyticsDimension')
-      .whereNotNull('path')
-      .whereNot('path', '')
-      .whereNot('path', '/')
-      .orderBy('dimension', 'asc');
-    const result = list.map(l => {
-      return {
-        name: l.dimension,
-        values: {
-          path: l.path
-        }
-      }
-    })
-    return result;
+    return await this.engine.getDimensions()
   }
 
   public async getMetrics() {
-    const list = await this.knex("AnalyticsSeries").select('metric').distinct().whereNotNull('metric');
-    const filtered = list.map((l) => l.metric);
-    const metrics = ['Budget', 'Forecast', 'Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'];
-    metrics.forEach(metric => {
-      if (!filtered.includes(metric)) {
-        filtered.push(metric);
-      }
-    });
-    return filtered;
+    return await this.engine.getMetrics()
   }
 }
 

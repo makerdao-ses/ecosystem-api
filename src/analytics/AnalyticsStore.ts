@@ -263,6 +263,36 @@ export class AnalyticsStore {
     }
   }
 
+  public async getDimensions() {
+    const list = await this._knex
+      .select(this._knex.raw('distinct on ("dimension") dimension, path'))
+      .from('AnalyticsDimension')
+      .whereNotNull('path')
+      .whereNot('path', '')
+      .whereNot('path', '/')
+      .orderBy('dimension', 'asc');
+    const result = list.map(l => {
+      return {
+        name: l.dimension,
+        values: {
+          path: l.path
+        }
+      }
+    })
+    return result;
+  }
+
+  public async getMetrics() {
+    const list = await this._knex("AnalyticsSeries").select('metric').distinct().whereNotNull('metric');
+    const filtered = list.map((l) => l.metric);
+    const metrics = ['Budget', 'Forecast', 'Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'];
+    metrics.forEach(metric => {
+      if (!filtered.includes(metric)) {
+        filtered.push(metric);
+      }
+    });
+    return filtered;
+  }
 }
 
 type DimensionsMap = Record<string, Record<string, number[]>>;
