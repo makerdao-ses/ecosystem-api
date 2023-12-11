@@ -73,4 +73,12 @@ export class AnalyticsQueryEngine {
     }
     return result;
   }
+
+  public async getDimensions(): Promise<any> {
+    return await this._analyticsStore.getDimensions();
+  }
+
+  public async getMetrics(): Promise<string[]> {
+    return await this._analyticsStore.getMetrics();
+  }
 }
