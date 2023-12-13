@@ -59,12 +59,11 @@ export class AnalyticsStore {
     // Add dimension filter(s)
     for (const [dimension, paths] of Object.entries(query.select)) {
       baseQuery.leftJoin(`AnalyticsDimension as ${dimension}`, (q) => {
-        q.on(`${dimension}.path`, `dim_budget`);
+        q.on(`${dimension}.path`, `dim_${dimension}`);
       });
       baseQuery.select(`${dimension}.icon as dim_icon`);
       baseQuery.select(`${dimension}.description as dim_description`);
       baseQuery.select(`${dimension}.label as dim_label`);
-      // baseQuery.select(`${dimension}.icon as icon_${dimension}`)
       if (paths.length == 1) {
         baseQuery.andWhereLike(`dim_${dimension}`, paths[0].toString("/%"));
       } else if (paths.length > 1) {

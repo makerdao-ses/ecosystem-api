@@ -192,16 +192,16 @@ export class AnalyticsDiscretizer {
     dimensionValues: Record<string, string>,
   ): DimensionedSeries[] {
     const result: DimensionedSeries[] = [];
-
     Object.keys(leaf).forEach((unit) => {
-      const metaDimensions = {
-        budget: {
-          path: leaf[unit][0].dimensions.budget,
+      const metaDimensions: any = {}
+      Object.keys(dimensionValues).forEach((k) => {
+        metaDimensions[k] = {
+          path: leaf[unit][0].dimensions[k],
           icon: leaf[unit][0].dimensions.icon,
           label: leaf[unit][0].dimensions.label,
           description: leaf[unit][0].dimensions.description,
         }
-      }
+      });
       result.push({
         unit,
         metric,
