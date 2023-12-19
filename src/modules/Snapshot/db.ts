@@ -109,7 +109,7 @@ export class SnapshotModel {
       reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
       netExpenses: {
         onChainOnly: {
-          amount: analytics.find((a: any) => a.period == month)?.paymentsOnChain,
+          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOnChain),
           difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
         },
         offChainIncluded: {
@@ -209,7 +209,12 @@ export class SnapshotModel {
 
   calcDifference = (a: number, b: number) => {
     if (!a || !b) return null;
-    return Math.abs(a) / Math.abs(b);
+    return (Math.abs(a) / Math.abs(b)) - 1;
+  }
+
+  convertToPositive = (a: number) => {
+    if (!a) return null;
+    return Math.abs(a);
   }
 
 }
