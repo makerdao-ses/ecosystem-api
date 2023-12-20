@@ -125,11 +125,13 @@ const processTransactions = async (
     // If it's the end of the month, put a synthetic transaction on the stack to reconcile the
     // off-chain account with its balance.
     if (snapshotAccount.offChain) {
+
       addOffChainTransactionsToStack(
         transactionsStack,
         txData,
         finalBalanceByToken,
         monthInfo.offChainBalances,
+        timespan
       );
     }
 
@@ -186,7 +188,9 @@ const addOffChainTransactionsToStack = (
   processedTransaction,
   calculatedBalanceByToken,
   offChainBalances,
+  timespan
 ) => {
+  console.log(processedTransaction);
   const currentTxMonth = processedTransaction
       ? processedTransaction.timestamp.slice(0, 7).replace("-", "/")
       : "0000/00",
@@ -200,6 +204,12 @@ const addOffChainTransactionsToStack = (
 
   const originalTransactionCount = transactionsStack.length;
   let transactionAdded = false;
+  
+  //Set end time of synthetic transaction
+  let endDateTime;
+  if(timespan && timespan.end){
+    endDateTime = timespan.end;
+  }
 
   if (currentTxMonth !== nextTxMonth) {
     Object.keys(offChainBalances || {}).forEach((month) => {
@@ -209,16 +219,20 @@ const addOffChainTransactionsToStack = (
           (b) => b.token == "USD",
         )[0].newBalance;
 
-        const syntheticTransaction = {
-          block: processedTransaction ? processedTransaction.block : null,
-          timestamp: new Date(
+        if(!endDateTime){
+          endDateTime = new Date(
             month.slice(0, 4),
             month.slice(5, 7),
             0,
             23,
             59,
             59,
-          ).toISOString(),
+          ).toISOString();
+        }
+
+        const syntheticTransaction = {
+          block: processedTransaction ? processedTransaction.block : null,
+          timestamp: endDateTime,
           tx_hash: null,
           token: "DAI",
           label: "Off-chain Payment(s)",
