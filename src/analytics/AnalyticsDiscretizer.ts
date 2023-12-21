@@ -38,7 +38,6 @@ export class AnalyticsDiscretizer {
       ),
       disretizedResults = this._discretizeNode(index, {}, dimensions, periods),
       groupedResults = this._groupResultsByPeriod(periods, disretizedResults);
-
     return groupedResults;
   }
 
@@ -118,7 +117,9 @@ export class AnalyticsDiscretizer {
       case "quarterly":
         return `${getYear(p.start)}/Q${getQuarter(p.start)}`;
       case "monthly":
-        return `${getYear(p.start)}/${p.start.getUTCMonth() + 1}`;
+        const month = p.start.getUTCMonth() + 1;
+        const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+        return `${getYear(p.start)}/${formattedMonth}`;
       case "weekly":
         return `${getWeekYear(p.start, {
           weekStartsOn: 1,
@@ -128,13 +129,19 @@ export class AnalyticsDiscretizer {
           firstWeekContainsDate: 6,
         })}`;
       case "daily":
-        return `${getYear(p.start)}/${
-          getMonth(p.start) + 1
-        }/${p.start.getDate()}`;
+        const monthD = getMonth(p.start) + 1;
+        const day = p.start.getDate();
+        const formattedMonthD = monthD < 10 ? `0${monthD}` : `${monthD}`;
+        const formattedDay = day < 10 ? `0${day}` : `${day}`;
+        return `${getYear(p.start)}/${formattedMonthD}/${formattedDay}`;
       case "hourly":
-        return `${getYear(p.start)}/${
-          getMonth(p.start) + 1
-        }/${p.start.getDate()}/${p.start.getHours()}`;
+        const monthH = getMonth(p.start) + 1;
+        const dayH = p.start.getDate();
+        const hourH = p.start.getHours();
+        const formattedMonthH = monthH < 10 ? `0${monthH}` : `${monthH}`;
+        const formattedDayH = dayH < 10 ? `0${dayH}` : `${dayH}`;
+        const formattedHourH = hourH < 10 ? `0${hourH}` : `${hourH}`;
+        return `${getYear(p.start)}/${formattedMonthH}/${formattedDayH}/${formattedHourH}`;
       default:
         return p.period;
     }
@@ -150,7 +157,7 @@ export class AnalyticsDiscretizer {
 
     if (remainingDimensions.length > 0) {
       const subdimension = remainingDimensions[0] as string;
-      Object.keys(node).forEach((subdimensionValue) => {
+      Object.keys(node).forEach((subdimensionValue, index, arr) => {
         const newDimensionValues = { ...dimensionValues };
         newDimensionValues[subdimension] = subdimensionValue;
         result.push(
@@ -185,12 +192,20 @@ export class AnalyticsDiscretizer {
     dimensionValues: Record<string, string>,
   ): DimensionedSeries[] {
     const result: DimensionedSeries[] = [];
-
     Object.keys(leaf).forEach((unit) => {
+      const metaDimensions: any = {}
+      Object.keys(dimensionValues).forEach((k) => {
+        metaDimensions[k] = {
+          path: leaf[unit][0].dimensions[k],
+          icon: leaf[unit][0].dimensions.icon,
+          label: leaf[unit][0].dimensions.label,
+          description: leaf[unit][0].dimensions.description,
+        }
+      });
       result.push({
         unit,
         metric,
-        dimensions: dimensionValues,
+        dimensions: metaDimensions as any,
         series: this._discretizeSeries(leaf[unit], periods),
       });
     });
@@ -269,7 +284,7 @@ export class AnalyticsDiscretizer {
     series: AnalyticsSeries<string>[],
     dimensions: string[],
   ): DiscretizerIndexNode {
-    const result: DiscretizerIndexNode = {};
+    const result: DiscretizerIndexNode | any = {};
     const map: DiscretizerIndexLeaf = {};
     const dimName = dimensions[0] || "";
 
@@ -278,10 +293,9 @@ export class AnalyticsDiscretizer {
       if (undefined === map[dimValue]) {
         map[dimValue] = [];
       }
-
       map[dimValue].push(s);
     }
-
+    
     if (dimensions.length > 1) {
       const newDimensions = dimensions.slice(1);
       Object.keys(map).forEach((k) => {

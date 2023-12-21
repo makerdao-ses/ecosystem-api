@@ -1,12 +1,12 @@
 #!/bin/bash
 
 ecosystem_codes=(
-  "ecosystem-actors/SIDESTREAM"
+  "core-units/SES-001"
 )
 
 # Define the start and end dates (in year/month format)
-start_date="2023/06"
-end_date="2023/10"
+start_date="2023/03"
+end_date="2023/12"
 
 # Helper function to increment the date by one month
 increment_date() {
@@ -34,7 +34,7 @@ is_after_or_equal_start_date() {
 
 # Run the ecosystem actors codes only from April 2023 onwards
 for code in "${cu_codes[@]}"; do
-  current_date="2022/01"
+  current_date="2023/04"
   while [[ "$current_date" != "$end_date" ]]; do
     node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$current_date"
     current_date=$(increment_date "$current_date")  # Update current_date using the function

@@ -5,7 +5,6 @@ import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
   AnalyticsQuery,
-  toPascalCase
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
 
@@ -33,11 +32,16 @@ export class AnalyticsModel {
     if (!filter) {
       return [];
     }
+    const metrics = await this.getMetrics();
+    const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
+    if(filteredMetrics.length < 1){
+      throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
+    }
     const query: AnalyticsQuery = {
       start: filter.start ? new Date(filter.start) : null,
       end: filter.end ? new Date(filter.end) : null,
       granularity: getGranularity(filter.granularity),
-      metrics: filter.metrics.map((metric) => toPascalCase(metric)),
+      metrics: filter.metrics,
       currency: getCurrency(filter.currency),
       select: {},
       lod: {},
@@ -56,34 +60,11 @@ export class AnalyticsModel {
   }
 
   public async getDimensions() {
-    const list = await this.knex
-      .select(this.knex.raw('distinct on ("dimension") dimension, path'))
-      .from('AnalyticsDimension')
-      .whereNotNull('path')
-      .whereNot('path', '')
-      .whereNot('path', '/')
-      .orderBy('dimension', 'asc');
-    const result = list.map(l => {
-      return {
-        name: l.dimension,
-        values: {
-          path: l.path
-        }
-      }
-    })
-    return result;
+    return await this.engine.getDimensions()
   }
 
   public async getMetrics() {
-    const list = await this.knex("AnalyticsSeries").select('metric').distinct().whereNotNull('metric');
-    const filtered = list.map((l) => l.metric);
-    const metrics = ['Budget', 'Forecast', 'Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'];
-    metrics.forEach(metric => {
-      if (!filtered.includes(metric)) {
-        filtered.push(metric);
-      }
-    });
-    return filtered;
+    return await this.engine.getMetrics()
   }
 }
 

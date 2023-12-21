@@ -1,4 +1,6 @@
 import { Knex } from "knex";
+import CoreUnitModel from "../CoreUnit/db.js";
+import AnalyticsModel from "../Analytics/db.js";
 
 export type SnapshotFilter = {
   id?: number | string;
@@ -25,9 +27,13 @@ const get3Months = (month: string) => {
 
 export class SnapshotModel {
   knex: Knex;
+  coreunit: any;
+  analyticsModel: any;
 
   constructor(knex: Knex) {
     this.knex = knex;
+    this.coreunit = CoreUnitModel(knex);
+    this.analyticsModel = AnalyticsModel(knex);
   }
 
   async getSnapshots(filter: {
@@ -81,29 +87,35 @@ export class SnapshotModel {
     }
 
     const result = await baseQuery;
+
     for (let i = 0; i < result.length; i++) {
       result[i].actualsComparison = await this.getActualsComparison(
         result[i].id,
         result[i].month ? get3Months(result[i].month) : [],
+        result[i].ownerType,
+        result[i].ownerId,
+        result[i].end
       );
     }
 
     return result;
   }
 
-  async getActualsComparison(snapshotId: number, months: string[]) {
+  async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
+    if (months.length < 1) return [];
+    const analytics = await this.getAnalytics(months[months.length -1], snapShotEnd, ownerType, ownerId)
     return months.map((month) => ({
       month,
       currency: "DAI",
-      reportedActuals: snapshotId * 10000,
+      reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
       netExpenses: {
         onChainOnly: {
-          amount: snapshotId * 10000 + 1253,
-          difference: (snapshotId * 10000 + 1253) / (snapshotId * 10000),
+          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOnChain),
+          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
         },
         offChainIncluded: {
-          amount: snapshotId * 10000 + 100,
-          difference: (snapshotId * 10000 + 100) / (snapshotId * 10000),
+          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOffChain),
+          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOffChain, analytics.find((a: any) => a.period == month)?.actuals),
         },
       },
     }));
@@ -130,6 +142,64 @@ export class SnapshotModel {
       .from("SnapshotAccountBalance")
       .where("snapshotAccountId", snapshotAccountId);
   }
+
+  async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
+    const path = await this.getPath(ownerType, ownerId);
+
+    const filter = {
+      start,
+      end: end,
+      granularity: 'monthly',
+      metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
+      dimensions: [
+        { name: 'budget', select: path, lod: 5 }
+      ],
+      currency: 'DAI'
+    }
+
+    const queryEngine = this.analyticsModel
+    const results = await queryEngine.query(filter);
+
+    const result = results.map((s: any) => ({
+      period: s.period,
+      actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
+      paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
+      paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
+    }))
+    return result;
+  }
+
+  private getPath = async (ownerType: string, ownerId: number | null) => {
+    switch (ownerType) {
+      case 'CoreUnit':
+        const team = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
+        return `atlas/legacy/core-units/${team[0].code}`;
+      case 'Delegates':
+        return 'atlas/legacy/recognized-delegates';
+      case 'EcosystemActor':
+        const teamCode = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
+        return `atlas/scopes/SUP/incubation/${teamCode[0].code}`;
+      case 'Keepers':
+        return 'atlas/legacy/keespers';
+      case 'SpecialPurposeFund':
+        return 'atlas/legacy/spfs';
+      case 'AlignedDelegates':
+        return 'atlas/immutable/ads';
+      default:
+        return 'atlas/core-units';
+    }
+  };
+
+  calcDifference = (a: number, b: number) => {
+    if (!a || !b) return 0;
+    return (Math.abs(a) / Math.abs(b)) - 1;
+  }
+
+  convertToPositive = (a: number) => {
+    if (!a) return 0;
+    return Math.abs(a);
+  }
+
 }
 
 export default (knex: Knex) => new SnapshotModel(knex);
