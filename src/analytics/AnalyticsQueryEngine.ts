@@ -18,19 +18,19 @@ export class AnalyticsQueryEngine {
   }
 
   public async execute(query: AnalyticsQuery): Promise<GroupedPeriodResults> {
-    const seriesResults = await this._executeSeriesQuery(query),
-      normalizedSeriesResults = this._applyLods(seriesResults, query.lod),
-      dimensions = Object.keys(query.select),
+    const dimensions = Object.keys(query.select);
+    const seriesResults = await this._executeSeriesQuery(query)
+    const normalizedSeriesResults = this._applyLods(seriesResults, query.lod),
       discretizedResult =
         normalizedSeriesResults.length < 1
           ? []
           : AnalyticsDiscretizer.discretize(
-              normalizedSeriesResults,
-              dimensions,
-              query.start,
-              query.end,
-              query.granularity,
-            );
+            normalizedSeriesResults,
+            dimensions,
+            query.start,
+            query.end,
+            query.granularity,
+          );
     return discretizedResult;
   }
 
@@ -59,17 +59,26 @@ export class AnalyticsQueryEngine {
   }
 
   private _applyDimensionsLods(
-    dimensionMap: Record<string, AnalyticsPath>,
+    dimensionMap: Record<string, AnalyticsPath> | any,
     lods: Record<string, number | null>,
   ) {
-    const result: Record<string, string> = {};
-
+    const result: Record<string, string> | any = {};
     for (const [dimension, lod] of Object.entries(lods)) {
       if (lod !== null && dimensionMap[dimension]) {
-        result[dimension] = dimensionMap[dimension].applyLod(lod).toString();
+        result[dimension] = dimensionMap[dimension]['path'].applyLod(lod).toString();
+        result['icon'] = dimensionMap[dimension]['icon'].toString();
+        result['label'] = dimensionMap[dimension]['label'].toString();
+        result['description'] = dimensionMap[dimension]['description'].toString();
       }
     }
-
     return result;
+  }
+
+  public async getDimensions(): Promise<any> {
+    return await this._analyticsStore.getDimensions();
+  }
+
+  public async getMetrics(): Promise<string[]> {
+    return await this._analyticsStore.getMetrics();
   }
 }

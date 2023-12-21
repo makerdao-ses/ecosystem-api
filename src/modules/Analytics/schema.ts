@@ -27,15 +27,21 @@ export const typeDefs = [
     type AnalyticsSeriesDimension {
       name: String
       path: String
+      label: String
+      description: String
+      icon: String
     }
 
     type Dimension {
       name: String
-      values: Value
+      values: [Value]
     }
 
     type Value {
       path: String
+      label: String
+      description: String
+      icon: String
     }
 
     enum AnalyticsGranularity {
@@ -85,11 +91,15 @@ export const resolvers = {
       return {
         series: results.map((s) => ({
           ...s,
-          rows: s.rows.map((r) => ({
+          rows: s.rows.map((r: any) => ({
             ...r,
-            dimensions: Object.keys(r.dimensions).map((d) => ({
+            dimensions: Object.keys(r.dimensions).map((d) => (
+              {
               name: d,
-              path: r.dimensions[d],
+              path: r.dimensions[d]['path'],
+              icon: r.dimensions[d]['icon'],
+              label: r.dimensions[d]['label'],
+              description: r.dimensions[d]['description'],
             })),
           })),
         })),
