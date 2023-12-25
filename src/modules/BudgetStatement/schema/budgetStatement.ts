@@ -6,7 +6,6 @@ export const typeDefs = [
       "Auto generated id field"
       id: ID!
       "Auto generated id field from Core Unit table"
-      ownerId: ID
       owner: Owner
       ownerType: String
       "Month of corresponding budget statement"
@@ -32,6 +31,7 @@ export const typeDefs = [
     }
 
     type Owner {
+      id: ID 
       icon: String
       name: String
       shortCode: String
@@ -535,11 +535,13 @@ export const resolvers = {
         .where("id", ownerId)
         .select("image", "name", "shortCode");
       if (!output) return {
+        id: '',
         icon: "",
         name: "Delegates",
         shortCode: "DEL",
       };
       return {
+        id: ownerId,
         icon: output.image,
         name: output.name,
         shortCode: output.shortCode,
