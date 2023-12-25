@@ -7,6 +7,7 @@ export const typeDefs = [
       id: ID!
       "Auto generated id field from Core Unit table"
       ownerId: ID
+      owner: Owner
       ownerType: String
       "Month of corresponding budget statement"
       month: String!
@@ -28,6 +29,12 @@ export const typeDefs = [
       budgetStatementMKRVest: [BudgetStatementMKRVest]
       "Details on the wallets used for budget statement wallets"
       budgetStatementWallet: [BudgetStatementWallet]
+    }
+
+    type Owner {
+      icon: String
+      name: String
+      shortCode: String
     }
 
     enum BudgetStatus {
@@ -521,6 +528,23 @@ export const resolvers = {
         });
       return result;
     },
+    owner: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId } = parent;
+      const [output] = await dataSources.db
+        .knex("CoreUnit")
+        .where("id", ownerId)
+        .select("image", "name", "shortCode");
+      if (!output) return {
+        icon: "",
+        name: "Delegates",
+        shortCode: "DEL",
+      };
+      return {
+        icon: output.image,
+        name: output.name,
+        shortCode: output.shortCode,
+      };
+    }
   },
   BudgetStatementWallet: {
     budgetStatementLineItem: async (
