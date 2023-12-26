@@ -20,6 +20,10 @@ export const typeDefs = [
       "Core Unit code as defined with the Core Units' MIP39"
       ownerCode: String
       mkrProgramLength: Float
+      forecastExpenses: Float
+      actualExpenses: Float
+      paymentsOnChain: Float
+      paymentsOffChain: Float
       activityFeed: [ChangeTrackingEvent]
       auditReport: [AuditReport]
       "Number of full-time employees in the corresponding budget statement"
@@ -546,6 +550,34 @@ export const resolvers = {
         name: output.name,
         shortCode: output.shortCode,
       };
+    },
+    forecastExpenses: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.forecasts;
+    },
+    actualExpenses: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.actuals;
+    },
+    paymentsOnChain: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.paymentsOnChain;
+    },
+    paymentsOffChain: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.paymentsOffChain;
     }
   },
   BudgetStatementWallet: {
@@ -1099,3 +1131,33 @@ export const resolvers = {
     },
   },
 };
+
+function convertDate(dateString: string) {
+  const [year, month] = dateString.split('-');
+
+  const formattedDate = `${year}/${month}`;
+
+  return formattedDate;
+}
+const getAnalytics = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['Actuals', 'Forecast', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
+    forecast: s.rows.find((r: any) => r.metric == 'Forecast')?.value,
+    paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
+    paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
+  }))
+  return result;
+}
