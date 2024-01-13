@@ -22,7 +22,7 @@ export class ContributorTeamsResolver extends BudgetReportResolverBase<
     super();
 
     this.name = selectEcosystemActors
-      ? "DelegatesResolver"
+      ? "EcosystemActorsResolver"
       : "CoreUnitsResolver";
     this._knex = knex;
     this._selectEcosystemActors = selectEcosystemActors;

@@ -63,7 +63,7 @@ export class DaoResolver extends BudgetReportResolverBase<
       budgetCategories.filters === null ||
       budgetCategories.filters.includes("ecosystem-actors")
     ) {
-      result.nextResolversData.DelegatesResolver =
+      result.nextResolversData.EcosystemActorsResolver =
         this._getEcosystemActorsResolverData(
           query,
           path,
