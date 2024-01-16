@@ -5,7 +5,6 @@ export const typeDefs = [
     type BudgetStatement {
       "Auto generated id field"
       id: ID!
-      "Auto generated id field from Core Unit table"
       owner: Owner
       ownerType: String
       "Month of corresponding budget statement"
