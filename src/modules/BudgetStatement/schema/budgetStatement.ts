@@ -5,7 +5,7 @@ export const typeDefs = [
     type BudgetStatement {
       "Auto generated id field"
       id: ID!
-      owner: Owner
+      owner: BudgetStatementOwner
       ownerType: String
       "Month of corresponding budget statement"
       month: String!
@@ -33,7 +33,7 @@ export const typeDefs = [
       budgetStatementWallet: [BudgetStatementWallet]
     }
 
-    type Owner {
+    type BudgetStatementOwner {
       id: ID 
       icon: String
       name: String
