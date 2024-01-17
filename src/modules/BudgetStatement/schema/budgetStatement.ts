@@ -554,28 +554,28 @@ export const resolvers = {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await getAnalyticsForecast(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.forecast;
     },
     actualExpenses: async (parent: any, __: any, { dataSources }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await getAnalyticsActuals(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.actuals;
     },
     paymentsOnChain: async (parent: any, __: any, { dataSources }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await getAnalyticsOnChain(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.paymentsOnChain;
     },
     paymentsOffChain: async (parent: any, __: any, { dataSources }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await getAnalyticsOffChain(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.paymentsOffChain;
     }
   },
@@ -1138,13 +1138,13 @@ function convertDate(dateString: string) {
 
   return formattedDate;
 }
-const getAnalytics = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+const getAnalyticsActuals = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
 
   const filter = {
     start: "2020/01",
     end: "2100/01",
     granularity: 'total',
-    metrics: ['Actuals', 'Forecast', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
+    metrics: ['Actuals'],
     dimensions: [
       { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
     ],
@@ -1154,8 +1154,65 @@ const getAnalytics = async (queryEngine: any, monthAndDay: string, ownerType: st
 
   const result = results.map((s: any) => ({
     actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
-    forecast: s.rows.find((r: any) => r.metric == 'Forecast')?.value,
+  }))
+  return result;
+}
+
+const getAnalyticsForecast = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['Forecast'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    forecast: s.rows.find((r: any) => r.metric == 'Forecast')?.value
+  }))
+  return result;
+}
+
+const getAnalyticsOnChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['PaymentsOnChain'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
     paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
+  }))
+  return result;
+}
+
+const getAnalyticsOffChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['PaymentsOffChainIncluded'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
     paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
   }))
   return result;
