@@ -555,7 +555,7 @@ export const resolvers = {
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
       const analytics = await getAnalytics(queryEngine, convertedMonth, ownerType, ownerId);
-      return analytics[0]?.forecasts;
+      return analytics[0]?.forecast;
     },
     actualExpenses: async (parent: any, __: any, { dataSources }: any) => {
       const { ownerId, ownerType, month } = parent;
