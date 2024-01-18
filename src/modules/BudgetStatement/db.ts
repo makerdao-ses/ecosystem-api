@@ -200,49 +200,48 @@ export class BudgetStatementModel {
     offset?: number;
     filter?: BudgetStatementFilter;
   }): Promise<BudgetStatement[]> {
-    const baseQuery = this.knex
+    let query = this.knex
       .select("*")
       .from("BudgetStatement")
       .orderBy("month", "desc");
+
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
-      return baseQuery.limit(filter.limit).offset(filter.offset);
-    } else if (filter.filter?.id !== undefined) {
-      return baseQuery
-        .where("id", filter.filter.id)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else if (filter.filter?.ownerId !== undefined) {
-      return baseQuery
-        .where("ownerId", filter.filter.ownerId)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else if (
-      filter.filter?.ownerType !== undefined &&
-      filter.filter?.id == undefined &&
-      filter.filter?.ownerId == undefined &&
-      filter.filter?.month == undefined &&
-      filter.filter?.status == undefined &&
-      filter.filter?.ownerCode == undefined &&
-      filter.filter?.mkrProgramLength == undefined
-    ) {
-      return baseQuery.where("ownerType", filter.filter.ownerType);
-    } else if (filter.filter?.month !== undefined) {
-      return baseQuery
-        .where("month", filter.filter.month)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else if (filter.filter?.status !== undefined) {
-      return baseQuery
-        .where("status", filter.filter.status)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else if (filter.filter?.ownerCode !== undefined) {
-      return baseQuery
-        .where("ownerCode", filter.filter.ownerCode)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else if (filter.filter?.mkrProgramLength !== undefined) {
-      return baseQuery
-        .where("mkrProgramLength", filter.filter.mkrProgramLength)
-        .andWhere("ownerType", filter.filter.ownerType);
-    } else {
-      return baseQuery;
+      query = query.limit(filter.limit).offset(filter.offset);
     }
+
+    if (filter.filter) {
+      if (filter.filter.ownerType !== undefined) {
+        query = query.where("ownerType", filter.filter.ownerType);
+      } else {
+        throw new Error("ownerType filter is required");
+      }
+
+      if (filter.filter.id !== undefined) {
+        query = query.andWhere("id", filter.filter.id);
+      }
+
+      if (filter.filter.ownerId !== undefined) {
+        query = query.andWhere("ownerId", filter.filter.ownerId);
+      }
+
+      if (filter.filter.month !== undefined) {
+        query = query.andWhere("month", filter.filter.month);
+      }
+
+      if (filter.filter.status !== undefined) {
+        query = query.andWhere("status", filter.filter.status);
+      }
+
+      if (filter.filter.ownerCode !== undefined) {
+        query = query.andWhere("ownerCode", filter.filter.ownerCode);
+      }
+
+      if (filter.filter.mkrProgramLength !== undefined) {
+        query = query.andWhere("mkrProgramLength", filter.filter.mkrProgramLength);
+      }
+    }
+
+    return query;
   }
 
   async getBSOwnerType(id: number | string) {

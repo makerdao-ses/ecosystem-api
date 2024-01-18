@@ -5,8 +5,7 @@ export const typeDefs = [
     type BudgetStatement {
       "Auto generated id field"
       id: ID!
-      "Auto generated id field from Core Unit table"
-      ownerId: ID
+      owner: BudgetStatementOwner
       ownerType: String
       "Month of corresponding budget statement"
       month: String!
@@ -20,6 +19,10 @@ export const typeDefs = [
       "Core Unit code as defined with the Core Units' MIP39"
       ownerCode: String
       mkrProgramLength: Float
+      forecastExpenses: Float
+      actualExpenses: Float
+      paymentsOnChain: Float
+      paymentsOffChain: Float
       activityFeed: [ChangeTrackingEvent]
       auditReport: [AuditReport]
       "Number of full-time employees in the corresponding budget statement"
@@ -28,6 +31,13 @@ export const typeDefs = [
       budgetStatementMKRVest: [BudgetStatementMKRVest]
       "Details on the wallets used for budget statement wallets"
       budgetStatementWallet: [BudgetStatementWallet]
+    }
+
+    type BudgetStatementOwner {
+      id: ID 
+      icon: String
+      name: String
+      shortCode: String
     }
 
     enum BudgetStatus {
@@ -521,6 +531,53 @@ export const resolvers = {
         });
       return result;
     },
+    owner: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId } = parent;
+      const [output] = await dataSources.db
+        .knex("CoreUnit")
+        .where("id", ownerId)
+        .select("image", "name", "shortCode");
+      if (!output) return {
+        id: '',
+        icon: "",
+        name: "Delegates",
+        shortCode: "DEL",
+      };
+      return {
+        id: ownerId,
+        icon: output.image,
+        name: output.name,
+        shortCode: output.shortCode,
+      };
+    },
+    forecastExpenses: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalyticsForecast(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.forecast;
+    },
+    actualExpenses: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalyticsActuals(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.actuals;
+    },
+    paymentsOnChain: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalyticsOnChain(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.paymentsOnChain;
+    },
+    paymentsOffChain: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalyticsOffChain(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.paymentsOffChain;
+    }
   },
   BudgetStatementWallet: {
     budgetStatementLineItem: async (
@@ -1073,3 +1130,90 @@ export const resolvers = {
     },
   },
 };
+
+function convertDate(dateString: string) {
+  const [year, month] = dateString.split('-');
+
+  const formattedDate = `${year}/${month}`;
+
+  return formattedDate;
+}
+const getAnalyticsActuals = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['Actuals'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
+  }))
+  return result;
+}
+
+const getAnalyticsForecast = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['Forecast'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    forecast: s.rows.find((r: any) => r.metric == 'Forecast')?.value
+  }))
+  return result;
+}
+
+const getAnalyticsOnChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['PaymentsOnChain'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
+  }))
+  return result;
+}
+
+const getAnalyticsOffChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+
+  const filter = {
+    start: "2020/01",
+    end: "2100/01",
+    granularity: 'total',
+    metrics: ['PaymentsOffChainIncluded'],
+    dimensions: [
+      { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+    ],
+    currency: 'DAI'
+  }
+  const results = await queryEngine.query(filter);
+
+  const result = results.map((s: any) => ({
+    paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
+  }))
+  return result;
+}
