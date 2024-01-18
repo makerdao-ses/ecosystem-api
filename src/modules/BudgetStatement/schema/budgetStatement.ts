@@ -4,7 +4,7 @@ import {
   getAnalyticsActuals,
   getAnalyticsForecast,
   getAnalyticsOnChain,
-  getAnalyticsOffChain
+  getAnalyticsOffChain,
 } from "./utils.js";
 
 export const typeDefs = [
@@ -193,11 +193,12 @@ export const typeDefs = [
     input BudgetStatementFilter {
       id: ID
       ownerId: ID
-      ownerType: BudgetOwner!
+      ownerType: BudgetOwner
       month: String
       status: BudgetStatus
       ownerCode: String
       mkrProgramLength: Float
+      budgetPath: String
     }
 
     enum BudgetOwner {

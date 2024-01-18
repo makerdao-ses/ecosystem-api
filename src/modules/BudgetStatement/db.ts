@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+import { getOwnerFromBudgetPath } from "./schema/utils.js";
 
 export interface BudgetStatement {
   id: string;
@@ -131,6 +132,7 @@ export interface BudgetStatementFilter {
   status?: string;
   ownerCode?: string;
   mkrProgramLength?: number;
+  budgetPath?: string;
 }
 
 export interface BudgetStatementWalletFilter {
@@ -209,11 +211,17 @@ export class BudgetStatementModel {
       query = query.limit(filter.limit).offset(filter.offset);
     }
 
+    if (filter.filter?.budgetPath !== undefined) {
+      const { ownerType, ownerId } = await getOwnerFromBudgetPath(filter.filter.budgetPath, this.knex);
+      if (ownerType && ownerId) {
+        filter.filter.ownerType = ownerType;
+        filter.filter.ownerId = ownerId;
+      }
+    }
+
     if (filter.filter) {
       if (filter.filter.ownerType !== undefined) {
         query = query.where("ownerType", filter.filter.ownerType);
-      } else {
-        throw new Error("ownerType filter is required");
       }
 
       if (filter.filter.id !== undefined) {
