@@ -260,7 +260,7 @@ export class BudgetStatementModel {
       }
 
       if (filter.filter.status !== undefined) {
-        query = query.andWhere("status", filter.filter.status);
+        query = query.andWhere('status', 'in', filter.filter.status);
       }
 
       if (filter.filter.ownerCode !== undefined) {

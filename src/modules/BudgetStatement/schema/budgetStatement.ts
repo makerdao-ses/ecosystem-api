@@ -195,7 +195,7 @@ export const typeDefs = [
       ownerId: ID
       ownerType: BudgetOwner
       month: String
-      status: BudgetStatus
+      status: [BudgetStatus]
       ownerCode: String
       mkrProgramLength: Float
       budgetPath: String
