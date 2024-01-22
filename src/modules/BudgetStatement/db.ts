@@ -133,6 +133,7 @@ export interface BudgetStatementFilter {
   ownerCode?: string;
   mkrProgramLength?: number;
   budgetPath?: string;
+  lastModified?: boolean
 }
 
 export interface BudgetStatementWalletFilter {
@@ -197,6 +198,25 @@ export class BudgetStatementModel {
     this.authModel = authModel;
   }
 
+  async getAllBsEvents() {
+    const arr = await this.knex
+      .select(this.knex.raw("DISTINCT(params->>'budgetStatementId') as id"), "created_at")
+      .from("ChangeTrackingEvents")
+      .whereRaw("params->>'budgetStatementId' IS NOT NULL")
+      .orderBy("ChangeTrackingEvents.created_at", "desc");
+
+    const result = arr.reduce((acc, current) => {
+      const x = acc.find((item: any) => item.id === current.id);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        return acc;
+      }
+    }, []).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+    return result;
+  }
+
   async getBudgetStatements(filter: {
     limit?: number;
     offset?: number;
@@ -206,6 +226,9 @@ export class BudgetStatementModel {
       .select("*")
       .from("BudgetStatement")
       .orderBy("month", "desc");
+
+
+
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
       query = query.limit(filter.limit).offset(filter.offset);
@@ -249,7 +272,15 @@ export class BudgetStatementModel {
       }
     }
 
-    return query;
+    if (filter?.filter?.lastModified) {
+      const budgetStatementsIds = await this.getAllBsEvents();
+      const ids = budgetStatementsIds.map((item: any) => item.id);
+      query = query.whereIn("id", ids);
+      // sort result by last modified
+      query = query.orderByRaw(`position(id::text in '${ids.join(",")}')`);
+    }
+
+    return await query;
   }
 
   async getBSOwnerType(id: number | string) {

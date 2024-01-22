@@ -199,6 +199,7 @@ export const typeDefs = [
       ownerCode: String
       mkrProgramLength: Float
       budgetPath: String
+      lastModified: Boolean
     }
 
     enum BudgetOwner {
