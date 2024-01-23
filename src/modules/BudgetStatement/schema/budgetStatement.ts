@@ -192,8 +192,8 @@ export const typeDefs = [
 
     input BudgetStatementFilter {
       id: ID
-      ownerId: ID
-      ownerType: BudgetOwner
+      ownerId: [ID]
+      ownerType: [BudgetOwner]
       month: String
       status: [BudgetStatus]
       ownerCode: String
@@ -477,7 +477,7 @@ export const resolvers = {
         .where("id", id)
         .select("type");
       const result = await dataSources.db.BudgetStatement.getBudgetStatements({
-        filter: { ownerId: id, ownerType: output.type },
+        filter: { ownerId: [id], ownerType: [output.type] },
       });
       return result;
     },
@@ -490,7 +490,7 @@ export const resolvers = {
         .where("id", id)
         .select("type");
       const result = await dataSources.db.BudgetStatement.getBudgetStatements({
-        filter: { ownerId: id, ownerType: output.type },
+        filter: { ownerId: [id], ownerType: [output.type] },
       });
       return result;
     },
@@ -760,7 +760,7 @@ export const resolvers = {
               await dataSources.db.BudgetStatement.getBudgetStatements({
                 filter: {
                   id: wallet.budgetStatementId,
-                  ownerType: cuIdFromInput.ownerType,
+                  ownerType: [cuIdFromInput.ownerType],
                 },
               });
             if (
@@ -835,7 +835,7 @@ export const resolvers = {
               await dataSources.db.BudgetStatement.getBudgetStatements({
                 filter: {
                   id: wallet.budgetStatementId,
-                  ownerType: ownerTypeResult.ownerType,
+                  ownerType: [ownerTypeResult.ownerType],
                 },
               });
             if (
@@ -918,7 +918,7 @@ export const resolvers = {
               await dataSources.db.BudgetStatement.getBudgetStatements({
                 filter: {
                   id: wallet.budgetStatementId,
-                  ownerType: cuIdFromInput.ownerType,
+                  ownerType: [cuIdFromInput.ownerType],
                 },
               });
             if (
@@ -986,7 +986,7 @@ export const resolvers = {
               await dataSources.db.BudgetStatement.getBudgetStatements({
                 filter: {
                   id: wallet.budgetStatementId,
-                  ownerType: cuIdFromInput.ownerType,
+                  ownerType: [cuIdFromInput.ownerType],
                 },
               });
             if (
