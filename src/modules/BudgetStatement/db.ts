@@ -133,7 +133,7 @@ export interface BudgetStatementFilter {
   ownerCode?: string;
   mkrProgramLength?: number;
   budgetPath?: string;
-  sortyByLastModified?: boolean
+  sortyByLastModified?: string
   sortByMonth?: string
 }
 
@@ -235,13 +235,13 @@ export class BudgetStatementModel {
         .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
         .from("ChangeTrackingEvents")
         .whereRaw("params->>'budgetStatementId' IS NOT NULL")
-        .orderByRaw("(params->>'budgetStatementId')::integer, created_at DESC");
+        .orderByRaw(`(params->>'budgetStatementId')::integer, created_at ${filter?.filter?.sortyByLastModified.toUpperCase()}`);
 
       query = this.knex
         .select("BudgetStatement.*", "cte.created_at as last_modified")
         .from("BudgetStatement")
         .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
-        .orderBy('last_modified', 'desc');
+        .orderBy('last_modified', `${filter?.filter?.sortyByLastModified}`);
     }
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {

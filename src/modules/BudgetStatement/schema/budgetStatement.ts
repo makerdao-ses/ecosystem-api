@@ -199,11 +199,11 @@ export const typeDefs = [
       ownerCode: String
       mkrProgramLength: Float
       budgetPath: String
-      sortyByLastModified: Boolean
-      sortByMonth: MonthSort
+      sortyByLastModified: ASC_DESC_SORT
+      sortByMonth: ASC_DESC_SORT
     }
 
-    enum MonthSort {
+    enum ASC_DESC_SORT{
       asc
       desc
     }
