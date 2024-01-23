@@ -1,4 +1,5 @@
 import { Knex } from "knex";
+import { getOwnerFromBudgetPath } from "./schema/utils.js";
 
 export interface BudgetStatement {
   id: string;
@@ -131,6 +132,8 @@ export interface BudgetStatementFilter {
   status?: string;
   ownerCode?: string;
   mkrProgramLength?: number;
+  budgetPath?: string;
+  sortyByLastModified?: boolean
 }
 
 export interface BudgetStatementWalletFilter {
@@ -194,6 +197,21 @@ export class BudgetStatementModel {
     this.coreUnitModel = coreUnitModel;
     this.authModel = authModel;
   }
+  async getLatestModifiedBudgetStatements() {
+    const subquery = this.knex
+      .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
+      .from("ChangeTrackingEvents")
+      .whereRaw("params->>'budgetStatementId' IS NOT NULL")
+      .orderByRaw("(params->>'budgetStatementId')::integer, created_at DESC");
+
+    const query = this.knex
+      .select("BudgetStatement.*", "cte.created_at as last_modified")
+      .from("BudgetStatement")
+      .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
+      .orderBy('last_modified', 'desc');
+
+    return await query;
+  }
 
   async getBudgetStatements(filter: {
     limit?: number;
@@ -205,15 +223,36 @@ export class BudgetStatementModel {
       .from("BudgetStatement")
       .orderBy("month", "desc");
 
+    // use other join query if lastModified filter is set
+    if (filter?.filter?.sortyByLastModified) {
+      const subquery = this.knex
+        .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
+        .from("ChangeTrackingEvents")
+        .whereRaw("params->>'budgetStatementId' IS NOT NULL")
+        .orderByRaw("(params->>'budgetStatementId')::integer, created_at DESC");
+
+      query = this.knex
+        .select("BudgetStatement.*", "cte.created_at as last_modified")
+        .from("BudgetStatement")
+        .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
+        .orderBy('last_modified', 'desc');
+    }
+
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
       query = query.limit(filter.limit).offset(filter.offset);
     }
 
+    if (filter.filter?.budgetPath !== undefined) {
+      const { ownerType, ownerId } = await getOwnerFromBudgetPath(filter.filter.budgetPath, this.knex);
+      if (ownerType && ownerId) {
+        filter.filter.ownerType = [ownerType] as any;
+        filter.filter.ownerId = [ownerId] as any;
+      }
+    }
+
     if (filter.filter) {
       if (filter.filter.ownerType !== undefined) {
-        query = query.where("ownerType", filter.filter.ownerType);
-      } else {
-        throw new Error("ownerType filter is required");
+        query = query.where("ownerType", 'in', filter.filter.ownerType);
       }
 
       if (filter.filter.id !== undefined) {
@@ -221,7 +260,7 @@ export class BudgetStatementModel {
       }
 
       if (filter.filter.ownerId !== undefined) {
-        query = query.andWhere("ownerId", filter.filter.ownerId);
+        query = query.andWhere("ownerId", 'in', filter.filter.ownerId);
       }
 
       if (filter.filter.month !== undefined) {
@@ -229,7 +268,7 @@ export class BudgetStatementModel {
       }
 
       if (filter.filter.status !== undefined) {
-        query = query.andWhere("status", filter.filter.status);
+        query = query.andWhere('status', 'in', filter.filter.status);
       }
 
       if (filter.filter.ownerCode !== undefined) {
@@ -241,7 +280,7 @@ export class BudgetStatementModel {
       }
     }
 
-    return query;
+    return await query;
   }
 
   async getBSOwnerType(id: number | string) {
