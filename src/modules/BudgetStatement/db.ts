@@ -133,7 +133,7 @@ export interface BudgetStatementFilter {
   ownerCode?: string;
   mkrProgramLength?: number;
   budgetPath?: string;
-  lastModified?: boolean
+  sortyByLastModified?: boolean
 }
 
 export interface BudgetStatementWalletFilter {
@@ -224,7 +224,7 @@ export class BudgetStatementModel {
       .orderBy("month", "desc");
 
     // use other join query if lastModified filter is set
-    if (filter?.filter?.lastModified) {
+    if (filter?.filter?.sortyByLastModified) {
       const subquery = this.knex
         .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
         .from("ChangeTrackingEvents")
@@ -245,8 +245,8 @@ export class BudgetStatementModel {
     if (filter.filter?.budgetPath !== undefined) {
       const { ownerType, ownerId } = await getOwnerFromBudgetPath(filter.filter.budgetPath, this.knex);
       if (ownerType && ownerId) {
-        filter.filter.ownerType = ownerType;
-        filter.filter.ownerId = ownerId;
+        filter.filter.ownerType = [ownerType] as any;
+        filter.filter.ownerId = [ownerId] as any;
       }
     }
 
