@@ -197,24 +197,20 @@ export class BudgetStatementModel {
     this.coreUnitModel = coreUnitModel;
     this.authModel = authModel;
   }
-
-  async getAllBsEvents() {
-    const arr = await this.knex
-      .select(this.knex.raw("DISTINCT(params->>'budgetStatementId') as id"), "created_at")
+  async getLatestModifiedBudgetStatements() {
+    const subquery = this.knex
+      .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
       .from("ChangeTrackingEvents")
       .whereRaw("params->>'budgetStatementId' IS NOT NULL")
-      .orderBy("ChangeTrackingEvents.created_at", "desc");
+      .orderByRaw("(params->>'budgetStatementId')::integer, created_at DESC");
 
-    const result = arr.reduce((acc, current) => {
-      const x = acc.find((item: any) => item.id === current.id);
-      if (!x) {
-        return acc.concat([current]);
-      } else {
-        return acc;
-      }
-    }, []).sort((a: any, b: any) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    const query = this.knex
+      .select("BudgetStatement.*", "cte.created_at as last_modified")
+      .from("BudgetStatement")
+      .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
+      .orderBy('last_modified', 'desc');
 
-    return result;
+    return await query;
   }
 
   async getBudgetStatements(filter: {
@@ -227,8 +223,20 @@ export class BudgetStatementModel {
       .from("BudgetStatement")
       .orderBy("month", "desc");
 
+    // use other join query if lastModified filter is set
+    if (filter?.filter?.lastModified) {
+      const subquery = this.knex
+        .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
+        .from("ChangeTrackingEvents")
+        .whereRaw("params->>'budgetStatementId' IS NOT NULL")
+        .orderByRaw("(params->>'budgetStatementId')::integer, created_at DESC");
 
-
+      query = this.knex
+        .select("BudgetStatement.*", "cte.created_at as last_modified")
+        .from("BudgetStatement")
+        .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
+        .orderBy('last_modified', 'desc');
+    }
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
       query = query.limit(filter.limit).offset(filter.offset);
@@ -244,7 +252,7 @@ export class BudgetStatementModel {
 
     if (filter.filter) {
       if (filter.filter.ownerType !== undefined) {
-        query = query.where("ownerType", filter.filter.ownerType);
+        query = query.where("ownerType", 'in', filter.filter.ownerType);
       }
 
       if (filter.filter.id !== undefined) {
@@ -252,7 +260,7 @@ export class BudgetStatementModel {
       }
 
       if (filter.filter.ownerId !== undefined) {
-        query = query.andWhere("ownerId", filter.filter.ownerId);
+        query = query.andWhere("ownerId", 'in', filter.filter.ownerId);
       }
 
       if (filter.filter.month !== undefined) {
@@ -270,14 +278,6 @@ export class BudgetStatementModel {
       if (filter.filter.mkrProgramLength !== undefined) {
         query = query.andWhere("mkrProgramLength", filter.filter.mkrProgramLength);
       }
-    }
-
-    if (filter?.filter?.lastModified) {
-      const budgetStatementsIds = await this.getAllBsEvents();
-      const ids = budgetStatementsIds.map((item: any) => item.id);
-      query = query.whereIn("id", ids);
-      // sort result by last modified
-      query = query.orderByRaw(`position(id::text in '${ids.join(",")}')`);
     }
 
     return await query;
