@@ -200,6 +200,12 @@ export const typeDefs = [
       mkrProgramLength: Float
       budgetPath: String
       sortyByLastModified: Boolean
+      sortByMonth: MonthSort
+    }
+
+    enum MonthSort {
+      asc
+      desc
     }
 
     enum BudgetOwner {

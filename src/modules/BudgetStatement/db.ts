@@ -134,6 +134,7 @@ export interface BudgetStatementFilter {
   mkrProgramLength?: number;
   budgetPath?: string;
   sortyByLastModified?: boolean
+  sortByMonth?: string
 }
 
 export interface BudgetStatementWalletFilter {
@@ -221,7 +222,12 @@ export class BudgetStatementModel {
     let query = this.knex
       .select("*")
       .from("BudgetStatement")
-      .orderBy("month", "desc");
+
+    if (filter?.filter?.sortByMonth !== undefined) {
+      query = query.orderBy('month', filter.filter.sortByMonth)
+    } else {
+      query = query.orderBy("month", "desc");
+    }
 
     // use other join query if lastModified filter is set
     if (filter?.filter?.sortyByLastModified) {
@@ -278,6 +284,8 @@ export class BudgetStatementModel {
       if (filter.filter.mkrProgramLength !== undefined) {
         query = query.andWhere("mkrProgramLength", filter.filter.mkrProgramLength);
       }
+
+
     }
 
     return await query;
