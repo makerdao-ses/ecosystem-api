@@ -133,7 +133,7 @@ export interface BudgetStatementFilter {
   ownerCode?: string;
   mkrProgramLength?: number;
   budgetPath?: string;
-  sortyByLastModified?: string
+  sortByLastModified?: string
   sortByMonth?: string
 }
 
@@ -230,18 +230,18 @@ export class BudgetStatementModel {
     }
 
     // use other join query if lastModified filter is set
-    if (filter?.filter?.sortyByLastModified) {
+    if (filter?.filter?.sortByLastModified) {
       const subquery = this.knex
         .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
         .from("ChangeTrackingEvents")
         .whereRaw("params->>'budgetStatementId' IS NOT NULL")
-        .orderByRaw(`(params->>'budgetStatementId')::integer, created_at ${filter?.filter?.sortyByLastModified.toUpperCase()}`);
+        .orderByRaw(`(params->>'budgetStatementId')::integer, created_at ${filter?.filter?.sortByLastModified.toUpperCase()}`);
 
       query = this.knex
         .select("BudgetStatement.*", "cte.created_at as last_modified")
         .from("BudgetStatement")
         .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
-        .orderBy('last_modified', `${filter?.filter?.sortyByLastModified}`);
+        .orderBy('last_modified', `${filter?.filter?.sortByLastModified}`);
     }
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {

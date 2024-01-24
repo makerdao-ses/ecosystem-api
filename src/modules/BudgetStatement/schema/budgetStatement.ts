@@ -199,7 +199,7 @@ export const typeDefs = [
       ownerCode: String
       mkrProgramLength: Float
       budgetPath: String
-      sortyByLastModified: ASC_DESC_SORT
+      sortByLastModified: ASC_DESC_SORT
       sortByMonth: ASC_DESC_SORT
     }
 
