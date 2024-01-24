@@ -108,6 +108,15 @@ export default [
     Address: "0x3d274fbac29c92d2f624483495c0113b44dbe7d2",
   },
   {
+    Name: "Content Production Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "core-units",
+    "budget path 3": "MKT-001",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0x6A0Ce7dBb43Fe537E3Fd0Be12dc1882393895237",
+  },
+  {
     Name: "RWF-001 Auditor Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "core-units",
