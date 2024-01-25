@@ -62,8 +62,8 @@ export class BudgetStatementAuthModel {
         const [budgetStatement] = await this.bsModel.getBudgetStatements({
           filter: {
             id: input.budgetStatementId,
-            ownerType: ownerTypeResult.ownerType,
-          },
+            ownerType: [ownerTypeResult.ownerType],
+          } as any,
         });
 
         // returning error if no comment or same status
@@ -238,7 +238,7 @@ const createBudgetStatementCommentEvent = async (
   ownerType: string,
 ) => {
   const [budgetStatement] = await bsModel.getBudgetStatements({
-    filter: { id: parsedComment.budgetStatementId, ownerType },
+    filter: { id: parsedComment.budgetStatementId, ownerType: [ownerType] as any },
   });
   let CU;
   if (ownerType === "Delegates") {
@@ -281,9 +281,8 @@ const getEventDescription = (
   ownerType: string,
 ) => {
   if (oldStatus === newStatus) {
-    return `${author.username} commented on the ${
-      ownerType === "Delegates" ? "Delegates" : CU.code
-    } ${month} Expense Report`;
+    return `${author.username} commented on the ${ownerType === "Delegates" ? "Delegates" : CU.code
+      } ${month} Expense Report`;
   }
   // Initial status is Draft
   if (oldStatus === "Draft" && newStatus === "Review") {

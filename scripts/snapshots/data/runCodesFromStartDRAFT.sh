@@ -1,12 +1,43 @@
 #!/bin/bash
 
-ecosystem_codes=(
+codes=(
+  "core-units/GOV-001"
   "core-units/SES-001"
+  "core-units/SAS-001"
+  "core-units/IS-001"
+  "core-units/RWF-001"
+  "core-units/GRO-001"
+  "core-units/ORA-001"
+  "core-units/COM-001"
+  "core-units/DAIF-001"
+  "core-units/SH-001"
+  "core-units/DUX-001"
+  "core-units/SNE-001"
+  "core-units/DIN-001"
+  "core-units/DECO-001"
+  "core-units/SF-001"
+  "core-units/TECH-001"
+  "core-units/EVENTS-001"
+  "core-units/CES-001"
+  "core-units/PE-001"
+  "core-units/RISK-001"
+  "delegates"
+  "spfs"
+  "ecosystem-actors/BA-LABS"
+  "ecosystem-actors/CHRONICLE"
+  "ecosystem-actors/DEWIZ"
+  "ecosystem-actors/JETSTREAM"
+  "ecosystem-actors/PHOENIX"
+  "ecosystem-actors/PULLUP"
+  "ecosystem-actors/SIDESTREAM"
+  "ecosystem-actors/TECHOPS"
+  "ecosystem-actors/VIRIDIAN"
+  "keepers"
 )
 
 # Define the start and end dates (in year/month format)
-start_date="2023/03"
-end_date="2023/12"
+start_date="2023/10"
+end_date="2024/01"
 
 # Helper function to increment the date by one month
 increment_date() {
@@ -33,22 +64,11 @@ is_after_or_equal_start_date() {
 }
 
 # Run the ecosystem actors codes only from April 2023 onwards
-for code in "${cu_codes[@]}"; do
-  current_date="2023/04"
-  while [[ "$current_date" != "$end_date" ]]; do
-    node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$current_date"
-    current_date=$(increment_date "$current_date")  # Update current_date using the function
-  done
-  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$end_date"
-done
-
-
-# Run the ecosystem actors codes only from April 2023 onwards
-for code in "${ecosystem_codes[@]}"; do
+for code in "${codes[@]}"; do
   current_date="$start_date"
   while [[ "$current_date" != "$end_date" ]]; do
     node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$current_date"
     current_date=$(increment_date "$current_date")  # Update current_date using the function
   done
-  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$end_date" 17017663
+  node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$end_date"
 done
