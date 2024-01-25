@@ -150,6 +150,7 @@ const getMonthInfo = (owner, month, endBlockNo) => {
       .slice(0, 7)
       .replace("-", "/");
     const endBlockNumber = blockNumbers[nextMonth];
+    console.log("NEXT MONTH ", nextMonth);
     console.log("END BLOCK NUMBER ", endBlockNumber);
     console.log("END BLOCK NUMBER GIVEN", endBlockNo);
 
@@ -195,17 +196,11 @@ function getStartAndEndDates(month) {
 function convertMonthStringToDate(monthString, addMonths = 0) {
   // Split the month string into year and month parts
   let [year, month] = monthString.split("/");
-  let date;
+  // Convert month to zero-based index
+  month = parseInt(month, 10) - 1;
 
   // Create a new Date object with the year and month values
-  if (month >= 9) {
-    date = new Date(year, parseInt(month) + addMonths, -1);
-  } else if (month === "01") {
-    date = new Date(year, parseInt(month) - 1 + addMonths, 1);
-  } else {
-    month = parseInt(month, 10);
-    date = new Date(year, parseInt(month) + addMonths, 1);
-  }
+  let date = new Date(year, month + addMonths, 1);
 
   return date;
 }
