@@ -44,6 +44,7 @@ const ownerMapping = {
     21: "blockNumbersDRAFT",
     22: "blockNumbersTECHCU",
     38: "blockNumbersDRAFT",
+    66: "blockNumbersDRAFT",
   },
   EcosystemActor: {
     44: "blockNumbersDRAFT",
