@@ -65,6 +65,8 @@ const ownerMapping = {
     59: "blockNumbersSIDESTREAM",
     60: "blockNumbersTECHEA",
     61: "blockNumbersDRAFT",
+    64: "blockNumbersDRAFT",
+    65: "blockNumbersDRAFT",
   },
   Delegates: {
     null: "blockNumbersDELEGATES",
