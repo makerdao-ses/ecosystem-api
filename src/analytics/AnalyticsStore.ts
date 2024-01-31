@@ -183,7 +183,7 @@ export class AnalyticsStore {
       baseQuery.select(this._buildDimensionQuery(dimension));
     }
 
-    if (units) {
+    if (units && units[0] !== '') {
       baseQuery.whereIn("unit", units);
     }
 
