@@ -104,7 +104,7 @@ export class SnapshotModel {
   async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
     if (months.length < 1) return [];
     const analytics = await this.getAnalytics(months[months.length - 1], snapShotEnd, ownerType, ownerId);
-    // console.log('analytics', analytics)
+    if (analytics.length < 1) return [];
     return months.map((month) => ({
       month,
       currency: "DAI",
@@ -164,8 +164,9 @@ export class SnapshotModel {
     const queryEngine = this.analyticsModel
     const results = await queryEngine.query(filter);
 
+    if (!results || results.length < 1) return [];
 
-    const result: any = results[0].rows.reduce((acc: any, r: any) => {
+    const result: any = results[0]?.rows.reduce((acc: any, r: any) => {
       const period = r.dimensions.report.path.split('/').slice(-2).join('/'); // Extracts '2023/07' from 'atlas/CoreUnit/1/2023/07'
       if (!acc[period]) {
         acc[period] = {
