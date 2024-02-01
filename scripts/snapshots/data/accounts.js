@@ -1017,6 +1017,15 @@ export default [
     Address: "0x2dc0420a736d1f40893b9481d8968e4d7424bc0b",
   },
   {
+    Name: "Ecosystem Operational Wallet",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "ECO",
+    "budget path 4": "",
+    Type: "Auditor",
+    Address: "0xfca6e196c2ad557e64d9397e283c2afe57344b75",
+  },
+  {
     Name: "Viridian Protector Advisory Company Auditor",
     "budget path 1": "makerdao",
     "budget path 2": "ecosystem-actors",
