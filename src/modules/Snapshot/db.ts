@@ -103,27 +103,23 @@ export class SnapshotModel {
 
   async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
     if (months.length < 1) return [];
-
-    const monthsToReturn = await Promise.all(months.map(async (month: string) => {
-      const monthAnalytics = await this.getAnalytics(month, ownerType, ownerId);
-      return {
-        month,
-        currency: "DAI",
-        reportedActuals: monthAnalytics[0]?.actuals,
-        netExpenses: {
-          onChainOnly: {
-            amount: this.convertToPositive(monthAnalytics[0]?.paymentsOnChain),
-            difference: this.calcDifference(monthAnalytics[0]?.paymentsOnChain, monthAnalytics[0]?.actuals),
-          },
-          offChainIncluded: {
-            amount: this.convertToPositive(monthAnalytics[0]?.paymentsOffChain),
-            difference: this.calcDifference(monthAnalytics[0]?.paymentsOffChain, monthAnalytics[0]?.actuals),
-          },
+    const analytics = await this.getAnalytics(months[months.length - 1], snapShotEnd, ownerType, ownerId);
+    // console.log('analytics', analytics)
+    return months.map((month) => ({
+      month,
+      currency: "DAI",
+      reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
+      netExpenses: {
+        onChainOnly: {
+          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOnChain),
+          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
         },
-      }
+        offChainIncluded: {
+          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOffChain),
+          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOffChain, analytics.find((a: any) => a.period == month)?.actuals),
+        },
+      },
     }));
-
-    return monthsToReturn;
   }
 
   async getSnapshotAccounts(snapshotId: number | string) {
@@ -148,15 +144,19 @@ export class SnapshotModel {
       .where("snapshotAccountId", snapshotAccountId);
   }
 
-  async getAnalytics(reportMonth: string, ownerType: string, ownerId: number) {
+  async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
+
+    const endDate = new Date(end);
+    endDate.setMonth(endDate.getMonth() + 1);
+    end = endDate.toISOString().slice(0, 7);
 
     const filter = {
-      start: "2020/01",
-      end: "2100/01",
+      start,
+      end: end,
       granularity: 'total',
       metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
       dimensions: [
-        { name: 'report', select: `atlas/${ownerType}/${ownerId}/${reportMonth}`, lod: 5 }
+        { name: 'report', select: `atlas/${ownerType}/${ownerId}`, lod: 5 }
       ],
       currency: 'DAI'
     }
@@ -164,14 +164,26 @@ export class SnapshotModel {
     const queryEngine = this.analyticsModel
     const results = await queryEngine.query(filter);
 
-    const result = results.map((s: any) => ({
-      period: reportMonth,
-      actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
-      paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
-      paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
-    }));
 
-    return result;
+    const result: any = results[0].rows.reduce((acc: any, r: any) => {
+      const period = r.dimensions.report.path.split('/').slice(-2).join('/'); // Extracts '2023/07' from 'atlas/CoreUnit/1/2023/07'
+      if (!acc[period]) {
+        acc[period] = {
+          period,
+          actuals: null,
+          paymentsOnChain: null,
+          paymentsOffChain: null,
+        };
+      }
+      if (r.metric == 'Actuals') acc[period].actuals = r.value;
+      if (r.metric == 'PaymentsOnChain') acc[period].paymentsOnChain = r.value;
+      if (r.metric == 'PaymentsOffChainIncluded') acc[period].paymentsOffChain = r.value;
+      return acc;
+    }, {});
+
+    const finalResult: any = Object.values(result);
+
+    return finalResult;
   }
 
   calcDifference = (a: number, b: number) => {
