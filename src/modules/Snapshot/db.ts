@@ -103,22 +103,27 @@ export class SnapshotModel {
 
   async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
     if (months.length < 1) return [];
-    const analytics = await this.getAnalytics(months[months.length -1], snapShotEnd, ownerType, ownerId)
-    return months.map((month) => ({
-      month,
-      currency: "DAI",
-      reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
-      netExpenses: {
-        onChainOnly: {
-          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOnChain),
-          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
+
+    const monthsToReturn = await Promise.all(months.map(async (month: string) => {
+      const monthAnalytics = await this.getAnalytics(month, ownerType, ownerId);
+      return {
+        month,
+        currency: "DAI",
+        reportedActuals: monthAnalytics[0].actuals,
+        netExpenses: {
+          onChainOnly: {
+            amount: this.convertToPositive(monthAnalytics[0]?.paymentsOnChain),
+            difference: this.calcDifference(monthAnalytics[0]?.paymentsOnChain, monthAnalytics[0]?.actuals),
+          },
+          offChainIncluded: {
+            amount: this.convertToPositive(monthAnalytics[0]?.paymentsOffChain),
+            difference: this.calcDifference(monthAnalytics[0]?.paymentsOffChain, monthAnalytics[0]?.actuals),
+          },
         },
-        offChainIncluded: {
-          amount: this.convertToPositive(analytics.find((a: any) => a.period == month)?.paymentsOffChain),
-          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOffChain, analytics.find((a: any) => a.period == month)?.actuals),
-        },
-      },
+      }
     }));
+
+    return monthsToReturn;
   }
 
   async getSnapshotAccounts(snapshotId: number | string) {
@@ -143,16 +148,13 @@ export class SnapshotModel {
       .where("snapshotAccountId", snapshotAccountId);
   }
 
-  async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
-    const path = await this.getPath(ownerType, ownerId);
+  async getAnalytics(reportMonth: string, ownerType: string, ownerId: number) {
 
     const filter = {
-      start,
-      end: end,
-      granularity: 'monthly',
+      granularity: 'total',
       metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
       dimensions: [
-        { name: 'budget', select: path, lod: 5 }
+        { name: 'report', select: `atlas/${ownerType}/${ownerId}/${reportMonth}`, lod: 5 }
       ],
       currency: 'DAI'
     }
@@ -161,11 +163,12 @@ export class SnapshotModel {
     const results = await queryEngine.query(filter);
 
     const result = results.map((s: any) => ({
-      period: s.period,
+      period: reportMonth,
       actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
       paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
       paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
-    }))
+    }));
+
     return result;
   }
 

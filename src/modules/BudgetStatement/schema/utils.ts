@@ -8,7 +8,7 @@ export const convertDate = (dateString: string) => {
     return formattedDate;
 };
 
-export const getAnalyticsActuals = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+export const getAnalyticsActuals = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
 
     const filter = {
         start: "2020/01",
@@ -16,7 +16,7 @@ export const getAnalyticsActuals = async (queryEngine: any, monthAndDay: string,
         granularity: 'total',
         metrics: ['Actuals'],
         dimensions: [
-            { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+            { name: 'report', select: `atlas/${ownerType}/${teamId}/${yearMonth}`, lod: 5 }
         ],
         currency: 'DAI'
     }
@@ -28,7 +28,7 @@ export const getAnalyticsActuals = async (queryEngine: any, monthAndDay: string,
     return result;
 }
 
-export const getAnalyticsForecast = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+export const getAnalyticsForecast = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
 
     const filter = {
         start: "2020/01",
@@ -36,7 +36,7 @@ export const getAnalyticsForecast = async (queryEngine: any, monthAndDay: string
         granularity: 'total',
         metrics: ['Forecast'],
         dimensions: [
-            { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+            { name: 'report', select: `atlas/${ownerType}/${teamId}/${yearMonth}`, lod: 5 }
         ],
         currency: 'DAI'
     }
@@ -48,7 +48,7 @@ export const getAnalyticsForecast = async (queryEngine: any, monthAndDay: string
     return result;
 }
 
-export const getAnalyticsOnChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+export const getAnalyticsOnChain = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
 
     const filter = {
         start: "2020/01",
@@ -56,7 +56,7 @@ export const getAnalyticsOnChain = async (queryEngine: any, monthAndDay: string,
         granularity: 'total',
         metrics: ['PaymentsOnChain'],
         dimensions: [
-            { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+            { name: 'report', select: `atlas/${ownerType}/${teamId}/${yearMonth}`, lod: 5 }
         ],
         currency: 'DAI'
     }
@@ -68,7 +68,28 @@ export const getAnalyticsOnChain = async (queryEngine: any, monthAndDay: string,
     return result;
 }
 
-export const getAnalyticsOffChain = async (queryEngine: any, monthAndDay: string, ownerType: string, teamId: number) => {
+export const getAnalyticsNetOutflow = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+
+    const filter = {
+        start: "2020/01",
+        end: "2100/01",
+        granularity: 'total',
+        metrics: ['ProtocolNetOutflow'],
+        dimensions: [
+            { name: 'report', select: `atlas/${ownerType}/${teamId}/${yearMonth}`, lod: 5 }
+        ],
+        currency: 'DAI'
+    }
+    const results = await queryEngine.query(filter);
+
+    const result = results.map((s: any) => ({
+        netProtocolOutflow: s.rows.find((r: any) => r.metric == 'ProtocolNetOutflow')?.value,
+    }))
+    return result;
+}
+
+
+export const getAnalyticsOffChain = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
 
     const filter = {
         start: "2020/01",
@@ -76,7 +97,7 @@ export const getAnalyticsOffChain = async (queryEngine: any, monthAndDay: string
         granularity: 'total',
         metrics: ['PaymentsOffChainIncluded'],
         dimensions: [
-            { name: 'report', select: `atlas/${ownerType}/${teamId}/${monthAndDay}`, lod: 5 }
+            { name: 'report', select: `atlas/${ownerType}/${teamId}/${yearMonth}`, lod: 5 }
         ],
         currency: 'DAI'
     }

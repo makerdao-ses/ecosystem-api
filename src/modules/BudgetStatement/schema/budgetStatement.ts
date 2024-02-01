@@ -5,6 +5,7 @@ import {
   getAnalyticsForecast,
   getAnalyticsOnChain,
   getAnalyticsOffChain,
+  getAnalyticsNetOutflow
 } from "./utils.js";
 
 export const typeDefs = [
@@ -30,6 +31,7 @@ export const typeDefs = [
       actualExpenses: Float
       paymentsOnChain: Float
       paymentsOffChain: Float
+      netProtocolOutflow: Float
       activityFeed: [ChangeTrackingEvent]
       auditReport: [AuditReport]
       "Number of full-time employees in the corresponding budget statement"
@@ -592,6 +594,13 @@ export const resolvers = {
       const convertedMonth = convertDate(month);
       const analytics = await getAnalyticsOffChain(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.paymentsOffChain;
+    },
+    netProtocolOutflow: async (parent: any, __: any, { dataSources }: any) => {
+      const { ownerId, ownerType, month } = parent;
+      const queryEngine = dataSources.db.Analytics;
+      const convertedMonth = convertDate(month);
+      const analytics = await getAnalyticsNetOutflow(queryEngine, convertedMonth, ownerType, ownerId);
+      return analytics[0]?.netProtocolOutflow;
     }
   },
   BudgetStatementWallet: {
