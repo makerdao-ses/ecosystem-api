@@ -172,27 +172,6 @@ export class SnapshotModel {
     return result;
   }
 
-  private getPath = async (ownerType: string, ownerId: number | null) => {
-    switch (ownerType) {
-      case 'CoreUnit':
-        const team = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
-        return `atlas/legacy/core-units/${team[0].code}`;
-      case 'Delegates':
-        return 'atlas/legacy/recognized-delegates';
-      case 'EcosystemActor':
-        const teamCode = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
-        return `atlas/scopes/SUP/incubation/${teamCode[0].code}`;
-      case 'Keepers':
-        return 'atlas/legacy/keespers';
-      case 'SpecialPurposeFund':
-        return 'atlas/legacy/spfs';
-      case 'AlignedDelegates':
-        return 'atlas/immutable/ads';
-      default:
-        return 'atlas/core-units';
-    }
-  };
-
   calcDifference = (a: number, b: number) => {
     if (!a || !b) return 0;
     return (Math.abs(a) / Math.abs(b)) - 1;
