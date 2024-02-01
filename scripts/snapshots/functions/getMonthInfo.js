@@ -44,6 +44,7 @@ const ownerMapping = {
     21: "blockNumbersDRAFT",
     22: "blockNumbersTECHCU",
     38: "blockNumbersDRAFT",
+    66: "blockNumbersDRAFT",
   },
   EcosystemActor: {
     44: "blockNumbersDRAFT",
@@ -64,6 +65,8 @@ const ownerMapping = {
     59: "blockNumbersSIDESTREAM",
     60: "blockNumbersTECHEA",
     61: "blockNumbersDRAFT",
+    64: "blockNumbersDRAFT",
+    65: "blockNumbersDRAFT",
   },
   Delegates: {
     null: "blockNumbersDELEGATES",

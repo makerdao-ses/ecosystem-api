@@ -103,9 +103,9 @@ const cuMipTable = async (data) => {
     ) {
       var mipDict = {};
       var cuCode = cuCodeParse(data["items"][i]["tags"]);
-      for (var j = 0; j < cuTableLength - 1; j++) {
+      for (var j = 0; j < cuTableLength; j++) {
         if (cuCode == cuTable[j].code.toLowerCase()) {
-          cuId = cuTable[j].id;
+          cuId = cuTable[j].id;          
         }
       }
 

@@ -113,7 +113,7 @@ const getCurrency = (currency: string | undefined) => {
       return AnalyticsPath.fromString("MKR");
     }
     default: {
-      return AnalyticsPath.fromString("DAI");
+      return AnalyticsPath.fromString("");
     }
   }
 };

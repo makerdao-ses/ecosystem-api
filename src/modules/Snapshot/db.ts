@@ -103,7 +103,8 @@ export class SnapshotModel {
 
   async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
     if (months.length < 1) return [];
-    const analytics = await this.getAnalytics(months[months.length -1], snapShotEnd, ownerType, ownerId)
+    const analytics = await this.getAnalytics(months[months.length - 1], snapShotEnd, ownerType, ownerId);
+    if (analytics.length < 1) return [];
     return months.map((month) => ({
       month,
       currency: "DAI",
@@ -144,15 +145,18 @@ export class SnapshotModel {
   }
 
   async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
-    const path = await this.getPath(ownerType, ownerId);
+
+    const endDate = new Date(end);
+    endDate.setMonth(endDate.getMonth() + 1);
+    end = endDate.toISOString().slice(0, 7);
 
     const filter = {
       start,
       end: end,
-      granularity: 'monthly',
+      granularity: 'total',
       metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
       dimensions: [
-        { name: 'budget', select: path, lod: 5 }
+        { name: 'report', select: `atlas/${ownerType}/${ownerId}`, lod: 5 }
       ],
       currency: 'DAI'
     }
@@ -160,35 +164,28 @@ export class SnapshotModel {
     const queryEngine = this.analyticsModel
     const results = await queryEngine.query(filter);
 
-    const result = results.map((s: any) => ({
-      period: s.period,
-      actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
-      paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
-      paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,
-    }))
-    return result;
-  }
+    if (!results || results.length < 1) return [];
 
-  private getPath = async (ownerType: string, ownerId: number | null) => {
-    switch (ownerType) {
-      case 'CoreUnit':
-        const team = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
-        return `atlas/legacy/core-units/${team[0].code}`;
-      case 'Delegates':
-        return 'atlas/legacy/recognized-delegates';
-      case 'EcosystemActor':
-        const teamCode = await this.coreunit.getTeams({ filter: { id: ownerId, type: ownerType } });
-        return `atlas/scopes/SUP/incubation/${teamCode[0].code}`;
-      case 'Keepers':
-        return 'atlas/legacy/keespers';
-      case 'SpecialPurposeFund':
-        return 'atlas/legacy/spfs';
-      case 'AlignedDelegates':
-        return 'atlas/immutable/ads';
-      default:
-        return 'atlas/core-units';
-    }
-  };
+    const result: any = results[0]?.rows.reduce((acc: any, r: any) => {
+      const period = r.dimensions.report.path.split('/').slice(-2).join('/'); // Extracts '2023/07' from 'atlas/CoreUnit/1/2023/07'
+      if (!acc[period]) {
+        acc[period] = {
+          period,
+          actuals: null,
+          paymentsOnChain: null,
+          paymentsOffChain: null,
+        };
+      }
+      if (r.metric == 'Actuals') acc[period].actuals = r.value;
+      if (r.metric == 'PaymentsOnChain') acc[period].paymentsOnChain = r.value;
+      if (r.metric == 'PaymentsOffChainIncluded') acc[period].paymentsOffChain = r.value;
+      return acc;
+    }, {});
+
+    const finalResult: any = Object.values(result);
+
+    return finalResult;
+  }
 
   calcDifference = (a: number, b: number) => {
     if (!a || !b) return 0;
