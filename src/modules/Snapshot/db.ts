@@ -109,7 +109,7 @@ export class SnapshotModel {
       return {
         month,
         currency: "DAI",
-        reportedActuals: monthAnalytics[0].actuals,
+        reportedActuals: monthAnalytics[0]?.actuals,
         netExpenses: {
           onChainOnly: {
             amount: this.convertToPositive(monthAnalytics[0]?.paymentsOnChain),
@@ -151,6 +151,8 @@ export class SnapshotModel {
   async getAnalytics(reportMonth: string, ownerType: string, ownerId: number) {
 
     const filter = {
+      start: "2020/01",
+      end: "2100/01",
       granularity: 'total',
       metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
       dimensions: [
