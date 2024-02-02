@@ -2,9 +2,40 @@
 
 # Define the list of codes
 codes=(
-  
+  "core-units/GOV-001"
+  "core-units/SES-001"
+  "core-units/SAS-001"
+  "core-units/IS-001"
+  "core-units/RWF-001"
+  "core-units/GRO-001"
+  "core-units/ORA-001"
+  "core-units/COM-001"
+  "core-units/DAIF-001"
+  "core-units/SH-001"
+  "core-units/DUX-001"
+  "core-units/SNE-001"
+  "core-units/DIN-001"
+  "core-units/DECO-001"
+  "core-units/SF-001"
+  "core-units/TECH-001"
+  "core-units/EVENTS-001"
+  "core-units/CES-001"
+  "core-units/PE-001"
+  "core-units/RISK-001"
+  "delegates"
+  "spfs"
+  "ecosystem-actors/BA-LABS"
+  "ecosystem-actors/CHRONICLE"
+  "ecosystem-actors/DEWIZ"
+  "ecosystem-actors/JETSTREAM"
+  "ecosystem-actors/PHOENIX"
+  "ecosystem-actors/PULLUP"
+  "ecosystem-actors/SIDESTREAM"
+  "ecosystem-actors/TECHOPS"
   "ecosystem-actors/VIRIDIAN"
+  "keepers"
 )
+
 
 
 TECH_end_number=17983665
