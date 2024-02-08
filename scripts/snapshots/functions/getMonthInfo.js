@@ -77,6 +77,13 @@ const ownerMapping = {
   SpecialPurposeFund: {
     null: "blockNumbersDRAFT",
   },
+  Scopes: {
+    67: "blockNumbersDRAFT",
+    68: "blockNumbersDRAFT",
+    69: "blockNumbersDRAFT",
+    70: "blockNumbersDRAFT",
+    71: "blockNumbersDRAFT",
+  },
 };
 const blockNumbersMapping = {
   blockNumbersCES,

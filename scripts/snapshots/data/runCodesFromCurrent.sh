@@ -34,6 +34,11 @@ codes=(
   "ecosystem-actors/TECHOPS"
   "ecosystem-actors/VIRIDIAN"
   "keepers"
+  "scopes/SUP/gait-bootstrap-funding",
+  "scopes/ACC/launch-project"
+  "scopes/PRO/governance-security-engineering"
+  "scopes/PRO/multichain-engeering"
+  "scopes/STA/BLOCKTOWER"
 )
 
 
