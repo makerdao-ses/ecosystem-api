@@ -26,7 +26,7 @@ Produce promotional content for other Core Units and provide resources to educat
   }).returning('id');
 
   await knex('SocialMediaChannels').insert({
-    cuId: MktId.id,
+    cuId: MktId,
     forumTag: 'https://forum.makerdao.com/tag/archive-mkt-001',
   });
 
