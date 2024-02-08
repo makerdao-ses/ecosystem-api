@@ -5,10 +5,9 @@ const ownerTypeMapping = {
   keepers: "Keepers",
   "core-units": "CoreUnit",
   spfs: "SpecialPurposeFund",
+  scopes: "Scopes",
   projects: "Project",
   "ecosystem-actors": "EcosystemActor",
-  scopes: "EcosystemActor",
-  "payment-processors": "EcosystemActor",
 };
 
 const getOwnerId = async (ownerType, idSegment, knex) => {
@@ -24,10 +23,24 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
     return null;
   }
 
+  if (ownerType === "Scopes") {
+    let result = await knex("CoreUnit")
+      .select("id")
+      .whereRaw("LOWER(code) = ?", "" + idSegment)
+      .where("type", "=", "Scopes")
+      .first();
+    if (!result) {
+      throw new Error(`Cannot find Scope with code "${idSegment}"`);
+    }
+
+    return result.id;
+  }
+
   if (ownerType === "CoreUnit") {
     let result = await knex("CoreUnit")
       .select("id")
       .whereRaw("LOWER(code) = ?", "" + idSegment)
+      .where("type", "=", "CoreUnit")
       .first();
     if (!result) {
       throw new Error(`Cannot find Core Unit with code "${idSegment}"`);
