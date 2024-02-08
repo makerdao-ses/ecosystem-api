@@ -34,7 +34,13 @@ codes=(
   "ecosystem-actors/TECHOPS"
   "ecosystem-actors/VIRIDIAN"
   "keepers"
+  "scopes/SUP/gait-bootstrap-funding",
+  "scopes/ACC/launch-project"
+  "scopes/PRO/governance-security-engineering"
+  "scopes/PRO/multichain-engeering"
+  "scopes/STA/BLOCKTOWER"
 )
+
 
 
 TECH_end_number=17983665
@@ -50,27 +56,32 @@ day_of_month=$(date -u +'%d')
 # Define months for PREVIOUS and CURRENT iterations
 if [ "$day_of_month" -lt 10 ]; then
   if [ "$current_month" -eq 1 ]; then
-    months=("12" "$current_month")
-    years=("$((current_year - 1))" "$current_year")
+    months=("11" "12")
+    years=("$((current_year - 1))" "$((current_year - 1))")
   else
-    if [ "$current_month" -eq 10 ]; then
-      months=("0$((current_month - 2))" "0$((current_month - 1))")
-      years=("$current_year" "$current_year")
+    if [ "$current_month" -eq 2 ]; then
+      months=("12" "0$((current_month - 1))")
+      years=("$((current_year - 1))" "$current_year")
     else
-      if [ "$current_month" -eq 11 ]; then
-        months=("0$((current_month - 2))" "$((current_month - 1))")
+      if [ "$current_month" -eq 10 ]; then
+        months=("0$((current_month - 2))" "0$((current_month - 1))")
         years=("$current_year" "$current_year")
       else
-        if [ "$current_month" -eq 12 ]; then
-          months=("$((current_month - 2))" "$((current_month - 1))")
+        if [ "$current_month" -eq 11 ]; then
+          months=("0$((current_month - 2))" "$((current_month - 1))")
           years=("$current_year" "$current_year")
         else
-          previous_month=$((${current_month#0} - 2))
-          previous_month="0$previous_month"
-          current_month=$((${current_month#0} - 1))
-          current_month="0$current_month"
-          months=("$previous_month" "$current_month")
-          years=("$current_year" "$current_year")
+          if [ "$current_month" -eq 12 ]; then
+            months=("$((current_month - 2))" "$((current_month - 1))")
+            years=("$current_year" "$current_year")
+          else
+            previous_month=$((${current_month#0} - 2))
+            previous_month="0$previous_month"
+            current_month=$((${current_month#0} - 1))
+            current_month="0$current_month"
+            months=("$previous_month" "$current_month")
+            years=("$current_year" "$current_year")
+          fi
         fi
       fi
     fi
