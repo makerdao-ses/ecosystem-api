@@ -145,6 +145,13 @@ export class SnapshotModel {
   }
 
   async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
+  
+    // if end is null then set it to the start month + 2
+    if (!end) {
+      const endDate = new Date(start);
+      endDate.setMonth(endDate.getMonth() + 2);
+      end = endDate.toISOString().slice(0, 7);
+    }
 
     const endDate = new Date(end);
     endDate.setMonth(endDate.getMonth() + 1);
