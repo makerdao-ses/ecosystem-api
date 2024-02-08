@@ -44,6 +44,8 @@ export const typeDefs = gql`
     Delegates
     EcosystemActor
     AlignedDelegates
+    Keepers
+    Scopes
   }
 
   "Possible values for Core Unit categories - A Core Unit can be assigned to more than one category"
