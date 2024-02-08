@@ -217,6 +217,7 @@ export const typeDefs = [
       Project
       EcosystemActor
       AlignedDelegates
+      Keepers
     }
 
     input BudgetStatementWalletFilter {
