@@ -75,14 +75,6 @@ export class AnalyticsStore {
         });
       }
     }
-    if (query.start) {
-      baseQuery.where((q) => {
-        q.where("start", ">=", query.start).andWhere("fn", "Single");
-        q.orWhere("end", ">", query.start).andWhere("fn", "DssVest");
-
-        return q;
-      });
-    }
     baseQuery.orderBy("start");
     return this._formatQueryRecords(await baseQuery, Object.keys(query.select));
   }
