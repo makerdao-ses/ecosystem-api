@@ -42,11 +42,15 @@ export default class PriceDataScript {
 
   async filterMkrPriceData(mkrPriceData) {
     const [dbDate] = await this.getLatestMkrPriceDatafromDB();
-    if (!dbDate) return mkrPriceData;
+    if (!dbDate) {
+      return mkrPriceData.filter((data) => {
+        return data.start.getHours() === 0 && data.start.getMinutes() === 0 && data.start.getSeconds() === 0
+      })
+    }
     return mkrPriceData.filter(
       (data) =>
         data.start.getDay() !== dbDate.start.getDay() &&
-        data.start.getHours() === 0,
+        data.start.getHours() === 0 && data.start.getMinutes() === 0 && data.start.getSeconds()
     );
   }
 
@@ -71,7 +75,7 @@ export default class PriceDataScript {
     if (dbDate) {
       return this.calculateDays(new Date(dbDate.start), new Date());
     } else {
-      return this.calculateDays(new Date("2021-01-01"), new Date());
+      return this.calculateDays(new Date("2020-12-30"), new Date());
     }
   }
 
