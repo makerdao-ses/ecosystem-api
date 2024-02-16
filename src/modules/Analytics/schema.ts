@@ -3,8 +3,9 @@ import { AnalyticsModel } from "./db.js";
 
 export const typeDefs = [
   gql`
-    type AnalyticsResult {
-      series: [AnalyticsPeriod]
+    type AnalyticsQuery {
+      series(filter: AnalyticsFilter): [AnalyticsPeriod]
+      multiCurrencySeries(filter: MultiCurrencyConversions): [AnalyticsPeriod]
       metrics: [String]
       dimensions: [Dimension]
     }
@@ -61,6 +62,25 @@ export const typeDefs = [
       lod: Int!
     }
 
+    input MultiCurrencyConversions {
+      start: String
+      end: String
+      "Period to group by"
+      granularity: AnalyticsGranularity
+      "List of metrics to filter by, such as 'budget' or 'actuals'"
+      metrics: [String]
+      "List of dimensions to filter by, such as 'budget' or 'project'"
+      dimensions: [AnalyticsFilterDimension]
+      currency: String
+      conversions: [CurrencyConversion]!
+      
+    }
+
+    input CurrencyConversion {
+      metric: String!
+      sourceCurrency: String!
+    }
+
     input AnalyticsFilter {
       start: String
       end: String
@@ -74,38 +94,68 @@ export const typeDefs = [
     }
 
     extend type Query {
-      analytics(filter: AnalyticsFilter): AnalyticsResult
+      analytics: AnalyticsQuery
     }
   `,
 ];
 
 export const resolvers = {
   Query: {
-    // (parent, args, context, info) => {}
-    analytics: async (_: any, { filter }: any, { dataSources }: any) => {
+    analytics: (_: any, __: any, { dataSources }: any) => {
+      console.log('calling analytics')
+      return {}
+    },
+  },
+  AnalyticsQuery: {
+    series: async (parent: any, { filter }: any, { dataSources }: any) => {
+      console.log("filter: ", parent, filter)
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.query(filter);
-      const metrics = await queryEngine.getMetrics();
-      const contextDimensions = await queryEngine.getDimensions();
-
-      return {
-        series: results.map((s) => ({
-          ...s,
-          rows: s.rows.map((r: any) => ({
-            ...r,
-            dimensions: Object.keys(r.dimensions).map((d) => (
-              {
+      return results.map((s) => ({
+        ...s,
+        rows: s.rows.map((r: any) => ({
+          ...r,
+          dimensions: Object.keys(r.dimensions).map((d) => (
+            {
               name: d,
               path: r.dimensions[d]['path'],
               icon: r.dimensions[d]['icon'],
               label: r.dimensions[d]['label'],
               description: r.dimensions[d]['description'],
             })),
-          })),
         })),
-        metrics,
-        dimensions: contextDimensions
-      };
-    }
-  },
+      }))
+    },
+    metrics: async (parent: any, { filter }: any, { dataSources }: any) => {
+      console.log("filter: ", parent, filter)
+      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
+      return await queryEngine.getMetrics();
+    },
+    dimensions: async (_: any, { filter }: any, { dataSources }: any) => {
+      console.log("filter: ", filter)
+      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
+      return await queryEngine.getDimensions();
+    },
+    multiCurrencySeries: async (_: any, { filter }: any, { dataSources }: any) => {
+      console.log("multiCurrencySeries: ", filter)
+      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
+      const results = await queryEngine.multiCurrencyQuery(filter);
+
+      return results.map((s) => ({
+        ...s,
+        rows: s.rows.map((r: any) => ({
+          ...r,
+          dimensions: Object.keys(r.dimensions).map((d) => (
+            {
+              name: d,
+              path: r.dimensions[d]['path'],
+              icon: r.dimensions[d]['icon'],
+              label: r.dimensions[d]['label'],
+              description: r.dimensions[d]['description'],
+            })),
+        })),
+      }))
+
+    },
+  }
 };

@@ -70,10 +70,10 @@ export type AnalyticsOperand = {
 };
 
 export enum CompoundOperator {
-  Add,
-  Subtract,
-  Multiply,
-  Divide
+  VectorAdd,
+  VectorSubtract,
+  ScalarMultiply,
+  ScalarDivide
 }
 
 export type MultiCurrencyConversion = {
