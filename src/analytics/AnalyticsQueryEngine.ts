@@ -44,9 +44,6 @@ export class AnalyticsQueryEngine {
     };
     const inputExecute = await this.execute(inputsQuery);
     const operandExecute = await this.execute(operandQuery);
-    // console.log('inputExecute ', ...inputExecute)
-    console.log('operandQuery: ', operandQuery)
-    console.log('operandExecute: ', ...operandExecute)
     if ([CompoundOperator.VectorAdd, CompoundOperator.VectorSubtract].includes(query.expression.operator)) {
       return this._applyVectorOperator(inputExecute, operandExecute, query.expression.operator, query.expression.resultCurrency);
     }
@@ -67,7 +64,6 @@ export class AnalyticsQueryEngine {
             query.end,
             query.granularity,
           );
-    // we\ll enhance it with price info      
     return this._resolveCurrencyConversions(discretizedResult);
   }
 
@@ -100,7 +96,6 @@ export class AnalyticsQueryEngine {
   public async executeMultiCurrency(query: AnalyticsQuery, mcc: MultiCurrencyConversion): Promise<GroupedPeriodResults> {
     const baseQuery: AnalyticsQuery = { ...query, currency: mcc.targetCurrency };
     let result = await this.execute(baseQuery);
-    // console.log('result: ', ...result)
 
     for (const conversion of mcc.conversions) {
       const nextQuery: CompoundAnalyticsQuery = {
@@ -124,9 +119,7 @@ export class AnalyticsQueryEngine {
         }
       };
 
-      console.log("nextQuery", nextQuery.expression.inputs.currency.toString())
       const executedCompound = await this.executeCompound(nextQuery);
-      // console.log('executedCompound', executedCompound)
       result = await this._applyVectorOperator(result, executedCompound, CompoundOperator.VectorAdd, mcc.targetCurrency);
     }
     return result;
@@ -183,33 +176,25 @@ export class AnalyticsQueryEngine {
         })
       };
       result.push(outputPeriod);
-      console.log('inputPeriod', inputPeriod)
     }
 
-    console.log('operandMap', operandMap)
-    console.log('result', ...result)
     return result;
   }
 
   private _calculateOutputValue(input: number, operator: CompoundOperator, operand: number): number {
     switch (operator) {
       case CompoundOperator.VectorAdd:
-        console.log(input, '+', operand, '=', input + operand)
         return input + operand;
       case CompoundOperator.VectorSubtract:
-        console.log(input, '-', operand, '=', input - operand)
         return input - operand;
       case CompoundOperator.ScalarMultiply:
-        console.log(input, '*', operand, '=', input * operand)
         return input * operand;
       case CompoundOperator.ScalarDivide:
-        console.log(input, '/', operand, '=', input / operand)
         return input / operand;
     }
   }
 
   private async _resolveCurrencyConversions(discretizedResult: GroupedPeriodResults): Promise<GroupedPeriodResults> {
-    // console.log('Resolving currency conversions and value is ', discretizedResult[0].rows)
     return discretizedResult;
   }
 

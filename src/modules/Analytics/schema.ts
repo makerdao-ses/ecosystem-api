@@ -102,13 +102,11 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     analytics: (_: any, __: any, { dataSources }: any) => {
-      console.log('calling analytics')
       return {}
     },
   },
   AnalyticsQuery: {
     series: async (parent: any, { filter }: any, { dataSources }: any) => {
-      console.log("filter: ", parent, filter)
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.query(filter);
       return results.map((s) => ({
@@ -127,17 +125,14 @@ export const resolvers = {
       }))
     },
     metrics: async (parent: any, { filter }: any, { dataSources }: any) => {
-      console.log("filter: ", parent, filter)
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       return await queryEngine.getMetrics();
     },
     dimensions: async (_: any, { filter }: any, { dataSources }: any) => {
-      console.log("filter: ", filter)
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       return await queryEngine.getDimensions();
     },
     multiCurrencySeries: async (_: any, { filter }: any, { dataSources }: any) => {
-      console.log("multiCurrencySeries: ", filter)
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.multiCurrencyQuery(filter);
 
