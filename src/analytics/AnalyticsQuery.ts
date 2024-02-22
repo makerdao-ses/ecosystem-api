@@ -42,6 +42,50 @@ export type AnalyticsMetricString =
   | "PaymentsOffChainIncluded"
   | "FTEs";
 
+export type CompoundAnalyticsQuery = {
+  start: Date | null;
+  end: Date | null;
+  granularity: AnalyticsGranularity;
+  lod: Record<string, number | null>;
+  select: Record<string, AnalyticsPath[]>;
+  expression: CompoundAnalyticsExpression;
+};
+
+export type CompoundAnalyticsExpression = {
+  inputs: CompoundAnalyticsInputs;
+  operator: CompoundOperator;
+  operand: AnalyticsOperand;
+  resultCurrency: AnalyticsPath;
+}
+
+export type CompoundAnalyticsInputs = {
+  metrics: string[];
+  currency: AnalyticsPath;
+}
+
+export type AnalyticsOperand = {
+  metric: string;
+  currency: AnalyticsPath;
+  useSum: boolean;
+};
+
+export enum CompoundOperator {
+  VectorAdd,
+  VectorSubtract,
+  ScalarMultiply,
+  ScalarDivide
+}
+
+export type MultiCurrencyConversion = {
+  targetCurrency: AnalyticsPath;
+  conversions: ConversionMetric[];
+}
+
+export type ConversionMetric = {
+  metric: string;
+  currency: AnalyticsPath;
+};
+
 export const getAnalyticsMetricEnum = (
   metric: AnalyticsMetricString,
 ): AnalyticsMetric => {

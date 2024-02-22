@@ -5,6 +5,8 @@ import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
   AnalyticsQuery,
+  ConversionMetric,
+  MultiCurrencyConversion,
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
 
@@ -16,6 +18,16 @@ type queryFilter = {
   dimensions: [Record<string, string>];
   currency?: string;
 };
+
+type CurrencyConversion = {
+  metric: string;
+  sourceCurrency: string;
+}
+
+type MultiCurrencyFilter = queryFilter & {
+  conversions: CurrencyConversion[];
+};
+
 
 export class AnalyticsModel {
   engine: AnalyticsQueryEngine;
@@ -34,7 +46,7 @@ export class AnalyticsModel {
     }
     const metrics = await this.getMetrics();
     const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
-    if(filteredMetrics.length < 1){
+    if (filteredMetrics.length < 1) {
       throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
     }
     const query: AnalyticsQuery = {
@@ -57,6 +69,50 @@ export class AnalyticsModel {
     }
     return this.engine.execute(query);
 
+  }
+
+  public async multiCurrencyQuery(filter: MultiCurrencyFilter) {
+
+    if (!filter) {
+      return [];
+    }
+    const metrics = await this.getMetrics();
+    const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
+    if (filteredMetrics.length < 1) {
+      throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
+    }
+    const query: AnalyticsQuery = {
+      start: filter.start ? new Date(filter.start) : null,
+      end: filter.end ? new Date(filter.end) : null,
+      granularity: getGranularity(filter.granularity),
+      metrics: filter.metrics,
+      currency: getCurrency(filter.currency),
+      select: {},
+      lod: {},
+    };
+
+    if (filter.dimensions.length < 1) {
+      throw new Error("No dimensions provided");
+    } else {
+      filter.dimensions.forEach(dimension => {
+        query.select[dimension.name] = [AnalyticsPath.fromString(dimension.select)];
+        query.lod[dimension.name] = Number(dimension.lod);
+      });
+    }
+    return this.engine.executeMultiCurrency(query, {
+      targetCurrency: query.currency,
+      conversions: filter.conversions.map(c => {
+        return {
+          metric: c.metric,
+          currency: getCurrency(c.sourceCurrency)
+        }
+      })
+    });
+
+  }
+
+  public async test() {
+    return await this.engine.test();
   }
 
   public async getDimensions() {
