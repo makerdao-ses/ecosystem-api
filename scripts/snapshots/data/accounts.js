@@ -875,7 +875,7 @@ export default [
   {
     Name: "Blocktower",
     "budget path 1": "makerdao",
-    "budget path 2": "scopes ",
+    "budget path 2": "scopes",
     "budget path 3": "STA",
     "budget path 4": "BLOCKTOWER",
     Type: "Operational ",
