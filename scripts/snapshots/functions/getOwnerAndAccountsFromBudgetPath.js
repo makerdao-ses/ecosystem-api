@@ -95,20 +95,39 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
   const ownerId = await getOwnerId(ownerType, idSegment, knex);
 
   const selectedAccounts = [];
-  for (let i = 0; i < accounts.length; i++) {
-    if (
-      accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
-      accounts[i]["budget path 2"].toLowerCase() ===
-        segments[1].toLowerCase() &&
-      accounts[i]["budget path 3"].toLowerCase() === idSegment.toLowerCase() &&
-      accounts[i]["budget path 4"].toLowerCase() === scopesSegment.toLowerCase()
-    ) {
-      selectedAccounts.push({
-        type: accounts[i].Type,
-        label: accounts[i].Name,
-        address: accounts[i].Address,
-        offchain: false,
-      });
+  if(segments[1].toLowerCase() === 'delegates') {
+    for (let i = 0; i < accounts.length; i++) {
+      if (
+        accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
+        accounts[i]["budget path 2"].toLowerCase() ===
+          segments[1].toLowerCase()
+      ) {
+        selectedAccounts.push({
+          type: accounts[i].Type,
+          label: accounts[i].Name,
+          address: accounts[i].Address,
+          offchain: false,
+        });
+      }
+    }
+  }
+  else {
+    for (let i = 0; i < accounts.length; i++) {
+      if (
+        accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
+        accounts[i]["budget path 2"].toLowerCase() ===
+          segments[1].toLowerCase() &&
+        accounts[i]["budget path 3"].toLowerCase() === idSegment.toLowerCase() 
+        //&&
+        //accounts[i]["budget path 4"].toLowerCase() === scopesSegment.toLowerCase()
+      ) {
+        selectedAccounts.push({
+          type: accounts[i].Type,
+          label: accounts[i].Name,
+          address: accounts[i].Address,
+          offchain: false,
+        });
+      }
     }
   }
 

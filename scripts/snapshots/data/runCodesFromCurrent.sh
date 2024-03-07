@@ -33,6 +33,8 @@ codes=(
   "ecosystem-actors/SIDESTREAM"
   "ecosystem-actors/TECHOPS"
   "ecosystem-actors/VIRIDIAN"
+  "ecosystem-actors/JSKY"
+  "ecosystem-actors/EGE"
   "keepers"
   "scopes/SUP/gait-bootstrap-funding",
   "scopes/ACC/launch-project"
