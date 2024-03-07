@@ -6,6 +6,7 @@ export const typeDefs = [
       id: ID
       parentId: ID
       name: String
+      subtitle: String
       code: String
       idPath: String
       codePath: String

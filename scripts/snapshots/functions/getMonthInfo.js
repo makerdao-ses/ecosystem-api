@@ -68,6 +68,8 @@ const ownerMapping = {
     64: "blockNumbersDRAFT",
     65: "blockNumbersDRAFT",
     72: "blockNumbersDRAFT",
+    73: "blockNumbersDRAFT",
+    74: "blockNumbersDRAFT",
   },
   Delegates: {
     null: "blockNumbersDELEGATES",
