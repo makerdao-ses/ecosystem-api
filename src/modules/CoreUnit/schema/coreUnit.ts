@@ -1,4 +1,5 @@
 import { gql } from "apollo-server-core";
+import { getChildLogger } from "../../../logger";
 
 export const typeDefs = gql`
   type CoreUnit {
@@ -115,10 +116,16 @@ export const typeDefs = gql`
   }
 `;
 
+const logger = getChildLogger({ msgPrefix: 'CoreUnits Listener' }, { moduleName: "CoreUnits Listener" });
+
 export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
     coreUnits: async (_: any, filter: any, { dataSources }: any) => {
+      console.log('logging....')
+      const start = Date.now(); // Start timing
+      logger.info({ filter }, "Query coreUnits started");
+
       const result = await dataSources.db.CoreUnit.getCoreUnits(filter);
       const parsedResult = result.map((cu: any) => {
         if (cu.category !== null) {
@@ -129,6 +136,9 @@ export const resolvers = {
           return cu;
         }
       });
+
+      const end = Date.now(); // End timing
+      logger.info({ filter, executionTime: `${end - start}ms` }, "Query coreUnits completed");
       return parsedResult;
     },
     cuUpdates: async (_: any, { filter }: any, { dataSources }: any) => {

@@ -1,7 +1,7 @@
 import path from 'path';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
-import { loggerConfig } from '../logger.config';
+import { loggerConfig } from './logger.config';
 
 const {
   moduleFilter, prefixFilter, logLevel, httpLogLevel,
