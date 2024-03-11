@@ -1,13 +1,16 @@
 import path from 'path';
 import pino from 'pino';
 import pinoHttp from 'pino-http';
-import { loggerConfig } from './logger.config';
+import { loggerConfig } from './logger.config.js';
+import { fileURLToPath } from 'url';
 
 const {
   moduleFilter, prefixFilter, logLevel, httpLogLevel,
 } = loggerConfig;
 
 const formatPrefix = (prefix: string): string => `[${prefix.toUpperCase()}] `;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 const filterPrefix = (config: {

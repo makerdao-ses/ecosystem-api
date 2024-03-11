@@ -171,11 +171,11 @@ export class CoreUnitModel {
     this.knex = knex;
   }
 
-  async getCoreUnits(filter: {
+  getCoreUnits(filter: {
     limit?: number;
     offset?: number;
     filter?: CoreUnitFilter;
-  }): Promise<CoreUnit[]> {
+  }): any {
     const baseQuery = this.knex.select("").from("CoreUnit").orderBy("id");
     if (filter.limit !== undefined && filter.offset !== undefined) {
       return baseQuery

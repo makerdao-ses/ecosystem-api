@@ -1,5 +1,6 @@
 import { gql } from "apollo-server-core";
-import { getChildLogger } from "../../../logger";
+import { getChildLogger } from "../../../logger.js";
+import { measureQueryPerformance } from "../../../utils/logWrapper.js";
 
 export const typeDefs = gql`
   type CoreUnit {
@@ -116,17 +117,15 @@ export const typeDefs = gql`
   }
 `;
 
-const logger = getChildLogger({ msgPrefix: 'CoreUnits Listener' }, { moduleName: "CoreUnits Listener" });
+const logger = getChildLogger({}, { moduleName: "CoreUnits" });
 
 export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
     coreUnits: async (_: any, filter: any, { dataSources }: any) => {
-      console.log('logging....')
-      const start = Date.now(); // Start timing
-      logger.info({ filter }, "Query coreUnits started");
+      // const result = await dataSources.db.CoreUnit.getCoreUnits(filter);
+      const result = await measureQueryPerformance("coreUnits db query", "CoreUnits", dataSources.db.CoreUnit.getCoreUnits(filter));
 
-      const result = await dataSources.db.CoreUnit.getCoreUnits(filter);
       const parsedResult = result.map((cu: any) => {
         if (cu.category !== null) {
           const cleanCategory = cu.category.slice(1, cu.category.length - 1);
@@ -137,8 +136,6 @@ export const resolvers = {
         }
       });
 
-      const end = Date.now(); // End timing
-      logger.info({ filter, executionTime: `${end - start}ms` }, "Query coreUnits completed");
       return parsedResult;
     },
     cuUpdates: async (_: any, { filter }: any, { dataSources }: any) => {

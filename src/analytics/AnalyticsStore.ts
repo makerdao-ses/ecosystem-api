@@ -5,6 +5,7 @@ import {
   AnalyticsSeries,
   toPascalCase,
 } from "./AnalyticsQuery.js";
+import { measureQueryPerformance } from "../utils/logWrapper.js";
 
 export class AnalyticsStore {
   private _knex: Knex;
@@ -76,7 +77,8 @@ export class AnalyticsStore {
       }
     }
     baseQuery.orderBy("start");
-    return this._formatQueryRecords(await baseQuery, Object.keys(query.select));
+    const results = await measureQueryPerformance('analyticsQuery', 'analyticsQuery', baseQuery);
+    return this._formatQueryRecords(results, Object.keys(query.select));
   }
 
   public async addSeriesValue(input: AnalyticsSeriesInput) {
