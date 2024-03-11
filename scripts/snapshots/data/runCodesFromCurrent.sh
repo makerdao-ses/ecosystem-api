@@ -35,6 +35,7 @@ codes=(
   "ecosystem-actors/VIRIDIAN"
   "ecosystem-actors/JSKY"
   "ecosystem-actors/EGE"
+  "ecosystem-actors/AAVE"
   "keepers"
   "scopes/SUP/gait-bootstrap-funding",
   "scopes/ACC/launch-project"
