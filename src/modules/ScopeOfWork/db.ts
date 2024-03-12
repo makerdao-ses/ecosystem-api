@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 import { stubData } from "./stubData.js";
 
-export class ProjectsModel {
+export class ScopeOfWorkModel {
   knex: Knex;
 
   constructor(knex: Knex) {
@@ -13,4 +13,4 @@ export class ProjectsModel {
   }
 }
 
-export default (knex: Knex) => new ProjectsModel(knex);
+export default (knex: Knex) => new ScopeOfWorkModel(knex);
