@@ -13,7 +13,10 @@ const getData = async () => {
     SELECT DISTINCT ur."resourceId"
     FROM "UserRole" as ur
     LEFT JOIN "Role" as r ON r.id = ur."roleId"
-    WHERE r."roleName" = 'CoreUnitAuditor' 
+    WHERE 
+      r."roleName" = 'CoreUnitAuditor' 
+    OR
+		  r."roleName" = 'EcosystemActorAuditor'
   ) AS auditors ON auditors."resourceId" = cu.id
   LEFT JOIN "BudgetStatement" as bs ON bs."ownerId" = cu.id
   LEFT JOIN "BudgetStatementWallet" as bsw ON bsw."budgetStatementId" = bs.id
@@ -41,7 +44,7 @@ const getData = async () => {
       walletId: row.bswid,
       transferRequestId: row.bstrid,
       targetAmount: null,
-      targetDescription: `Core Unit ${row.code} currently does not work with an Core Unit Auditor to top up its operational wallet but streams funds directly from the Maker protocol.`,
+      targetDescription: `${row.code} currently does not work with an Auditor to top up its operational wallet but streams funds directly from the Maker protocol.`,
       targetCalculation: "N/A",
       walletBalanceTimestamp: walletBalanceTimestamp,
     };
