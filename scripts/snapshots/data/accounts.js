@@ -1083,7 +1083,7 @@ export default [
     Name: "JanSky Operational Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "ecosystem-actors",
-    "budget path 3": "JSK",
+    "budget path 3": "JSKY",
     "budget path 4": "",
     Type: "Operational ",
     Address: "0xf3f868534fad48ef5a228fe78669cf242745a755",
