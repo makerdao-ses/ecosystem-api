@@ -2,6 +2,7 @@ import accounts from "../data/accounts.js";
 
 const ownerTypeMapping = {
   delegates: "Delegates",
+  "aligned-delegates": "AlignedDelegates",
   keepers: "Keepers",
   "core-units": "CoreUnit",
   spfs: "SpecialPurposeFund",
@@ -12,6 +13,10 @@ const ownerTypeMapping = {
 
 const getOwnerId = async (ownerType, idSegment, knex) => {
   if (ownerType === "Delegates") {
+    return null;
+  }
+
+  if (ownerType === "AlignedDelegates") {
     return null;
   }
 
@@ -91,16 +96,19 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
   }
 
   const idSegment = segments[2] || "";
-  const scopesSegment = segments[3] || "";
+  const additionalSegment = segments[3] || "";
   const ownerId = await getOwnerId(ownerType, idSegment, knex);
 
   const selectedAccounts = [];
-  if(segments[1].toLowerCase() === 'delegates') {
+  // Check if segments[1] is 'delegates'. For the new condition, we explicitly allow for idSegment to be an empty string.
+  if (
+    segments[1].toLowerCase() === "delegates" &&
+    (idSegment === "" || !idSegment)
+  ) {
     for (let i = 0; i < accounts.length; i++) {
       if (
         accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
-        accounts[i]["budget path 2"].toLowerCase() ===
-          segments[1].toLowerCase()
+        accounts[i]["budget path 2"].toLowerCase() === segments[1].toLowerCase()
       ) {
         selectedAccounts.push({
           type: accounts[i].Type,
@@ -110,14 +118,32 @@ const getOwnerAndAccountsFromBudgetPath = async (budgetPath, knex) => {
         });
       }
     }
-  }
+  } 
+  if (
+    segments[1].toLowerCase() === "aligned-delegates" &&
+    (idSegment === "" || !idSegment)
+  ) {
+    for (let i = 0; i < accounts.length; i++) {
+      if (
+        accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
+        accounts[i]["budget path 2"].toLowerCase() === segments[1].toLowerCase()
+      ) {
+        selectedAccounts.push({
+          type: accounts[i].Type,
+          label: accounts[i].Name,
+          address: accounts[i].Address,
+          offchain: false,
+        });
+      }
+    }
+  } 
   else {
     for (let i = 0; i < accounts.length; i++) {
       if (
         accounts[i]["budget path 1"].toLowerCase() === "makerdao" &&
         accounts[i]["budget path 2"].toLowerCase() ===
           segments[1].toLowerCase() &&
-        accounts[i]["budget path 3"].toLowerCase() === idSegment.toLowerCase() 
+        accounts[i]["budget path 3"].toLowerCase() === idSegment.toLowerCase()
         //&&
         //accounts[i]["budget path 4"].toLowerCase() === scopesSegment.toLowerCase()
       ) {

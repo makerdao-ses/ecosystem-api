@@ -28,7 +28,10 @@ const getData = async () => {
       SELECT DISTINCT ur."resourceId"
       FROM "UserRole" AS ur
       LEFT JOIN "Role" AS r ON r.id = ur."roleId"
-      WHERE r."roleName" = 'CoreUnitAuditor'
+      WHERE 
+      r."roleName" = 'CoreUnitAuditor'
+      OR 
+      r."roleName" = 'EcosystemActorAuditor'
     ) AS auditors ON auditors."resourceId" = cu.id
   LEFT JOIN
     "BudgetStatement" AS bs ON bs."ownerId" = cu.id
@@ -97,7 +100,7 @@ const getData = async () => {
       transferRequestId: row.bstrid,
       targetAmount: row.sum_of_forecast,
       targetCalculation: targetCalculation,
-      targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
+      targetDescription: `${row.code} works with an Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
       targetSourceCode: null,
       targetSourceUrl: null,
       targetSourceTitle: null,
@@ -120,7 +123,7 @@ const getData = async () => {
         .update({
           targetAmount: row.targetAmount,
           targetCalculation: row.targetCalculation,
-          targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
+          targetDescription: `${row.code} works with an Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
           targetSourceCode: null,
           targetSourceUrl: null,
           targetSourceTitle: null,
@@ -132,7 +135,7 @@ const getData = async () => {
         budgetStatementWalletId: row.walletId,
         targetAmount: row.targetAmount,
         targetCalculation: row.targetCalculation,
-        targetDescription: `Core Unit ${row.code} works with a Core Unit Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
+        targetDescription: `${row.code} works with an Auditor for topping up their operational wallet to a runway of 3 months of forecasted expenses, after approval of their latest expense report.`,
         targetSourceCode: null,
         targetSourceUrl: null,
         targetSourceTitle: null,

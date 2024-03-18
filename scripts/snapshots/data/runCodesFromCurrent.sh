@@ -35,12 +35,14 @@ codes=(
   "ecosystem-actors/VIRIDIAN"
   "ecosystem-actors/JSKY"
   "ecosystem-actors/EGE"
+  "ecosystem-actors/AAVE"
   "keepers"
   "scopes/SUP/gait-bootstrap-funding",
   "scopes/ACC/launch-project"
   "scopes/PRO/governance-security-engineering"
   "scopes/PRO/multichain-engeering"
   "scopes/STA/BLOCKTOWER"
+  "aligned-delegates"
 )
 
 
