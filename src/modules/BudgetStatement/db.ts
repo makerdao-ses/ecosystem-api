@@ -214,7 +214,7 @@ export class BudgetStatementModel {
     return await query;
   }
 
-  getBudgetStatements(filter: {
+  async getBudgetStatements(filter: {
     limit?: number;
     offset?: number;
     filter?: BudgetStatementFilter;
@@ -249,12 +249,11 @@ export class BudgetStatementModel {
     }
 
     if (filter.filter?.budgetPath !== undefined) {
-      getOwnerFromBudgetPath(filter.filter.budgetPath, this.knex).then(({ ownerType, ownerId }) => {
-        if (ownerType && ownerId && filter.filter) {
-          filter.filter.ownerType = [ownerType] as any;
-          filter.filter.ownerId = [ownerId] as any;
-        }
-      });
+      const { ownerType, ownerId } = await getOwnerFromBudgetPath(filter.filter.budgetPath, this.knex);
+      if (ownerType && ownerId) {
+        filter.filter.ownerType = [ownerType] as any;
+        filter.filter.ownerId = [ownerId] as any;
+      }
     }
 
     if (filter.filter) {
@@ -285,8 +284,11 @@ export class BudgetStatementModel {
       if (filter.filter.mkrProgramLength !== undefined) {
         query = query.andWhere("mkrProgramLength", filter.filter.mkrProgramLength);
       }
+
+
     }
-    return query;
+
+    return await query;
   }
 
   async getBSOwnerType(id: number | string) {
@@ -296,7 +298,7 @@ export class BudgetStatementModel {
       .where("id", id);
   }
 
-  getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
+  async getAuditReports(filter?: AuditReportFilter): Promise<AuditReport[]> {
     const baseQuery = this.knex.select("*").from("AuditReport").orderBy("id");
     if (filter?.id !== undefined) {
       return baseQuery.where("id", filter.id);
@@ -313,7 +315,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementFTEs(
+  async getBudgetStatementFTEs(
     filter?: BudgetStatementFteFilter,
   ): Promise<BudgetStatementFTEs[]> {
     const baseQuery = this.knex
@@ -333,7 +335,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementMKRVests(
+  async getBudgetStatementMKRVests(
     filter?: BudgetStatementMKRVEstFilter,
   ): Promise<BudgetStatementMKRVest[]> {
     const baseQuery = this.knex
@@ -357,7 +359,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementWallets(
+  async getBudgetStatementWallets(
     filter?: BudgetStatementWalletFilter,
   ): Promise<BudgetStatementWallet[]> {
     const baseQuery = this.knex
@@ -384,7 +386,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementLineItems(
+  async getBudgetStatementLineItems(
     limit?: number | undefined,
     offset?: number | undefined,
     paramName?: string | undefined,
@@ -419,7 +421,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementPayments(
+  async getBudgetStatementPayments(
     filter?: BudgetStatementPaymentFilter,
   ): Promise<BudgetStatementPayment[]> {
     const baseQuery = this.knex
@@ -450,7 +452,7 @@ export class BudgetStatementModel {
     }
   }
 
-  getBudgetStatementTransferRequests(
+  async getBudgetStatementTransferRequests(
     filter?: BudgetStatementTransferRequestFilter,
   ): Promise<BudgetStatementTransferRequest[]> {
     const baseQuery = this.knex

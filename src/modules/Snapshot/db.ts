@@ -1,7 +1,6 @@
 import { Knex } from "knex";
 import CoreUnitModel from "../CoreUnit/db.js";
 import AnalyticsModel from "../Analytics/db.js";
-import { measureQueryPerformance } from "../../utils/logWrapper.js";
 
 export type SnapshotFilter = {
   id?: number | string;
@@ -87,7 +86,7 @@ export class SnapshotModel {
       baseQuery.limit(filter.limit).offset(filter.offset);
     }
 
-    const result = await measureQueryPerformance('getSnapshots', 'snapshots', baseQuery);
+    const result = await baseQuery;
 
     for (let i = 0; i < result.length; i++) {
       result[i].actualsComparison = await this.getActualsComparison(
@@ -123,14 +122,14 @@ export class SnapshotModel {
     }));
   }
 
-  getSnapshotAccounts(snapshotId: number | string) {
+  async getSnapshotAccounts(snapshotId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccount")
       .where("snapshotId", snapshotId);
   }
 
-  getSnapshotAccountTransactions(snapshotAccountId: number | string) {
+  async getSnapshotAccountTransactions(snapshotAccountId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccountTransaction")
@@ -138,7 +137,7 @@ export class SnapshotModel {
       .orderBy("id", "desc");
   }
 
-  getSnapshotAccountBalances(snapshotAccountId: number | string) {
+  async getSnapshotAccountBalances(snapshotAccountId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccountBalance")
@@ -146,7 +145,7 @@ export class SnapshotModel {
   }
 
   async getAnalytics(start: string, end: string, ownerType: string, ownerId: number) {
-
+  
     // if end is null then set it to the start month + 2
     if (!end) {
       const endDate = new Date(start);
