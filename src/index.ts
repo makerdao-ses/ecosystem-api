@@ -55,11 +55,13 @@ async function startApolloServer(
     context: ({ req }) => {
       try {
         const user = (req as any).auth || null;
+        const noCache = req.headers['no-cache'] === 'true' ? true : false;
         if (user) {
           const auth = new Authorization(apiModules.datasource, user.id);
           return { user, auth };
-        } else {
-          return null;
+        }
+        if (noCache) {
+          return { noCache };
         }
       } catch (error: any) {
         throw new AuthenticationError(error.message);
