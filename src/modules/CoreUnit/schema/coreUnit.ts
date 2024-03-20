@@ -122,9 +122,13 @@ const logger = getChildLogger({}, { moduleName: "CoreUnits" });
 export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
-    coreUnits: async (_: any, filter: any, { dataSources }: any) => {
-      // const result = await dataSources.db.CoreUnit.getCoreUnits(filter);
-      const result = await measureQueryPerformance("coreUnits db query", "CoreUnits", dataSources.db.CoreUnit.getCoreUnits(filter));
+    coreUnits: async (_: any, filter: any, { noCache, dataSources }: any) => {
+      let result: any;
+      if (noCache)
+        result = await dataSources.db.CoreUnit.getCoreUnits(filter);
+      else {
+        result = await measureQueryPerformance("coreUnits db query", "CoreUnits", dataSources.db.CoreUnit.getCoreUnits(filter));
+      }
 
       const parsedResult = result.map((cu: any) => {
         if (cu.category !== null) {
@@ -139,15 +143,15 @@ export const resolvers = {
       return parsedResult;
     },
     cuUpdates: async (_: any, { filter }: any, { dataSources }: any) => {
-      return await dataSources.db.CoreUnit.getCuUpdates(filter);
+      return await measureQueryPerformance('getCuUpdates', 'CoreUnit', dataSources.db.CoreUnit.getCuUpdates(filter))
     },
   },
   CoreUnit: {
     socialMediaChannels: async (parent: any, __: any, { dataSources }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.CoreUnit.getSocialMediaChannels({
+      const result = await measureQueryPerformance('getSocialMediaChannels', 'CoreUnit', dataSources.db.CoreUnit.getSocialMediaChannels({
         cuId: id,
-      });
+      }))
       return result;
     },
     contributorCommitment: async (
@@ -167,21 +171,21 @@ export const resolvers = {
       { dataSources }: any,
     ) => {
       const { id } = parent;
-      const result = await dataSources.db.CoreUnit.getCuGithubContributions(id);
+      const result = await measureQueryPerformance('getCuGithubContributions', 'CoreUnit', dataSources.db.CoreUnit.getCuGithubContributions(id))
       return result;
     },
     cuUpdates: async (parent: any, __: any, { dataSources }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.CoreUnit.getCuUpdates({ cuId: id });
+      const result = await measureQueryPerformance('getCuUpdates', 'CoreUnit', dataSources.db.CoreUnit.getCuUpdates({ cuId: id }))
       return result;
     },
     auditors: async (parent: any, __: any, { dataSources }: any) => {
       const { id } = parent;
-      const resourceUsers = await dataSources.db.Auth.getSystemRoleMembers(
+      const resourceUsers = await measureQueryPerformance('getSystemRoleMembers', 'CoreUnit', dataSources.db.Auth.getSystemRoleMembers(
         parent.type + "Auditor",
         parent.type,
         id,
-      );
+      ));
       return resourceUsers;
     },
   },

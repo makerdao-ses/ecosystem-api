@@ -123,14 +123,14 @@ export class SnapshotModel {
     }));
   }
 
-  async getSnapshotAccounts(snapshotId: number | string) {
+  getSnapshotAccounts(snapshotId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccount")
       .where("snapshotId", snapshotId);
   }
 
-  async getSnapshotAccountTransactions(snapshotAccountId: number | string) {
+  getSnapshotAccountTransactions(snapshotAccountId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccountTransaction")
@@ -138,7 +138,7 @@ export class SnapshotModel {
       .orderBy("id", "desc");
   }
 
-  async getSnapshotAccountBalances(snapshotAccountId: number | string) {
+  getSnapshotAccountBalances(snapshotAccountId: number | string) {
     return this.knex
       .select("*")
       .from("SnapshotAccountBalance")
