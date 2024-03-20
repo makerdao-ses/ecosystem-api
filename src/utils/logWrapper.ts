@@ -55,7 +55,7 @@ const getHashKey = (knexQuery: any) => {
 
 const dateTimeReviver = function (key: any, value: any) {
     const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-    let a;
+    let a: any;
     if (typeof value === 'string') {
         a = regex.exec(value);
         if (a) {
