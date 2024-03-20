@@ -11,7 +11,7 @@ async function init() {
             tls: true,
             rejectUnauthorized: false,
         }
-    }).on('error', err => console.log('Redis Client Error', err))
+    }).on('error', (err: string) => console.log('Redis Client Error', err))
         .connect();
     client.flushAll("ASYNC", function (succeeded: any) {
         console.log(succeeded); // will be true if successfull
