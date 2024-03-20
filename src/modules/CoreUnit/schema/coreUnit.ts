@@ -136,6 +136,7 @@ export const resolvers = {
           return cu;
         }
       });
+
       return parsedResult;
     },
     cuUpdates: async (_: any, { filter }: any, { dataSources }: any) => {
