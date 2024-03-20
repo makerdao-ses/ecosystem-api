@@ -203,7 +203,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getTeams(filter: {
+  getTeams(filter: {
     limit?: number;
     offset?: number;
     filter?: CoreUnitFilter;
@@ -227,7 +227,7 @@ export class CoreUnitModel {
     return baseQuery;
   }
 
-  async getCuUpdates(filter?: {
+  getCuUpdates(filter?: {
     id?: number;
     cuId?: number;
     updateTitle?: string;
@@ -250,7 +250,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getSocialMediaChannels(
+  getSocialMediaChannels(
     filter?: SocialMediaChannelsFilter,
   ): Promise<SocialMediaChannels[]> {
     const baseQuery = this.knex
@@ -280,7 +280,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getContributorCommitments(
+  getContributorCommitments(
     filter?: ContributorCommitmentsFilter,
   ): Promise<ContributorCommitment[]> {
     const baseQuery = this.knex
@@ -306,7 +306,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getCuGithubContributions(
+  getCuGithubContributions(
     filter?: CuGithubContributionFilter,
   ): Promise<CuGithubContribution[]> {
     const baseQuery = this.knex
@@ -326,7 +326,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getContributors(filter: {
+  getContributors(filter: {
     limit?: number;
     offset?: number;
     filter?: ContributorFilter;
@@ -351,7 +351,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getGithubOrgs(filter: GithubOrgFilter): Promise<GithubOrg[]> {
+  getGithubOrgs(filter: GithubOrgFilter): Promise<GithubOrg[]> {
     const baseQuery = this.knex.select("*").from("GithubOrg").orderBy("id");
     if (filter?.id !== undefined) {
       return baseQuery.where("id", filter.id);
@@ -364,7 +364,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
+  getGithubRepos(filter: GithubRepoFilter): Promise<GithubRepo[]> {
     const baseQuery = this.knex.select("*").from("GithubRepo").orderBy("id");
     if (filter?.id !== undefined) {
       return baseQuery.where("id", filter.id);
@@ -377,7 +377,7 @@ export class CoreUnitModel {
     }
   }
 
-  async getMakerGithubEcosystemAll(
+  getMakerGithubEcosystemAll(
     filter?: MakerGithubEcosystemFilter,
   ): Promise<MakerGithubEcosystem[]> {
     const baseQuery = this.knex
