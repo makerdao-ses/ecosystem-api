@@ -1,6 +1,6 @@
 import { getChildLogger } from "../logger.js"
 import { createClient } from 'redis';
-import crypto from 'crypto';
+import { createHash } from 'crypto';
 
 let client: any;
 
@@ -44,28 +44,11 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
     return results;
 };
 
-// export const measureQueryPerformance = (async function (queryName: string, moduleName: string, knexQuery: any) {
-//     const logger = getChildLogger({}, { moduleName });
-
-//     const start = Date.now(); // Start timing
-//     const result = await knexQuery;
-//     const end = Date.now(); // End timing
-//     logger.info({
-//         executionTime: `${(end - start) / 1000}s`,
-//         query: knexQuery.toString(),
-//     },
-//         queryName);
-
-//     return result
-// });
-
-
-
 const getHashKey = (knexQuery: any) => {
     let retKey = '';
     if (knexQuery) {
         const text = knexQuery.toString();
-        retKey = crypto.createHash('sha256').update(text).digest('hex');
+        retKey = createHash('BLAKE2s256').update(text).digest('hex');
     }
     return 'CACHE_ASIDE' + retKey;
 };
