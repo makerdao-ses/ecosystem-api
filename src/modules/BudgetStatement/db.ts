@@ -478,7 +478,7 @@ export class BudgetStatementModel {
     }
   }
 
-  async getBudgetStatementComments(
+  getBudgetStatementComments(
     paramName?: string | undefined,
     paramValue?: string | number | boolean | undefined,
     secondParamName?: string | undefined,
