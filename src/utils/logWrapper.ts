@@ -6,7 +6,7 @@ let client: any;
 
 async function init() {
     client = await createClient({
-        url: process.env.REDIS_STRING,
+        url: process.env.REDIS_URL,
         socket: {
             tls: true,
             rejectUnauthorized: false,
