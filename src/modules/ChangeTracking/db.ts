@@ -121,8 +121,8 @@ export class ChangeTrackingModel {
     return result[0];
   }
 
-  async getBsEvents(bsId: string) {
-    return await this.knex
+  getBsEvents(bsId: string) {
+    return this.knex
       .select("*")
       .from("ChangeTrackingEvents")
       .whereRaw("params->>? = ?", ["budgetStatementId", JSON.parse(bsId)])

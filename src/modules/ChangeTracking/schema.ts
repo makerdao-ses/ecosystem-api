@@ -1,4 +1,5 @@
 import { gql, AuthenticationError } from "apollo-server-core";
+import { measureQueryPerformance } from "../../utils/logWrapper.js";
 
 export const typeDefs = [
   gql`
@@ -98,11 +99,11 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     activityFeed: async (_: any, filter: any, { dataSources }: any) => {
-      return dataSources.db.ChangeTracking.getActivityFeed(
+      return measureQueryPerformance('getActivityFeed', "ChangeTracking", dataSources.db.ChangeTracking.getActivityFeed(
         filter.limit,
         filter.offset,
         filter.filter,
-      );
+      ));
     },
     userActivity: async (_: any, { filter }: any, { dataSources }: any) => {
       if (filter !== undefined) {
@@ -111,12 +112,12 @@ export const resolvers = {
         const paramValue = filter[queryParams[0]];
         const secondParamName = queryParams[1];
         const secondParamValue = filter[queryParams[1]];
-        return dataSources.db.ChangeTracking.getUserActivity(
+        return measureQueryPerformance('getUserActivity', 'ChangeTracking', dataSources.db.ChangeTracking.getUserActivity(
           paramName,
           paramValue,
           secondParamName,
           secondParamValue,
-        );
+        ));
       }
       return dataSources.db.ChangeTracking.getUserActivity();
     },
@@ -125,9 +126,9 @@ export const resolvers = {
       { filter }: any,
       { dataSources }: any,
     ) => {
-      const result = await dataSources.db.ChangeTracking.getBsEvents(
+      const result = await measureQueryPerformance('getBsEvents', "ChangeTracking", dataSources.db.ChangeTracking.getBsEvents(
         filter?.budgetStatementId,
-      );
+      ));
       return result;
     },
   },

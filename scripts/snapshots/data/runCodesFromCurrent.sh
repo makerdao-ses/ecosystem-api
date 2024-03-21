@@ -42,6 +42,7 @@ codes=(
   "scopes/PRO/governance-security-engineering"
   "scopes/PRO/multichain-engeering"
   "scopes/STA/BLOCKTOWER"
+  "aligned-delegates"
 )
 
 
