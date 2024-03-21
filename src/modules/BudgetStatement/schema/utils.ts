@@ -109,52 +109,54 @@ export const getAnalyticsOffChain = async (queryEngine: any, yearMonth: string, 
     return result;
 }
 
-export const getOwnerFromBudgetPath = async (path: string, knex: Knex) => {
+export const getOwnerFromBudgetPath = (path: string, knex: Knex) => {
     // get list of teams
-    const teamsResult = await knex('CoreUnit').where('type', 'EcosystemActor').select('id', 'shortCode');
-    const cusResult = await knex('CoreUnit').where('type', 'CoreUnit').select('id', 'code');
+    const teamsResultPromise = knex('CoreUnit').where('type', 'EcosystemActor').select('id', 'shortCode');
+    const cusResultPromise = knex('CoreUnit').where('type', 'CoreUnit').select('id', 'code');
     const pathArray = path.split('/');
 
-    // check if coreUnit exists in the path
-    const coreUnitRule = ['atlas', 'legacy', 'core-units']
-    const coreUnitexists = coreUnitRule.every(item => pathArray.includes(item))
-    if (coreUnitexists && pathArray.length > 3) {
-        // remove empty string from array
-        const filteredArray = pathArray.filter(item => item !== '');
-        const owner = filteredArray[filteredArray.length - 1];
-        const {id} = cusResult.find((item: any) => item.code === owner);
-        return { ownerType: 'CoreUnit', owner, ownerId: id };
-    }
+    return Promise.all([teamsResultPromise, cusResultPromise])
+        .then(([teamsResult, cusResult]) => {
+            // check if coreUnit exists in the path
+            const coreUnitRule = ['atlas', 'legacy', 'core-units']
+            const coreUnitexists = coreUnitRule.every(item => pathArray.includes(item))
+            if (coreUnitexists && pathArray.length > 3) {
+                // remove empty string from array
+                const filteredArray = pathArray.filter(item => item !== '');
+                const owner = filteredArray[filteredArray.length - 1];
+                const { id } = cusResult.find((item: any) => item.code === owner);
+                return { ownerType: 'CoreUnit', owner, ownerId: id };
+            }
 
-    // check for recognized delegates
-    const delegateRule = ['atlas', 'legacy', 'recognized-delegates']
-    const delegateExists = delegateRule.every(item => pathArray.includes(item))
-    if (delegateExists) {
-        // remove empty string from array
-        return { ownerType: 'Delegate', owner: null, ownerId: null };
-    }
+            // check for recognized delegates
+            const delegateRule = ['atlas', 'legacy', 'recognized-delegates']
+            const delegateExists = delegateRule.every(item => pathArray.includes(item))
+            if (delegateExists) {
+                // remove empty string from array
+                return { ownerType: 'Delegate', owner: null, ownerId: null };
+            }
 
-    // check for if only atlas exists in the path
-    const atlasRule = ['atlas']
-    const atlasExists = atlasRule.every(item => pathArray.includes(item))
-    if (pathArray.length <= 2 && atlasExists) {
-        return { ownerType: null, owner: null, ownerId: null };
-    }
+            // check for if only atlas exists in the path
+            const atlasRule = ['atlas']
+            const atlasExists = atlasRule.every(item => pathArray.includes(item))
+            if (pathArray.length <= 2 && atlasExists) {
+                return { ownerType: null, owner: null, ownerId: null };
+            }
 
-    // check for ecosystem actors
-    let ecosystemActor = false;
-    teamsResult.forEach((item: any) => {
-        if (pathArray.includes(item.shortCode)) {
-            ecosystemActor = true;
-        }
-    });
-    if (path.startsWith('atlas/scopes') && ecosystemActor) {
-        const filteredArray = pathArray.filter(item => item !== '');
-        const owner = filteredArray[filteredArray.length - 1];
-        const {id} = teamsResult.find((item: any) => item.shortCode === owner);
-        return { ownerType: 'EcosystemActor', owner, ownerId: id };
-    }
+            // check for ecosystem actors
+            let ecosystemActor = false;
+            teamsResult.forEach((item: any) => {
+                if (pathArray.includes(item.shortCode)) {
+                    ecosystemActor = true;
+                }
+            });
+            if (path.startsWith('atlas/scopes') && ecosystemActor) {
+                const filteredArray = pathArray.filter(item => item !== '');
+                const owner = filteredArray[filteredArray.length - 1];
+                const { id } = teamsResult.find((item: any) => item.shortCode === owner);
+                return { ownerType: 'EcosystemActor', owner, ownerId: id };
+            }
 
-    return { ownerType: null, owner: null, ownerId: null };
-
+            return { ownerType: null, owner: null, ownerId: null };
+        });
 }

@@ -75,6 +75,9 @@ const ownerMapping = {
   Delegates: {
     null: "blockNumbersDELEGATES",
   },
+  AlignedDelegates: {
+    null: "blockNumbersDRAFT",
+  },
   Keepers: {
     null: "blockNumbersDRAFT_KEEPERS",
   },

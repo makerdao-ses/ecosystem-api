@@ -8,6 +8,8 @@ import {
   getAnalyticsNetOutflow
 } from "./utils.js";
 
+import { measureQueryPerformance } from "../../../utils/logWrapper.js";
+
 export const typeDefs = [
   gql`
     type BudgetStatement {
@@ -424,22 +426,28 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
-    budgetStatements: async (_: any, filter: any, { dataSources }: any) => {
-      return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
+    budgetStatements: async (_: any, filter: any, { noCache, dataSources }: any,) => {
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
+      }
+      return await measureQueryPerformance('getBudgetStatements', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatements(filter));
     },
     budgetStatementWallets: async (
       _: any,
       { filter }: any,
-      { dataSources }: any,
+      { noCache, dataSources }: any,
     ) => {
-      return await dataSources.db.BudgetStatement.getBudgetStatementWallets(
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatementWallets(filter);
+      }
+      return await measureQueryPerformance('getBudgetStatementWallets', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementWallets(
         filter,
-      );
+      ));
     },
     budgetStatementLineItems: async (
       _: any,
       filter: any,
-      { dataSources }: any,
+      { noCache, dataSources }: any,
     ) => {
       let queryParams: string[] | undefined = undefined;
       let paramName: string | undefined = undefined;
@@ -456,14 +464,24 @@ export const resolvers = {
         secondParamName = queryParams[1];
         secondParamValue = filter?.filter[queryParams[1]];
       }
-      return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(
+          filter?.limit,
+          filter?.offset,
+          paramName,
+          paramValue,
+          secondParamName,
+          secondParamValue,
+        );
+      }
+      return await measureQueryPerformance('getBudgetStatementLineItems', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementLineItems(
         filter?.limit,
         filter?.offset,
         paramName,
         paramValue,
         secondParamName,
         secondParamValue,
-      );
+      ));
     },
     // budgetStatementPayments: async (_, __, { dataSources }) => {
     //     return await dataSources.db.BudgetStatement.getBudgetStatementPayments();
@@ -485,9 +503,9 @@ export const resolvers = {
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
-      const result = await dataSources.db.BudgetStatement.getBudgetStatements({
+      const result = await measureQueryPerformance('CoreUnit getBudgetStatements', "BudgetStaetments", dataSources.db.BudgetStatement.getBudgetStatements({
         filter: { ownerId: [id], ownerType: [output.type] },
-      });
+      }));
       return result;
     },
   },
@@ -498,31 +516,35 @@ export const resolvers = {
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
-      const result = await dataSources.db.BudgetStatement.getBudgetStatements({
+      const result = await measureQueryPerformance('Team getBudgetStatements', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatements({
         filter: { ownerId: [id], ownerType: [output.type] },
-      });
+      }));
       return result;
     },
   },
   BudgetStatement: {
     activityFeed: async (parent: any, __: any, { dataSources }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.ChangeTracking.getBsEvents(id);
+      const result = await measureQueryPerformance('getBsEvents', "BudgetStatements", dataSources.db.ChangeTracking.getBsEvents(id));
       return result;
     },
     auditReport: async (parent: any, __: any, { dataSources }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.BudgetStatement.getAuditReports({
+      const result = await measureQueryPerformance("getAuditReports", "BudgetStatements", dataSources.db.BudgetStatement.getAuditReports({
         budgetStatementId: id,
-      });
+      }))
       return result;
     },
-    budgetStatementFTEs: async (parent: any, __: any, { dataSources }: any) => {
+    budgetStatementFTEs: async (parent: any, __: any, { noCache, dataSources }: any) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementFTEs({
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatementFTEs({
           budgetStatementId: id,
         });
+      }
+      const result = await measureQueryPerformance('getBudgetStatementFTEs', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatementFTEs({
+        budgetStatementId: id,
+      }))
       return result;
     },
     budgetStatementMKRVest: async (
@@ -531,22 +553,25 @@ export const resolvers = {
       { dataSources }: any,
     ) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementMKRVests({
-          budgetStatementId: id,
-        });
+      const result = await measureQueryPerformance('getBudgetStatementMKRVests', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatementMKRVests({
+        budgetStatementId: id,
+      }));
       return result;
     },
     budgetStatementWallet: async (
       parent: any,
       __: any,
-      { dataSources }: any,
+      { noCache, dataSources }: any,
     ) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementWallets({
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatementWallets({
           budgetStatementId: id,
         });
+      }
+      const result = await measureQueryPerformance('getBudgetStatementWallets', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatementWallets({
+        budgetStatementId: id,
+      }));
       return result;
     },
     owner: async (parent: any, __: any, { dataSources }: any) => {
@@ -608,16 +633,23 @@ export const resolvers = {
     budgetStatementLineItem: async (
       parent: any,
       __: any,
-      { dataSources }: any,
+      { noCache, dataSources }: any,
     ) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementLineItems(
+      if (noCache) {
+        return await dataSources.db.BudgetStatement.getBudgetStatementLineItems(
           undefined,
           undefined,
           "budgetStatementWalletId",
           id,
         );
+      }
+      const result = await measureQueryPerformance('getBudgetStatementLineItems', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatementLineItems(
+        undefined,
+        undefined,
+        "budgetStatementWalletId",
+        id,
+      ));
       return result;
     },
     budgetStatementPayment: async (
@@ -626,10 +658,9 @@ export const resolvers = {
       { dataSources }: any,
     ) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementPayments({
-          budgetStatementWalletId: id,
-        });
+      const result = await measureQueryPerformance('getBudgetStatementPayments', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementPayments({
+        budgetStatementWalletId: id,
+      }));
       return result;
     },
     budgetStatementTransferRequest: async (
@@ -638,10 +669,9 @@ export const resolvers = {
       { dataSources }: any,
     ) => {
       const { id } = parent;
-      const result =
-        await dataSources.db.BudgetStatement.getBudgetStatementTransferRequests(
-          { budgetStatementWalletId: id },
-        );
+      const result = await measureQueryPerformance('getBudgetStatementTransferRequests', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementTransferRequests(
+        { budgetStatementWalletId: id },
+      ));
       const parsedResult = result.map((tReqyest: any) => {
         return {
           id: tReqyest.id,
