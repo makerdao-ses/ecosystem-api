@@ -67,5 +67,22 @@ export async function seed(knex) {
           console.log(`No entries found for ${entry.Name} (${entry.Type}). Skipping update.`);
         }
       }
-    });
+
+        // Update entries in BudgetStatement table
+    try {
+      const coreUnits = await trx.select('id', 'code').from('CoreUnit');
+      for (const unit of coreUnits) {
+        const updatedBudgetStatementCount = await trx('BudgetStatement')
+          .where('ownerId', unit.id)
+          .update('ownerCode', unit.code);
+
+        console.log(`Updated ${updatedBudgetStatementCount} entries in BudgetStatement table for CoreUnit with code ${unit.code}`);
+      }
+    } catch (error) {
+      console.error('Error updating BudgetStatement table:', error);
+      throw error;
+    }
+
+    
+  });
   }
