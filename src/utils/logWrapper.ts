@@ -35,11 +35,20 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
         await client.set(key, JSON.stringify(results), { EX: 120 });
     }
     const end = Date.now(); // End timing
-    logger.info({
-        executionTime: `${(end - start) / 1000}s`,
-        query: knexQuery.toString(),
-    },
-        queryName);
+    const executionTime = (end - start) / 1000;
+    if (executionTime > 4) {
+        logger.info({
+            executionTime: `${(end - start) / 1000}s`,
+            query: knexQuery.toString(),
+        },
+            queryName);
+    } else {
+        logger.debug({
+            executionTime: `${(end - start) / 1000}s`,
+            query: knexQuery.toString(),
+        },
+            queryName);
+    }
 
     return results;
 };

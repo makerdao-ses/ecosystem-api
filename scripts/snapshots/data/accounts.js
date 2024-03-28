@@ -423,15 +423,6 @@ export default [
     Address: "0x87acdd9208f73bfc9207e1f6f0fde906bca95cc6",
   },
   {
-    Name: "",
-    "budget path 1": "",
-    "budget path 2": "",
-    "budget path 3": "",
-    "budget path 4": "",
-    Type: "",
-    Address: "",
-  },
-  {
     Name: "Flip Flop Flap Delegate LLC",
     "budget path 1": "makerdao",
     "budget path 2": "delegates",
@@ -783,6 +774,15 @@ export default [
     Address: "0xbb819df169670dc71a16f58f55956fe642cc6bcd",
   },
   {
+    Name: "ACRE DAOs",
+    "budget path 1": "makerdao",
+    "budget path 2": "aligned-delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    Type: "",
+    Address: "0xbf9226345f601150f64ea4feaae7e40530763cbd",
+  },
+  {
     Name: "MIP55c3-SP7: Special Purpose Fund for The Ambassador Program",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
@@ -927,6 +927,15 @@ export default [
     Address: "0x68d0ca2d5ac777f6a9b0d1be44332bb3d5981c2f",
   },
   {
+    Name: "Chronicle Labs Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "CHL",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0x7760e7bee6769222269c9164dd42b61060c822e1",
+  },
+  {
     Name: "Dewiz Auditor",
     "budget path 1": "makerdao",
     "budget path 2": "ecosystem-actors",
@@ -1051,6 +1060,15 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xfca6e196c2ad557e64d9397e283c2afe57344b75",
+  },
+  {
+    Name: "Ecosystem Team Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "ECO",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0x3f2494c872d15b022016544d1226a08f7fde63f4",
   },
   {
     Name: "Pointable Operational Wallet",

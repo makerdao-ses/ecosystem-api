@@ -1,6 +1,8 @@
 import fetch from "node-fetch";
 import { json } from "stream/consumers";
 
+const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC" };
+
 const fetchTransactionData = async (
   address,
   ownerType,
@@ -9,61 +11,71 @@ const fetchTransactionData = async (
   apiToken,
 ) => {
   console.log(
-    `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`
+    `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`,
   );
 
-    address = address.toLowerCase();
-    let result = [];
-    
-    const headers = {
-        'accept': '*/*',
-    };
-    
-    let response = null;
-    let apiCalls = 0;
-    let page = 1;
-    let jsonData = null;
-    
-    // make the API call for from_address
-    do {
+  address = address.toLowerCase();
 
-      console.log(` ...API call ${apiCalls} - from_address: ${address} - fetching data...`);
-      response = await fetch(`https://cortex.blockanalitica.com/api/v1/tokens/dai/wallet-events?page=${page}&wallet_address=${address}`, {
-        method: 'GET',
-        headers: headers
-      });
+  let formattedResults = [];
 
-      jsonData = await response.json(); // assign response to jsonData
+  const headers = {
+    accept: "*/*",
+  };
 
-      if (jsonData.detail === "Could not validate credentials") {
-      throw new Error("API Error: Could not validate credentials");
-      }
+  let response = null;
+  let apiCalls = 0;
+  let page = 1;
+  let jsonData = null;
 
-      result = result.concat(jsonData.results);
-      page = jsonData.next_page;
-      apiCalls++;
+  // make the API call for from_address
+  for (const key in tokens) {
+    if (tokens.hasOwnProperty(key)) {
+      const token = tokens[key];
+      let result = [];
+      do {
+        const apiCallToken = token.toLowerCase();
 
-    } while (page);
+        console.log(
+          ` ...API call ${apiCalls} - token: ${token} - from_address: ${address} - fetching data...`,
+        );
+        response = await fetch(
+          `https://cortex.blockanalitica.com/api/v1/tokens/${apiCallToken}/wallet-events?page=${page}&wallet_address=${address}`,
+          {
+            method: "GET",
+            headers: headers,
+          },
+        );
 
-  return formatResults(result, 'DAI');
+        jsonData = await response.json(); // assign response to jsonData
+
+        if (jsonData.detail === "Could not validate credentials") {
+          throw new Error("API Error: Could not validate credentials");
+        }
+
+        result = result.concat(jsonData.results);
+        page = jsonData.next_page;
+        apiCalls++;
+      } while (page);
+
+      formattedResults = formattedResults.concat(formatResults(result, token));
+    }
+  }
+  return formattedResults;
 };
 
 const formatResults = (data, token) => {
-
-  return data.map(r => ({
+  return data.map((r) => ({
     block: r.block_number,
     timestamp: r.datetime,
-    //_originalTimestamp: r.datetime,
     tx_hash: r.tx_hash,
     token: token,
-    flow: (r.amount[0]==='-'?'outflow':'inflow'),
+    flow: r.amount[0] === "-" ? "outflow" : "inflow",
     amount: Math.abs(parseFloat(r.amount)),
     balance: parseFloat(r.balance),
     sender: r.sender,
     receiver: r.receiver,
-    wallet: r.wallet_address
+    wallet: r.wallet_address,
   }));
-
 };
 
 export default fetchTransactionData;
