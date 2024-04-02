@@ -19,38 +19,49 @@ async function init() {
 }
 
 export const measureQueryPerformance = async (queryName: string, moduleName: string, knexQuery: any) => {
-    const start = Date.now(); // Start timing
-    if (!client) {
-        await init()
-    }
-
     const logger = getChildLogger({}, { moduleName });
-    const key = getHashKey(knexQuery);
-    const value = await client.get(key);
-    let results = null;
-    if (value) {
-        results = JSON.parse(value, dateTimeReviver);
-    } else {
-        results = await knexQuery;
-        await client.set(key, JSON.stringify(results), { EX: 120 });
-    }
-    const end = Date.now(); // End timing
-    const executionTime = (end - start) / 1000;
-    if (executionTime > 4) {
-        logger.info({
-            executionTime: `${(end - start) / 1000}s`,
+    try {
+        const start = Date.now(); // Start timing
+        if (!client) {
+            await init()
+        }
+
+        const key = getHashKey(knexQuery);
+        const value = await client.get(key);
+        let results = null;
+        if (value) {
+            results = JSON.parse(value, dateTimeReviver);
+        } else {
+            results = await knexQuery;
+            await client.set(key, JSON.stringify(results), { EX: 120 });
+        }
+        const end = Date.now(); // End timing
+        const executionTime = (end - start) / 1000;
+        if (executionTime > 4) {
+            logger.info({
+                executionTime: `${(end - start) / 1000}s`,
+                query: knexQuery.toString(),
+            },
+                queryName);
+        } else {
+            logger.debug({
+                executionTime: `${(end - start) / 1000}s`,
+                query: knexQuery.toString(),
+            },
+                queryName);
+        }
+
+        return results;
+    } catch (error: any) {
+        logger.error({
+            error: error.message,
             query: knexQuery.toString(),
         },
             queryName);
-    } else {
-        logger.debug({
-            executionTime: `${(end - start) / 1000}s`,
-            query: knexQuery.toString(),
-        },
-            queryName);
+        return await knexQuery;
     }
 
-    return results;
+
 };
 
 const getHashKey = (knexQuery: any) => {
