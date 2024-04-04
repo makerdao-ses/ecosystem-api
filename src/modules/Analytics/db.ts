@@ -161,15 +161,5 @@ const getGranularity = (
 };
 
 const getCurrency = (currency: string | undefined) => {
-  switch (currency) {
-    case "DAI": {
-      return AnalyticsPath.fromString("DAI");
-    }
-    case "MKR": {
-      return AnalyticsPath.fromString("MKR");
-    }
-    default: {
-      return AnalyticsPath.fromString("");
-    }
-  }
+  return currency ? AnalyticsPath.fromString(currency) : AnalyticsPath.fromString("");
 };

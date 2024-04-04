@@ -41,8 +41,8 @@ async function processMkrRow(row) {
             .toLocaleDateString("en-US")
             .slice(0, 10);
           const comment = row.comments !== undefined ? row.comments : null;
-          const mkrAmount = parseFloat(row.mkrAmount);
-          const mkrAmountOld = parseFloat(row.mkrAmountOld);
+          const mkrAmount = !isNaN(row.mkrAmount) ? parseFloat(row.mkrAmount) : null;
+          const mkrAmountOld = !isNaN(row.mkrAmountOld) ? parseFloat(row.mkrAmountOld) : null;
 
           try {
             const result = await pool.query(
