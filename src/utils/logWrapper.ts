@@ -37,7 +37,7 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
         }
         const end = Date.now(); // End timing
         const executionTime = (end - start) / 1000;
-        if (executionTime > 4) {
+        if (executionTime > 2) {
             logger.info({
                 executionTime: `${(end - start) / 1000}s`,
                 query: knexQuery.toString(),
