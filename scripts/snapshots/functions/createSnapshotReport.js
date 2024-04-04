@@ -1,3 +1,5 @@
+import { checkOrCreateBudgetStatement } from "./checkOrCreateBudgetStatement.js";
+
 const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
   console.log(
     `\nCreating snapshot report for ${ownerType} ${ownerId}, month ${month}`,
@@ -8,6 +10,9 @@ const createSnapshotReport = async (ownerType, ownerId, month, knex) => {
     ownerId,
     month: month ? convertMonthStringToDate(month) : null,
   };
+
+  //Check for existence of or create corresponding budget statements
+  await checkOrCreateBudgetStatement(snapshotKey, knex);
 
   const existingSnapshots = await knex("Snapshot")
     .select("id")
