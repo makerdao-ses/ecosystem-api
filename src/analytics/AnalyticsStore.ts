@@ -302,6 +302,11 @@ export class AnalyticsStore {
     });
     return filtered;
   }
+
+  public async getCurrencies() {
+    const currencies = await this._knex("AnalyticsSeries").select('unit').distinct().whereNotNull('unit');
+    return currencies.map((c) => c.unit);
+  }
 }
 
 type DimensionsMap = Record<string, Record<string, number[]>>;
