@@ -9,6 +9,7 @@ import {
 } from "./utils.js";
 
 import { measureQueryPerformance } from "../../../utils/logWrapper.js";
+import { resolveBudgetPath } from "./utils.js";
 
 export const typeDefs = [
   gql`
@@ -427,6 +428,14 @@ export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
     budgetStatements: async (_: any, filter: any, { noCache, dataSources }: any,) => {
+
+      // check filter.filter.budgetPath and resolve to budgetStatementIds in the filter
+      if (filter.filter?.budgetPath) {
+        const budgetStatementIds = await resolveBudgetPath(filter.filter.budgetPath, dataSources.db.BudgetStatement.knex);
+        const uniqueBudgetStatementIds = [...new Set(budgetStatementIds)];
+        filter.filter.id = uniqueBudgetStatementIds;
+      }
+
       if (noCache) {
         return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
       }
