@@ -8,6 +8,7 @@ export const typeDefs = [
       multiCurrencySeries(filter: MultiCurrencyConversions): [AnalyticsPeriod]
       metrics: [String]
       dimensions: [Dimension]
+      currencies: [String]
     }
 
     type AnalyticsPeriod {
@@ -131,6 +132,10 @@ export const resolvers = {
     dimensions: async (_: any, { filter }: any, { dataSources }: any) => {
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       return await queryEngine.getDimensions();
+    },
+    currencies: async (_: any, { filter }: any, { dataSources }: any) => {
+      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
+      return await queryEngine.getCurrencies();
     },
     multiCurrencySeries: async (_: any, { filter }: any, { dataSources }: any) => {
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;

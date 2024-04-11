@@ -122,6 +122,10 @@ export class AnalyticsModel {
   public async getMetrics() {
     return await this.engine.getMetrics()
   }
+
+  public async getCurrencies() {
+    return await this.engine.getCurrencies()
+  }
 }
 
 export default (knex: Knex) => new AnalyticsModel(knex);

@@ -245,4 +245,8 @@ export class AnalyticsQueryEngine {
   public async getMetrics(): Promise<string[]> {
     return await this._analyticsStore.getMetrics();
   }
+
+  public async getCurrencies(): Promise<string[]> {
+    return await this._analyticsStore.getCurrencies();
+  }
 }
