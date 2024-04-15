@@ -618,7 +618,7 @@ export const resolvers = {
         } break;
       }
 
-      if (ownerId) {
+      if (ownerId !== null && ownerId !== undefined) {
         owner.id = ownerId
         owner.icon = output.image
         owner.name = output.name
