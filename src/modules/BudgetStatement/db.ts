@@ -222,7 +222,7 @@ export class BudgetStatementModel {
       .select("*")
       .from("BudgetStatement")
 
-    if (filter?.filter?.sortByMonth !== undefined) {
+    if (filter?.filter?.sortByMonth !== undefined && filter?.filter?.sortByMonth !== null) {
       query = query.orderBy('month', filter.filter.sortByMonth)
     } else {
       query = query.orderBy("month", "desc");
@@ -239,8 +239,8 @@ export class BudgetStatementModel {
       query = this.knex
         .select("BudgetStatement.*", "cte.created_at as last_modified")
         .from("BudgetStatement")
-        .join(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
-        .orderBy('last_modified', `${filter?.filter?.sortByLastModified}`);
+        .leftJoin(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
+        .orderByRaw(`last_modified ${filter?.filter?.sortByLastModified} NULLS LAST, month DESC`);
     }
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
@@ -251,8 +251,7 @@ export class BudgetStatementModel {
       if (filter.filter.ownerType !== undefined) {
         query = query.where("ownerType", 'in', filter.filter.ownerType);
       }
-
-      if (filter.filter.id !== undefined) {
+      if (filter.filter.id !== undefined && Array(filter.filter.id).length > 0) {
         const ids = Array.isArray(filter.filter.id) ? filter.filter.id : [filter.filter.id];
         query = query.andWhere("BudgetStatement.id", 'in', ids);
       }
