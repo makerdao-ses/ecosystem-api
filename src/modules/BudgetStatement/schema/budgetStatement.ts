@@ -604,7 +604,7 @@ export const resolvers = {
         } break;
         case 'Delegates': {
           if (!output) {
-            owner.name = "Delegates"
+            owner.name = "Recognized Delegates"
             owner.shortCode = "recognized-delegates"
           }
         } break;
