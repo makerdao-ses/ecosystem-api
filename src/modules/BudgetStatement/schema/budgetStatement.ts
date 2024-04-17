@@ -9,6 +9,7 @@ import {
 } from "./utils.js";
 
 import { measureQueryPerformance } from "../../../utils/logWrapper.js";
+import { resolveBudgetPath } from "./utils.js";
 
 export const typeDefs = [
   gql`
@@ -427,6 +428,14 @@ export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
     budgetStatements: async (_: any, filter: any, { noCache, dataSources }: any,) => {
+
+      // check filter.filter.budgetPath and resolve to budgetStatementIds in the filter
+      if (filter.filter?.budgetPath) {
+        const budgetStatementIds = await resolveBudgetPath(filter.filter.budgetPath, dataSources.db.BudgetStatement.knex);
+        const uniqueBudgetStatementIds = [...new Set(budgetStatementIds)];
+        filter.filter.id = uniqueBudgetStatementIds;
+      }
+
       if (noCache) {
         return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
       }
@@ -575,23 +584,48 @@ export const resolvers = {
       return result;
     },
     owner: async (parent: any, __: any, { dataSources }: any) => {
-      const { ownerId } = parent;
+      const { ownerId, ownerType } = parent;
       const [output] = await dataSources.db
         .knex("CoreUnit")
         .where("id", ownerId)
         .select("image", "name", "shortCode");
-      if (!output) return {
+
+      const owner = {
         id: '',
         icon: "",
-        name: "Delegates",
-        shortCode: "DEL",
-      };
-      return {
-        id: ownerId,
-        icon: output.image,
-        name: output.name,
-        shortCode: output.shortCode,
-      };
+        name: "",
+        shortCode: ""
+      }
+
+      switch (ownerType) {
+        case 'Keepers': {
+          owner.name = "Keepers"
+          owner.shortCode = 'keepers'
+        } break;
+        case 'Delegates': {
+          if (!output) {
+            owner.name = "Recognized Delegates"
+            owner.shortCode = "recognized-delegates"
+          }
+        } break;
+        case 'AlignedDelegates': {
+          owner.name = "Aligned Delegates"
+          owner.shortCode = 'aligned-delegates'
+        } break;
+        case 'SpecialPurposeFund': {
+          owner.name = "Special Purpose Fund"
+          owner.shortCode = 'spfs'
+        } break;
+      }
+
+      if (ownerId !== null && ownerId !== undefined) {
+        owner.id = ownerId
+        owner.icon = output.image
+        owner.name = output.name
+        owner.shortCode = output.shortCode
+      }
+
+      return owner;
     },
     forecastExpenses: async (parent: any, __: any, { dataSources }: any) => {
       const { ownerId, ownerType, month } = parent;
