@@ -22,8 +22,6 @@ codes=(
   "core-units/CES-001"
   "core-units/PE-001"
   "core-units/RISK-001"
-  "delegates"
-  "spfs"
   "ecosystem-actors/BAL"
   "ecosystem-actors/CHL"
   "ecosystem-actors/DEW"
@@ -36,13 +34,14 @@ codes=(
   "ecosystem-actors/JSK"
   "ecosystem-actors/EGE"
   "ecosystem-actors/AAVE"
-  "keepers"
-  "scopes/SUP/gait-bootstrap-funding",
-  "scopes/ACC/launch-project"
-  "scopes/PRO/governance-security-engineering"
-  "scopes/PRO/multichain-engeering"
-  "scopes/STA/BLOCKTOWER"
+  "scopes/SUP"
+  "scopes/ACC"
+  "scopes/PRO"
+  "scopes/STA"
   "aligned-delegates"
+  "delegates"
+  "keepers"
+  "spfs"
 )
 
 
