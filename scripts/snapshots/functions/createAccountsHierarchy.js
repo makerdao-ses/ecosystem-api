@@ -24,7 +24,7 @@ const createAccountsHierarchy = async (
   );
   accountIds.coreUnitReservesAccountId = await createGroupAccount(
     snapshotReport,
-    "Core Unit Reserves",
+    "Total Reserves",
     accountIds.rootAccountId,
     false,
     knex,
@@ -375,7 +375,7 @@ const calculateTopLevelGroupAccountsInfo = (
   });
 
   newGroupAccountsInfo.push({
-    label: "Core Unit Reserves",
+    label: "Total Reserves",
     type: "Reserve",
     group: "Reserve",
     address: "0xGROUP",
