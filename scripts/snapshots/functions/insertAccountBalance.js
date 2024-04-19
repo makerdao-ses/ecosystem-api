@@ -2,7 +2,7 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
   let formattedResponse = [];
   let offChainKey = offChainIncluded ? "offChainIncluded" : "offChainExcluded";
 
-  const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC" };
+  const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC", GUSD: "GUSD", USDP: "USDP", USDT: "USDT" };
 
   console.log("Updating account balances...");
 
