@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { json } from "stream/consumers";
 
-const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC" };
+const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC", GUSD: "GUSD", USDP: "USDP", USDT: "USDT" };
 
 const fetchTransactionData = async (
   address,

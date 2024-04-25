@@ -8,6 +8,7 @@ import blockNumbersGOV from "../data/blockNumbers-GOV.js";
 import blockNumbersGRO from "../data/blockNumbers-GRO.js";
 import blockNumbersIS from "../data/blockNumbers-IS.js";
 import blockNumbersORA from "../data/blockNumbers-ORA.js";
+import blockNumbersPH from "../data/blockNumbers-PH.js";
 import blockNumbersRISK from "../data/blockNumbers-RISK.js";
 import blockNumbersRWF from "../data/blockNumbers-RWF.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
@@ -49,7 +50,7 @@ const ownerMapping = {
   EcosystemActor: {
     44: "blockNumbersDRAFT",
     45: "blockNumbersDRAFT",
-    46: "blockNumbersDRAFT",
+    46: "blockNumbersPH",
     47: "blockNumbersDRAFT",
     48: "blockNumbersJETSTREAM",
     49: "blockNumbersDRAFT",
@@ -102,6 +103,7 @@ const blockNumbersMapping = {
   blockNumbersGRO,
   blockNumbersIS,
   blockNumbersORA,
+  blockNumbersPH,
   blockNumbersRISK,
   blockNumbersRWF,
   blockNumbersSAS,
