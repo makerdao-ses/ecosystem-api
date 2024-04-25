@@ -67,17 +67,23 @@ const processTransactions = async (
       }
     }
 
-        // Ensure that the balances is properly initialized
+        /// Ensure that the balances are properly initialized
         if (!finalBalanceByToken[txData.token]){
-            finalBalanceByToken[txData.token] = 0;
-            initialBalanceByToken[txData.token] = 0;
+          finalBalanceByToken[txData.token] = 0;
         }
+        if (!initialBalanceByToken[txData.token]){
+          initialBalanceByToken[txData.token] = 0;
+        }
+
         
         // A block range is set and we haven't reached the first block yet 
         //   => don't include the transaction yet, but increase the balances
         if (monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial) {
             finalBalanceByToken[txData.token] += relativeTxData.amount;
+            console.log(finalBalanceByToken[txData.token])
             initialBalanceByToken[txData.token] += relativeTxData.amount;
+            console.log("Initial balance:",initialBalanceByToken[txData.token])
+            console.log(relativeTxData)
 
         // No block range is set or we haven't hit the final block of the set range yet
         //   => include the transaction
