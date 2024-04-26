@@ -783,6 +783,15 @@ export default [
     Address: "0xbf9226345f601150f64ea4feaae7e40530763cbd",
   },
   {
+    Name: "Cloaky",
+    "budget path 1": "makerdao",
+    "budget path 2": "aligned-delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    Type: "",
+    Address: "0x869b6d5d8fa7f4ffdaca4d23ffe0735c5ed1f818"
+  },
+  {
     Name: "MIP55c3-SP7: Special Purpose Fund for The Ambassador Program",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
@@ -1105,6 +1114,15 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x464c71f6c2f760dda6093dcb91c24c39e5d6e18c",
+  },
+  {
+    Name: "Powerhouse Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PH",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0x8ec63fe682c0703e4eb6d6ff8a154f5535f80260",
   },
   {
     Name: "Chainlink Automation",
