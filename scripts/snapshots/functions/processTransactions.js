@@ -80,10 +80,7 @@ const processTransactions = async (
         //   => don't include the transaction yet, but increase the balances
         if (monthInfo.blockNumberRange.initial && txData.block < monthInfo.blockNumberRange.initial) {
             finalBalanceByToken[txData.token] += relativeTxData.amount;
-            console.log(finalBalanceByToken[txData.token])
             initialBalanceByToken[txData.token] += relativeTxData.amount;
-            console.log("Initial balance:",initialBalanceByToken[txData.token])
-            console.log(relativeTxData)
 
         // No block range is set or we haven't hit the final block of the set range yet
         //   => include the transaction
