@@ -20,8 +20,6 @@ export async function seed(knex) {
       // Format the date as YYYY-MM-DD
       const formattedDate = parsedDate.toISOString().split("T")[0];
 
-      //console.log(team, formattedDate, status);
-
       // Fetch 'id' from CoreUnit where "shortCode" = code
       const coreUnit = await knex('CoreUnit').select('id').where('shortCode', team).andWhere('type', "CoreUnit").first();
       if (!coreUnit) {
@@ -55,18 +53,15 @@ export async function seed(knex) {
           // Remove the entry if status is 'Remove'
           if (status === 'Remove') {
 
-            await removeSnapshotReport(knex, formattedDate, cuId)
+            let bsId = existingEntry.id;
 
-            await knex('BudgetStatement')
-              .where({
-                id: existingEntry.id
-              })
-              .del();
-            console.log(`BudgetStatement entry removed for ownerId: ${coreUnit.id} and month: ${formattedDate}.`);
+            await removeSnapshotReport(knex, formattedDate, cuId)
+            await removeBudgetStatement(knex, bsId)
           }
   
           // Update status to 'Final' if status is 'Final'
           if (status === 'Final') {
+
             await knex('BudgetStatement')
               .where({
                 id: existingEntry.id
@@ -77,6 +72,7 @@ export async function seed(knex) {
             console.log(`BudgetStatement status updated to 'Final' for ownerId: ${coreUnit.id} and month: ${formattedDate}.`);
           }
         }
+      
          catch (error) {
           console.error(`Error removing BudgetStatement entry: ${error.message}`);
           continue; // Continue to the next iteration if an error occurs
@@ -144,6 +140,74 @@ const removeSnapshotReport = async (knex, formattedDate, cuId) => {
       // Consider appropriate handling here such as retry logic or escalation
   }
 }
+
+const removeBudgetStatement = async (knex, bsId) => {
+  try {
+      // Start transaction
+      await knex.transaction(async trx => {
+          // 1. Find BudgetStatementWallet IDs related to the BudgetStatement
+          const wallets = await trx('BudgetStatementWallet')
+              .select('id')
+              .where('budgetStatementId', bsId);
+
+          const walletIds = wallets.map(wallet => wallet.id);
+
+          // 2. Find BudgetStatementTransferRequest IDs related to BudgetStatementWallets
+          const transferRequests = await trx('BudgetStatementTransferRequest')
+              .whereIn('budgetStatementWalletId', walletIds);
+
+          const transferRequestIds = transferRequests.map(request => request.id);
+
+          // 3. Find BudgetStatementLineItem IDs related to BudgetStatementWallets
+          const lineItems = await trx('BudgetStatementLineItem')
+              .whereIn('budgetStatementWalletId', walletIds);
+
+          const lineItemIds = lineItems.map(item => item.id);
+
+          // 4. Check if all Transfer Requests have null or empty walletBalance
+          const invalidTransferRequests = transferRequests.filter(request => request.walletBalance !== null && request.walletBalance !== '');
+
+          if (invalidTransferRequests.length > 0) {
+              console.error('Failed to remove BudgetStatement: Some Transfer Requests have non-null walletBalance.');
+              return;
+          }
+
+          // 5. Check if all Line Items have null or empty actual
+          const invalidLineItems = lineItems.filter(item => item.actual !== null && item.actual !== '');
+
+          if (invalidLineItems.length > 0) {
+              console.error('Failed to remove BudgetStatement: Some Line Items have non-null actual.');
+              return;
+          }
+
+          // 6. Delete entries from BudgetStatementTransferRequest
+          await trx('BudgetStatementTransferRequest')
+              .whereIn('id', transferRequestIds)
+              .delete();
+
+          // 7. Delete entries from BudgetStatementLineItem
+          await trx('BudgetStatementLineItem')
+              .whereIn('id', lineItemIds)
+              .delete();
+
+          // 8. Delete entries from BudgetStatementWallet
+          await trx('BudgetStatementWallet')
+              .whereIn('id', walletIds)
+              .delete();
+
+          // 9. Delete entries from BudgetStatement
+          await trx('BudgetStatement')
+              .where('id', bsId)
+              .delete();
+      });
+
+      console.log(`BudgetStatement deleted for teamId: ${bsId}`);
+  } catch (error) {
+      console.error('Failed to remove BudgetStatement:', error);
+      // Consider appropriate handling here such as retry logic or escalation
+  }
+}
+
 
 
 
