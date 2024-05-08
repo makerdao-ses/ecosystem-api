@@ -199,9 +199,10 @@ const removeBudgetStatement = async (knex, bsId) => {
           await trx('BudgetStatement')
               .where('id', bsId)
               .delete();
-      });
 
       console.log(`BudgetStatement deleted for teamId: ${bsId}`);
+
+    });
   } catch (error) {
       console.error('Failed to remove BudgetStatement:', error);
       // Consider appropriate handling here such as retry logic or escalation
