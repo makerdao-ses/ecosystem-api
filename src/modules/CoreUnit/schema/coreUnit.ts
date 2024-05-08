@@ -28,6 +28,7 @@ export const typeDefs = gql`
     "ResouceType of the Core Unit"
     type: ResourceType
     "Information on the Users that are this Core Units' auditors"
+    budgetPath: String
     auditors: [User]
     "Access details on the social media channels of a Core Unit"
     socialMediaChannels: [SocialMediaChannels]
@@ -185,5 +186,10 @@ export const resolvers = {
       ));
       return resourceUsers;
     },
+    budgetPath: async (parent: any, __: any, { dataSources }: any) => {
+      const { code } = parent;
+      const result = await dataSources.db.CoreUnit.getBudgetPathFromCoreUnit(code);
+      return result;
+    }
   },
 };

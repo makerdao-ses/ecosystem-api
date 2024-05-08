@@ -423,6 +423,18 @@ export class CoreUnitModel {
     }
     return scopes.length > 0 ? scopes : null;
   }
+
+  async getBudgetPathFromCoreUnit(code: string): Promise<any> {
+    const result = await this.knex
+      .select('budgetPath')
+      .from('CoreUnit')
+      .where('code', code);
+
+    if (result.length > 0) { 
+      return result[0].budgetPath;
+    }
+    return null;
+  }
 }
 
 export default (knex: Knex) => new CoreUnitModel(knex);
