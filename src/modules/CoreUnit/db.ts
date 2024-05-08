@@ -424,19 +424,6 @@ export class CoreUnitModel {
     return scopes.length > 0 ? scopes : null;
   }
 
-  async getBudgetPathByCode(code: string): Promise<any> {
-    const result = await this.knex
-      .select("path")
-      .from("AnalyticsDimension")
-      .where("dimension", 'budget')
-      .whereLike("path", `%${code}%`);
-
-    if (result.length > 0) {
-      return result[0].path;
-    }
-    return null;
-  }
-
   async getBudgetPathFromCoreUnit(code: string): Promise<any> {
     const result = await this.knex
       .select('budgetPath')

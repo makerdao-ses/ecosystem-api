@@ -27,7 +27,7 @@ export const typeDefs = gql`
     "ResouceType of the Team"
     type: ResourceType
     "Information on the Users that are this Teams' auditors"
-    calculatedBudgetPath: String
+    budgetPath: String
     auditors: [User]
     "Access details on the social media channels of a Team"
     socialMediaChannels: [SocialMediaChannels]
@@ -183,7 +183,7 @@ export const resolvers = {
       const result = await dataSources.db.CoreUnit.getScopesByTeamId(id);
       return result;
     },
-    calculatedBudgetPath: async (parent: any, __: any, { dataSources }: any) => {
+    budgetPath: async (parent: any, __: any, { dataSources }: any) => {
       const { code } = parent;
       const result = await dataSources.db.CoreUnit.getBudgetPathFromCoreUnit(code);
       return result;
