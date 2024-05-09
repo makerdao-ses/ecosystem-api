@@ -80,11 +80,11 @@ const budgetStatementCreated = async (mapping, knex) => {
     month: monthDate.toISOString().slice(0, 7),
   });
   if (ownerType === "CoreUnit" || ownerType === "EcosystemActor") {
-    description = `${ownerType} ${cuShortCode} has published a new expense report for ${toMonthName(
+    description = `An expense report was auto-generated for ${ownerType} ${cuShortCode} for ${toMonthName(
       Number(monthDate.toISOString().slice(5, 7)),
     )} ${monthDate.getFullYear()}`;
   } else {
-    description = `${ownerType} administrator has published a new expense report for ${toMonthName(
+    description = `An expense report was auto-generated for ${ownerType} for ${toMonthName(
       Number(monthDate.toISOString().slice(5, 7)),
     )} ${monthDate.getFullYear()}`;
   }
@@ -101,7 +101,7 @@ const budgetStatementCreated = async (mapping, knex) => {
       budgetStatementId,
       month: monthDate.toISOString().slice(0, 7),
     });
-    description = `Delegate administrator has published a new expense report for ${toMonthName(
+    description = `An expense report was auto-generated for Delegates for ${toMonthName(
       Number(monthDate.toISOString().slice(5, 7)),
     )} ${monthDate.getFullYear()}`;
   }

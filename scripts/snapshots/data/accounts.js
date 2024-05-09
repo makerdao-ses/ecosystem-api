@@ -783,6 +783,15 @@ export default [
     Address: "0xbf9226345f601150f64ea4feaae7e40530763cbd",
   },
   {
+    Name: "Cloaky",
+    "budget path 1": "makerdao",
+    "budget path 2": "aligned-delegates",
+    "budget path 3": "",
+    "budget path 4": "",
+    Type: "",
+    Address: "0x869b6d5d8fa7f4ffdaca4d23ffe0735c5ed1f818"
+  },
+  {
     Name: "MIP55c3-SP7: Special Purpose Fund for The Ambassador Program",
     "budget path 1": "makerdao",
     "budget path 2": "spfs",
@@ -916,6 +925,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xdfe08a40054685e205ed527014899d1ede49b892",
+    BudgetPath: "atlas/scopes/STA/STAC/BAL"
   },
   {
     Name: "Chronicle Labs Auditor",
@@ -961,6 +971,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0xf478a08c41ad06e8d957d5e6b6bcde7452cee962",
+    BudgetPath: "atlas/scopes/ACC/ELP/JTS"
   },
   {
     Name: "Jetstream Operational",
@@ -970,6 +981,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x3214b48fc628f33ed0034d66c634f72af3df6577",
+    BudgetPath: "atlas/scopes/ACC/ELP/JTS"
   },
   {
     Name: "Phoenix Labs Auditor",
@@ -979,6 +991,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0x115f76a98c2268dae6c1421eb6b08e4e1df525da",
+    BudgetPath: "atlas/scopes/SUP/INC/PHX"
   },
   {
     Name: "Phoenix Labs Operational",
@@ -988,6 +1001,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x19891541842162ad4311f14055e7221406213d67",
+    BudgetPath: "atlas/scopes/SUP/INC/PHX"
   },
   {
     Name: "PullUp Labs Operational",
@@ -1042,6 +1056,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0xbb8aa212267477c3dbff6643e497919ec2e3dec9",
+    BudgetPath: "atlas/scopes/SUP/INC/VPAC"
   },
   {
     Name: "Viridian Protector Advisory Company",
@@ -1051,6 +1066,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xa1e62c6321eed0ecfcf2f382c8c82fd940d83c07",
+    BudgetPath: "atlas/scopes/SUP/INC/VPAC"
   },
   {
     Name: "Ecosystem Facilitator Role Operational",
@@ -1105,6 +1121,15 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x464c71f6c2f760dda6093dcb91c24c39e5d6e18c",
+  },
+  {
+    Name: "Powerhouse Operational",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PH",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0x8ec63fe682c0703e4eb6d6ff8a154f5535f80260",
   },
   {
     Name: "Chainlink Automation",
