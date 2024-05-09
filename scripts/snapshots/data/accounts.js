@@ -925,7 +925,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xdfe08a40054685e205ed527014899d1ede49b892",
-    BudgetPath: "atlas/scopes/STA/STAC/BAL"
+    BudgetPath: "atlas/scopes/STA/STAC/BAL-001"
   },
   {
     Name: "Chronicle Labs Auditor",
@@ -971,7 +971,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0xf478a08c41ad06e8d957d5e6b6bcde7452cee962",
-    BudgetPath: "atlas/scopes/ACC/ELP/JTS"
+    BudgetPath: "atlas/scopes/ACC/ELP/JTS-001"
   },
   {
     Name: "Jetstream Operational",
@@ -981,7 +981,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x3214b48fc628f33ed0034d66c634f72af3df6577",
-    BudgetPath: "atlas/scopes/ACC/ELP/JTS"
+    BudgetPath: "atlas/scopes/ACC/ELP/JTS-001"
   },
   {
     Name: "Phoenix Labs Auditor",
@@ -991,7 +991,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0x115f76a98c2268dae6c1421eb6b08e4e1df525da",
-    BudgetPath: "atlas/scopes/SUP/INC/PHX"
+    BudgetPath: "atlas/scopes/SUP/INC/PHX-001"
   },
   {
     Name: "Phoenix Labs Operational",
@@ -1001,7 +1001,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x19891541842162ad4311f14055e7221406213d67",
-    BudgetPath: "atlas/scopes/SUP/INC/PHX"
+    BudgetPath: "atlas/scopes/SUP/INC/PHX-001"
   },
   {
     Name: "PullUp Labs Operational",
@@ -1056,7 +1056,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0xbb8aa212267477c3dbff6643e497919ec2e3dec9",
-    BudgetPath: "atlas/scopes/SUP/INC/VPAC"
+    BudgetPath: "atlas/scopes/SUP/INC/VPAC-001"
   },
   {
     Name: "Viridian Protector Advisory Company",
@@ -1066,7 +1066,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xa1e62c6321eed0ecfcf2f382c8c82fd940d83c07",
-    BudgetPath: "atlas/scopes/SUP/INC/VPAC"
+    BudgetPath: "atlas/scopes/SUP/INC/VPAC-001"
   },
   {
     Name: "Ecosystem Facilitator Role Operational",
