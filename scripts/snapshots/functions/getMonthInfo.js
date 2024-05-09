@@ -3,7 +3,9 @@ import blockNumbersCES from "../data/blockNumbers-CES.js";
 import blockNumbersCOM from "../data/blockNumbers-COM.js";
 import blockNumbersDAIF from "../data/blockNumbers-DAIF.js";
 import blockNumbersDECO from "../data/blockNumbers-DECO.js";
+import blockNumbersDIN from "../data/blockNumbers-DIN.js";
 import blockNumbersDUX from "../data/blockNumbers-DUX.js";
+import blockNumbersEVT from "../data/blockNumbers-EVT.js";
 import blockNumbersGOV from "../data/blockNumbers-GOV.js";
 import blockNumbersGRO from "../data/blockNumbers-GRO.js";
 import blockNumbersIS from "../data/blockNumbers-IS.js";
@@ -13,6 +15,7 @@ import blockNumbersRISK from "../data/blockNumbers-RISK.js";
 import blockNumbersRWF from "../data/blockNumbers-RWF.js";
 import blockNumbersSAS from "../data/blockNumbers-SAS.js";
 import blockNumbersSES from "../data/blockNumbers-SES.js";
+import blockNumbersSH from "../data/blockNumbers-SH.js";
 import blockNumbersSNE from "../data/blockNumbers-SNE.js";
 import blockNumbersTECHCU from "../data/blockNumbers-TECH-CU.js";
 import blockNumbersTECHEA from "../data/blockNumbers-TECH-EA.js";
@@ -35,16 +38,16 @@ const ownerMapping = {
     11: "blockNumbersORA",
     12: "blockNumbersCOM",
     13: "blockNumbersDAIF",
-    14: "blockNumbersDRAFT",
+    14: "blockNumbersSH",
     15: "blockNumbersDUX",
     16: "blockNumbersSNE",
-    17: "blockNumbersDRAFT",
+    17: "blockNumbersDIN",
     18: "blockNumbersIS",
     19: "blockNumbersSAS",
     20: "blockNumbersDECO",
     21: "blockNumbersDRAFT",
     22: "blockNumbersTECHCU",
-    38: "blockNumbersDRAFT",
+    38: "blockNumbersEVT",
     66: "blockNumbersDRAFT",
   },
   EcosystemActor: {
@@ -98,7 +101,9 @@ const blockNumbersMapping = {
   blockNumbersCOM,
   blockNumbersDAIF,
   blockNumbersDECO,
+  blockNumbersDIN,
   blockNumbersDUX,
+  blockNumbersEVT,
   blockNumbersGOV,
   blockNumbersGRO,
   blockNumbersIS,
@@ -108,6 +113,7 @@ const blockNumbersMapping = {
   blockNumbersRWF,
   blockNumbersSAS,
   blockNumbersSES,
+  blockNumbersSH,
   blockNumbersSNE,
   blockNumbersTECHCU,
   blockNumbersTECHEA,
@@ -170,6 +176,7 @@ const getMonthInfo = (owner, month, endBlockNo) => {
       .replace("-", "/");
     const endBlockNumber = blockNumbers[nextMonth];
     console.log("NEXT MONTH ", nextMonth);
+    console.log("START BLOCK NUMBER ", startBlockNumber);
     console.log("END BLOCK NUMBER ", endBlockNumber);
     console.log("END BLOCK NUMBER GIVEN", endBlockNo);
 

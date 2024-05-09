@@ -67,11 +67,14 @@ const processTransactions = async (
       }
     }
 
-        // Ensure that the balances is properly initialized
+        /// Ensure that the balances are properly initialized
         if (!finalBalanceByToken[txData.token]){
-            finalBalanceByToken[txData.token] = 0;
-            initialBalanceByToken[txData.token] = 0;
+          finalBalanceByToken[txData.token] = 0;
         }
+        if (!initialBalanceByToken[txData.token]){
+          initialBalanceByToken[txData.token] = 0;
+        }
+
         
         // A block range is set and we haven't reached the first block yet 
         //   => don't include the transaction yet, but increase the balances
