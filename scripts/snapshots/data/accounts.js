@@ -953,6 +953,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0xd8665628742cf54bbbb3b00b15d7e7a838a1b53a",
+    BudgetPath: "atlas/scopes/PRO/DEW-001",
   },
   {
     Name: "Dewiz Operational",
@@ -962,6 +963,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xc37e6d18ee56440b186257968a295eb54036821a",
+    BudgetPath: "atlas/scopes/PRO/DEW-001",
   },
   {
     Name: "Jetstream Auditor",
@@ -1011,6 +1013,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x42ad911c75d25e21727e45eca2a9d999d5a7f94c",
+    BudgetPath: "atlas/scopes/PRO/PUL-001"
   },
   {
     Name: "Sidestream Auction Services Auditor",
@@ -1020,6 +1023,7 @@ export default [
     "budget path 4": "",
     Type: "Auditor",
     Address: "0x87ecaaaced3a02a37e7075dc45d3feb49867d135",
+    BudgetPath: "atlas/scopes/PRO/SSA-001",
   },
   {
     Name: "Sidestream Auction Services Operational",
@@ -1029,6 +1033,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x852c61ab6f70e5fbacdfb55ebe73a8d2ccaf4649",
+    BudgetPath: "atlas/scopes/PRO/SSA-001",
   },
   {
     Name: "Techops Operational",
