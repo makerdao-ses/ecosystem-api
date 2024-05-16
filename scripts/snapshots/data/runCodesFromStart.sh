@@ -24,15 +24,18 @@ cu_codes=(
   )
 
 ecosystem_codes=(
-  "ecosystem-actors/BA-LABS"
-  "ecosystem-actors/CHRONICLE"
-  "ecosystem-actors/DEWIZ"
-  "ecosystem-actors/JETSTREAM"
-  "ecosystem-actors/PHOENIX"
-  "ecosystem-actors/PULLUP"
-  "ecosystem-actors/SIDESTREAM"
-  "ecosystem-actors/TECHOPS"
-  "ecosystem-actors/VIRIDIAN"
+  "ecosystem-actors/BAL-001"
+  "ecosystem-actors/CHL-001"
+  "ecosystem-actors/DEW-001"
+  "ecosystem-actors/JTS-001"
+  "ecosystem-actors/PHX-001"
+  "ecosystem-actors/PUL-001"
+  "ecosystem-actors/SSA-001"
+  "ecosystem-actors/TCH-001"
+  "ecosystem-actors/VPAC-001"
+  "ecosystem-actors/JSK-001"
+  "ecosystem-actors/EGE-001"
+  "ecosystem-actors/AAVE-001"
   "keepers"
 )
 

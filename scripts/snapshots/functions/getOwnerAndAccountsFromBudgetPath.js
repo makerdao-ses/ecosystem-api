@@ -57,7 +57,7 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
   if (ownerType === "EcosystemActor") {
     let result = await knex("CoreUnit")
       .select("id")
-      .whereRaw('LOWER("shortCode") = ?', "" + idSegment)
+      .whereRaw('LOWER("code") = ?', "" + idSegment)
       .where("type", "=", "EcosystemActor")
       .first();
     if (!result) {
