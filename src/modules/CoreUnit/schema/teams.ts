@@ -28,6 +28,7 @@ export const typeDefs = gql`
     type: ResourceType
     "Information on the Users that are this Teams' auditors"
     budgetPath: String
+    status: String
     auditors: [User]
     "Access details on the social media channels of a Team"
     socialMediaChannels: [SocialMediaChannels]
