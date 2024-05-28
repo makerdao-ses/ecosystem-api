@@ -34,6 +34,7 @@ codes=(
   "ecosystem-actors/JSK-001"
   "ecosystem-actors/EGE-001"
   "ecosystem-actors/AAVE-001"
+  "ecosystem-actors/PH-001"
   "scopes/SUP"
   "scopes/ACC"
   "scopes/PRO"
@@ -49,7 +50,7 @@ codes=(
 TECH_end_number=17983665
 
 # Get the current date in UTC
-current_utc_date=$(date -u +'%Y-%m-%d')
+current_utc_date='$(date -u +'%Y-%m-%d')'
 current_year=$(date -u +'%Y')
 current_month=$(date -u +'%m')
 
@@ -95,10 +96,10 @@ else
     years=("$((current_year - 1))" "$current_year")
   else
     if [ "$current_month" -eq 10 ]; then
-    months=("0$((current_month - 1))" "$current_month")
+    months=("9" "10")
     years=("$current_year" "$current_year")
     else
-      if [ "$current_month" -gt 9 ]; then
+      if [ "$current_month" -gt 10 ]; then
         months=("$((current_month - 1))" "$current_month")
         years=("$current_year" "$current_year")
       else

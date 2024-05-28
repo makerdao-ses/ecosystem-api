@@ -36,6 +36,7 @@ ecosystem_codes=(
   "ecosystem-actors/JSK-001"
   "ecosystem-actors/EGE-001"
   "ecosystem-actors/AAVE-001"
+  "ecosystem-actors/PH-001"
   "keepers"
 )
 
