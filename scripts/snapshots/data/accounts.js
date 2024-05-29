@@ -1081,6 +1081,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xfca6e196c2ad557e64d9397e283c2afe57344b75",
+    BudgetPath: "atlas/scopes/GOV/AF/ECO-001"
   },
   {
     Name: "Ecosystem Team Operational",
@@ -1090,6 +1091,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x3f2494c872d15b022016544d1226a08f7fde63f4",
+    BudgetPath: "atlas/scopes/GOV/AF/ECO-001"
   },
   {
     Name: "Pointable Operational Wallet",
@@ -1099,6 +1101,7 @@ export default [
     "budget path 4": "",
     Type: "Operational ",
     Address: "0x2FFd0ac509512F3A31111e42DA1A0F8fB0240227",
+    BudgetPath: "atlas/scopes/ACC/ELP/PNT-001"
   },
   {
     Name: "JanSky",
@@ -1108,6 +1111,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0xf3f868534fad48ef5a228fe78669cf242745a755",
+    BudgetPath: "atlas/scopes/GOV/AF/gov-facilitator-Jansky"
   },
   {
     Name: "Endgame Edge",
@@ -1117,6 +1121,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x9e72629df4fcaa2c2f5813fbbdc55064345431b1",
+    BudgetPath: "atlas/scopes/GOV/AF/gov-facilitator-EndgameEdge"
   },
   {
     Name: "Aave",
@@ -1126,6 +1131,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x464c71f6c2f760dda6093dcb91c24c39e5d6e18c",
+    BudgetPath: "atlas/scopes/PRO/AAVE-001"
   },
   {
     Name: "Powerhouse Operational",
@@ -1135,6 +1141,7 @@ export default [
     "budget path 4": "",
     Type: "Operational",
     Address: "0x8ec63fe682c0703e4eb6d6ff8a154f5535f80260",
+    BudgetPath: "atlas/scopes/ACC/ELP/PH-001"
   },
   {
     Name: "Chainlink Automation",
