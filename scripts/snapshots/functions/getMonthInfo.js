@@ -174,7 +174,9 @@ const getMonthInfo = (owner, month, endBlockNo) => {
       .toISOString()
       .slice(0, 7)
       .replace("-", "/");
+
     const endBlockNumber = blockNumbers[nextMonth];
+
     console.log("NEXT MONTH ", nextMonth);
     console.log("START BLOCK NUMBER ", startBlockNumber);
     console.log("END BLOCK NUMBER ", endBlockNumber);
@@ -224,9 +226,8 @@ function convertMonthStringToDate(monthString, addMonths = 0) {
   let [year, month] = monthString.split("/");
   // Convert month to zero-based index
   month = parseInt(month, 10) - 1;
-
   // Create a new Date object with the year and month values
-  let date = new Date(year, month + addMonths, 1);
+  let date = new Date(year, month + addMonths, 2);
 
   return date;
 }
