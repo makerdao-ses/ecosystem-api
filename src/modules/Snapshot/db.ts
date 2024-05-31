@@ -102,25 +102,50 @@ export class SnapshotModel {
     return result;
   }
 
+  // Legacy on demand analytics calculation. To be kept for testing purposes when things go wrong. 
+
+  // async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
+  //   if (months.length < 1) return [];
+  //   const analytics = await this.getAnalytics(months[months.length - 1], snapShotEnd, ownerType, ownerId);
+  //   if (analytics.length < 1) return [];
+  //   return months.map((month) => ({
+  //     month,
+  //     currency: "DAI",
+  //     reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
+  //     netExpenses: {
+  //       onChainOnly: {
+  //         amount: analytics.find((a: any) => a.period == month)?.paymentsOnChain,
+  //         difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
+  //       },
+  //       offChainIncluded: {
+  //         amount: analytics.find((a: any) => a.period == month)?.paymentsOffChain,
+  //         difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOffChain, analytics.find((a: any) => a.period == month)?.actuals),
+  //       },
+  //     },
+  //   }));
+  // }
+
   async getActualsComparison(snapshotId: number, months: string[], ownerType: string, ownerId: number, snapShotEnd: string) {
     if (months.length < 1) return [];
-    const analytics = await this.getAnalytics(months[months.length - 1], snapShotEnd, ownerType, ownerId);
-    if (analytics.length < 1) return [];
-    return months.map((month) => ({
-      month,
-      currency: "DAI",
-      reportedActuals: analytics.find((a: any) => a.period == month)?.actuals,
-      netExpenses: {
-        onChainOnly: {
-          amount: analytics.find((a: any) => a.period == month)?.paymentsOnChain,
-          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOnChain, analytics.find((a: any) => a.period == month)?.actuals),
+    const result = months.map(async (month) => {
+      const [monthData] = await this.knex('BudgetStatementCacheValues').where('ownerId', ownerId).andWhere('month', month);
+      return {
+        month,
+        currency: "DAI",
+        reportedActuals: monthData?.reportedActuals,
+        netExpenses: {
+          onChainOnly: {
+            amount: monthData?.onChainOnlyAmount,
+            difference: monthData?.onChainOnlyDifference,
+          },
+          offChainIncluded: {
+            amount: monthData?.offChainIncludedAmount,
+            difference: monthData?.offChainIncludedDifference,
+          },
         },
-        offChainIncluded: {
-          amount: analytics.find((a: any) => a.period == month)?.paymentsOffChain,
-          difference: this.calcDifference(analytics.find((a: any) => a.period == month)?.paymentsOffChain, analytics.find((a: any) => a.period == month)?.actuals),
-        },
-      },
-    }));
+      }
+    });
+    return await Promise.all(result);
   }
 
   getSnapshotAccounts(snapshotId: number | string) {
