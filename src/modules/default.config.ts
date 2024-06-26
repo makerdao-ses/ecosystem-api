@@ -11,5 +11,6 @@ export default {
   Budget: { enabled: true },
   Analytics: { enabled: true },
   Projects: { enabled: true },
+  ScopeOfWork: { enabled: true },
   // Roadmap: { enabled: true, require: ['CoreUnit'] },
 };
