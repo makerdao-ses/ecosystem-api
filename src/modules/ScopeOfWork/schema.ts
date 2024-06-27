@@ -70,9 +70,14 @@ export const typeDefs = [
         }
 
         type BudgetAnchor {
-            project: String
+            project: BProject
             workUnitBudget: Float
             deliverableBudget: Float
+        }
+
+        type BProject {
+            code: String
+            title: String
         }
 
         type MOwner {
