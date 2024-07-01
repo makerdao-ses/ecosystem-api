@@ -10,33 +10,33 @@ export default [
         "sequenceCode": "PH01",
         "code": "POC",
         "title": "Decentralized Operations Platform - POC",
-        "abstract": "",
+        "abstract": "The Proof of Concept milestone marks the initial phase of Powerhouse Decentralized Operations Platform.",
         "description": "Roadmap milestone: Decentralized Operations Platform - Proof of Concept. Milestone 1, set for March 1, marks the initial phase of Powerhouse Decentralized Operations Platform. Deliverables include: Technical integration demo showcasing for the first time the RWA Portfolio Editor in Connect and the data synchronization with Switchboard; Switchboard API endpoints for integration partners with document model update events and document state queries; and Switchboard API endpoints for integration partners with document model update events and document state queries.",
         "targetDate": "2024-01-02T23:00:00.000Z",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "M7920c86",
+            "id": "2Zp61nts",
             "ref": "makerdao/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "7963g717",
+            "id": "4o9N4Qw9",
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "2yu84o1a",
+            "id": "8Oem8225",
             "ref": "makerdao/contributor",
             "name": "callmeT",
             "code": "callmeT",
@@ -45,7 +45,7 @@ export default [
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -55,7 +55,9 @@ export default [
         "scope": {
           "deliverables": [],
           "status": "DRAFT",
-          "progress": { "value": 1 },
+          "progress": {
+            "value": 1
+          },
           "totalDeliverables": 0,
           "deliverablesCompleted": 0
         }
@@ -70,28 +72,28 @@ export default [
         "targetDate": "2024-03-06T23:00:00.000Z",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "M7920c86",
+            "id": "2Zp61nts",
             "ref": "makerdao/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "7963g717",
+            "id": "4o9N4Qw9",
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "2yu84o1a",
+            "id": "8Oem8225",
             "ref": "makerdao/contributor",
             "name": "callmeT",
             "code": "callmeT",
@@ -100,7 +102,7 @@ export default [
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -116,42 +118,47 @@ export default [
               "title": "MVP release of the MakerDAO transparency reporting information.",
               "description": "MVP Release with MakerDAO transparency reporting information that can be shared publicly. * RWA reporting flow (without e2e encryption & comparison views) * DAO finances (advanced stage) * DAO teams (at least core unit + ecosystem actor profiles) * DAO work (projects & roadmaps in early stage) * Endgame overview (latest updates & budget insights) * New homepage with at-glance insights on various DAO aspects - Finances, governance, Teams, and Work (designs only).",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.75 },
+              "workProgress": {
+                "value": 0.75
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "RWA", "title": "RWA Portfolio Reporting" },
+                "project": {
+                  "code": "RWA",
+                  "title": "RWA Portfolio Reporting"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "J7Ne34F0",
-                  "title": "KR01 - Integration Demo of RWA portfolio - Apr 10",
+                  "id": "Lp13lMG3",
+                  "title": "Integration Demo of RWA portfolio - Apr 10",
                   "link": "https://drive.google.com/file/d/1Q1zYh1_qosF8JG1z3gbKszrp60HlnYyV/view"
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "V3572eXF",
-                  "title": "KR02 - Switchboard data / API endpoint ",
+                  "id": "y2o6B0r0",
+                  "title": "Switchboard data / API endpoint ",
                   "link": "https://makerdao-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916"
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "Sqa46417",
-                  "title": "KR03 - MakerDAO platform demo recording - Jul 3rd",
+                  "id": "0Mgc014P",
+                  "title": "MakerDAO platform demo - Jul 3rd",
                   "link": "“provide link to recording when available”."
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "793k4tnH",
-                  "title": "KR04 - Custom MakerDAO domain name configured ",
+                  "id": "37oQse4z",
+                  "title": "Custom MakerDAO domain name ",
                   "link": "“link TBD”."
                 }
               ]
@@ -163,61 +170,68 @@ export default [
               "title": "Integrated Powerhouse Platform delivery including Renown",
               "description": "Delivery of integrated platform consisting of Powerhouse core products: Fusion, Switchboard, Connect, and the first release of Renown. * Enhanced expenses.makerdao.network rebranded as Fusion * Switchboard API endpoints that contain the RWA Portfolio Reporting queries. * Other data presented on Fusion will be partially served through Switchboard and partially through the legacy ecosystem API.",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.65 },
+              "workProgress": {
+                "value": 0.65
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "PHP", "title": "Powerhouse Products POC" },
+                "project": {
+                  "code": "PHP",
+                  "title": "Powerhouse Products POC"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "by8o25g3",
-                  "title": "KR05 - Connect deployment",
+                  "id": "2w83QD06",
+                  "title": "Connect deployment",
                   "link": "https://apps.powerhouse.io/makerdao/connect"
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "4F7sF95W",
-                  "title": "KR06 - Fusion deployment",
+                  "id": "e00SL19r",
+                  "title": "Fusion deployment",
                   "link": "https://apps.powerhouse.io/makerdao/fusion"
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "WeKPcL1E",
-                  "title": "KR07 - Switchboard deployment ",
+                  "id": "B4i71ww8",
+                  "title": "Switchboard deployment ",
                   "link": "https://apps.powerhouse.io/makerdao/switchboard"
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "chC9qb58",
-                  "title": "KR08- Renown deployment ",
+                  "id": "4597949d",
+                  "title": "Renown deployment ",
                   "link": "https://renown.id/makerdao"
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "998r5W2b",
-                  "title": "KR09 - All source code is licensed as open-source and available on Powerhouse inc Github repo",
+                  "id": "vK1gbJ89",
+                  "title": "Open-source code (Powerhouse repo)",
                   "link": "https://github.com/powerhouse-inc"
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "7G9D5Cod",
-                  "title": "KR10 - All source code is licensed as open-source and available on MakerDAO SES Github repo",
+                  "id": "89z8FxmO",
+                  "title": "Open-source code (SES repo)",
                   "link": "https://github.com/makerdao-ses"
                 }
               ]
             }
           ],
           "status": "TODO",
-          "progress": { "value": 0.5 },
+          "progress": {
+            "value": 0.5
+          },
           "totalDeliverables": 2,
           "deliverablesCompleted": 0
         }
@@ -232,30 +246,37 @@ export default [
         "targetDate": "2024-01-10T23:00:00.000Z",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "M7920c86",
+            "id": "2Zp61nts",
             "ref": "makerdao/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "7963g717",
+            "id": "4o9N4Qw9",
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
+            "imageUrl": "N/A"
+          },
+          {
+            "id": "8Oem8225",
+            "ref": "makerdao/contributor",
+            "name": "callmeT",
+            "code": "callmeT",
             "imageUrl": "N/A"
           }
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -271,9 +292,11 @@ export default [
               "title": "Production grade release of the MakerDAO transparency reporting information.",
               "description": "(scope not final) QA tested and reskined release of MakerDAO transparency reporting information. Including: Atlas Viewer workflow TBC; Reskinned pages on the Fusion dashboard; Complete & correct available financial, team and work information TBC.",
               "status": "TODO",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.001
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -290,20 +313,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "HgK52yH1",
-                  "title": "KR01 - Fusion Reskin example designs",
+                  "id": "Cl901796",
+                  "title": "Fusion Reskin example designs",
                   "link": "\"link to a resource referencing a couple of before & after reskin designs/page screenshots\" "
                 },
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "05T25rW5",
-                  "title": "KR02 - MakerDAO Finances page",
+                  "id": "DjD0bwB8",
+                  "title": "MakerDAO Finances page",
                   "link": "\"url to finances page on fusion\""
                 },
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "7291W5dU",
-                  "title": "KR03 - Fusion prod demo recording",
+                  "id": "903ja0jp",
+                  "title": "Fusion prod demo recording",
                   "link": "\"link to demo recording mid Sep\""
                 }
               ]
@@ -315,43 +338,50 @@ export default [
               "title": "Production grade deployment of integrated Powerhouse platform.",
               "description": "(scope not final) Production-ready release of an integrated solution comprising Fusion, Switchboard, Connect and Renown where contributor teams can register with their Ethereum identity and manage their own transparency reporting data through the platform. Refactoring work of core products.",
               "status": "TODO",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.001
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "PHP", "title": "Powerhouse Products POC" },
+                "project": {
+                  "code": "PHP",
+                  "title": "Powerhouse Products POC"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoym9u",
-                  "id": "fd284P6o",
-                  "title": "KR01 - TBD",
+                  "id": "W6JmHUq9",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "t4wjsoym9u",
-                  "id": "f0H556Z9",
-                  "title": "KR02 - TBD",
+                  "id": "6439hEU2",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "t4wjsoym9u",
-                  "id": "3TjNs5UX",
-                  "title": "KR03 - TBD",
+                  "id": "Ns827M09",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
             }
           ],
           "status": "IN_PROGRESS",
-          "progress": { "value": 0.75 },
+          "progress": {
+            "value": 0.75
+          },
           "totalDeliverables": 2,
           "deliverablesCompleted": 0
         }
@@ -359,37 +389,44 @@ export default [
       {
         "id": "r3bzzgbyk2",
         "sequenceCode": "PH04",
-        "code": "ATLA",
+        "code": "ATLAS",
         "title": "Atlas Viewer v1",
         "abstract": "",
         "description": "Roadmap milestone: Atlas viewer v1. \nMilestone 4, set for Q4, marks the first version of an Atlas document model and viewer in Connect for the Atlas Rulebook.\nDeliverables include: (scope not final) Notion Atlas integration analysis; Atlas document model creation; Atlas viewer USPs exploration.",
         "targetDate": "31/12/2024",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "M7920c86",
+            "id": "32ggEbkF",
             "ref": "makerdao/contributor",
-            "name": "teep",
-            "code": "teep",
+            "name": "apeiron",
+            "code": "apeiron",
             "imageUrl": "N/A"
           },
           {
-            "id": "7963g717",
+            "id": "4o9N4Qw9",
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
+            "imageUrl": "N/A"
+          },
+          {
+            "id": "N/A",
+            "ref": "N/A",
+            "name": "N/A",
+            "code": "N/A",
             "imageUrl": "N/A"
           }
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -401,40 +438,45 @@ export default [
             {
               "id": "kjjxdnrl1n",
               "parentIdRef": "r3bzzgbyk2",
-              "code": "ATLA1",
+              "code": "ATLAS1",
               "title": "Notion Atlas integration analysis\n",
               "description": "(scope not final) Analysis of the Atlas Axis Notion database setup and identifying how we can pull the data from it, serving as input to creation of document model + viewer.",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.05 },
+              "workProgress": {
+                "value": 0.05
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "ATL", "title": "Atlas Rulebook Prototype" },
+                "project": {
+                  "code": "ATL",
+                  "title": "Atlas Rulebook Prototype"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "775l0Krs",
-                  "title": "KR01 - Atlas integration analysis",
+                  "id": "191iMm29",
+                  "title": "Atlas integration analysis summary",
                   "link": "\"link to public Notion Atlas integration analysis\""
                 },
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "4M4cM94V",
-                  "title": "KR02 - TBD",
+                  "id": "ses64907",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "54U9u92I",
-                  "title": "KR03 - TBD",
+                  "id": "K72W32R2",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -442,40 +484,45 @@ export default [
             {
               "id": "kjjxdnrl2n",
               "parentIdRef": "r3bzzgbyk2",
-              "code": "ATLA2",
+              "code": "ATLAS2",
               "title": "Atlas document model creation",
               "description": "(scope not final) Creation of document model + viewer to replicate the structure of Notion DB.",
               "status": "TODO",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.001
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "ATL", "title": "Atlas Rulebook Prototype" },
+                "project": {
+                  "code": "ATL",
+                  "title": "Atlas Rulebook Prototype"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl2n",
-                  "id": "6qhdSCGj",
-                  "title": "KR01 - Atlas document model",
+                  "id": "Nog744uQ",
+                  "title": "Atlas document model",
                   "link": "\"link to public Atlas document model deployment\""
                 },
                 {
                   "parentIdRef": "kjjxdnrl2n",
-                  "id": "54VbU8Vp",
-                  "title": "KR02 - Atlas viewer wireframes",
+                  "id": "f86j4L3y",
+                  "title": "Atlas viewer wireframes",
                   "link": "\"link to public Atlas viewer wireframes\""
                 },
                 {
                   "parentIdRef": "kjjxdnrl2n",
-                  "id": "7425Sa0o",
-                  "title": "KR03 - TBD",
+                  "id": "yuEe9P1u",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -483,47 +530,54 @@ export default [
             {
               "id": "kjjxdnrl3n",
               "parentIdRef": "r3bzzgbyk2",
-              "code": "ATLA3",
+              "code": "ATLAS3",
               "title": "Atlas viewer USPs exploration",
               "description": "(scope not final) Exploration of the Powerhouse Unique Selling Points that will provide the most value to feature’s stakeholders.",
               "status": "TODO",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.001
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "ATL", "title": "Atlas Rulebook Prototype" },
+                "project": {
+                  "code": "ATL",
+                  "title": "Atlas Rulebook Prototype"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl3n",
-                  "id": "2I84T0XD",
-                  "title": "KR01 - Business analysis",
+                  "id": "jX7yNfjZ",
+                  "title": "Business analysis",
                   "link": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl3n",
-                  "id": "lOdZ9a74",
-                  "title": "KR02 - Conceptual wireframes with USP candidates",
+                  "id": "9c137Pey",
+                  "title": "Conceptual wireframes with USP candidates",
                   "link": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl3n",
-                  "id": "CUM1m750",
-                  "title": "KR03 - Demo of Atlas flow",
+                  "id": "4of1TiZ9",
+                  "title": "Demo of Atlas flow",
                   "link": "\"link to Atlas demo recording\""
                 }
               ]
             }
           ],
           "status": "FINISHED",
-          "progress": { "value": 0.5 },
+          "progress": {
+            "value": 0.5
+          },
           "totalDeliverables": 3,
           "deliverablesCompleted": 0
         }
@@ -538,28 +592,42 @@ export default [
         "targetDate": "31/12/2024",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "M7920c86",
+            "id": "8Oem8225",
             "ref": "makerdao/contributor",
-            "name": "teep",
-            "code": "teep",
+            "name": "callmeT",
+            "code": "callmeT",
             "imageUrl": "N/A"
           },
           {
-            "id": "7963g717",
+            "id": "4o9N4Qw9",
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "8J076zKu",
+            "id": "3n353uJ1",
+            "ref": "makerdao/contributor",
+            "name": "Lumen",
+            "code": "Lumen",
+            "imageUrl": "N/A"
+          },
+          {
+            "id": "6YgKs4L7",
+            "ref": "makerdao/contributor",
+            "name": "Kilgore",
+            "code": "Kilgore",
+            "imageUrl": "N/A"
+          },
+          {
+            "id": "y565O14Q",
             "ref": "makerdao/contributor",
             "name": "Layer0x",
             "code": "Layer0x",
@@ -568,7 +636,7 @@ export default [
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -584,9 +652,11 @@ export default [
               "title": "Legal entity setup",
               "description": "(scope not final) Research and setup of legal entities",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.3 },
+              "workProgress": {
+                "value": 0.3
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -603,20 +673,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z901pbv",
-                  "id": "6zA2H433",
-                  "title": "KR01 - Layer0x on PH legal research - Power Brunch",
+                  "id": "34P41aG1",
+                  "title": "Layer0x on PH legal research - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=5GnRqdoXt8o&t=160s"
                 },
                 {
                   "parentIdRef": "dn2z901pbv",
-                  "id": "tTV48S91",
-                  "title": "KR02 - TBD",
+                  "id": "CQSdvaou",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z901pbv",
-                  "id": "rx4kF0vC",
-                  "title": "KR03 - TBD",
+                  "id": "6QTo1db8",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -628,9 +698,11 @@ export default [
               "title": "Business model templates",
               "description": "(scope not final) business modelling work including Powerhouse infrastructure stack & decentralized operations model",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.3 },
+              "workProgress": {
+                "value": 0.3
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -647,20 +719,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z902pbv",
-                  "id": "l3q40Ru5",
-                  "title": "KR01 - T on PH tech stack - Power Brunch",
+                  "id": "638uG3G4",
+                  "title": "T on PH tech stack - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=5GnRqdoXt8o&t=1490s"
                 },
                 {
                   "parentIdRef": "dn2z902pbv",
-                  "id": "3C844qZ1",
-                  "title": "KR02 - Prometheus on PH business model - Power Brunch",
+                  "id": "6j9Y63F5",
+                  "title": "Prometheus on PH business model - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=tH0yb-lMsZ4"
                 },
                 {
                   "parentIdRef": "dn2z902pbv",
-                  "id": "03viCS16",
-                  "title": "KR03 -TBD",
+                  "id": "U3g98YDv",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -672,9 +744,11 @@ export default [
               "title": "OCF + compensation",
               "description": "(scope not final) Work out the OCF structure and the contributor compensation model",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.15 },
+              "workProgress": {
+                "value": 0.15
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -691,20 +765,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z903pbv",
-                  "id": "7L467OVj",
-                  "title": "KR01 - TBD",
+                  "id": "0pEClCP2",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z903pbv",
-                  "id": "6NYx090M",
-                  "title": "KR02 - TBD",
+                  "id": "67qdsxMt",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z903pbv",
-                  "id": "JR54k4q1",
-                  "title": "KR03 -TBD",
+                  "id": "L53Ox5Fg",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -716,9 +790,11 @@ export default [
               "title": "New customer",
               "description": "(scope not final) Launch Powerhouse Software with one or more projects outside of the MakerDAO ecosystem",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.8 },
+              "workProgress": {
+                "value": 0.8
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -735,20 +811,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "37F6O2VB",
-                  "title": "KR01 - Arbitrum LTIPP grants editor ",
-                  "link": "URL"
+                  "id": "D32yow29",
+                  "title": "KR01 - Arbitrum LTIPP grants editor - Arbitrum forum",
+                  "link": "https://forum.arbitrum.foundation/t/introducing-arbgrants-bi-weekly-reporting-for-ltipp-and-stip-b/"
                 },
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "0bOppP53",
-                  "title": "KR02 - TBD",
+                  "id": "U5339A1q",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "2k5z1cKs",
-                  "title": "KR03 -TBD",
+                  "id": "MH2iG072",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -760,36 +836,41 @@ export default [
               "title": "social media presence",
               "description": "(scope not final) Build social media presence for Powerhouse",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.2 },
+              "workProgress": {
+                "value": 0.2
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "PRC", "title": "Powerhouse Release Comms" },
+                "project": {
+                  "code": "PRC",
+                  "title": "Powerhouse Release Comms"
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "4y13S03M",
-                  "title": "KR13 - Twitter thread Power brunch 1 ",
+                  "id": "32CMuo7C",
+                  "title": "X thread Power brunch 1 ",
                   "link": "https://x.com/PowerhouseDAO/status/1801283667651621155"
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "8E0fkLzW",
-                  "title": "KR14 - Twitter thread Power brunch 2",
+                  "id": "50EV8e1G",
+                  "title": "X thread Power brunch 2",
                   "link": "https://x.com/PowerhouseDAO/status/1801623398075736470"
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "17225ASb",
-                  "title": "KR14 - Twitter thread Power brunch 3",
+                  "id": "90M4m7oP",
+                  "title": "X thread Power brunch 3",
                   "link": "https://x.com/PowerhouseDAO/status/1802726156816285797"
                 }
               ]
@@ -801,9 +882,11 @@ export default [
               "title": "Powherhouse DAO tokenomics",
               "description": "(scope not final) Work out Powerhouse DAO token model",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.15 },
+              "workProgress": {
+                "value": 0.15
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
@@ -820,20 +903,20 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z906pbv",
-                  "id": "N20k7l40",
-                  "title": "KR01- PowerhouseDAO tokenomics",
+                  "id": "7p5vz26k",
+                  "title": "PowerhouseDAO tokenomics",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z906pbv",
-                  "id": "6ba7HSFb",
-                  "title": "KR02 - TBD",
+                  "id": "cqI6z3H1",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z906pbv",
-                  "id": "245f9693",
-                  "title": "KR03 -TBD",
+                  "id": "b5R014RT",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -845,43 +928,50 @@ export default [
               "title": "Spin-off agreement with MakerDAO",
               "description": "(scope not final) Agreement for MakerDAO Incubation Stake / structure spin-off relationship",
               "status": "TODO",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.001
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "", "title": "" },
+                "project": {
+                  "code": "",
+                  "title": ""
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "dn2z907pbv",
-                  "id": "0G82l44a",
-                  "title": "KR01- publicly shareable agreement info",
+                  "id": "817Z986J",
+                  "title": "publicly shareable agreement info",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z907pbv",
-                  "id": "F4kh06AQ",
-                  "title": "KR02 - Next steps forum update",
+                  "id": "6Q60Z460",
+                  "title": "Next steps forum update",
                   "link": ""
                 },
                 {
                   "parentIdRef": "dn2z907pbv",
-                  "id": "4i3fg72n",
-                  "title": "KR03 -TBD",
+                  "id": "06V1694o",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
             }
           ],
           "status": "DRAFT",
-          "progress": { "value": 0.375 },
+          "progress": {
+            "value": 0.375
+          },
           "totalDeliverables": 7,
           "deliverablesCompleted": 0
         }
@@ -896,7 +986,7 @@ export default [
         "targetDate": "31/12/2024",
         "coordinators": [
           {
-            "id": "1A22qBj6",
+            "id": "I88c3i7e",
             "ref": "makerdao/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
@@ -905,7 +995,7 @@ export default [
         ],
         "contributors": [
           {
-            "id": "z6899913",
+            "id": "1CvDI199",
             "ref": "makerdao/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
@@ -921,36 +1011,41 @@ export default [
               "title": "Endgame advisory & coordination",
               "description": "Endgame advisory and Operational roadmap coordination (Wouter)",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.5
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "", "title": "" },
+                "project": {
+                  "code": "",
+                  "title": ""
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "c3vcxkuo41",
-                  "id": "4dO285W0",
-                  "title": "KR01- publicly shearable info",
+                  "id": "9p1i3u28",
+                  "title": "publicly shearable info",
                   "link": ""
                 },
                 {
                   "parentIdRef": "c3vcxkuo41",
-                  "id": "3nc465Vl",
-                  "title": "KR02 - TBD",
+                  "id": "vO5409zb",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "c3vcxkuo41",
-                  "id": "njhuG9h5",
-                  "title": "KR03 -TBD",
+                  "id": "aE28o2O6",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
@@ -962,48 +1057,54 @@ export default [
               "title": "Management and Delivery of Pointable AI SOW1",
               "description": "Management and Delivery of Pointable AI SOW1, including:* Project Management, Cross Team Collaboration: Content, Front-End, AI, and Infra. * Delivery of Viable Agent with Integrated Front End in coordination with Jetstream and Pointable. * Agent Support Tooling and Hosting Delivery * Scoping of Pointable AI SOW2 to fulfill PH-04 and Ongoing Launch Project Requirements.",
               "status": "IN_PROGRESS",
-              "workProgress": { "value": 0.001 },
+              "workProgress": {
+                "value": 0.75
+              },
               "owner": {
-                "id": "z6899913",
+                "id": "1CvDI199",
                 "ref": "makerdao/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
                 "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
-                "project": { "code": "", "title": "" },
+                "project": {
+                  "code": "",
+                  "title": ""
+                },
                 "workUnitBudget": 1,
                 "deliverableBudget": 0
               },
               "keyResults": [
                 {
                   "parentIdRef": "c3vcxkuo42",
-                  "id": "gk5LGa60",
-                  "title": "KR01- public Pointable progress info",
+                  "id": "633E197w",
+                  "title": "public Pointable progress info",
                   "link": ""
                 },
                 {
                   "parentIdRef": "c3vcxkuo42",
-                  "id": "K973496U",
-                  "title": "KR02 - TBD",
+                  "id": "53lWdo58",
+                  "title": "TBD",
                   "link": ""
                 },
                 {
                   "parentIdRef": "c3vcxkuo42",
-                  "id": "g6645t77",
-                  "title": "KR03 -TBD",
+                  "id": "40hz4TPj",
+                  "title": "TBD",
                   "link": ""
                 }
               ]
             }
           ],
-          "status": "TODO",
-          "progress": { "value": 0.25 },
+          "status": "IN_PROGRESS",
+          "progress": {
+            "value": 0.5625
+          },
           "totalDeliverables": 2,
           "deliverablesCompleted": 0
         }
       }
     ]
-
   }
 ]
