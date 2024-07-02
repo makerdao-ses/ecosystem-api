@@ -536,13 +536,6 @@ export default [
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
-          },
-          {
-            "id": "N/A",
-            "ref": "N/A",
-            "name": "N/A",
-            "code": "N/A",
-            "imageUrl": "N/A"
           }
         ],
         "contributors": [
