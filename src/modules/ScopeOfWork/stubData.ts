@@ -12,7 +12,7 @@ export default [
         "title": "Decentralized Operations Platform - POC",
         "abstract": "The initial phase of Powerhouse Decentralized Operations Platform.",
         "description": "Roadmap milestone: Decentralized Operations Platform - Proof of Concept. Milestone 1, set for March 1, marks the initial phase of Powerhouse Decentralized Operations Platform. Deliverables include: Technical integration demo showcasing for the first time the RWA Portfolio Editor in Connect and the data synchronization with Switchboard; Switchboard API endpoints for integration partners with document model update events and document state queries; and Switchboard API endpoints for integration partners with document model update events and document state queries.",
-        "targetDate": "2024-01-02T23:00:00.000Z",
+        "targetDate": "2024-01-03T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
@@ -190,7 +190,7 @@ export default [
         "title": "Decentralized Operations Platform - MVP",
         "abstract": "The advanced phase of Powerhouse Decentralized Operations Platform.",
         "description": "Roadmap milestone: Decentralized Operations Platform - Minimal Viable Product. Milestone 2, set for July 3, marks the continuation phase of Powerhouse Decentralized Operations Platform. Deliverables include: MVP Release with MakerDAO transparency reporting information that can be shared publicly; Delivery of integrated platform consisting of Powerhouse core products (Fusion, Switchboard, Connect, and the first release of Renown).",
-        "targetDate": "2024-03-06T23:00:00.000Z",
+        "targetDate": "2024-03-07T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
@@ -364,7 +364,7 @@ export default [
         "title": "Decentralized Operations Platform - Production",
         "abstract": "Work on polished and production-grade version of Powerhouse Decentralized Operations Platform.",
         "description": "Roadmap milestone: Decentralized Operations Platform - Production release.\r\nMilestone 3, set for Q4, marks the production grade development phase of Powerhouse Decentralized Operations Platform.\r\nDeliverables include: (scope not final) Production grade release of the MakerDAO transparency reporting information; integrated Powerhouse platform.",
-        "targetDate": "2024-01-10T23:00:00.000Z",
+        "targetDate": "2024-11-01T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
@@ -499,9 +499,9 @@ export default [
               ]
             }
           ],
-          "status": "IN_PROGRESS",
+          "status": "TODO",
           "progress": {
-            "value": 0.75
+            "value": 0.001
           },
           "totalDeliverables": 2,
           "deliverablesCompleted": 0
@@ -514,7 +514,7 @@ export default [
         "title": "Atlas Viewer v1",
         "abstract": "The initial phase of Atlas Rulebook work.",
         "description": "Roadmap milestone: Atlas viewer v1. \nMilestone 4, set for Q4, marks the first version of an Atlas document model and viewer in Connect for the Atlas Rulebook.\nDeliverables include: (scope not final) Notion Atlas integration analysis; Atlas document model creation; Atlas viewer USPs exploration.",
-        "targetDate": "31/12/2024",
+        "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
@@ -535,6 +535,13 @@ export default [
             "ref": "makerdao/contributor",
             "name": "meraki",
             "code": "meraki",
+            "imageUrl": "N/A"
+          },
+          {
+            "id": "N/A",
+            "ref": "N/A",
+            "name": "N/A",
+            "code": "N/A",
             "imageUrl": "N/A"
           }
         ],
@@ -703,7 +710,7 @@ export default [
         "title": "Powerhouse Spin-off",
         "abstract": "Research and implementation work of turning Powerhouse into a fully-fledged Ecosystem Actor.",
         "description": "Roadmap milestone: Powerhouse spin-off creation. \nMilestone 5, set for Q4, marks the research, modelling and the creation of  Powerhouse Spin-off. Deliverables include: legal entity setup; business modeling; OCF structuring & contributor; Powerhouse software integration; token modelling; new customers; public comms.",
-        "targetDate": "31/12/2024",
+        "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
@@ -1097,7 +1104,7 @@ export default [
         "title": "MakerDAO PM Consultancy",
         "abstract": "Project management consultancy and advisory work for MakerDAO.",
         "description": "Roadmap milestone: MakerDAO Project Management Consultancy. \nMilestone 6, set for Q4, marks the PM advisory and consultancy work for MakerDAO. Deliverables include: Endgame advisory & Operations coordination; Management & delivery of Pointable AI SOW1; related OCF work & management.",
-        "targetDate": "31/12/2024",
+        "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
             "id": "J79t56bN",
