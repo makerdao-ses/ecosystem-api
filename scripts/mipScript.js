@@ -101,8 +101,14 @@ const cuMipTable = async (data) => {
       fullMipCode.includes("MIP40") ||
       fullMipCode.includes("MIP41")
     ) {
+
       var mipDict = {};
       var cuCode = cuCodeParse(data["items"][i]["tags"]);
+
+      if(fullMipCode.includes("MIP39c3")){
+        console.log(data["items"][i]["tags"], cuCode, fullMipCode, status, ratified);
+      }
+
       for (var j = 0; j < cuTableLength; j++) {
         if (cuCode == cuTable[j].code.toLowerCase()) {
           cuId = cuTable[j].id;          
@@ -141,11 +147,7 @@ const cuMipTable = async (data) => {
             cuMipEntry.push(mipDict);
           }
           if (
-            !(
-              mipDict.dateRFC == undefined &&
-              mipDict.accepted == undefined &&
-              mipDict.rejected == undefined
-            )
+            status === "Accepted"
           ) {
             cuMipEntry.push(mipDict);
           }
@@ -173,9 +175,15 @@ const cuCodeParse = (tags) => {
   if (tags) {
     for (let i = 0; i < tags.length; i++) {
       const tag = tags[i];
-      const match = tag.match(/([a-z]{3,4}-001)$/);
+      const match = tag.match(/([a-zA-Z]{2,4}-001)$/);
       if (match) {
         return match[1];
+      } else {
+        const cleanedTag = tag.replace(/^[a-zA-Z]{2,4}-/, '');
+        const cleanedMatch = cleanedTag.match(/^([a-zA-Z]{2,4}-001)$/);
+        if (cleanedMatch) {
+          return cleanedMatch[1];
+        }
       }
     }
   }
