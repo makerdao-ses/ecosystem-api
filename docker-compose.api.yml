@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  api:
+    build: ./
+    restart: always
+    environment:
+      - PG_CONNECTION_STRING=${PG_CONNECTION_STRING}
+    ports:
+      - "4000:4000"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        ${API_COMMAND}
+    depends_on:
+      - db
+      - redis
