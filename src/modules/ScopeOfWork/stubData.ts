@@ -175,7 +175,7 @@ export default [
               ]
             }
           ],
-          "status": "DRAFT",
+          "status": "DONE",
           "progress": {
             "value": 1
           },
