@@ -24,11 +24,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -64,11 +64,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -98,11 +98,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -132,11 +132,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -166,11 +166,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -200,11 +200,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -240,11 +240,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -274,11 +274,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -302,11 +302,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -342,11 +342,11 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -360,11 +360,11 @@ export default [
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     },
@@ -393,11 +393,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -421,11 +421,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -449,11 +449,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -477,11 +477,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -505,11 +505,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -533,11 +533,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -561,11 +561,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -589,11 +589,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "",
                 "keyResults": [
@@ -607,11 +607,11 @@ export default [
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     },
@@ -640,11 +640,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 1",
                 "keyResults": []
@@ -661,11 +661,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 2",
                 "keyResults": []
@@ -682,11 +682,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 3",
                 "keyResults": []
@@ -703,11 +703,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2",
                 "keyResults": [
@@ -737,11 +737,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": " d3p 1",
                 "keyResults": []
@@ -758,11 +758,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 2 (d2p 2)",
                 "keyResults": []
@@ -779,11 +779,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 3, stretch goal",
                 "keyResults": []
@@ -800,11 +800,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 4",
                 "keyResults": []
@@ -821,11 +821,11 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p d3p 5",
                 "keyResults": []
@@ -842,22 +842,22 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 6",
                 "keyResults": []
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     },
@@ -886,11 +886,11 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron KR numbering algo",
                 "keyResults": []
@@ -907,11 +907,11 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron DM state schema",
                 "keyResults": []
@@ -928,22 +928,22 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron viewer state schema",
                 "keyResults": []
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     },
@@ -972,11 +972,11 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
@@ -993,11 +993,11 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
@@ -1014,11 +1014,11 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
@@ -1035,11 +1035,11 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
@@ -1056,11 +1056,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
@@ -1077,11 +1077,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": [
@@ -1111,22 +1111,22 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
                 "keyResults": []
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     },
@@ -1155,11 +1155,11 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Charm",
                 "keyResults": [
@@ -1183,11 +1183,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Charm",
                 "keyResults": [
@@ -1217,11 +1217,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Charm",
                 "keyResults": [
@@ -1245,11 +1245,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Charm",
                 "keyResults": [
@@ -1273,11 +1273,11 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
                     "code": "PH",
-                    "imageUrl": ""
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Charm",
                 "keyResults": [
@@ -1297,11 +1297,11 @@ export default [
             }
         ],
         "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
+            "id": "t3MKA406",
+            "ref": "makerdao/ecosystem-actor",
+            "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": ""
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
         },
         "budgetType": "CAPEX"
     }
