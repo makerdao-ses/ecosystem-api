@@ -5,8 +5,10 @@ export default [
         "title": "Protocol Expense Accounting",
         "abstract": "Track Maker protocol's operational financial data.",
         "description": "Design and develop dashboard, the API and budget tool to capture and present all operational expenses and income of the Maker Protocol.",
-        "status": "",
-        "progress": "",
+        "status": "IN_PROGRESS",
+        "progress": {
+            "value": 0.7
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -17,7 +19,9 @@ export default [
                 "title": "On-chain Data Reconciliation",
                 "description": "Account for all protocol’s on-chain data expenses.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -29,19 +33,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00B8F8FEB5",
+                        "id": "007309976E",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "On-Chain Wallets Diagram",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/on-chain-wallets-diagram.png"
                     },
                     {
-                        "id": "0000B81DDA",
+                        "id": "00AD71D9F4",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Account Snapshot Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/CU-CU%20Landing%20page-Finances-Transparency%20Reports.png"
                     },
                     {
-                        "id": "000AD30593",
+                        "id": "002FE911D3",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Frontend Deployment",
                         "link": "https://expenses.makerdao.network/core-unit/SES/finances/reports?viewMonth=Dec2023"
@@ -55,7 +59,9 @@ export default [
                 "title": "Delegates Transparency Reporting",
                 "description": "Comprehensive overview of Delegates costs and changes over time. ",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -67,13 +73,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00AAC262CC",
+                        "id": "00F12336F9",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Design",
                         "link": "https://drive.google.com/file/d/1jfbumQnyhB4N-CkO3hEjJ2su5iBTDXH8/view"
                     },
                     {
-                        "id": "005BB6BF87",
+                        "id": "00B511CD48",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Deployment",
                         "link": "https://expenses.makerdao.network/recognized-delegates "
@@ -87,7 +93,9 @@ export default [
                 "title": "SPF Finances",
                 "description": "Purely financial view of SPFs with generalized financial categories applicable across all budget categories.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -99,13 +107,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "006BDD6374",
+                        "id": "00981E2B5D",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/key-results/spf-design.png"
                     },
                     {
-                        "id": "00D3B54CC4",
+                        "id": "008CA1C6CC",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Sparse View Wireframe",
                         "link": "https://drive.google.com/file/d/1e45t88iP42Ozz-1JxbUhyrJgedB9JB-u/view"
@@ -119,7 +127,9 @@ export default [
                 "title": "Aggregated view - DAO Level Finances",
                 "description": "Provide access to aggregated expense data in the level of detail: DAO-level finances.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -131,13 +141,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "007D128D56",
+                        "id": "003023CACE",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Finance-MakerDAO%20Finances%20Design.png"
                     },
                     {
-                        "id": "007728F4FB",
+                        "id": "001811D982",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Wireframes",
                         "link": "https://drive.google.com/file/d/15yB0TA5ONtboB9CH5aIO5Ekgiu7CkOl9/view"
@@ -151,7 +161,9 @@ export default [
                 "title": "Transition from Budget Tool to Connect",
                 "description": "Transition expense reporting from the Budget Reporting tool to Connect Budget Editor (implementing Connect Document Model)",
                 "status": "IN_PROGRESS",
-                "progress": 0.25,
+                "progress": {
+                    "value": 0.25
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -163,13 +175,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00C5B4AF62",
+                        "id": "009DA845C1",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "UI Design For Connect Interface",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Connect%20Design.png"
                     },
                     {
-                        "id": "0057BE60BF",
+                        "id": "00BFE0717A",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "Connect Electron Vercel App",
                         "link": "https://connect-ph.vercel.app/"
@@ -183,7 +195,9 @@ export default [
                 "title": "Aggregated View - Fusion Homepage overview",
                 "description": "Provide access to aggregated expense data at the top level at a glance on the dashboard homepage.",
                 "status": "IN_PROGRESS",
-                "progress": 0.7,
+                "progress": {
+                    "value": 0.7
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -195,19 +209,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0027DF41B3",
+                        "id": "00F73734DB",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage wireframe",
                         "link": "https://drive.google.com/file/d/123yTPfNFi04Uu-0aPCWAhvEMCbEOrTth/view"
                     },
                     {
-                        "id": "00AD0C2940",
+                        "id": "00EA3A876E",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage design",
                         "link": "https://drive.google.com/file/d/1REv0A7uKrfOFRwNJulxCEv7PzoZk_fNK/view"
                     },
                     {
-                        "id": "000DBFF915",
+                        "id": "00A63EE98A",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage deployment",
                         "link": ""
@@ -221,7 +235,9 @@ export default [
                 "title": "Aggregated View - Budget Level Overview",
                 "description": "Provide access to aggregated expense data in the lower levels of detail: budget-level overview.",
                 "status": "FINISHED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -233,13 +249,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00DEFEF47D",
+                        "id": "00E6F0A692",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view (keepers) wireframe",
                         "link": "https://drive.google.com/file/d/1fNbvSFIzRiSqpuzTUHMUsqe0x6mKz7vd/view"
                     },
                     {
-                        "id": "00AC7DF92C",
+                        "id": "005429901E",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view implementation",
                         "link": "https://expenses.makerdao.network/finances/legacy/keepers?year=2022"
@@ -253,7 +269,9 @@ export default [
                 "title": "Onboard All EAs to Expense Reporting Process ",
                 "description": "Small improvements to optimize the workflow of budget auditors.",
                 "status": "IN_PROGRESS",
-                "progress": 0.25,
+                "progress": {
+                    "value": 0.25
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -265,7 +283,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "002E0F8D0D",
+                        "id": "00A9ACE540",
                         "parentIdRef": "v3h9js184z",
                         "title": "",
                         "link": ""
@@ -279,7 +297,9 @@ export default [
                 "title": "MakerDAO Endgame Transition Finances",
                 "description": "An overview of the major conceptual and budget changes to MakerDAO as it relates to the Endgame plan.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -291,19 +311,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009AF33378",
+                        "id": "00B1C43E06",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame budget design",
                         "link": "https://drive.google.com/file/d/1I1ZhCn4NhxTtjFCkc7b-EzisZoaOlS1q/view"
                     },
                     {
-                        "id": "006A9BB306",
+                        "id": "00913A0A47",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame transition design",
                         "link": "https://drive.google.com/file/d/1o-h79Dz8zLFXRCmV5qY75bcU5eKBpbNo/view"
                     },
                     {
-                        "id": "0030A1CF35",
+                        "id": "007E613B9B",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame finances implementation",
                         "link": "https://expenses.makerdao.network/endgame#budget-transition-status"
@@ -317,7 +337,9 @@ export default [
                 "title": "Generalized Budget Planning Model",
                 "description": "An advanced replacement for MIP40, providing enhanced transparency and flexibility in budget management for Contributor Teams. ",
                 "status": "TODO",
-                "progress": 0,
+                "progress": {
+                    "value": 0.001
+                },
                 "milestone": "ustpb52jla",
                 "owner": {
                     "id": "",
@@ -329,7 +351,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "001D118EE2",
+                        "id": "009AFB5178",
                         "parentIdRef": "oxhmqkmwnn",
                         "title": "More...",
                         "link": ""
@@ -352,8 +374,10 @@ export default [
         "title": "RWA Portfolio Reporting",
         "abstract": "Connect Editor prototype for MakerDAO RWA Portfolio Reporting.",
         "description": "Development of the 1st Connect Editor prototype - Real World Asset Portfolio Reporting for MakerDAO. Demo as part of the reveal of the revamped expenses dashboard. ",
-        "status": "",
-        "progress": "",
+        "status": "IN_PROGRESS",
+        "progress": {
+            "value": 1
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -364,7 +388,9 @@ export default [
                 "title": "RWA reporting specifications",
                 "description": "Specify requirements for the RWA reporting process and document models. BA: Stakeholder needs, requirements roles and use case scenarios.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -376,7 +402,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "001D98AA76",
+                        "id": "008D242039",
                         "parentIdRef": "01fv5qq0u1",
                         "title": "Original Reporting Flow",
                         "link": "https://drive.google.com/file/d/1BmX9KAr-gkkpHX4YHuoasZVAppih4Rat/view"
@@ -390,7 +416,9 @@ export default [
                 "title": "Document and process model implementation",
                 "description": "Implement the identified document models and reporting process model",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -402,7 +430,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00D72901C3",
+                        "id": "00EFB782BC",
                         "parentIdRef": "b5tfk809uv",
                         "title": "RWA document model specification",
                         "link": "https://makerdao-ses.notion.site/makerdao-rwa-portfolio-document-model-specifications-KR-77da583c2c384d04ae36445db45611dd"
@@ -416,7 +444,9 @@ export default [
                 "title": "Connect editor design implementation",
                 "description": "Design and implement the document editors in Connect to support the simplified prototype",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -428,7 +458,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009B974599",
+                        "id": "00E6BB91F5",
                         "parentIdRef": "m1n0lzoznh",
                         "title": "RWA conceptual wireframes",
                         "link": "https://drive.google.com/file/d/1NZXm_Q43sKH5pqwHTwN0DYvSW1uewMlY/view"
@@ -442,7 +472,9 @@ export default [
                 "title": "API & logic implementation",
                 "description": "Implement required API changes + custom logic to support the simplified prototype",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -454,7 +486,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00D2654659",
+                        "id": "0059D151DA",
                         "parentIdRef": "wngvicriyz",
                         "title": "RWA API query",
                         "link": "https://makerdao-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916"
@@ -468,7 +500,9 @@ export default [
                 "title": "Support RWA Portfolio v2 with stakeholder feedback",
                 "description": "Support the core dev team’s work on extended RWA protfolio prototype through supporting stakeholder feedback loops (BA work).",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -480,7 +514,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00DCF2B392",
+                        "id": "00A5B5C0C7",
                         "parentIdRef": "ogzlyy7ukp",
                         "title": "stakeholder engagement",
                         "link": ""
@@ -494,7 +528,9 @@ export default [
                 "title": "Connect RWA Delivery",
                 "description": "Tech work needed to build the necessary functionality for the finished extended RWA portfolio reporting prototype.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -506,7 +542,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00E4CC926F",
+                        "id": "00C832393A",
                         "parentIdRef": "kb8o0w0tfy",
                         "title": "connect document viewer",
                         "link": "https://apps.powerhouse.io/makerdao/connect/d/MakerDAO"
@@ -520,7 +556,9 @@ export default [
                 "title": "Stakeholder onboarding (where applicable)",
                 "description": "Work with MakerDAO stakeholders to operationalize their reporting process",
                 "status": "IN_PROGRESS",
-                "progress": 0.75,
+                "progress": {
+                    "value": 0.75
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -532,7 +570,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "002BC25CA5",
+                        "id": "0038D9EE18",
                         "parentIdRef": "ryjcnx0174",
                         "title": "Monetalis, Blocktower, Steakhouse, BALabs",
                         "link": ""
@@ -546,7 +584,9 @@ export default [
                 "title": "RWA data availability in Fusion",
                 "description": "Visualize the RWA individual reports and aggregated data on the Fusion dashboard",
                 "status": "IN_PROGRESS",
-                "progress": 0.85,
+                "progress": {
+                    "value": 0.85
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -558,7 +598,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00896AB00C",
+                        "id": "00D3CC40D4",
                         "parentIdRef": "wu0lb3194m",
                         "title": "RWA data available via Fusion ",
                         "link": "https://drive.google.com/file/d/1hpBmq9AIaaGpmiS4f5OjQh9qKzN7Sir-/view?usp=drive_link"
@@ -581,8 +621,10 @@ export default [
         "title": "Powerhouse Products POC",
         "abstract": "Core Powerhouse product and architecture development work.",
         "description": "Core development work on Powerhouse products and architecture infrastructure that supports the technical integration demos in the MakerDAO roadmap.",
-        "status": "",
-        "progress": "",
+        "status": "IN_PROGRESS",
+        "progress": {
+            "value": 0.6
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -593,7 +635,9 @@ export default [
                 "title": "Post demo 1 refactor",
                 "description": "Post demo 1 refactoring work on Connect, Switchboard & core architecture.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -603,14 +647,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d2p 1",
-                "keyResults": [
-                    {
-                        "id": "00CCF4AB6D",
-                        "parentIdRef": "r6tlft9f4e",
-                        "title": "Post demo 1 refactor",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "cx0506kugw",
@@ -619,7 +656,9 @@ export default [
                 "title": "Renown Authentication Flow",
                 "description": "Integrate Renown prototype with basic authentication & authorisation flow",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -629,14 +668,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d2p 2",
-                "keyResults": [
-                    {
-                        "id": "00CA0EC5AE",
-                        "parentIdRef": "cx0506kugw",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "4d51i0q4qj",
@@ -645,7 +677,9 @@ export default [
                 "title": "Basic conflict resolution",
                 "description": "Implement basic conflict resolution using autorebase mechanism",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -655,14 +689,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d2p 3",
-                "keyResults": [
-                    {
-                        "id": "00CC58F847",
-                        "parentIdRef": "4d51i0q4qj",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "q5hd3erqmt",
@@ -671,7 +698,9 @@ export default [
                 "title": "Demo 2 RWA Connect Delivery",
                 "description": "Tech work needed to build the necessary functionality for the finished extended RWA portfolio reporting prototype.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -683,19 +712,13 @@ export default [
                 "": "d2",
                 "keyResults": [
                     {
-                        "id": "004203B689",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "",
-                        "link": ""
-                    },
-                    {
-                        "id": "00523912A6",
+                        "id": "0052EA6E7F",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Contractual and Legal Entity Specs",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     },
                     {
-                        "id": "00E750F783",
+                        "id": "00168C8D87",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
@@ -709,7 +732,9 @@ export default [
                 "title": "Document model upgradability",
                 "description": "Document model upgradability (and getting rid of initial state)",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -719,14 +744,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": " d3p 1",
-                "keyResults": [
-                    {
-                        "id": "0089AD43FD",
-                        "parentIdRef": "oldvqgs590",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "ulwyl79k28",
@@ -735,7 +753,9 @@ export default [
                 "title": "Global state code update",
                 "description": "Opdate of the ‘Global state’ referencing code for Connect Document Drive",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -745,14 +765,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d3p 2 (d2p 2)",
-                "keyResults": [
-                    {
-                        "id": "00E985DE7F",
-                        "parentIdRef": "ulwyl79k28",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "twnztcoccx",
@@ -761,7 +774,9 @@ export default [
                 "title": "Template Engine Implementation",
                 "description": "Select and implement a template engine to create document model viewers",
                 "status": "TODO",
-                "progress": 0,
+                "progress": {
+                    "value": 0.001
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -771,14 +786,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d3p 3, stretch goal",
-                "keyResults": [
-                    {
-                        "id": "0038939809",
-                        "parentIdRef": "twnztcoccx",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "tln6r1aurh",
@@ -787,7 +795,9 @@ export default [
                 "title": "Deeplinking support",
                 "description": "Deeplinking Support for Connect Web (desktop nice to have)",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -797,14 +807,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d3p 4",
-                "keyResults": [
-                    {
-                        "id": "0086B00D06",
-                        "parentIdRef": "tln6r1aurh",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "h66erzw61m",
@@ -813,7 +816,9 @@ export default [
                 "title": "Switchboard MVP development",
                 "description": "Switchboard MVP development (includes architecture, transmitter, caching work) ",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -823,14 +828,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "d2p d3p 5",
-                "keyResults": [
-                    {
-                        "id": "009F3C22AD",
-                        "parentIdRef": "h66erzw61m",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "dt0g52xq5w",
@@ -839,7 +837,9 @@ export default [
                 "title": "Fusion & Switchboard demo",
                 "description": "Reveal Fusion decentralized operations platform as a revamped expenses dashboard, where Fusion features use the new Switchboard instance as backend.",
                 "status": "IN_PROGRESS",
-                "progress": 0.9,
+                "progress": {
+                    "value": 0.9
+                },
                 "milestone": "e7c86wa1g0",
                 "owner": {
                     "id": "",
@@ -868,7 +868,9 @@ export default [
         "abstract": "Atlas Rulebook Prototype for MakerDAO.",
         "description": "Build a Atlas Rulebook Prototype for MakerDAO - a single document editor designed to handle Atlas JSON data efficiently.",
         "status": "IN_PROGRESS",
-        "progress": 0.2,
+        "progress": {
+            "value": 0.2
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -879,7 +881,9 @@ export default [
                 "title": "Notion Atlas integration analysis",
                 "description": "(scope not final) Analysis of the Atlas Axis Notion database setup and identifying how we can pull the data from it, serving as input to creation of document model + viewer.",
                 "status": "IN_PROGRESS",
-                "progress": 0.3,
+                "progress": {
+                    "value": 0.3
+                },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
                     "id": "",
@@ -889,14 +893,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Apeiron KR numbering algo",
-                "keyResults": [
-                    {
-                        "id": "005DC50361",
-                        "parentIdRef": "kjjxdnrl1n",
-                        "title": "More...",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "kjjxdnrl2n",
@@ -905,7 +902,9 @@ export default [
                 "title": "Atlas document model creation",
                 "description": "(scope not final) Creation of document model + viewer to replicate the structure of Notion DB.",
                 "status": "IN_PROGRESS",
-                "progress": 0.25,
+                "progress": {
+                    "value": 0.25
+                },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
                     "id": "",
@@ -915,14 +914,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Apeiron DM state schema",
-                "keyResults": [
-                    {
-                        "id": "00A6CE5C78",
-                        "parentIdRef": "kjjxdnrl2n",
-                        "title": "More...",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "kjjxdnrl3n",
@@ -931,7 +923,9 @@ export default [
                 "title": "Atlas viewer USPs exploration",
                 "description": "(scope not final) Exploration of the Powerhouse Unique Selling Points that will provide the most value to feature’s stakeholders.",
                 "status": "IN_PROGRESS",
-                "progress": 0.1,
+                "progress": {
+                    "value": 0.1
+                },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
                     "id": "",
@@ -941,14 +935,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Apeiron viewer state schema",
-                "keyResults": [
-                    {
-                        "id": "005759DAA4",
-                        "parentIdRef": "kjjxdnrl3n",
-                        "title": "More...",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             }
         ],
         "owner": {
@@ -966,8 +953,10 @@ export default [
         "title": "Powerhouse Release Comms",
         "abstract": "Comms for powerhouse alpha version release.",
         "description": "Communication efforts to support the Powerhouse alpha version release. Marketing, BD and Community outreach.",
-        "status": "",
-        "progress": "",
+        "status": "IN_PROGRESS",
+        "progress": {
+            "value": 0.5
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -978,7 +967,9 @@ export default [
                 "title": "MVP comms support",
                 "description": "Forum post to MakerDAO community on evolution & spinoff of Powerhouse. It will feature three updates (PH vision & product updates, RWA+ Atlas+grants features)",
                 "status": "IN_PROGRESS",
-                "progress": 0.75,
+                "progress": {
+                    "value": 0.75
+                },
                 "milestone": "fn7f9sea7u",
                 "owner": {
                     "id": "",
@@ -997,7 +988,9 @@ export default [
                 "title": "New website content",
                 "description": "Deliver Powerhouse website content (incl. feedback and review)",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "fn7f9sea7u",
                 "owner": {
                     "id": "",
@@ -1007,14 +1000,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "0038939809",
-                        "parentIdRef": "twnztcoccx",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "tln6r1aurh",
@@ -1023,7 +1009,9 @@ export default [
                 "title": "New website delivery",
                 "description": "Standalone Powerhouse website to coincide with Demo 3 and Powerhouse official announcement that it’s spinning out of MakerDAO, based on website content",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "fn7f9sea7u",
                 "owner": {
                     "id": "",
@@ -1033,14 +1021,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "0086B00D06",
-                        "parentIdRef": "tln6r1aurh",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "dt0g52xq5w",
@@ -1049,7 +1030,9 @@ export default [
                 "title": "Social Media activation",
                 "description": "Establish Powerhouse X presence with ~4 tweets a week",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "fn7f9sea7u",
                 "owner": {
                     "id": "",
@@ -1068,7 +1051,9 @@ export default [
                 "title": "Blog Posts",
                 "description": "Series of blog posts explaining Powerhouse and our view on the world",
                 "status": "IN_PROGRESS",
-                "progress": 0.25,
+                "progress": {
+                    "value": 0.25
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1078,14 +1063,7 @@ export default [
                     "imageUrl": ""
                 },
                 "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "009F3C22AD",
-                        "parentIdRef": "h66erzw61m",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
+                "keyResults": []
             },
             {
                 "id": "q5hd3erqmt",
@@ -1094,7 +1072,9 @@ export default [
                 "title": "Team swag",
                 "description": "personalized team swag for the Berlin offsite",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1106,19 +1086,13 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "004203B689",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "",
-                        "link": ""
-                    },
-                    {
-                        "id": "00523912A6",
+                        "id": "0052EA6E7F",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Contractual and Legal Entity Specs",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     },
                     {
-                        "id": "00E750F783",
+                        "id": "00168C8D87",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
@@ -1132,7 +1106,9 @@ export default [
                 "title": "Podcast",
                 "description": "Podcast documenting the challenges and the rise of Powerhouse",
                 "status": "IN_PROGRESS",
-                "progress": 0.5,
+                "progress": {
+                    "value": 0.5
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1161,7 +1137,9 @@ export default [
         "abstract": "Launch of the Powerhouse Operational Hub ",
         "description": "Model and implement a reproducible entity structure that\\ \nprovides legal/operational infrastructure and facilitates decentralized collaboration while minimizing risks.",
         "status": "IN_PROGRESS",
-        "progress": 0.7,
+        "progress": {
+            "value": 0.7
+        },
         "startDate": "",
         "endDate": "",
         "deliverables": [
@@ -1172,7 +1150,9 @@ export default [
                 "title": "Minimal legal & ops setup documentation",
                 "description": "Requirements of a minimally viable legal infrastructure for Powerhouse documented ",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "fn7f9sea7u",
                 "owner": {
                     "id": "",
@@ -1184,7 +1164,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00C66CD093",
+                        "id": "0052C29397",
                         "parentIdRef": "ulwyl79k30",
                         "title": "Minimal legal & ops setup documentation",
                         "link": ""
@@ -1198,7 +1178,9 @@ export default [
                 "title": "Contractual and Legal Entity Specs",
                 "description": "Contractual and Legal Entity Specs are defined for Powerhouse operational entity.",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1210,19 +1192,13 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "004203B689",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "",
-                        "link": ""
-                    },
-                    {
-                        "id": "00523912A6",
+                        "id": "0052EA6E7F",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Contractual and Legal Entity Specs",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     },
                     {
-                        "id": "00E750F783",
+                        "id": "00168C8D87",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
@@ -1236,7 +1212,9 @@ export default [
                 "title": "Jurisdiction and Entity type defined",
                 "description": "Consultancy on entity type and jurisdiction, documenting trade-offs. ",
                 "status": "DELIVERED",
-                "progress": 1,
+                "progress": {
+                    "value": 1
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1248,7 +1226,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00CB545D49",
+                        "id": "00CD9903AC",
                         "parentIdRef": "oldvqgs593",
                         "title": "Jurisdiction and Entity type defined",
                         "link": ""
@@ -1262,7 +1240,9 @@ export default [
                 "title": "Multisig Participation Agreement",
                 "description": "Design and Execute Multisig Operational Agreement. V1 of MPA for operational multisig wallet for Powerhouse.",
                 "status": "IN_PROGRESS",
-                "progress": 0.9,
+                "progress": {
+                    "value": 0.9
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1274,7 +1254,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00B01D3450",
+                        "id": "0054CEC60B",
                         "parentIdRef": "ulwyl79k31",
                         "title": "Multisig Participation Agreement",
                         "link": "https://drive.google.com/file/d/1GkOzswYpBj7b4h7IFdFLu4ZiST_ceK-D/view?usp=sharing"
@@ -1288,7 +1268,9 @@ export default [
                 "title": "Operational Hub Entity incorporation",
                 "description": "Incorporate operational vehicle",
                 "status": "IN_PROGRESS",
-                "progress": 0.7,
+                "progress": {
+                    "value": 0.7
+                },
                 "milestone": "",
                 "owner": {
                     "id": "",
@@ -1300,19 +1282,13 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "004203B689",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "",
-                        "link": ""
-                    },
-                    {
-                        "id": "00523912A6",
+                        "id": "0052EA6E7F",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Contractual and Legal Entity Specs",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     },
                     {
-                        "id": "00E750F783",
+                        "id": "00168C8D87",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
@@ -1328,979 +1304,5 @@ export default [
             "imageUrl": ""
         },
         "budgetType": "CAPEX"
-    },
-    {
-        "id": "r2a55m0hyu",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "yk6djbdvxd",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "ulwyl79k29",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC01",
-                "title": "MVP comms support",
-                "description": "Forum post to MakerDAO community on evolution & spinoff of Powerhouse. It will feature three updates (PH vision & product updates, RWA+ Atlas+grants features)",
-                "status": "IN_PROGRESS",
-                "progress": 0.75,
-                "milestone": "fn7f9sea7u",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": []
-            },
-            {
-                "id": "twnztcoccx",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC02",
-                "title": "New website content",
-                "description": "Deliver Powerhouse website content (incl. feedback and review)",
-                "status": "DELIVERED",
-                "progress": 1,
-                "milestone": "fn7f9sea7u",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "0038939809",
-                        "parentIdRef": "twnztcoccx",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
-            },
-            {
-                "id": "tln6r1aurh",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC03",
-                "title": "New website delivery",
-                "description": "Standalone Powerhouse website to coincide with Demo 3 and Powerhouse official announcement that it’s spinning out of MakerDAO, based on website content",
-                "status": "DELIVERED",
-                "progress": 1,
-                "milestone": "fn7f9sea7u",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "0086B00D06",
-                        "parentIdRef": "tln6r1aurh",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
-            },
-            {
-                "id": "dt0g52xq5w",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC04",
-                "title": "Social Media activation",
-                "description": "Establish Powerhouse X presence with ~4 tweets a week",
-                "status": "DELIVERED",
-                "progress": 1,
-                "milestone": "fn7f9sea7u",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": []
-            },
-            {
-                "id": "h66erzw61m",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC05",
-                "title": "Blog Posts",
-                "description": "Series of blog posts explaining Powerhouse and our view on the world",
-                "status": "IN_PROGRESS",
-                "progress": 0.25,
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "009F3C22AD",
-                        "parentIdRef": "h66erzw61m",
-                        "title": "",
-                        "link": ""
-                    }
-                ]
-            },
-            {
-                "id": "q5hd3erqmt",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC06",
-                "title": "Team swag",
-                "description": "personalized team swag for the Berlin offsite",
-                "status": "DELIVERED",
-                "progress": 1,
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": [
-                    {
-                        "id": "004203B689",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "",
-                        "link": ""
-                    },
-                    {
-                        "id": "00523912A6",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Contractual and Legal Entity Specs",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    },
-                    {
-                        "id": "00E750F783",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Entity incorporation",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    }
-                ]
-            },
-            {
-                "id": "oldvqgs592",
-                "parentIdRef": "yk6djbdvxd",
-                "code": "PRC07",
-                "title": "Podcast",
-                "description": "Podcast documenting the challenges and the rise of Powerhouse",
-                "status": "IN_PROGRESS",
-                "progress": 0.5,
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "PH",
-                    "imageUrl": ""
-                },
-                "": "Kilgore",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "778zbuxl5u",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "r2e22m0hsy",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "",
-            "imageUrl": ""
-        },
-        "budgetType": ""
-    },
-    {
-        "id": "",
-        "code": "",
-        "title": "",
-        "abstract": "",
-        "description": "",
-        "status": "",
-        "progress": "",
-        "startDate": "",
-        "endDate": "",
-        "deliverables": [
-            {
-                "id": "86ufdefr9u",
-                "parentIdRef": "",
-                "code": "",
-                "title": "",
-                "description": "",
-                "status": "",
-                "progress": "",
-                "milestone": "",
-                "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "": "",
-                "keyResults": []
-            }
-        ],
-        "owner": {
-            "id": "",
-            "ref": "",
-            "name": "",
-            "code": "PH",
-            "imageUrl": ""
-        },
-        "budgetType": ""
     }
 ]

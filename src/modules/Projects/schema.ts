@@ -10,7 +10,7 @@ export const typeDefs = [
       abstract: String
       description: String
       status: String!
-      progress: SimpleProgress
+      progress: Progress
       imgUrl: String
       budgetType: String!
       deliverables: [Deliverable]
@@ -24,7 +24,7 @@ export const typeDefs = [
       description: String
       status: String
       budgetType: String
-      progress: SimpleProgress
+      progress: Progress
       projectOwner: Owner
       supportedDeliverables: [SupportedDeliverables]
       supportedKeyResults: [KeyResult]
@@ -37,13 +37,9 @@ export const typeDefs = [
       title: String
       description: String
       status: DeliverableStatus
-      progress: SimpleProgress
+      progress: Progress
       milestone: ID
       owner: Owner
-    }
-
-    type SimpleProgress {
-      value: String
     }
 
     type Owner {
@@ -71,7 +67,7 @@ export const typeDefs = [
       title: String!
       description: String
       status: String!
-      progress: SimpleProgress
+      progress: Progress
       owner: Owner!
       keyResults: [KeyResult]!
       milestone: ID
@@ -155,15 +151,15 @@ export const resolvers = {
       };
     },
   },
-  // Progress: {
-  //   __resolveType: (obj: any) => {
-  //     if (obj.total && obj.completed) {
-  //       return "StoryPoints";
-  //     } else if (obj.value) {
-  //       return "Percentage";
-  //     } else {
-  //       throw new Error("Invalid value type");
-  //     }
-  //   },
-  // },
+  Progress: {
+    __resolveType: (obj: any) => {
+      if (obj.total && obj.completed) {
+        return "StoryPoints";
+      } else if (obj.value) {
+        return "Percentage";
+      } else {
+        throw new Error("Invalid value type");
+      }
+    },
+  },
 };
