@@ -30,20 +30,12 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
+                    "id": "14vz903u",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Atlas Axis",
+                    "code": "AA",
                     "imageUrl": ""
-                },
-                "supportedKeyResults": [
-                    {
-                        "id": "00A6635234",
-                        "parentIdRef": "6to2pwq07k",
-                        "title": "Requirement Documentation (private) ",
-                        "link": ""
-                    }
-                ]
+                }
             },
             {
                 "id": "dt0g51iu5w",
@@ -57,26 +49,12 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "supportedKeyResults": [
-                    {
-                        "id": "00DCCE0167",
-                        "parentIdRef": "dt0g51iu5w",
-                        "title": "markdown file with prepared data",
-                        "link": ""
-                    },
-                    {
-                        "id": "00C8977BDF",
-                        "parentIdRef": "dt0g51iu5w",
-                        "title": "link to Atlas v2 in MIPs portal",
-                        "link": ""
-                    }
-                ]
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                }
             },
             {
                 "id": "wtdoo94i32",
@@ -90,32 +68,12 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "supportedKeyResults": [
-                    {
-                        "id": "00CB699892",
-                        "parentIdRef": "wtdoo94i32",
-                        "title": "Numbering algorithm for MIPs Portal ",
-                        "link": ""
-                    },
-                    {
-                        "id": "007AC011C8",
-                        "parentIdRef": "wtdoo94i32",
-                        "title": "Numbering algorithm for Notion",
-                        "link": ""
-                    },
-                    {
-                        "id": "004633BCB0",
-                        "parentIdRef": "wtdoo94i32",
-                        "title": "P0 Hub Data Provenance surfacing on MIPs portal ",
-                        "link": ""
-                    }
-                ]
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                }
             },
             {
                 "id": "wtdoo94i33",
@@ -129,13 +87,12 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "supportedKeyResults": []
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                }
             },
             {
                 "id": "wtdoo94i34",
@@ -149,13 +106,12 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "",
-                    "ref": "",
-                    "name": "",
-                    "code": "",
-                    "imageUrl": ""
-                },
-                "supportedKeyResults": []
+                    "id": "t3MKA406",
+                    "ref": "makerdao/ecosystem-actor",
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                }
             }
         ]
     }

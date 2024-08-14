@@ -10,13 +10,30 @@ export class ProjectsModel {
     this.knex = knex;
   }
 
-  async getSupportedProjects() {
-    return supportedProjects;
+  async getSupportedProjects(filter: ProjectFilter) {
+    return supportedProjects
   }
 
-  async getProjects() {
+  async getProjects(filter: ProjectFilter) {
     return projects;
   }
+
 }
 
 export default (knex: Knex) => new ProjectsModel(knex);
+
+// Define the filter types
+type OwnerFilter = {
+  id?: string;
+  name?: string;
+  code?: string;
+  ref?: string;
+};
+
+type ProjectFilter = {
+  id?: string;
+  status?: string;
+  progress?: number;
+  ownedBy?: OwnerFilter;
+  budgetType?: string;
+};
