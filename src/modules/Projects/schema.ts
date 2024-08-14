@@ -112,6 +112,8 @@ export const typeDefs = [
 
     input OwnerFilter {
       id: ID
+      name: String
+      code: String
       ref: OwnerType
     }
 
