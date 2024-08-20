@@ -8,42 +8,15 @@ export const typeDefs = [
       code: String!
       title: String!
       abstract: String
-      description: String
-      status: String!
-      progress: Progress
+      status: ProjectStatus!
+      progress: Percentage
       imgUrl: String
-      budgetType: String!
+      budgetType: BudgetType!
       deliverables: [Deliverable]
     }
 
-    type SupportedProjects {
-      id: ID!
-      code: String
-      title: String
-      abstract: String
-      description: String
-      status: String
-      budgetType: String
-      progress: Progress
-      projectOwner: Owner
-      supportedDeliverables: [SupportedDeliverables]
-      supportedKeyResults: [KeyResult]
-    }
-
-    type SupportedDeliverables {
-      id: ID
-      parentIdRef: ID
-      code: String
-      title: String
-      description: String
-      status: DeliverableStatus
-      progress: Progress
-      milestone: ID
-      owner: Owner
-    }
-
     type Owner {
-      ref: String
+      ref: OwnerType!
       id: ID!
       imgUrl: String
       name: String
@@ -62,20 +35,15 @@ export const typeDefs = [
 
     type Deliverable {
       id: ID!
-      parentIdRef: ID!
-      code: String
       title: String!
-      description: String
-      status: String!
+      status: DeliverableStatus!
       progress: Progress
       owner: Owner!
       keyResults: [KeyResult]!
-      milestone: ID
     }
 
     type KeyResult {
       id: ID!
-      parentIdRef: ID!
       title: String!
       link: String!
     }
@@ -112,45 +80,28 @@ export const typeDefs = [
 
     input OwnerFilter {
       id: ID
-      name: String
-      code: String
       ref: OwnerType
     }
 
     input ProjectFilter {
       id: ID
+      code: String
       status: ProjectStatus
-      progress: Float
       ownedBy: OwnerFilter
-      budgetType: BudgetType
-    }
-
-    type TeamProjectsQuery {
-      teamProjects(filter: ProjectFilter): ProjectsAndSupportedProjects
-      # projects(filter: ProjectFilter): [Project]
-      # supportedProjects(filter: ProjectFilter): [SupportedProjects]
-    }
-    type ProjectsAndSupportedProjects {
-      projects: [Project]
-      supportedProjects: [SupportedProjects]
+      supportedBy: OwnerFilter
     }
 
     extend type Query {
-      teamProjects(filter: ProjectFilter): ProjectsAndSupportedProjects
+      projects(filter: ProjectFilter): [Project]
     }
-    
   `,
 ];
 
 export const resolvers = {
   Query: {
-    teamProjects: async (_: any, { filter }: any, { dataSources }: any) => {
+    projects: async (_: any, { filter }: any, { dataSources }: any) => {
       const projects = await dataSources.db.Projects.getProjects(filter);
-      const supportedProjects = await dataSources.db.Projects.getSupportedProjects(filter);
-      return {
-        projects,
-        supportedProjects
-      };
+      return projects;
     },
   },
   Progress: {
