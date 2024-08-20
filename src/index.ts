@@ -15,6 +15,7 @@ import { Algorithm } from "jsonwebtoken";
 import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
 
+const startupTime = new Date();
 function buildExpressApp() {
   if (typeof process.env.SECRET === "undefined") {
     throw Error(
@@ -31,6 +32,13 @@ function buildExpressApp() {
   const app = express();
   app.use(compression());
   app.use(expressjwt(jwtConfig));
+  app.get('/healthz', async (_req, res) => {
+    return res.json({
+      status: 'healthy',
+      time: new Date(),
+      startupTime
+    });
+  });
 
   return app;
 }
