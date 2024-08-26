@@ -11,20 +11,25 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
     console.log(snapshotKey);
 
     let code = "";
+    let shortCode = '';
 
     if (snapshotKey.ownerType === "Keepers") {
       code = "keepers";
+      shortCode = 'keepers'
     } else if (snapshotKey.ownerType === "Delegates") {
       code = "recognized-delegates";
+      shortCode = 'delegates'
     } else if (snapshotKey.ownerType === "AlignedDelegates") {
       code = "aligned-delegates";
+      shortCode = 'delegates'
     } else if (snapshotKey.ownerType === "SpecialPurposeFund") {
       code = "spfs";
+      shortCode = 'spfs'
     }
     // Else fetch ownerCode from CoreUnit table
     else {
       const team = await knex("CoreUnit")
-        .select("code")
+        .select("code", 'shortCode')
         .where({
           id: snapshotKey.ownerId,
           type: snapshotKey.ownerType,
@@ -32,6 +37,7 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
         .first();
 
       code = team.code;
+      shortCode = team.shortCode;
     }
 
     // Insert the new entry into the table
@@ -45,7 +51,7 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
     const mapping = {
       id: snapshotKey.ownerId,
       code: code,
-      shortCode: code,
+      shortCode: shortCode,
       bsId: bsId[0].id,
       month: snapshotKey.month,
       ownerType: snapshotKey.ownerType,
@@ -73,7 +79,7 @@ const budgetStatementCreated = async (mapping, knex) => {
     owner: {
       id: mapping.id,
       code: mapping.code,
-      shortCode: mapping.code,
+      shortCode: mapping.shortCode,
       type: mapping.ownerType,
     },
     budgetStatementId,
