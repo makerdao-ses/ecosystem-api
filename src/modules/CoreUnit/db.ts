@@ -411,16 +411,15 @@ export class CoreUnitModel {
       .from("ContributorTeam_AlignmentScope")
       .where("teamId", teamId);
 
-    const scopes = [] as any[];
-    if (result.length > 0) {
-      for (const r of result) {
-        const [scope] = await this.knex
-          .select("*")
-          .from("AlignmentScope")
-          .where("id", r.scopeId);
-        scopes.push(scope);
-      }
+    if (result.length === 0) {
+      return null;
     }
+
+    const scopes = await this.knex.
+      select("*")
+      .from("AlignmentScope")
+      .whereIn("id", result.map(r => r.scopeId))
+
     return scopes.length > 0 ? scopes : null;
   }
 
@@ -430,7 +429,7 @@ export class CoreUnitModel {
       .from('CoreUnit')
       .where('code', code);
 
-    if (result.length > 0) { 
+    if (result.length > 0) {
       return result[0].budgetPath;
     }
     return null;
