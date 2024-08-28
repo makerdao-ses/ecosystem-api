@@ -6,6 +6,7 @@ const aliases = {
     // Addresses treated as Maker Protocol aliases
     "0x0048fc4357db3c0f45adea433a07a20769ddb0cf",
     "0x0000000000000000000000000000000000000000",
+    "0x3c5142f28567e6a0f172fd0baaf1f2847f49d02f"
   ],
 };
 
