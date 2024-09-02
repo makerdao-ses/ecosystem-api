@@ -24,6 +24,7 @@ export default {
     seeds: {
       directory: "./seeds",
     },
+    pool: { min: 0, max: 7 },
   },
 
   staging: {
@@ -38,6 +39,7 @@ export default {
     seeds: {
       directory: "./seeds",
     },
+    pool: { min: 0, max: 7 },
   },
 
   production: {
@@ -52,5 +54,6 @@ export default {
     seeds: {
       directory: "./seeds",
     },
+    pool: { min: 0, max: 7 },
   },
 };
