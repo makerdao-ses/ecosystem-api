@@ -53,7 +53,7 @@ const processTransactions = async (
     );
 
     // Skip irrelevant transactions that belong to the counterparty wallet
-    if (snapshotAccount.accountAddress !== relativeTxData.accountAddress) {
+    if (snapshotAccount.accountAddress !== relativeTxData.accountAddress.toLowerCase()) {
       if (
         !aliases[snapshotAccount.accountAddress] ||
         aliases[snapshotAccount.accountAddress].indexOf(

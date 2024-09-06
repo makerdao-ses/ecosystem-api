@@ -9,6 +9,8 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
     GUSD: "GUSD",
     USDP: "USDP",
     USDT: "USDT",
+    USDS: "USDS",
+    SKY: "SKY",
   };
 
   console.log("Updating account balances...");
