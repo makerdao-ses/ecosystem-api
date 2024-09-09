@@ -15,6 +15,7 @@ import { Algorithm } from "jsonwebtoken";
 import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
 import { createDataLoaders } from "./utils/dataLoaderFactory.js";
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
 
 const startupTime = new Date();
 function buildExpressApp() {
@@ -61,6 +62,11 @@ async function startApolloServer(
   const server = new ApolloServer({
     schema,
     plugins,
+    persistedQueries: {
+      cache: new InMemoryLRUCache({
+        maxSize: 1000,
+      }),
+    },
     context: ({ req }) => {
       try {
         const user = (req as any).auth || null;
