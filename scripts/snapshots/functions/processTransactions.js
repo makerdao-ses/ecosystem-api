@@ -6,6 +6,7 @@ const aliases = {
     // Addresses treated as Maker Protocol aliases
     "0x0048fc4357db3c0f45adea433a07a20769ddb0cf",
     "0x0000000000000000000000000000000000000000",
+    "0x3c5142f28567e6a0f172fd0baaf1f2847f49d02f"
   ],
 };
 
@@ -52,7 +53,7 @@ const processTransactions = async (
     );
 
     // Skip irrelevant transactions that belong to the counterparty wallet
-    if (snapshotAccount.accountAddress !== relativeTxData.accountAddress) {
+    if (snapshotAccount.accountAddress !== relativeTxData.accountAddress.toLowerCase()) {
       if (
         !aliases[snapshotAccount.accountAddress] ||
         aliases[snapshotAccount.accountAddress].indexOf(

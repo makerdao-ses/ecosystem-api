@@ -16,6 +16,7 @@ const makerProtocolAddresses = [
   "0x0048fc4357db3c0f45adea433a07a20769ddb0cf",
   "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb",
   "0x0000000000000000000000000000000000000000",
+  "0x3C5142F28567E6a0F172fd0BaaF1f2847f49D02F" //launch project
 ].map((a) => a.toLowerCase());
 
 const budgetPath = process.argv[2] || null;
