@@ -1,5 +1,5 @@
 import DataLoader from 'dataloader';
-import { 
+import {
     getAnalyticsForecast,
     getAnalyticsActuals,
     getAnalyticsOnChain,
@@ -146,27 +146,53 @@ export const createDataLoaders = (dataSources: any) => {
             }));
             return results;
         }),
-        mip40BudgetLineItemsLoader: new DataLoader(async (keys: readonly string[]) => {
-            const results = await dataSources.Mip.getMip40BudgetLineItemsBatch(keys);
-            const resultsMap = new Map();
-            results.forEach((item: any) => {
-                if (!resultsMap.has(item.mip40WalletId)) {
-                    resultsMap.set(item.mip40WalletId, []);
-                }
-                resultsMap.get(item.mip40WalletId).push(item);
-            });
-            return keys.map((key) => resultsMap.get(key) || []);
+        getMipsByCuIdLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMips({ cuId: parseInt(id) })
+            ));
+            return results;
         }),
-        mip39Loader: new DataLoader(async (keys: readonly string[]) => {
-            const results = await dataSources.Mip.getMip39sBatch(keys);
-            const resultsMap = new Map();
-            results.forEach((item: any) => {
-                if (!resultsMap.has(item.mipId)) {
-                    resultsMap.set(item.mipId, []);
-                }
-                resultsMap.get(item.mipId).push(item);
-            });
-            return keys.map((key) => resultsMap.get(key) || []);
+        getMipReplacesLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMipReplaces({ newMip: id })
+            ));
+            return results;
+        }),
+        getMip39ByMipIdLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip39s({ mipId: id })
+            ));
+            return results;
+        }),
+        getMip40ByCuMipIdLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip40s({ cuMipId: id })
+            ));
+            return results;
+        }),
+        getMip41ByCuMipIdLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip41s({ cuMipId: id })
+            ));
+            return results;
+        }),
+        getMip40BudgetPeriodsLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip40BudgetPeriods({ mip40Id: id })
+            ));
+            return results;
+        }),
+        getMip40WalletsLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip40Wallets({ mip40Id: id })
+            ));
+            return results;
+        }),
+        getMip40BudgetLineItemsLoader: new DataLoader(async (keys: readonly string[]) => {
+            const results = await Promise.all(keys.map(id =>
+                dataSources.Mip.getMip40BudgetLineItems({ mip40WalletId: id })
+            ));
+            return results;
         }),
     };
 };
