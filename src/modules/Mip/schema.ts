@@ -320,61 +320,57 @@ export const resolvers = {
     },
   },
   CoreUnit: {
-    cuMip: async (parent: any, __: any, { dataSources }: any) => {
+    cuMip: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMips({ cuId: id });
+      const result = await loaders.getMipsByCuIdLoader.load(id);
       return result;
     },
   },
   Team: {
-    cuMip: async (parent: any, __: any, { dataSources }: any) => {
+    cuMip: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMips({ cuId: id });
+      const result = await loaders.getMipsByCuIdLoader.load(id);
       return result;
     },
   },
   CuMip: {
-    mipReplaces: async (parent: any, __: any, { dataSources }: any) => {
+    mipReplaces: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMipReplaces({ newMip: id });
+      const result = await loaders.getMipReplacesLoader.load(id);
       return result;
     },
-    mip39: async (parent: any, __: any, { dataSources }: any) => {
+    mip39: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip39s({ mipId: id });
+      const result = await loaders.getMip39ByMipIdLoader.load(id);
       return result;
     },
-    mip40: async (parent: any, __: any, { dataSources }: any) => {
+    mip40: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip40s({ cuMipId: id });
+      const result = await loaders.getMip40ByCuMipIdLoader.load(id);
       return result;
     },
-    mip41: async (parent: any, __: any, { dataSources }: any) => {
+    mip41: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip41s({ cuMipId: id });
+      const result = await loaders.getMip41ByCuMipIdLoader.load(id);
       return result;
     },
   },
   Mip40: {
-    mip40BudgetPeriod: async (parent: any, __: any, { dataSources }: any) => {
+    mip40BudgetPeriod: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip40BudgetPeriods({
-        mip40Id: id,
-      });
+      const result = await loaders.getMip40BudgetPeriodsLoader.load(id);
       return result;
     },
-    mip40Wallet: async (parent: any, __: any, { dataSources }: any) => {
+    mip40Wallet: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip40Wallets({ mip40Id: id });
+      const result = await loaders.getMip40WalletsLoader.load(id);
       return result;
     },
   },
   Mip40Wallet: {
-    mip40BudgetLineItem: async (parent: any, __: any, { dataSources }: any) => {
+    mip40BudgetLineItem: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await dataSources.db.Mip.getMip40BudgetLineItems({
-        mip40WalletId: id,
-      });
+      const result = await loaders.getMip40BudgetLineItemsLoader.load(id);
       return result;
     },
   },
