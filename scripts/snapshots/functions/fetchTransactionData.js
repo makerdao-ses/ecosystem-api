@@ -1,12 +1,11 @@
 import fetch from "node-fetch";
 
-const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC", GUSD: "GUSD", USDP: "USDP", USDT: "USDT" };
+const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC", GUSD: "GUSD", USDP: "USDP", USDT: "USDT", SKY: "SKY", USDS: "USDS"};
 
 const fetchTransactionData = async (
   address,
   ownerType,
   ownerId,
-  //apiToken not in use but may return in the future
   apiToken,
 ) => {
   console.log(

@@ -900,15 +900,6 @@ export default [
     Address: "0x6E51E0b5813152880C1389E3e860e69E06aD04D9",
   },
   {
-    Name: "Launch Project",
-    "budget path 1": "makerdao",
-    "budget path 2": "scopes",
-    "budget path 3": "ACC",
-    "budget path 4": "launch-project",
-    Type: "",
-    Address: "0x3C5142F28567E6a0F172fd0BaaF1f2847f49D02F",
-  },
-  {
     Name: "Blocktower",
     "budget path 1": "makerdao",
     "budget path 2": "scopes",
@@ -1250,5 +1241,14 @@ export default [
     "budget path 4": "",
     Type: "Protocol",
     Address: "0x0000000000000000000000000000000000000000",
+  },
+  {
+    Name: "Launch Project",
+    "budget path 1": "makerdao",
+    "budget path 2": "protocol",
+    "budget path 3": "",
+    "budget path 4": "",
+    Type: "Protocol",
+    Address: "0x3C5142F28567E6a0F172fd0BaaF1f2847f49D02F",
   },
 ];
