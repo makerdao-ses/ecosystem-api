@@ -1,13 +1,7 @@
 import { gql, AuthenticationError } from "apollo-server-core";
 import {
   convertDate,
-  getAnalyticsActuals,
-  getAnalyticsForecast,
-  getAnalyticsOnChain,
-  getAnalyticsOffChain,
-  getAnalyticsNetOutflow
 } from "./utils.js";
-
 import { measureQueryPerformance } from "../../../utils/logWrapper.js";
 import { resolveBudgetPath } from "./utils.js";
 
@@ -506,71 +500,61 @@ export const resolvers = {
     // }
   },
   CoreUnit: {
-    budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
+    budgetStatements: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { id } = parent;
       const [output] = await dataSources.db
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
-      const result = await measureQueryPerformance('CoreUnit getBudgetStatements', "BudgetStaetments", dataSources.db.BudgetStatement.getBudgetStatements({
-        filter: { ownerId: [id], ownerType: [output.type] },
-      }));
+      const result = await loaders.getBudgetStatementsLoader.load(`${id}-${output.type}`);
       return result;
     },
   },
   Team: {
-    budgetStatements: async (parent: any, __: any, { dataSources }: any) => {
+    budgetStatements: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { id } = parent;
       const [output] = await dataSources.db
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
-      const result = await measureQueryPerformance('Team getBudgetStatements', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatements({
-        filter: { ownerId: [id], ownerType: [output.type] },
-      }));
+      const result = await loaders.getBudgetStatementsLoader.load(`${id}-${output.type}`);
       return result;
     },
   },
   BudgetStatement: {
-    activityFeed: async (parent: any, __: any, { dataSources }: any) => {
+    activityFeed: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await measureQueryPerformance('getBsEvents', "BudgetStatements", dataSources.db.ChangeTracking.getBsEvents(id));
+      const result = await loaders.getBsEventsLoader.load(id);
       return result;
     },
-    auditReport: async (parent: any, __: any, { dataSources }: any) => {
+    auditReport: async (parent: any, __: any, { loaders }: any) => {
       const { id } = parent;
-      const result = await measureQueryPerformance("getAuditReports", "BudgetStatements", dataSources.db.BudgetStatement.getAuditReports({
-        budgetStatementId: id,
-      }))
+      const result = await loaders.getAuditReportsLoader.load(id);
       return result;
     },
-    budgetStatementFTEs: async (parent: any, __: any, { noCache, dataSources }: any) => {
+    budgetStatementFTEs: async (parent: any, __: any, { noCache, dataSources, loaders }: any) => {
       const { id } = parent;
       if (noCache) {
         return await dataSources.db.BudgetStatement.getBudgetStatementFTEs({
           budgetStatementId: id,
         });
       }
-      const result = await measureQueryPerformance('getBudgetStatementFTEs', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatementFTEs({
-        budgetStatementId: id,
-      }))
+      const result = await loaders.getBudgetStatementFTEsLoader.load(id);
       return result;
     },
     budgetStatementMKRVest: async (
       parent: any,
       __: any,
-      { dataSources }: any,
+      { loaders }: any,
     ) => {
       const { id } = parent;
-      const result = await measureQueryPerformance('getBudgetStatementMKRVests', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatementMKRVests({
-        budgetStatementId: id,
-      }));
+      const result = await loaders.getBudgetStatementMKRVestsLoader.load(id);
       return result;
     },
     budgetStatementWallet: async (
       parent: any,
       __: any,
-      { noCache, dataSources }: any,
+      { noCache, dataSources, loaders }: any,
     ) => {
       const { id } = parent;
       if (noCache) {
@@ -578,9 +562,7 @@ export const resolvers = {
           budgetStatementId: id,
         });
       }
-      const result = await measureQueryPerformance('getBudgetStatementWallets', "BudgetStatements", dataSources.db.BudgetStatement.getBudgetStatementWallets({
-        budgetStatementId: id,
-      }));
+      const result = await loaders.getBudgetStatementWalletsLoader.load(id);
       return result;
     },
     owner: async (parent: any, __: any, { dataSources }: any) => {
@@ -627,39 +609,39 @@ export const resolvers = {
 
       return owner;
     },
-    forecastExpenses: async (parent: any, __: any, { dataSources }: any) => {
+    forecastExpenses: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalyticsForecast(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await loaders.getAnalyticsForecastLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
       return analytics[0]?.forecast;
     },
-    actualExpenses: async (parent: any, __: any, { dataSources }: any) => {
+    actualExpenses: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalyticsActuals(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await loaders.getAnalyticsActualsLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
       return analytics[0]?.actuals;
     },
-    paymentsOnChain: async (parent: any, __: any, { dataSources }: any) => {
+    paymentsOnChain: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalyticsOnChain(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await loaders.getAnalyticsOnChainLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
       return analytics[0]?.paymentsOnChain;
     },
-    paymentsOffChain: async (parent: any, __: any, { dataSources }: any) => {
+    paymentsOffChain: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalyticsOffChain(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await loaders.getAnalyticsOffChainLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
       return analytics[0]?.paymentsOffChain;
     },
-    netProtocolOutflow: async (parent: any, __: any, { dataSources }: any) => {
+    netProtocolOutflow: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await getAnalyticsNetOutflow(queryEngine, convertedMonth, ownerType, ownerId);
+      const analytics = await loaders.getAnalyticsNetOutflowLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
       return analytics[0]?.netProtocolOutflow;
     }
   },
@@ -667,7 +649,7 @@ export const resolvers = {
     budgetStatementLineItem: async (
       parent: any,
       __: any,
-      { noCache, dataSources }: any,
+      { noCache, dataSources, loaders }: any,
     ) => {
       const { id } = parent;
       if (noCache) {
@@ -678,34 +660,25 @@ export const resolvers = {
           id,
         );
       }
-      const result = await measureQueryPerformance('getBudgetStatementLineItems', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatementLineItems(
-        undefined,
-        undefined,
-        "budgetStatementWalletId",
-        id,
-      ));
+      const result = await loaders.getBudgetStatementLineItemsLoader.load(id);
       return result;
     },
     budgetStatementPayment: async (
       parent: any,
       __: any,
-      { dataSources }: any,
+      { loaders }: any,
     ) => {
       const { id } = parent;
-      const result = await measureQueryPerformance('getBudgetStatementPayments', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementPayments({
-        budgetStatementWalletId: id,
-      }));
+      const result = await loaders.getBudgetStatementPaymentsLoader.load(id);
       return result;
     },
     budgetStatementTransferRequest: async (
       parent: any,
       __: any,
-      { dataSources }: any,
+      { loaders }: any,
     ) => {
       const { id } = parent;
-      const result = await measureQueryPerformance('getBudgetStatementTransferRequests', 'BudgetStatement', dataSources.db.BudgetStatement.getBudgetStatementTransferRequests(
-        { budgetStatementWalletId: id },
-      ));
+      const result = await loaders.getBudgetStatementTransferRequestsLoader.load(id);
       const parsedResult = result.map((tReqyest: any) => {
         return {
           id: tReqyest.id,

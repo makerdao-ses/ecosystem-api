@@ -182,6 +182,10 @@ const getMonthInfo = (owner, month, endBlockNo) => {
     console.log("END BLOCK NUMBER ", endBlockNumber);
     console.log("END BLOCK NUMBER GIVEN", endBlockNo);
 
+    if (endBlockNo && endBlockNo < startBlockNumber) {
+      console.log("Out of snapshot window");
+      return;
+    }
     if (!endBlockNumber) {
       const keys = Object.keys(blockNumbers);
       console.log("KEYS ", keys[keys.length - 1]);
