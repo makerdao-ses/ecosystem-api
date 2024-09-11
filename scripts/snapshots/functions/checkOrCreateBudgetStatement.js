@@ -5,7 +5,7 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
     .first();
 
   // If no entry exists, create an empty BudgetStatement
-  if (!existingBudgetStatement) {
+  if (!existingBudgetStatement && snapshotKey.ownerType != 'Scopes') {
     console.log("No existing budget statement found. Creating a new one...");
 
     console.log(snapshotKey);

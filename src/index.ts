@@ -14,6 +14,8 @@ import initApi from "./initApi.js";
 import { Algorithm } from "jsonwebtoken";
 import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
+import { createDataLoaders } from "./utils/dataLoaderFactory.js";
+import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
 
 const startupTime = new Date();
 function buildExpressApp() {
@@ -60,17 +62,24 @@ async function startApolloServer(
   const server = new ApolloServer({
     schema,
     plugins,
+    persistedQueries: {
+      cache: new InMemoryLRUCache({
+        maxSize: 1000,
+      }),
+    },
     context: ({ req }) => {
       try {
         const user = (req as any).auth || null;
         const noCache = req.headers['no-cache'] === 'true' ? true : false;
+        const loaders = createDataLoaders(apiModules.datasource);
         if (user) {
           const auth = new Authorization(apiModules.datasource, user.id);
-          return { user, auth };
+          return { user, auth, loaders };
         }
         if (noCache) {
-          return { noCache };
+          return { noCache, loaders };
         }
+        return { loaders };
       } catch (error: any) {
         throw new AuthenticationError(error.message);
       }

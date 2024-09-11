@@ -37,6 +37,12 @@ const { owner, accounts } = await getOwnerAndAccountsFromBudgetPath(
 );
 const monthInfo = getMonthInfo(owner, month, endBlockNo);
 
+// Add this check
+if (!monthInfo) {
+  console.log("No month info available. Exiting script.");
+  process.exit(0);
+}
+
 const snapshotReport = await createSnapshotReport(
   owner.type,
   owner.id,
