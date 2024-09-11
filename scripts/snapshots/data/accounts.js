@@ -243,6 +243,15 @@ export default [
     Address: "0x7119f398b6C06095c6E8964C1f58e7C1BAa79E18",
   },
   {
+    Name: "IS Bounty Payout 4",
+    "budget path 1": "makerdao",
+    "budget path 2": "core-units",
+    "budget path 3": "IS-001",
+    "budget path 4": "",
+    Type: "PaymentProcessor",
+    Address: "0xa24EC79bdF03bB325F36878573B13AedFEd0717f",
+  },
+  {
     Name: "Risk Operational Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "core-units",
