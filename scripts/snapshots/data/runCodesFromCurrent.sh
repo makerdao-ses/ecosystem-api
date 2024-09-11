@@ -48,6 +48,7 @@ codes=(
 
 
 TECH_end_number=17983665
+DEL_end_number=16989766
 
 # Get the current date in UTC
 current_utc_date='$(date -u +'%Y-%m-%d')'
@@ -123,6 +124,8 @@ for i in 0 1; do
   for code in "${codes[@]}"; do
     if [ "$code" = "core-units/TECH-001" ]; then
       node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date" "$TECH_end_number"
+    elif [ "$code" = "delegates" ]; then
+      node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date" "$DEL_end_number"
     else
       node ./scripts/snapshots/syncSnapshotReport.js "makerdao/$code" "$year_month_date"
     fi
