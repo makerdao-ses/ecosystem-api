@@ -659,7 +659,7 @@ export default [
             "ref": "skyecosystem/contributor",
             "name": "apeiron",
             "code": "apeiron",
-            "imageUrl": "make"
+            "imageUrl": "N/A"
           },
           {
             "id": "T6yXPSIU",
