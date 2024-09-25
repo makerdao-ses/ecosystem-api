@@ -110,7 +110,7 @@ export const resolvers = {
     series: async (parent: any, { filter }: any, { dataSources }: any) => {
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       const results = await queryEngine.query(filter);
-      return results.map((s) => ({
+      return results.map((s: any) => ({
         ...s,
         rows: s.rows.map((r: any) => ({
           ...r,
