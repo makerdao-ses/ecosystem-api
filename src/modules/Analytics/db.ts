@@ -5,11 +5,8 @@ import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
 import {
   AnalyticsGranularity,
   AnalyticsQuery,
-  ConversionMetric,
-  MultiCurrencyConversion,
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
-import { createHash } from 'crypto';
 import { measureAnalyticsQueryPerformance } from '../../utils/logWrapper.js';
 
 type queryFilter = {
@@ -69,7 +66,7 @@ export class AnalyticsModel {
         query.lod[dimension.name] = Number(dimension.lod);
       });
     }
-    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, this.engine, false);
+    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false);
 
   }
 
