@@ -9,6 +9,8 @@ import {
   MultiCurrencyConversion,
 } from "../../analytics/AnalyticsQuery.js";
 import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
+import { createHash } from 'crypto';
+import { measureAnalyticsQueryPerformance } from '../../utils/logWrapper.js';
 
 type queryFilter = {
   start?: Date;
@@ -67,7 +69,7 @@ export class AnalyticsModel {
         query.lod[dimension.name] = Number(dimension.lod);
       });
     }
-    return this.engine.execute(query);
+    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, this.engine);
 
   }
 
