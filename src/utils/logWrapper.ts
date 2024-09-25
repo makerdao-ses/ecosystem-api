@@ -74,7 +74,7 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
     }
 };
 
-export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, query: AnalyticsQuery, analyticsEngine: AnalyticsQueryEngine) => {
+export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, query: AnalyticsQuery, engine: AnalyticsQueryEngine, refreshCache: boolean = false) => {
     const logger = getChildLogger({}, { moduleName });
     try {
         const start = Date.now(); // Start timing
@@ -85,12 +85,12 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
         const queryString = JSON.stringify(query);
 
         const key = getHashKey(queryString);
-        const value = await client.get(key);
+        const value = refreshCache ? null : await client.get(key);
         let results = null;
         if (value) {
             results = JSON.parse(value, dateTimeReviver);
         } else {
-            results = await analyticsEngine.execute(query) as any;
+            results = await engine.execute(query) as any;
             client.set(key, JSON.stringify(results), { EX: 120 });
         }
         const end = Date.now(); // End timing
@@ -124,7 +124,7 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
             query: query,
         },
             queryName);
-        return await analyticsEngine.execute(query) as any;
+        return await engine.execute(query) as any;
     }
 }
 

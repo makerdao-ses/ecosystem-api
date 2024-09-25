@@ -69,7 +69,7 @@ export class AnalyticsModel {
         query.lod[dimension.name] = Number(dimension.lod);
       });
     }
-    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, this.engine);
+    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, this.engine, false);
 
   }
 
