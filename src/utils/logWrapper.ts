@@ -106,7 +106,7 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
             results = JSON.parse(value, dateTimeReviver);
         } else {
             results = await engine.execute(query) as any;
-            client.set(key, JSON.stringify(results), { EX: 120 });
+            client.set(key, JSON.stringify(results), { EX: 14400 });
         }
         const end = Date.now(); // End timing
         const executionTime = (end - start) / 1000;
