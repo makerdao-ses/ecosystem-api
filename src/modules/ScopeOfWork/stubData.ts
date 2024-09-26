@@ -15,28 +15,28 @@ export default [
         "targetDate": "2024-03-01T00:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "6k506n2A",
+            "id": "t5Yv433n",
             "ref": "skyecosystem/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "T6yXPSIU",
+            "id": "7X86Np51",
             "ref": "skyecosystem/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "j7Q5G5UX",
+            "id": "Q8m9Y996",
             "ref": "skyecosystem/contributor",
             "name": "callmeT",
             "code": "callmeT",
@@ -45,11 +45,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -67,11 +67,11 @@ export default [
               "startDate": "2023-12-31T23:00:00.000Z",
               "endDate": "2024-02-29T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -84,14 +84,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "oy69oibt04",
-                  "id": "536d42SK",
+                  "id": "3Iv0Xj49",
                   "title": "RWA Conceptual Wireframes",
                   "link": "https://drive.google.com/file/d/1NZXm_Q43sKH5pqwHTwN0DYvSW1uewMlY/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "oy69oibt04",
-                  "id": "a68V9278",
+                  "id": "u1tyNoN4",
                   "title": "First demo of RWA Portfolio - Feb 21",
                   "link": "https://drive.google.com/file/d/1CMwePiR046IJqQGLypi7Fzu_B7aLYNco/view",
                   "Note": ""
@@ -111,11 +111,11 @@ export default [
               "startDate": "2023-12-31T23:00:00.000Z",
               "endDate": "2024-02-29T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -128,16 +128,16 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "oy69oibt03",
-                  "id": "2E3904HH",
+                  "id": "3A9VU761",
                   "title": "Source code (Powerhouse repo)",
                   "link": "https://github.com/powerhouse-inc/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "oy69oibt03",
-                  "id": "hAf618l2",
+                  "id": "78537f17",
                   "title": "Source code (SES repo)",
-                  "link": "https://github.com/Sky Ecosystem-ses",
+                  "link": "https://github.com/makerdao-ses",
                   "Note": ""
                 }
               ]
@@ -155,11 +155,11 @@ export default [
               "startDate": "2023-12-31T23:00:00.000Z",
               "endDate": "2024-02-29T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -172,16 +172,9 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "oy69oibt02",
-                  "id": "y1u6A4Tn",
-                  "title": "Expenses dashboard on-going work",
-                  "link": "https://expenses-staging.Sky Ecosystem.network",
-                  "Note": ""
-                },
-                {
-                  "parentIdRef": "oy69oibt02",
-                  "id": "28kw4U1A",
+                  "id": "P4Bht710",
                   "title": "Expense Dashboard deployment v0.33.0",
-                  "link": "https://github.com/Sky Ecosystem-ses/ecosystem-dashboard/releases/tag/v0.33.0",
+                  "link": "https://github.com/makerdao-ses/ecosystem-dashboard/releases/tag/v0.33.0",
                   "Note": ""
                 }
               ]
@@ -205,28 +198,28 @@ export default [
         "targetDate": "2024-07-02T23:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "6k506n2A",
+            "id": "t5Yv433n",
             "ref": "skyecosystem/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "T6yXPSIU",
+            "id": "7X86Np51",
             "ref": "skyecosystem/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "j7Q5G5UX",
+            "id": "Q8m9Y996",
             "ref": "skyecosystem/contributor",
             "name": "callmeT",
             "code": "callmeT",
@@ -235,11 +228,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -257,11 +250,11 @@ export default [
               "startDate": "2024-03-03T23:00:00.000Z",
               "endDate": "2024-03-06T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -274,44 +267,51 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "X47ntO5w",
+                  "id": "40027XOT",
                   "title": "Integration Demo of RWA portfolio - Apr 10",
                   "link": "https://drive.google.com/file/d/1Q1zYh1_qosF8JG1z3gbKszrp60HlnYyV/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "71569t9M",
+                  "id": "IA5GNK17",
                   "title": "Switchboard data / API endpoint ",
-                  "link": "https://Sky Ecosystem-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916",
+                  "link": "https://makerdao-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "o7832L3U",
+                  "id": "0L656BVR",
                   "title": "Sky Ecosystem platform demo - Jul 3rd",
                   "link": "https://drive.google.com/file/d/1f-h8mPCUw4u5gCFn-TQcTw_XIDN7Ayvs/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "u60o0849",
+                  "id": "c6Iu37h5",
                   "title": "PH EA update 1/3 - Powerhouse vision",
-                  "link": "https://forum.Sky Ecosystem.com/t/ea-status-update-1-3-detailing-the-powerhouse-vision/24586",
+                  "link": "https://forum.makerdao.com/t/ea-status-update-1-3-detailing-the-powerhouse-vision/24586",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "R92778Pe",
+                  "id": "jh0Y6D72",
                   "title": "Fusion Reskin example designs",
                   "link": "https://www.figma.com/proto/dX0ZItTTMaJ78Tsv8kZDlW/Expense-Dashboard-Update?page-id=2417%3A84822&node-id=2417-85288&viewport=465%2C761%2C0.28&t=wu9jjPYjDEC2tmDl-1&scaling=min-zoom&content-scaling=fixed",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr1mn",
-                  "id": "2xS01El6",
+                  "id": "TO7Y2U28",
+                  "title": "Sky deployment of PH products WIP demo - Aug14",
+                  "link": "https://drive.google.com/file/d/1DGyS4sa1yGgM-pePcbuIYmkki-QlCLzq/view?usp=sharing",
+                  "Note": ""
+                },
+                {
+                  "parentIdRef": "xnatzcr1mn",
+                  "id": "fR8W8DyO",
                   "title": "PH EA update 2/3 - Work for Sky Ecosystem",
-                  "link": "https://forum.Sky Ecosystem.com/t/ea-status-update-2-3-powerhouse-work-for-Sky Ecosystem/24712",
+                  "link": "https://forum.makerdao.com/t/ea-status-update-2-3-powerhouse-work-for-makerdao/24712",
                   "Note": ""
                 }
               ]
@@ -329,11 +329,11 @@ export default [
               "startDate": "2024-03-03T23:00:00.000Z",
               "endDate": "2024-03-06T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -346,49 +346,49 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "Zu3891T0",
+                  "id": "l1Ma5WS0",
                   "title": "Sky Connect ",
-                  "link": "https://apps.powerhouse.io/Sky Ecosystem/connect/",
+                  "link": "https://connect.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "8QzVnSZ9",
+                  "id": "gE66d0MP",
                   "title": "Fusion deployment",
                   "link": "https://staging.fusion.phd/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "5h85480H",
+                  "id": "7443298T",
                   "title": "Switchboard deployment ",
-                  "link": "https://apps.powerhouse.io/Sky Ecosystem/switchboard/",
+                  "link": "https://switchboard.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "L9qt9Zqs",
+                  "id": "3w20M02C",
                   "title": "Renown deployment ",
                   "link": "https://www.renown.id/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "Lc3s27vk",
+                  "id": "8R7OKaDq",
                   "title": "Fusion Github repo",
                   "link": "https://github.com/powerhouse-inc/fusion/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "31C8w9W7",
+                  "id": "wK1519b6",
                   "title": "Switchboard Github repo",
                   "link": "https://github.com/powerhouse-inc/switchboard",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "xnatzcr2mn",
-                  "id": "XZC1BbW9",
+                  "id": "wDa9G1Wh",
                   "title": "Connect Github repo",
                   "link": "https://github.com/powerhouse-inc/connect",
                   "Note": ""
@@ -414,28 +414,28 @@ export default [
         "targetDate": "2024-11-01T00:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "6k506n2A",
+            "id": "t5Yv433n",
             "ref": "skyecosystem/contributor",
             "name": "teep",
             "code": "teep",
             "imageUrl": "N/A"
           },
           {
-            "id": "T6yXPSIU",
+            "id": "7X86Np51",
             "ref": "skyecosystem/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "j7Q5G5UX",
+            "id": "Q8m9Y996",
             "ref": "skyecosystem/contributor",
             "name": "callmeT",
             "code": "callmeT",
@@ -444,11 +444,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -461,16 +461,16 @@ export default [
               "description": "Sky rebrand of Fusion, including staging & production deployment on the sky.money subdomains with the latest available ecosystem data.",
               "status": "DELIVERED",
               "workProgress": {
-                "value": 0.95
+                "value": 1
               },
               "startDate": "2024-07-07T22:00:00.000Z",
               "endDate": "2024-10-31T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -483,21 +483,21 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "2Xbh5QCw",
+                  "id": "266P58B4",
                   "title": "Custom Sky Fusion deployment",
                   "link": "https://fusion.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "97w9JlUQ",
+                  "id": "12mJEoLI",
                   "title": "Sky Fusion Staging Release",
                   "link": "https://fusion-staging.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "t4wjsoym8u",
-                  "id": "808Tq5w5",
+                  "id": "vSl6F84b",
                   "title": "Sky Fusion Production Release",
                   "link": "https://fusion.sky.money/",
                   "Note": ""
@@ -512,16 +512,16 @@ export default [
               "description": "Sky rebrand of Connect, including staging & production deployment on the sky.money subdomains  with the available Real World Assets reports data.",
               "status": "DELIVERED",
               "workProgress": {
-                "value": 0.95
+                "value": 1
               },
               "startDate": "2024-07-07T22:00:00.000Z",
               "endDate": "2024-10-31T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -534,14 +534,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoym9u",
-                  "id": "83C3m6l7",
+                  "id": "1360y3Vi",
                   "title": "Sky Connect Staging Release",
                   "link": "https://connect-staging.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "t4wjsoym9u",
-                  "id": "93MV526u",
+                  "id": "Q6fc078D",
                   "title": "Sky Connect Production Release",
                   "link": "https://connect.sky.money/",
                   "Note": ""
@@ -561,11 +561,11 @@ export default [
               "startDate": "2024-07-07T22:00:00.000Z",
               "endDate": "2024-10-31T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -578,14 +578,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoyrru",
-                  "id": "0y0r0qyS",
+                  "id": "bMME6Dk4",
                   "title": "Sky Switchboard Staging Release ",
                   "link": "https://switchboard-staging.sky.money/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "t4wjsoyrru",
-                  "id": "6824140s",
+                  "id": "5CVp0416",
                   "title": "Sky Switchboard Production Release ",
                   "link": "https://switchboard.sky.money/",
                   "Note": ""
@@ -605,11 +605,11 @@ export default [
               "startDate": "2024-07-07T22:00:00.000Z",
               "endDate": "2024-10-31T23:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -622,7 +622,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "t4wjsoywdu",
-                  "id": "M953J80F",
+                  "id": "09M0nV14",
                   "title": "Renown.id Production Release",
                   "link": "https://www.renown.id/ ",
                   "Note": ""
@@ -642,27 +642,27 @@ export default [
         "id": "r3bzzgbyk2",
         "sequenceCode": "PH04",
         "code": "ATLAS",
-        "title": "Atlas Viewer v1",
-        "abstract": "The initial phase of Atlas Rulebook work.",
-        "description": "Roadmap milestone: Atlas viewer v1. \nMilestone 4, set for Q4, marks the first version of an Atlas document model and viewer in Connect for the Atlas Rulebook.\nDeliverables include: (scope not final) Notion Atlas integration analysis; Atlas document model creation; Atlas viewer USPs exploration.",
+        "title": "Atlas Rulebook Editor",
+        "abstract": "The initial phase of Atlas Rulebook Editor work.",
+        "description": "Roadmap milestone: Atlas Rulebook Editor. \nMilestone 4, set for Q4, marks the first version of an Atlas document model and viewer in Connect for the Atlas Rulebook.\nDeliverables include: Notion Atlas integration analysis; Atlas document model creation; Atlas - Powerhouse integrated roadmap planning",
         "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "9d4eH5p7",
+            "id": "S90J87e6",
             "ref": "skyecosystem/contributor",
             "name": "apeiron",
             "code": "apeiron",
             "imageUrl": "N/A"
           },
           {
-            "id": "T6yXPSIU",
+            "id": "7X86Np51",
             "ref": "skyecosystem/contributor",
             "name": "meraki",
             "code": "meraki",
@@ -671,11 +671,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -693,11 +693,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -710,21 +710,21 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "Gr623NGq",
+                  "id": "8i420607",
                   "title": "Mapping existing manual process in Notion",
                   "link": "https://drive.google.com/file/d/1HdJ9WGOVkUg9cn9qn7TBghLOTf0g3F1A/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "enrvg998",
+                  "id": "2y8LT2Q1",
                   "title": "Atlas editing process capture",
                   "link": "https://drive.google.com/file/d/1fgHtkfic8PbI71cLavgDz7XUoNg71ZtW/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl1n",
-                  "id": "9h7N3N09",
+                  "id": "Lcx045u2",
                   "title": "MIPs Portal Requirements + Numbering algorithm",
                   "link": "https://drive.google.com/file/d/1KE8nXZD0rbkzVVWXjpc8FZsg99l4glsI/view",
                   "Note": ""
@@ -744,11 +744,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -761,14 +761,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl2n",
-                  "id": "9vt8c0TI",
+                  "id": "Pe1674Wp",
                   "title": "Atlas document model",
                   "link": "https://drive.google.com/file/d/1j9SVd_cJ5K885WRmc0Zm8UBSqveIRruu/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl2n",
-                  "id": "QRF874l8",
+                  "id": "15TI53oI",
                   "title": "Atlas viewer ",
                   "link": "https://sky-atlas.powerhouse.io/",
                   "Note": ""
@@ -788,11 +788,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -805,14 +805,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "kjjxdnrl3n",
-                  "id": "86cbE52d",
+                  "id": "k02ON08X",
                   "title": "Business analysis",
                   "link": "https://drive.google.com/file/d/1MErkuyCLXEXbvcRs7Sxma9BTPsTOo7-p/view",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "kjjxdnrl3n",
-                  "id": "pA50VVl2",
+                  "id": "T5oN6923",
                   "title": "Exploratory exercise for Atlas viewer",
                   "link": "https://drive.google.com/file/d/1aN-e04slhCDfd1O3SWENEfJhUd28mcEG/view",
                   "Note": ""
@@ -838,42 +838,42 @@ export default [
         "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
             "imageUrl": "N/A"
           },
           {
-            "id": "j7Q5G5UX",
+            "id": "Q8m9Y996",
             "ref": "skyecosystem/contributor",
             "name": "callmeT",
             "code": "callmeT",
             "imageUrl": "N/A"
           },
           {
-            "id": "T6yXPSIU",
+            "id": "7X86Np51",
             "ref": "skyecosystem/contributor",
             "name": "meraki",
             "code": "meraki",
             "imageUrl": "N/A"
           },
           {
-            "id": "w7l89567",
+            "id": "6542O0p7",
             "ref": "skyecosystem/contributor",
             "name": "Lumen",
             "code": "Lumen",
             "imageUrl": "N/A"
           },
           {
-            "id": "Mt98G7A7",
+            "id": "9IxRy11v",
             "ref": "skyecosystem/contributor",
             "name": "Kilgore",
             "code": "Kilgore",
             "imageUrl": "N/A"
           },
           {
-            "id": "8Zcv8mq6",
+            "id": "t5d187F4",
             "ref": "skyecosystem/contributor",
             "name": "Layer0x",
             "code": "Layer0x",
@@ -882,11 +882,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -904,11 +904,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -921,7 +921,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z901pbv",
-                  "id": "93787211",
+                  "id": "nS8Gnna7",
                   "title": "Layer0x on PH legal research - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=5GnRqdoXt8o&t=160s",
                   "Note": "Legal entity setup"
@@ -941,11 +941,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -958,14 +958,14 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z902pbv",
-                  "id": "3E0J73n2",
+                  "id": "0C6548nQ",
                   "title": "T on PH tech stack - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=5GnRqdoXt8o&t=1490s",
                   "Note": "Business model templates"
                 },
                 {
                   "parentIdRef": "dn2z902pbv",
-                  "id": "74Dl3257",
+                  "id": "w4U9vs65",
                   "title": "Prometheus on PH business model - Power Brunch",
                   "link": "https://www.youtube.com/watch?v=tH0yb-lMsZ4",
                   "Note": "Business model templates"
@@ -985,11 +985,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1002,7 +1002,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z903pbv",
-                  "id": "26XsgQvu",
+                  "id": "Hq4wqV2r",
                   "title": "More...",
                   "link": "",
                   "Note": "OCF + compensation"
@@ -1022,11 +1022,11 @@ export default [
               "startDate": "2024-01-31T23:00:00.000Z",
               "endDate": "2024-09-30T22:00:00.000Z",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1039,23 +1039,23 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "f6H7VN66",
+                  "id": "iGzgP6gy",
                   "title": "Introducing ArbGrants - Arbitrum forum",
                   "link": "https://forum.arbitrum.foundation/t/introducing-arbgrants-bi-weekly-reporting-for-ltipp-and-stip-b/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "74PQw6p4",
+                  "id": "G7hy7OeA",
                   "title": "ArbGrants Connect deployment",
                   "link": "https://www.arbgrants.com/",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z904pbv",
-                  "id": "52l1ksr6",
+                  "id": "VL41eKA8",
                   "title": "PH EA update 3/3 - Sustainability",
-                  "link": "https://forum.Sky Ecosystem.com/t/ea-status-update-3-3-powerhouse-sustainability/",
+                  "link": "https://forum.makerdao.com/t/ea-status-update-3-3-powerhouse-sustainability/25051",
                   "Note": ""
                 }
               ]
@@ -1073,11 +1073,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1090,42 +1090,42 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "U2h8A1p8",
+                  "id": "eT07o69m",
                   "title": "X thread Power Brunch 1 ",
                   "link": "https://x.com/PowerhouseDAO/status/1801283667651621155",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "23aL5280",
+                  "id": "vC7559p3",
                   "title": "X thread Power Brunch 2",
                   "link": "https://x.com/PowerhouseDAO/status/1801623398075736470",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "n94Z19dR",
+                  "id": "8J0eB4vT",
                   "title": "X thread Power Brunch 3",
                   "link": "https://x.com/PowerhouseDAO/status/1802726156816285797",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "Fp2S29sZ",
+                  "id": "I5d34vzx",
                   "title": "PowerhouseDAO X account",
                   "link": "https://x.com/PowerhouseDAO",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "UW2NE0s0",
+                  "id": "l3iQXFB5",
                   "title": "Devcon attendance",
                   "link": "",
                   "Note": ""
                 },
                 {
                   "parentIdRef": "dn2z905pbv",
-                  "id": "P2zAC3B5",
+                  "id": "u5d6e7Wc",
                   "title": "Powerhouse Builder Showcase event",
                   "link": "",
                   "Note": ""
@@ -1145,11 +1145,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1162,7 +1162,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z906pbv",
-                  "id": "Y4V2P03i",
+                  "id": "a9s02j91",
                   "title": "More...",
                   "link": "",
                   "Note": "Powherhouse DAO tokenomics"
@@ -1182,11 +1182,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1199,7 +1199,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "dn2z907pbv",
-                  "id": "4T5q8u6o",
+                  "id": "38N0v12q",
                   "title": "More...",
                   "link": "",
                   "Note": ""
@@ -1225,7 +1225,7 @@ export default [
         "targetDate": "2024-12-31T00:00:00.000Z",
         "coordinators": [
           {
-            "id": "15X8LJ69",
+            "id": "JH0BuW3K",
             "ref": "skyecosystem/contributor",
             "name": "Prometheus",
             "code": "Prometheus",
@@ -1234,11 +1234,11 @@ export default [
         ],
         "contributors": [
           {
-            "id": "7V5D2895",
+            "id": "P35mCx08",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Powerhouse",
             "code": "PH",
-            "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
           }
         ],
         "scope": {
@@ -1256,11 +1256,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1273,7 +1273,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "c3vcxkuo41",
-                  "id": "L3pf6XwW",
+                  "id": "Cyt00LC5",
                   "title": "More...",
                   "link": "",
                   "Note": ""
@@ -1293,11 +1293,11 @@ export default [
               "startDate": "",
               "endDate": "",
               "owner": {
-                "id": "7V5D2895",
+                "id": "P35mCx08",
                 "ref": "skyecosystem/ecosystem-actor",
                 "name": "Powerhouse",
                 "code": "PH",
-                "imageUrl": "https://Sky Ecosystem-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
               },
               "budgetAnchor": {
                 "project": {
@@ -1310,7 +1310,7 @@ export default [
               "keyResults": [
                 {
                   "parentIdRef": "c3vcxkuo42",
-                  "id": "42Z8fBO9",
+                  "id": "jwHWdR4k",
                   "title": "More...",
                   "link": "",
                   "Note": ""
