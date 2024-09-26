@@ -1,17 +1,17 @@
 export default [
     {
         "id": "de44vu9qou",
-        "code": "ATLV2",
+        "code": "ATLAS2",
         "title": "Atlas V2",
-        "abstract": "Atlas V2 as a public Notion portal",
-        "description": "delivery of Atlas v2 as a public Notion page that will serve as a one stop portal to view the most updated version of the Atlas. ",
+        "abstract": "Atlas V2 as a public standalone Atlas Portal",
+        "description": "delivery of Atlas v2 as a public standalone Portal that will serve as a one stop portal to explore the most updated version of the Atlas. ",
         "status": "IN_PROGRESS",
         "progress": {
-            "value": 0.25
+            "value": 0.8
         },
         "projectOwner": {
-            "id": "14vz903u",
-            "ref": "makerdao/ecosystem-actor",
+            "id": "8L461DD1",
+            "ref": "skyecosystem/ecosystem-actor",
             "name": "Atlas Axis",
             "code": "AA",
             "imageUrl": ""
@@ -21,17 +21,17 @@ export default [
             {
                 "id": "6to2pwq07k",
                 "parentIdRef": "de44vu9qou",
-                "code": "ATLV201",
+                "code": "ATLAS201",
                 "title": "Data & Requirement documentation",
                 "description": "Documentation of the requirements for the Atlas V2 migration to MIPs portal",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.6
+                    "value": 1
                 },
-                "milestone": "",
+                "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "14vz903u",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "8L461DD1",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Atlas Axis",
                     "code": "AA",
                     "imageUrl": ""
@@ -40,17 +40,17 @@ export default [
             {
                 "id": "dt0g51iu5w",
                 "parentIdRef": "de44vu9qou",
-                "code": "ATLV202",
+                "code": "ATLAS202",
                 "title": "Atlas V2 data extraction & modification",
                 "description": "tech support to Atlas Axis in delivery of Atlas v2 to MIPs portal that includes the work on extracting, modifying and preparing the data.",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.1
+                    "value": 1
                 },
-                "milestone": "",
+                "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "5rx5LSsa",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -59,17 +59,17 @@ export default [
             {
                 "id": "wtdoo94i32",
                 "parentIdRef": "de44vu9qou",
-                "code": "ATLV203",
+                "code": "ATLAS203",
                 "title": "Data ingestion & MIPs portal modification",
                 "description": "updates on Notion DB exports, internal and external reference handling, and the temporary document numbering scheme.",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.001
+                    "value": 1
                 },
-                "milestone": "",
+                "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "5rx5LSsa",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -78,17 +78,17 @@ export default [
             {
                 "id": "wtdoo94i33",
                 "parentIdRef": "de44vu9qou",
-                "code": "ATLV204",
-                "title": "MIPs-to-Notion feature parity",
-                "description": "Folding the updated MIPs portal Atlas content back into Notion in preparation of launching the public Notion page for Atlas. ",
-                "status": "TODO",
+                "code": "ATLAS204",
+                "title": "Atlas Portal-to-Notion feature parity",
+                "description": "Folding the Notion Atlas content into the new Atlas Portal in preparation of launching the public Atlas Portal. ",
+                "status": "IN_PROGRESS",
                 "progress": {
-                    "value": 0.001
+                    "value": 0.8
                 },
-                "milestone": "",
+                "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "5rx5LSsa",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -97,17 +97,17 @@ export default [
             {
                 "id": "wtdoo94i34",
                 "parentIdRef": "de44vu9qou",
-                "code": "ATLV205",
-                "title": "MIPs-to-Notion feature parity",
-                "description": "Completing the numbering algorithm for formal document types as a plug-in solution for Notion Atlas v2",
-                "status": "TODO",
+                "code": "ATLAS205",
+                "title": "Atlas Portal-to-Notion feature parity",
+                "description": "Completing the numbering algorithm for formal document types as a numbering solution to bypass Notion's limitations and to accurately display the Atlas structure in the new Atlas Portal. ",
+                "status": "IN_PROGRESS",
                 "progress": {
-                    "value": 0.001
+                    "value": 0.85
                 },
-                "milestone": "",
+                "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "5rx5LSsa",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
