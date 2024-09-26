@@ -48,7 +48,7 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
             results = JSON.parse(value, dateTimeReviver);
         } else {
             results = await knexQuery;
-            client.set(key, JSON.stringify(results), { EX: 120 });
+            client.set(key, JSON.stringify(results), { EX: 14400 });
         }
         const end = Date.now(); // End timing
         const executionTime = (end - start) / 1000;
