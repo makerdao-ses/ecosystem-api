@@ -9,23 +9,15 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
     console.log("No existing budget statement found. Creating a new one...");
 
     let code = "";
-    let shortCode ="";
+    let shortCode = "";
+
 
     if (snapshotKey.ownerType === "Keepers") {
       code = "keepers";
     } else if (snapshotKey.ownerType === "Delegates") {
       code = "recognized-delegates";
-    } else if (snapshotKey.ownerType === "AlignedDelegates") {
-      console.log("ALIGNED DELEGATES INFO",snapshotKey.ownerId, snapshotKey.ownerType)
-      const delCodes = await knex("CoreUnit")
-        .select("code", "shortCode")
-        .where({
-          type: snapshotKey.ownerType,
-        })
-        .first().returning('id');
-      code = delCodes.code;
-      shortCode = delCodes.shortCode;
-    } else if (snapshotKey.ownerType === "SpecialPurposeFund") {
+    } 
+    else if (snapshotKey.ownerType === "SpecialPurposeFund") {
       code = "spfs";
     }
     // Else fetch ownerCode from CoreUnit table
@@ -46,7 +38,7 @@ const checkOrCreateBudgetStatement = async (snapshotKey, knex) => {
     const bsId = await knex("BudgetStatement")
       .insert({
         ...snapshotKey,
-        ownerCode: code,
+        ownerCode: code
       })
       .returning("id");
 
@@ -124,7 +116,6 @@ const budgetStatementCreated = async (mapping, knex) => {
     )} ${monthDate.getFullYear()}`;
   } else if (cuShortCode == "ALD-001") {
     ownerType = "Delegates";
-    cuId = budgetStatementId;
     eventEvent = "DELEGATES_BUDGET_STATEMENT_CREATED";
     params = JSON.stringify({
       owner: {

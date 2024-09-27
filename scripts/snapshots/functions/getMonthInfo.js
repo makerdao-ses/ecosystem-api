@@ -81,7 +81,7 @@ const ownerMapping = {
     null: "blockNumbersDELEGATES",
   },
   AlignedDelegates: {
-    null: "blockNumbersADs",
+    54: "blockNumbersADs",
   },
   Keepers: {
     null: "blockNumbersDRAFT_KEEPERS",
