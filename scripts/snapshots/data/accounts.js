@@ -1243,6 +1243,15 @@ export default [
     Address: "0x3c267dfc8ba8f7359af0d8afc45b43731173236d",
   },
   {
+    Name: "Accountable Payment Processor 2",
+    "budget path 1": "makerdao",
+    "budget path 2": "payment-processors",
+    "budget path 3": "accountable",
+    "budget path 4": "",
+    Type: "PaymentProcessor",
+    Address: "0x62DAd9169Cd0D553fe876B6aa6566Ebb6CcdB8B2",
+  },
+  {
     Name: "Maker Protocol Wallet",
     "budget path 1": "makerdao",
     "budget path 2": "protocol",
