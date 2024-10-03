@@ -105,9 +105,13 @@ export const typeDefs = [
     }
 
     enum DeliverableStatus {
+      WONT_DO 
+      DRAFT
       TODO
+      BLOCKED
       IN_PROGRESS
       DELIVERED
+      CANCELED
     }
 
     input OwnerFilter {
