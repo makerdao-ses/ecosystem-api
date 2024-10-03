@@ -27,7 +27,6 @@ export const typeDefs = [
       progress: Progress
       projectOwner: Owner
       supportedDeliverables: [SupportedDeliverables]
-      supportedKeyResults: [KeyResult]
     }
 
     type SupportedDeliverables {
@@ -40,6 +39,7 @@ export const typeDefs = [
       progress: Progress
       milestone: ID
       owner: Owner
+      supportedKeyResults: [KeyResult]
     }
 
     type Owner {
