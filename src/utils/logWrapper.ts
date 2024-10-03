@@ -249,3 +249,7 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
         duration: `${(mainEnd - mainStart) / 1000}s`
     })
 }
+
+export function queryLength() {
+    return queries.length;
+}
