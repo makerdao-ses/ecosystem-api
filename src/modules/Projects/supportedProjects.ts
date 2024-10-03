@@ -10,7 +10,7 @@ export default [
             "value": 0.8
         },
         "projectOwner": {
-            "id": "Id5kh793",
+            "id": "2t2334c0",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Atlas Axis",
             "code": "AA",
@@ -30,7 +30,7 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "Id5kh793",
+                    "id": "2t2334c0",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Atlas Axis",
                     "code": "AA",
@@ -49,7 +49,7 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "e9469b4S",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
@@ -68,7 +68,7 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "e9469b4S",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
@@ -87,7 +87,7 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "e9469b4S",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
@@ -106,11 +106,89 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "e9469b4S",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+                }
+            }
+        ]
+    },
+    {
+        "id": "3re34bunjg",
+        "code": "POINT",
+        "title": "Pointable AI",
+        "abstract": "Delivery of Pointable AI for Sky Ecosystem",
+        "description": "delivery of Pointable AI for Sky Ecosystem including: viable agent, tooling and hosting, related launch project support, and cross-team ecosystem collaboration.",
+        "status": "BLOCKED",
+        "progress": {
+            "value": 0.9
+        },
+        "projectOwner": {
+            "id": "\n131egq0D",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Pointable",
+            "code": "PNT",
+            "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+        },
+        "budgetType": "CAPEX",
+        "supportedDeliverables": [
+            {
+                "id": "ei346bhith",
+                "parentIdRef": "3re34bunjg",
+                "code": "POINT1",
+                "title": "PM Data ingestion & plan evaluation",
+                "description": "Project management & coordination support for Pointable AI data onboarding and evaluation plan work that consists of data processing, research, planning, documentation, education and communication efforts.",
+                "status": "DELIVERED",
+                "progress": {
+                    "value": 1
+                },
+                "milestone": "jeu5fu3ncc",
+                "owner": {
+                    "id": "\n131egq0D",
+                    "ref": "skyecosystem/ecosystem-actor",
+                    "name": "Pointable",
+                    "code": "PNT",
+                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+                }
+            },
+            {
+                "id": "1afv07eu6j",
+                "parentIdRef": "3re34bunjg",
+                "code": "POINT2",
+                "title": "PM Core QA system & knowledgebase",
+                "description": "Project management & coordination support for Pointable AI core QA system & knowledge base work that consists of QA evaluation, API setup, evaluation plan and a dedicated roadmap creation.",
+                "status": "DELIVERED",
+                "progress": {
+                    "value": 1
+                },
+                "milestone": "jeu5fu3ncc",
+                "owner": {
+                    "id": "\n131egq0D",
+                    "ref": "skyecosystem/ecosystem-actor",
+                    "name": "Pointable",
+                    "code": "PNT",
+                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+                }
+            },
+            {
+                "id": "ihr3ty46tf",
+                "parentIdRef": "3re34bunjg",
+                "code": "POINT3",
+                "title": "PM Advanced behaviour & agent deployment",
+                "description": "Project management & coordination support for Pointable AI advanced behaviour & agent deployment work that consists of UX review, final evaluation, backend & frontend integration, knowledgebase & documentation, repo, and prod deployment.",
+                "status": "BLOCKED",
+                "progress": {
+                    "value": 0.75
+                },
+                "milestone": "jeu5fu3ncc",
+                "owner": {
+                    "id": "\n131egq0D",
+                    "ref": "skyecosystem/ecosystem-actor",
+                    "name": "Pointable",
+                    "code": "PNT",
+                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
                 }
             }
         ]
