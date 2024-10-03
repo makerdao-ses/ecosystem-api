@@ -10,7 +10,7 @@ export default [
             "value": 0.8
         },
         "projectOwner": {
-            "id": "2t2334c0",
+            "id": "I06z7r5G",
             "ref": "skyecosystem/ecosystem-actor",
             "name": "Atlas Axis",
             "code": "AA",
@@ -30,7 +30,7 @@ export default [
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "2t2334c0",
+                    "id": "I06z7r5G",
                     "ref": "skyecosystem/ecosystem-actor",
                     "name": "Atlas Axis",
                     "code": "AA",
