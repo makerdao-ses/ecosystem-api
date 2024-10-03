@@ -5,6 +5,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { AnalyticsQueryEngine, } from "../analytics/AnalyticsQueryEngine.js";
 import { AnalyticsQuery } from "../analytics/AnalyticsQuery.js";
+import { Knex } from "knex";
 
 let apiModules: any;
 
@@ -32,7 +33,23 @@ async function init() {
     });
 }
 
-export const measureQueryPerformance = async (queryName: string, moduleName: string, knexQuery: any, refreshCache: boolean = false) => {
+export const timer = setInterval(
+    async () => {
+        try {
+            client && (await client.ping());
+        } catch (err) {
+            console.error('Ping Interval Error', err);
+        }
+    },
+    1000 * 60 * 4
+);
+
+export const closeRedis = () => {
+    clearInterval(timer);
+    client && client.disconnect();
+};
+
+export const measureQueryPerformance = async (queryName: string, moduleName: string, knexQuery: Knex.QueryBuilder, refreshCache: boolean = false) => {
     addQuery({ queryName, moduleName, knexQuery });
     const logger = getChildLogger({}, { moduleName });
     try {
@@ -85,28 +102,27 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
     }
 };
 
-export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, query: AnalyticsQuery, refreshCache: boolean = false) => {
+export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, analyticsQuery: AnalyticsQuery, refreshCache: boolean = false) => {
     const modules = await getApiModules();
     const engine = modules.datasource.Analytics.engine;
 
-    addAnalyticsQuery({ queryName, moduleName, query });
+    addQuery({ queryName, moduleName, analyticsQuery });
     const logger = getChildLogger({}, { moduleName });
     try {
         const start = Date.now(); // Start timing
         if (!client) {
             await init()
         }
-
-        const queryString = JSON.stringify(query);
-
-        const key = getHashKey(queryString);
+        const queryString = JSON.stringify(analyticsQuery);
+        const key = getHashKey(analyticsQuery);
         const value = refreshCache ? null : await client.get(key);
         let results = null;
         if (value) {
             results = JSON.parse(value, dateTimeReviver);
         } else {
-            results = await engine.execute(query) as any;
+            results = await engine.execute(analyticsQuery) as any;
             client.set(key, JSON.stringify(results), { EX: 14400 });
+            // log request if !requestCache, to also include timing info
         }
         const end = Date.now(); // End timing
         const executionTime = (end - start) / 1000;
@@ -136,17 +152,20 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
     } catch (error: any) {
         logger.error({
             error: error.message,
-            query: query,
+            query: analyticsQuery,
         },
             queryName);
-        return await engine.execute(query) as any;
+        return await engine.execute(analyticsQuery) as any;
     }
 }
 
-export const getHashKey = (knexQuery: any) => {
+export const getHashKey = (query: Knex.QueryBuilder | AnalyticsQuery) => {
     let retKey = '';
-    if (knexQuery) {
-        const text = knexQuery.toString();
+    if ((query as Knex.QueryBuilder).toQuery) {
+        const text = (query as Knex.QueryBuilder).toQuery();
+        retKey = createHash('BLAKE2s256').update(text).digest('hex');
+    } else {
+        const text = JSON.stringify(query);
         retKey = createHash('BLAKE2s256').update(text).digest('hex');
     }
     return 'CACHE_ASIDE' + retKey;
@@ -176,29 +195,57 @@ async function appendLogToFile(logData: any) {
     }
 }
 
-const queries: any[] = [];
-const analyticsQueries: any[] = [];
+let queries: any[] = [];
 
 async function addQuery(query: any) {
-    if (queries.indexOf(query) === -1) {
-        queries.push(query);
+    const queryHash = getHashKey(query.knexQuery ?? query.analyticsQuery);
+    const foundQuery = queries.find(q => q.queryHash === queryHash);
+    if (!foundQuery) {
+        queries.push({ ...query, hitCount: 0, queryHash });
+    } else {
+        foundQuery.hitCount++;
     }
 }
 
-async function addAnalyticsQuery(query: any) {
-    if (analyticsQueries.indexOf(query) === -1) {
-        analyticsQueries.push(query);
+
+// add maxconcurrency param
+// maxQueries param
+// it refreshes most popular(maxQuery) queries and reduces their hit number by 1
+// should look through queries but only up to max concurrency param ( 4 / 5 at a time )
+export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: number = 500) {
+    if (queries.length === 0) return;
+
+    const logger = getChildLogger({}, { moduleName: 'updateQueryCache' });
+
+    const mainStart = Date.now();
+
+    // sort querie by hitCount
+    const sortedQueries = queries.sort((a, b) => b.hitCount - a.hitCount).slice(0, maxQueries);
+    logger.info({
+        nrOfInitialQueries: queries.length,
+        hitCount: sortedQueries[0].hitCount
+    })
+
+    // update query cache with max concurrency
+    for (let i = 0; i < maxQueries; i += maxConcurrency) {
+        const batchStart = Date.now();
+        await Promise.all(sortedQueries.slice(i, i + maxConcurrency).map(query =>
+            query.analyticsQuery ?
+                measureAnalyticsQueryPerformance(query.queryName, query.moduleName, query.analyticsQuery, true)
+                : measureQueryPerformance(query.queryName, query.moduleName, query.knexQuery, true)
+        ));
+        logger.info({
+            message: `Time to update query cache batch ${i}`,
+            duration: `${(Date.now() - batchStart) / 1000}s`
+        })
     }
-}
 
-
-export async function updateQueryCache() {
-    await Promise.all(queries.map(query => {
-        // Warming up rest of queries cache
-        measureQueryPerformance(query.queryName, query.moduleName, query.knexQuery, true);
-    }))
-    await Promise.all(analyticsQueries.map(query => {
-        // Warming up analytics cache
-        measureAnalyticsQueryPerformance(query.queryName, query.moduleName, query.query, true);
-    }))
+    // replace query with sorted query and reset hitCount
+    queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
+    const mainEnd = Date.now();
+    logger.info({
+        message: 'Time to update query cache + new nr of queries',
+        numberOfQueries: queries.length,
+        duration: `${(mainEnd - mainStart) / 1000}s`
+    })
 }

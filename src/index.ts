@@ -17,6 +17,7 @@ import { ApiModules } from "./modules/factory.js";
 import { createDataLoaders } from "./utils/dataLoaderFactory.js";
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
 import { updateQueryCache } from "./utils/logWrapper.js";
+import { closeRedis } from "./utils/logWrapper.js";
 
 const startupTime = new Date();
 function buildExpressApp() {
@@ -43,13 +44,14 @@ function buildExpressApp() {
     });
   });
   app.get('/update-cache', async (_req, res) => {
-    if(_req.headers['refresh-cache'] !== process.env.REFRESH_CACHE_SECRET) {
+    if (_req.headers['refresh-cache'] !== process.env.REFRESH_CACHE_SECRET) {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized',
       });
     }
-    await updateQueryCache();
+    const { maxConcurrency, maxQueries } = _req.query;
+    updateQueryCache(maxConcurrency ? Number(maxConcurrency) : undefined, maxQueries ? Number(maxQueries) : undefined);
     return res.json({
       status: 'ok',
     });
@@ -64,6 +66,9 @@ async function startApolloServer(
   options: ListenOptions,
 ) {
   const httpServer = http.createServer(app);
+  httpServer.on('close', () => {
+    closeRedis;
+  });
 
   const schema = makeExecutableSchema({
     typeDefs: apiModules.typeDefs,
@@ -94,7 +99,7 @@ async function startApolloServer(
         if (noCache) {
           return { noCache, loaders, refreshCache };
         }
-        return { loaders, refreshCache};
+        return { loaders, refreshCache };
       } catch (error: any) {
         throw new AuthenticationError(error.message);
       }
