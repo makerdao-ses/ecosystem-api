@@ -190,11 +190,11 @@ export default [
                 },
                 "milestone": "jeu5fu3ncc",
                 "owner": {
-                    "id": "\n131egq0D",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
-                    "name": "Pointable",
-                    "code": "PNT",
-                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "supportedKeyResults": [
                     {
@@ -217,11 +217,11 @@ export default [
                 },
                 "milestone": "jeu5fu3ncc",
                 "owner": {
-                    "id": "\n131egq0D",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
-                    "name": "Pointable",
-                    "code": "PNT",
-                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "supportedKeyResults": [
                     {
@@ -250,11 +250,11 @@ export default [
                 },
                 "milestone": "jeu5fu3ncc",
                 "owner": {
-                    "id": "\n131egq0D",
+                    "id": "93RF8qO5",
                     "ref": "skyecosystem/ecosystem-actor",
-                    "name": "Pointable",
-                    "code": "PNT",
-                    "imageUrl": "https://github.com/makerdao-ses/makerdao-ses.github.io/blob/main/ecosystem-dashboard/ecosystem-actors/POINTABLE/pointable_logo.png"
+                    "name": "Powerhouse",
+                    "code": "PH",
+                    "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "supportedKeyResults": []
             }
