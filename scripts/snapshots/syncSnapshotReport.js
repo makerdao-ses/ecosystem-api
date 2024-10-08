@@ -11,7 +11,10 @@ import { createAccountFromTransactions } from "./functions/createAccountFromTran
 import insertAccountBalances from "./functions/insertAccountBalance.js";
 
 const PROTOCOL_PRIMARY_ADDRESS = "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb";
-const PAYMENT_PROCESSOR_ADDRESS = "0x3c267dfc8ba8f7359af0d8afc45b43731173236d";
+const PAYMENT_PROCESSOR_ADDRESSES = [
+  "0x3c267dfc8ba8f7359af0d8afc45b43731173236d",
+  "0x62DAd9169Cd0D553fe876B6aa6566Ebb6CcdB8B2"
+].map((a) => a.toLowerCase());;
 const makerProtocolAddresses = [
   "0x0048fc4357db3c0f45adea433a07a20769ddb0cf",
   "0xbe8e3e3618f7474f8cb1d074a26affef007e98fb",
@@ -101,19 +104,27 @@ const protocolAccount = await createAccountFromTransactions(
 
 createdAccounts.push(protocolAccount);
 
-// Create the Payment Processor account
-let paymentProcessorAccount = null;
-if (paymentProcessorTransactions.length > 0) {
-  paymentProcessorAccount = await createAccountFromTransactions(
-    snapshotReport.id,
-    getAccountInfoFromConfig(PAYMENT_PROCESSOR_ADDRESS),
-    paymentProcessorTransactions,
-    monthInfo,
-    true,
-    knex,
+// Update the createAccountFromTransactions call for payment processor
+let paymentProcessorAccounts = [];
+for (const address of PAYMENT_PROCESSOR_ADDRESSES) {
+  const filteredTransactions = paymentProcessorTransactions.filter(tx => 
+    (tx.sender && tx.sender.toLowerCase() === address.toLowerCase()) || 
+    (tx.receiver && tx.receiver.toLowerCase() === address.toLowerCase())
   );
+  
+  if (filteredTransactions.length > 0) {
+    const paymentProcessorAccount = await createAccountFromTransactions(
+      snapshotReport.id,
+      getAccountInfoFromConfig(address),
+      filteredTransactions,
+      monthInfo,
+      true,
+      knex,
+    );
 
-  createdAccounts.push(paymentProcessorAccount);
+    paymentProcessorAccounts.push(paymentProcessorAccount);
+    createdAccounts.push(paymentProcessorAccount);
+  }
 }
 
 const { allAccounts, upstreamDownstreamMap } = await createAccountsHierarchy(

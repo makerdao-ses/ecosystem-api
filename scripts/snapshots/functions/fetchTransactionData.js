@@ -1,13 +1,17 @@
 import fetch from "node-fetch";
 
-const tokens = { DAI: "DAI", MKR: "MKR", USDC: "USDC", GUSD: "GUSD", USDP: "USDP", USDT: "USDT", SKY: "SKY", USDS: "USDS"};
+const tokens = {
+  DAI: "DAI",
+  MKR: "MKR",
+  USDC: "USDC",
+  GUSD: "GUSD",
+  USDP: "USDP",
+  USDT: "USDT",
+  SKY: "SKY",
+  USDS: "USDS",
+};
 
-const fetchTransactionData = async (
-  address,
-  ownerType,
-  ownerId,
-  apiToken,
-) => {
+const fetchTransactionData = async (address, ownerType, ownerId, apiToken) => {
   console.log(
     `\nFetching all transactions for ${ownerType}/${ownerId} account ${address}`,
   );
@@ -29,6 +33,7 @@ const fetchTransactionData = async (
   for (const key in tokens) {
     if (tokens.hasOwnProperty(key)) {
       const token = tokens[key];
+      if (token === "USDS") continue; // Skip USDS, it will be processed with DAI
       let result = [];
       do {
         const apiCallToken = token.toLowerCase();
@@ -54,6 +59,36 @@ const fetchTransactionData = async (
         page = jsonData.next_page;
         apiCalls++;
       } while (page);
+
+      if (token === "DAI") {
+        // Fetch and combine USDS transactions with DAI
+        let usdsResult = [];
+        let usdsPage = 1;
+        do {
+          console.log(
+            ` ...API call ${apiCalls} - token: USDS - from_address: ${address} - fetching data...`,
+          );
+          response = await fetch(
+            `https://cortex.blockanalitica.com/api/v1/tokens/usds/wallet-events?page=${usdsPage}&wallet_address=${address}`,
+            {
+              method: "GET",
+              headers: headers,
+            },
+          );
+
+          jsonData = await response.json();
+
+          if (jsonData.detail === "Could not validate credentials") {
+            throw new Error("API Error: Could not validate credentials");
+          }
+
+          usdsResult = usdsResult.concat(jsonData.results);
+          usdsPage = jsonData.next_page;
+          apiCalls++;
+        } while (usdsPage);
+
+        result = result.concat(usdsResult);
+      }
 
       formattedResults = formattedResults.concat(formatResults(result, token));
     }

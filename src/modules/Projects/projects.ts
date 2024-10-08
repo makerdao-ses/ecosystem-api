@@ -3,29 +3,37 @@ export default [
         "id": "qz6r0modgp",
         "code": "PEA",
         "title": "Protocol Expense Accounting",
-        "abstract": "Track Maker protocol's operational financial data.",
-        "description": "Design and develop dashboard, the API and budget tool to capture and present all operational expenses and income of the Maker Protocol.",
+        "abstract": "Track Sky Protocol's operational financial data.",
+        "description": "Design and develop dashboard, the API and budget tool to capture and present all operational expenses and income of the Sky Ecosystem.",
         "status": "IN_PROGRESS",
         "progress": {
             "value": 0.7
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "4mbpxdg1os",
                 "parentIdRef": "qz6r0modgp",
                 "code": "PEA01",
                 "title": "On-chain Data Reconciliation",
-                "description": "Account for all protocol’s on-chain data expenses.",
+                "description": "Account for all Sky Ecosystem on-chain data expenses.",
                 "status": "DELIVERED",
                 "progress": {
                     "value": 1
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -33,22 +41,22 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "007309976E",
+                        "id": "00A4316157",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "On-Chain Wallets Diagram",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/on-chain-wallets-diagram.png"
                     },
                     {
-                        "id": "00AD71D9F4",
+                        "id": "00A01DD8E3",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Account Snapshot Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/CU-CU%20Landing%20page-Finances-Transparency%20Reports.png"
                     },
                     {
-                        "id": "002FE911D3",
+                        "id": "008FFB78A6",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Frontend Deployment",
-                        "link": "https://expenses.makerdao.network/core-unit/SES/finances/reports?viewMonth=Dec2023"
+                        "link": "https://fusion.sky.money/contributors/core-units/SES/budget-statements?viewMonth=Dec2023&section=accounts-snapshots"
                     }
                 ]
             },
@@ -64,8 +72,8 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -73,16 +81,16 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00F12336F9",
+                        "id": "003325C432",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Design",
                         "link": "https://drive.google.com/file/d/1jfbumQnyhB4N-CkO3hEjJ2su5iBTDXH8/view"
                     },
                     {
-                        "id": "00B511CD48",
+                        "id": "008FB82580",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Deployment",
-                        "link": "https://expenses.makerdao.network/recognized-delegates "
+                        "link": "https://fusion.sky.money/contributors/recognized-delegates"
                     }
                 ]
             },
@@ -98,8 +106,8 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -107,13 +115,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00981E2B5D",
+                        "id": "00A496BDA2",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/key-results/spf-design.png"
                     },
                     {
-                        "id": "008CA1C6CC",
+                        "id": "00C6C44CA9",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Sparse View Wireframe",
                         "link": "https://drive.google.com/file/d/1e45t88iP42Ozz-1JxbUhyrJgedB9JB-u/view"
@@ -132,8 +140,8 @@ export default [
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -141,13 +149,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "003023CACE",
+                        "id": "00DA606DAC",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Finance-MakerDAO%20Finances%20Design.png"
                     },
                     {
-                        "id": "001811D982",
+                        "id": "006F951FE2",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Wireframes",
                         "link": "https://drive.google.com/file/d/15yB0TA5ONtboB9CH5aIO5Ekgiu7CkOl9/view"
@@ -166,8 +174,8 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -175,13 +183,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009DA845C1",
+                        "id": "00C9B4CA6E",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "UI Design For Connect Interface",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Connect%20Design.png"
                     },
                     {
-                        "id": "00BFE0717A",
+                        "id": "00BFD7A830",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "Connect Electron Vercel App",
                         "link": "https://connect-ph.vercel.app/"
@@ -194,14 +202,14 @@ export default [
                 "code": "PEA06",
                 "title": "Aggregated View - Fusion Homepage overview",
                 "description": "Provide access to aggregated expense data at the top level at a glance on the dashboard homepage.",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.7
+                    "value": 1
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -209,22 +217,22 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00F73734DB",
+                        "id": "003EB6C646",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage wireframe",
                         "link": "https://drive.google.com/file/d/123yTPfNFi04Uu-0aPCWAhvEMCbEOrTth/view"
                     },
                     {
-                        "id": "00EA3A876E",
+                        "id": "00C95DBB54",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage design",
                         "link": "https://drive.google.com/file/d/1REv0A7uKrfOFRwNJulxCEv7PzoZk_fNK/view"
                     },
                     {
-                        "id": "00A63EE98A",
+                        "id": "0092EDC1D2",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage deployment",
-                        "link": ""
+                        "link": "http://fusion.sky.money/ "
                     }
                 ]
             },
@@ -234,14 +242,14 @@ export default [
                 "code": "PEA07",
                 "title": "Aggregated View - Budget Level Overview",
                 "description": "Provide access to aggregated expense data in the lower levels of detail: budget-level overview.",
-                "status": "FINISHED",
+                "status": "DELIVERED",
                 "progress": {
                     "value": 1
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -249,16 +257,16 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00E6F0A692",
+                        "id": "00F174606B",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view (keepers) wireframe",
                         "link": "https://drive.google.com/file/d/1fNbvSFIzRiSqpuzTUHMUsqe0x6mKz7vd/view"
                     },
                     {
-                        "id": "005429901E",
+                        "id": "00EAFCD893",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view implementation",
-                        "link": "https://expenses.makerdao.network/finances/legacy/keepers?year=2022"
+                        "link": "https://fusion.sky.money/finances/legacy/keepers?year=2022"
                     }
                 ]
             },
@@ -272,10 +280,10 @@ export default [
                 "progress": {
                     "value": 0.25
                 },
-                "milestone": "ustpb52jla",
+                "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -283,9 +291,9 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00A9ACE540",
+                        "id": "00018AC952",
                         "parentIdRef": "v3h9js184z",
-                        "title": "",
+                        "title": "More...",
                         "link": ""
                     }
                 ]
@@ -294,16 +302,16 @@ export default [
                 "id": "4t7h2poslu",
                 "parentIdRef": "qz6r0modgp",
                 "code": "PEA09",
-                "title": "MakerDAO Endgame Transition Finances",
-                "description": "An overview of the major conceptual and budget changes to MakerDAO as it relates to the Endgame plan.",
+                "title": "Sky Ecosystem Endgame Transition Finances",
+                "description": "An overview of the major conceptual and budget changes to Sky Ecosystem as it relates to the Endgame plan.",
                 "status": "DELIVERED",
                 "progress": {
                     "value": 1
                 },
                 "milestone": "ustpb52jla",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -311,22 +319,22 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00B1C43E06",
+                        "id": "00B47A595F",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame budget design",
                         "link": "https://drive.google.com/file/d/1I1ZhCn4NhxTtjFCkc7b-EzisZoaOlS1q/view"
                     },
                     {
-                        "id": "00913A0A47",
+                        "id": "00BED05FDB",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame transition design",
                         "link": "https://drive.google.com/file/d/1o-h79Dz8zLFXRCmV5qY75bcU5eKBpbNo/view"
                     },
                     {
-                        "id": "007E613B9B",
+                        "id": "00DDB502B5",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame finances implementation",
-                        "link": "https://expenses.makerdao.network/endgame#budget-transition-status"
+                        "link": "https://fusion.sky.money/endgame#budget-transition-status"
                     }
                 ]
             },
@@ -340,10 +348,10 @@ export default [
                 "progress": {
                     "value": 0.001
                 },
-                "milestone": "ustpb52jla",
+                "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -351,35 +359,35 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009AFB5178",
+                        "id": "0085E393C9",
                         "parentIdRef": "oxhmqkmwnn",
                         "title": "More...",
                         "link": ""
                     }
                 ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     },
     {
         "id": "yyivbb1duf",
         "code": "RWA",
         "title": "RWA Portfolio Reporting",
-        "abstract": "Connect Editor prototype for MakerDAO RWA Portfolio Reporting.",
-        "description": "Development of the 1st Connect Editor prototype - Real World Asset Portfolio Reporting for MakerDAO. Demo as part of the reveal of the revamped expenses dashboard. ",
+        "abstract": "Connect Editor prototype for Sky Ecosystem RWA Portfolio Reporting.",
+        "description": "Development of the 1st Connect Editor prototype - Real World Asset Portfolio Reporting for Sky Ecosystem. Demo as part of the reveal of the revamped expenses dashboard. ",
         "status": "IN_PROGRESS",
         "progress": {
             "value": 1
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "01fv5qq0u1",
@@ -393,8 +401,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -402,7 +410,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "008D242039",
+                        "id": "0097F9D075",
                         "parentIdRef": "01fv5qq0u1",
                         "title": "Original Reporting Flow",
                         "link": "https://drive.google.com/file/d/1BmX9KAr-gkkpHX4YHuoasZVAppih4Rat/view"
@@ -421,8 +429,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -430,10 +438,10 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00EFB782BC",
+                        "id": "00B312616C",
                         "parentIdRef": "b5tfk809uv",
                         "title": "RWA document model specification",
-                        "link": "https://makerdao-ses.notion.site/makerdao-rwa-portfolio-document-model-specifications-KR-77da583c2c384d04ae36445db45611dd"
+                        "link": "https://makerdao-ses.notion.site/makerdao-rwa-portfolio-public-77da583c2c384d04ae36445db45611dd"
                     }
                 ]
             },
@@ -449,8 +457,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -458,7 +466,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00E6BB91F5",
+                        "id": "006AC67682",
                         "parentIdRef": "m1n0lzoznh",
                         "title": "RWA conceptual wireframes",
                         "link": "https://drive.google.com/file/d/1NZXm_Q43sKH5pqwHTwN0DYvSW1uewMlY/view"
@@ -477,8 +485,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -486,7 +494,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0059D151DA",
+                        "id": "00F248C0CE",
                         "parentIdRef": "wngvicriyz",
                         "title": "RWA API query",
                         "link": "https://makerdao-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916"
@@ -505,8 +513,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -514,9 +522,9 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00A5B5C0C7",
+                        "id": "005081D6B4",
                         "parentIdRef": "ogzlyy7ukp",
-                        "title": "stakeholder engagement",
+                        "title": "stakeholder engagement coordination",
                         "link": ""
                     }
                 ]
@@ -533,8 +541,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -542,10 +550,10 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00C832393A",
+                        "id": "00AAD87942",
                         "parentIdRef": "kb8o0w0tfy",
                         "title": "connect document viewer",
-                        "link": "https://apps.powerhouse.io/makerdao/connect/d/MakerDAO"
+                        "link": "https://connect.sky.money/d/sky"
                     }
                 ]
             },
@@ -554,15 +562,15 @@ export default [
                 "parentIdRef": "yyivbb1duf",
                 "code": "RWA07",
                 "title": "Stakeholder onboarding (where applicable)",
-                "description": "Work with MakerDAO stakeholders to operationalize their reporting process",
+                "description": "Work with Sky Ecosystem stakeholders to operationalize their reporting process",
                 "status": "IN_PROGRESS",
                 "progress": {
                     "value": 0.75
                 },
-                "milestone": "e7c86wa1g0",
+                "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -570,9 +578,9 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0038D9EE18",
+                        "id": "007515075C",
                         "parentIdRef": "ryjcnx0174",
-                        "title": "Monetalis, Blocktower, Steakhouse, BALabs",
+                        "title": "More...",
                         "link": ""
                     }
                 ]
@@ -583,14 +591,14 @@ export default [
                 "code": "RWA08",
                 "title": "RWA data availability in Fusion",
                 "description": "Visualize the RWA individual reports and aggregated data on the Fusion dashboard",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.85
+                    "value": 1
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -598,35 +606,35 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00D3CC40D4",
+                        "id": "000E0902FC",
                         "parentIdRef": "wu0lb3194m",
                         "title": "RWA data available via Fusion ",
-                        "link": "https://drive.google.com/file/d/1hpBmq9AIaaGpmiS4f5OjQh9qKzN7Sir-/view?usp=drive_link"
+                        "link": "https://drive.google.com/file/d/14-RiBUMYKdERObH2EoEiwGSkQghcTqH0/view"
                     }
                 ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     },
     {
         "id": "778zfhxl5s",
         "code": "POC",
         "title": "Powerhouse Products POC",
         "abstract": "Core Powerhouse product and architecture development work.",
-        "description": "Core development work on Powerhouse products and architecture infrastructure that supports the technical integration demos in the MakerDAO roadmap.",
+        "description": "Core development work on Powerhouse products and architecture infrastructure that supports the technical integration demos in the Sky Ecosystem roadmap.",
         "status": "IN_PROGRESS",
         "progress": {
-            "value": 0.6
+            "value": 0.75
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "r6tlft9f4e",
@@ -640,14 +648,21 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 1",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00C154C253",
+                        "parentIdRef": "r6tlft9f4e",
+                        "title": "Post demo 1 refactoring work",
+                        "link": ""
+                    }
+                ]
             },
             {
                 "id": "cx0506kugw",
@@ -661,14 +676,21 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 2",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00431571DB",
+                        "parentIdRef": "cx0506kugw",
+                        "title": "Renown authentication flow",
+                        "link": "https://makerdao-ses.notion.site/DID-structure-Signage-fa07b5d37db04b1db0b26f707b1f758a"
+                    }
+                ]
             },
             {
                 "id": "4d51i0q4qj",
@@ -682,14 +704,21 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p 3",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "007CD448A9",
+                        "parentIdRef": "4d51i0q4qj",
+                        "title": "Conflict resolution delivered",
+                        "link": ""
+                    }
+                ]
             },
             {
                 "id": "q5hd3erqmt",
@@ -703,8 +732,8 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -712,16 +741,10 @@ export default [
                 "": "d2",
                 "keyResults": [
                     {
-                        "id": "0052EA6E7F",
+                        "id": "005B299D4F",
                         "parentIdRef": "q5hd3erqmt",
-                        "title": "Contractual and Legal Entity Specs",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    },
-                    {
-                        "id": "00168C8D87",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Entity incorporation",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
+                        "title": "RWA demo 2 delivery",
+                        "link": "https://drive.google.com/file/d/1Q1zYh1_qosF8JG1z3gbKszrp60HlnYyV/view"
                     }
                 ]
             },
@@ -731,20 +754,27 @@ export default [
                 "code": "POC05",
                 "title": "Document model upgradability",
                 "description": "Document model upgradability (and getting rid of initial state)",
-                "status": "DELIVERED",
+                "status": "IN_PROGRESS",
                 "progress": {
-                    "value": 1
+                    "value": 0.2
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": " d3p 1",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "0027B817BD",
+                        "parentIdRef": "oldvqgs590",
+                        "title": "More...",
+                        "link": ""
+                    }
+                ]
             },
             {
                 "id": "ulwyl79k28",
@@ -752,20 +782,27 @@ export default [
                 "code": "POC06",
                 "title": "Global state code update",
                 "description": "Opdate of the ‘Global state’ referencing code for Connect Document Drive",
-                "status": "DELIVERED",
+                "status": "TODO",
                 "progress": {
-                    "value": 1
+                    "value": 0.001
                 },
-                "milestone": "e7c86wa1g0",
+                "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 2 (d2p 2)",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00334EF46F",
+                        "parentIdRef": "ulwyl79k28",
+                        "title": "More...",
+                        "link": ""
+                    }
+                ]
             },
             {
                 "id": "twnztcoccx",
@@ -773,20 +810,33 @@ export default [
                 "code": "POC07",
                 "title": "Template Engine Implementation",
                 "description": "Select and implement a template engine to create document model viewers",
-                "status": "TODO",
+                "status": "IN_PROGRESS",
                 "progress": {
-                    "value": 0.001
+                    "value": 0.2
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 3, stretch goal",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "0000AFFC74",
+                        "parentIdRef": "twnztcoccx",
+                        "title": "More...",
+                        "link": ""
+                    },
+                    {
+                        "id": "00525B3473",
+                        "parentIdRef": "twnztcoccx",
+                        "title": "New website content",
+                        "link": "https://www.powerhouse.inc/"
+                    }
+                ]
             },
             {
                 "id": "tln6r1aurh",
@@ -800,14 +850,27 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 4",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00F44CB687",
+                        "parentIdRef": "tln6r1aurh",
+                        "title": "Deeplink support for Connect webapp",
+                        "link": "https://connect.sky.money/d/sky/Blocktower/BlocktowerS4"
+                    },
+                    {
+                        "id": "00812A4EAA",
+                        "parentIdRef": "tln6r1aurh",
+                        "title": "Updated Powerhouse website",
+                        "link": "https://www.powerhouse.inc/"
+                    }
+                ]
             },
             {
                 "id": "h66erzw61m",
@@ -821,14 +884,27 @@ export default [
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d2p d3p 5",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "000DA55E0F",
+                        "parentIdRef": "h66erzw61m",
+                        "title": "Switchboard delivery ",
+                        "link": "https://apps.powerhouse.io/makerdao/switchboard"
+                    },
+                    {
+                        "id": "00655160FE",
+                        "parentIdRef": "h66erzw61m",
+                        "title": "More...",
+                        "link": ""
+                    }
+                ]
             },
             {
                 "id": "dt0g52xq5w",
@@ -836,116 +912,160 @@ export default [
                 "code": "POC10",
                 "title": "Fusion & Switchboard demo",
                 "description": "Reveal Fusion decentralized operations platform as a revamped expenses dashboard, where Fusion features use the new Switchboard instance as backend.",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.9
+                    "value": 1
                 },
                 "milestone": "e7c86wa1g0",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "d3p 6",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "003086841F",
+                        "parentIdRef": "dt0g52xq5w",
+                        "title": "Fusion (with switchboard data) delivery",
+                        "link": "https://fusion.sky.money/"
+                    },
+                    {
+                        "id": "00E49A3051",
+                        "parentIdRef": "dt0g52xq5w",
+                        "title": "Reactivated Powerhouse X account",
+                        "link": "https://x.com/PowerhouseDAO"
+                    }
+                ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     },
     {
         "id": "r2z83m0hyf",
         "code": "ATLAS",
         "title": "Atlas Rulebook Prototype",
-        "abstract": "Atlas Rulebook Prototype for MakerDAO.",
-        "description": "Build a Atlas Rulebook Prototype for MakerDAO - a single document editor designed to handle Atlas JSON data efficiently.",
+        "abstract": "Atlas Rulebook Prototype for Sky Ecosystem.",
+        "description": "Build a Atlas Rulebook Prototype for Sky Ecosystem - a single document editor designed to handle Atlas JSON data efficiently.",
         "status": "IN_PROGRESS",
         "progress": {
             "value": 0.2
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "kjjxdnrl1n",
                 "parentIdRef": "r2z83m0hyf",
                 "code": "ATLAS01",
                 "title": "Notion Atlas integration analysis",
-                "description": "(scope not final) Analysis of the Atlas Axis Notion database setup and identifying how we can pull the data from it, serving as input to creation of document model + viewer.",
-                "status": "IN_PROGRESS",
+                "description": "Analysis of the Atlas Axis Notion database setup and identifying how we can pull the data from it, serving as input to creation of document model + viewer.",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.3
+                    "value": 1
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron KR numbering algo",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "009923D1B6",
+                        "parentIdRef": "kjjxdnrl1n",
+                        "title": "Mapping existing manual process in Notion",
+                        "link": "https://drive.google.com/file/d/1HdJ9WGOVkUg9cn9qn7TBghLOTf0g3F1A/view"
+                    },
+                    {
+                        "id": "00A11F7941",
+                        "parentIdRef": "kjjxdnrl1n",
+                        "title": "Atlas editing process capture",
+                        "link": "https://drive.google.com/file/d/1fgHtkfic8PbI71cLavgDz7XUoNg71ZtW/view"
+                    }
+                ]
             },
             {
                 "id": "kjjxdnrl2n",
                 "parentIdRef": "r2z83m0hyf",
                 "code": "ATLAS02",
                 "title": "Atlas document model creation",
-                "description": "(scope not final) Creation of document model + viewer to replicate the structure of Notion DB.",
+                "description": "Creation of document model + viewer to replicate the structure of Notion DB.",
                 "status": "IN_PROGRESS",
                 "progress": {
-                    "value": 0.25
+                    "value": 0.85
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron DM state schema",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00E84F483E",
+                        "parentIdRef": "kjjxdnrl2n",
+                        "title": "Atlas document model",
+                        "link": "https://drive.google.com/file/d/1j9SVd_cJ5K885WRmc0Zm8UBSqveIRruu/view"
+                    },
+                    {
+                        "id": "00955748C1",
+                        "parentIdRef": "kjjxdnrl2n",
+                        "title": "Atlas viewer prototype",
+                        "link": "https://sky-atlas.powerhouse.io/"
+                    }
+                ]
             },
             {
                 "id": "kjjxdnrl3n",
                 "parentIdRef": "r2z83m0hyf",
                 "code": "ATLAS03",
-                "title": "Atlas viewer USPs exploration",
-                "description": "(scope not final) Exploration of the Powerhouse Unique Selling Points that will provide the most value to feature’s stakeholders.",
+                "title": "Atlas - Powerhouse integrated roadmap planning",
+                "description": "Gap analysis & future roadmap plan covering 2024 year end + 2025. ",
                 "status": "IN_PROGRESS",
                 "progress": {
                     "value": 0.1
                 },
                 "milestone": "r3bzzgbyk2",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Apeiron viewer state schema",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00069C7298",
+                        "parentIdRef": "kjjxdnrl3n",
+                        "title": "Business analysis",
+                        "link": "https://drive.google.com/file/d/1MErkuyCLXEXbvcRs7Sxma9BTPsTOo7-p/view"
+                    },
+                    {
+                        "id": "005C7A08CE",
+                        "parentIdRef": "kjjxdnrl3n",
+                        "title": "Exploratory exercise for Atlas viewer",
+                        "link": "https://drive.google.com/file/d/1aN-e04slhCDfd1O3SWENEfJhUd28mcEG/view"
+                    }
+                ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     },
     {
         "id": "yk6djbdvxd",
@@ -959,27 +1079,42 @@ export default [
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "ulwyl79k29",
                 "parentIdRef": "yk6djbdvxd",
                 "code": "PRC01",
                 "title": "MVP comms support",
-                "description": "Forum post to MakerDAO community on evolution & spinoff of Powerhouse. It will feature three updates (PH vision & product updates, RWA+ Atlas+grants features)",
-                "status": "IN_PROGRESS",
+                "description": "Forum post to Sky Ecosystem community on evolution & spinoff of Powerhouse. It will feature three updates (PH vision & product updates, RWA+ Atlas+grants features)",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.75
+                    "value": 1
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "009EE5B4F1",
+                        "parentIdRef": "ulwyl79k29",
+                        "title": "PH EA update 2/3 - Work for Sky",
+                        "link": "https://forum.makerdao.com/t/ea-status-update-2-3-powerhouse-work-for-makerdao/24712"
+                    }
+                ]
             },
             {
                 "id": "twnztcoccx",
@@ -993,35 +1128,61 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "0000AFFC74",
+                        "parentIdRef": "twnztcoccx",
+                        "title": "More...",
+                        "link": ""
+                    },
+                    {
+                        "id": "00525B3473",
+                        "parentIdRef": "twnztcoccx",
+                        "title": "New website content",
+                        "link": "https://www.powerhouse.inc/"
+                    }
+                ]
             },
             {
                 "id": "tln6r1aurh",
                 "parentIdRef": "yk6djbdvxd",
                 "code": "PRC03",
                 "title": "New website delivery",
-                "description": "Standalone Powerhouse website to coincide with Demo 3 and Powerhouse official announcement that it’s spinning out of MakerDAO, based on website content",
+                "description": "Standalone Powerhouse website to coincide with Demo 3 and Powerhouse official announcement that it’s spinning out of Sky Ecosystem, based on website content",
                 "status": "DELIVERED",
                 "progress": {
                     "value": 1
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00F44CB687",
+                        "parentIdRef": "tln6r1aurh",
+                        "title": "Deeplink support for Connect webapp",
+                        "link": "https://connect.sky.money/d/sky/Blocktower/BlocktowerS4"
+                    },
+                    {
+                        "id": "00812A4EAA",
+                        "parentIdRef": "tln6r1aurh",
+                        "title": "Updated Powerhouse website",
+                        "link": "https://www.powerhouse.inc/"
+                    }
+                ]
             },
             {
                 "id": "dt0g52xq5w",
@@ -1035,14 +1196,27 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "003086841F",
+                        "parentIdRef": "dt0g52xq5w",
+                        "title": "Fusion (with switchboard data) delivery",
+                        "link": "https://fusion.sky.money/"
+                    },
+                    {
+                        "id": "00E49A3051",
+                        "parentIdRef": "dt0g52xq5w",
+                        "title": "Reactivated Powerhouse X account",
+                        "link": "https://x.com/PowerhouseDAO"
+                    }
+                ]
             },
             {
                 "id": "h66erzw61m",
@@ -1056,17 +1230,30 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "000DA55E0F",
+                        "parentIdRef": "h66erzw61m",
+                        "title": "Switchboard delivery ",
+                        "link": "https://apps.powerhouse.io/makerdao/switchboard"
+                    },
+                    {
+                        "id": "00655160FE",
+                        "parentIdRef": "h66erzw61m",
+                        "title": "More...",
+                        "link": ""
+                    }
+                ]
             },
             {
-                "id": "q5hd3erqmt",
+                "id": "q5hd3eumto",
                 "parentIdRef": "yk6djbdvxd",
                 "code": "PRC06",
                 "title": "Team swag",
@@ -1077,8 +1264,8 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1086,16 +1273,10 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "0052EA6E7F",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Contractual and Legal Entity Specs",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    },
-                    {
-                        "id": "00168C8D87",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Entity incorporation",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
+                        "id": "0075237648",
+                        "parentIdRef": "q5hd3eumto",
+                        "title": "team swag",
+                        "link": "https://x.com/PowerhouseDAO/status/1795562122593575190"
                     }
                 ]
             },
@@ -1111,24 +1292,23 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
                 },
                 "": "Kilgore",
-                "keyResults": []
+                "keyResults": [
+                    {
+                        "id": "00ADE807F6",
+                        "parentIdRef": "oldvqgs592",
+                        "title": "More...",
+                        "link": ""
+                    }
+                ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     },
     {
         "id": "738zahxl7s",
@@ -1138,10 +1318,18 @@ export default [
         "description": "Model and implement a reproducible entity structure that\\ \nprovides legal/operational infrastructure and facilitates decentralized collaboration while minimizing risks.",
         "status": "IN_PROGRESS",
         "progress": {
-            "value": 0.7
+            "value": 0.9
         },
         "startDate": "",
         "endDate": "",
+        "owner": {
+            "id": "93RF8qO5",
+            "ref": "skyecosystem/ecosystem-actor",
+            "name": "Powerhouse",
+            "code": "PH",
+            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
+        },
+        "budgetType": "CAPEX",
         "deliverables": [
             {
                 "id": "ulwyl79k30",
@@ -1155,8 +1343,8 @@ export default [
                 },
                 "milestone": "fn7f9sea7u",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1164,15 +1352,15 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "0052C29397",
+                        "id": "004AB527E7",
                         "parentIdRef": "ulwyl79k30",
                         "title": "Minimal legal & ops setup documentation",
-                        "link": ""
+                        "link": "https://drive.google.com/file/d/13bKuzd0Dxv79QhNkXjy3vgIU5Q1-pGEb/view?usp=sharing"
                     }
                 ]
             },
             {
-                "id": "q5hd3erqmt",
+                "id": "gr6r14ar5t",
                 "parentIdRef": "738zahxl7s",
                 "code": "PLS02",
                 "title": "Contractual and Legal Entity Specs",
@@ -1183,8 +1371,8 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1192,15 +1380,9 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "0052EA6E7F",
-                        "parentIdRef": "q5hd3erqmt",
+                        "id": "005312A909",
+                        "parentIdRef": "gr6r14ar5t",
                         "title": "Contractual and Legal Entity Specs",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    },
-                    {
-                        "id": "00168C8D87",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     }
                 ]
@@ -1217,8 +1399,8 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1226,10 +1408,10 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00CD9903AC",
+                        "id": "00243BE471",
                         "parentIdRef": "oldvqgs593",
                         "title": "Jurisdiction and Entity type defined",
-                        "link": ""
+                        "link": "https://drive.google.com/file/d/13bKuzd0Dxv79QhNkXjy3vgIU5Q1-pGEb/view?usp=sharing"
                     }
                 ]
             },
@@ -1239,14 +1421,14 @@ export default [
                 "code": "PLS04",
                 "title": "Multisig Participation Agreement",
                 "description": "Design and Execute Multisig Operational Agreement. V1 of MPA for operational multisig wallet for Powerhouse.",
-                "status": "IN_PROGRESS",
+                "status": "DELIVERED",
                 "progress": {
-                    "value": 0.9
+                    "value": 1
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1254,7 +1436,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "0054CEC60B",
+                        "id": "00029B41C1",
                         "parentIdRef": "ulwyl79k31",
                         "title": "Multisig Participation Agreement",
                         "link": "https://drive.google.com/file/d/1GkOzswYpBj7b4h7IFdFLu4ZiST_ceK-D/view?usp=sharing"
@@ -1262,7 +1444,7 @@ export default [
                 ]
             },
             {
-                "id": "q5hd3erqmt",
+                "id": "ej8711il45",
                 "parentIdRef": "738zahxl7s",
                 "code": "PLS05",
                 "title": "Operational Hub Entity incorporation",
@@ -1273,8 +1455,8 @@ export default [
                 },
                 "milestone": "",
                 "owner": {
-                    "id": "t3MKA406",
-                    "ref": "makerdao/ecosystem-actor",
+                    "id": "93RF8qO5",
+                    "ref": "skyecosystem/ecosystem-actor",
                     "name": "Powerhouse",
                     "code": "PH",
                     "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
@@ -1282,27 +1464,13 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "0052EA6E7F",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Contractual and Legal Entity Specs",
-                        "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
-                    },
-                    {
-                        "id": "00168C8D87",
-                        "parentIdRef": "q5hd3erqmt",
-                        "title": "Entity incorporation",
+                        "id": "00A1BEB814",
+                        "parentIdRef": "ej8711il45",
+                        "title": "Operational Hub Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
                     }
                 ]
             }
-        ],
-        "owner": {
-            "id": "t3MKA406",
-            "ref": "makerdao/ecosystem-actor",
-            "name": "Powerhouse",
-            "code": "PH",
-            "imageUrl": "https://makerdao-ses.github.io/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/POWERHOUSE_logo.png"
-        },
-        "budgetType": "CAPEX"
+        ]
     }
 ]
