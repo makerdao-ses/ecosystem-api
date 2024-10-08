@@ -41,19 +41,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0080CEB24C",
+                        "id": "00A4316157",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "On-Chain Wallets Diagram",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/on-chain-wallets-diagram.png"
                     },
                     {
-                        "id": "003C1B5E08",
+                        "id": "00A01DD8E3",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Account Snapshot Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/CU-CU%20Landing%20page-Finances-Transparency%20Reports.png"
                     },
                     {
-                        "id": "00C30A715E",
+                        "id": "008FFB78A6",
                         "parentIdRef": "4mbpxdg1os",
                         "title": "Frontend Deployment",
                         "link": "https://fusion.sky.money/contributors/core-units/SES/budget-statements?viewMonth=Dec2023&section=accounts-snapshots"
@@ -81,13 +81,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00386336A0",
+                        "id": "003325C432",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Design",
                         "link": "https://drive.google.com/file/d/1jfbumQnyhB4N-CkO3hEjJ2su5iBTDXH8/view"
                     },
                     {
-                        "id": "003C3BEBCD",
+                        "id": "008FB82580",
                         "parentIdRef": "2cxn41t1o0",
                         "title": "Recognized Delegates Deployment",
                         "link": "https://fusion.sky.money/contributors/recognized-delegates"
@@ -115,13 +115,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "004871417D",
+                        "id": "00A496BDA2",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/key-results/spf-design.png"
                     },
                     {
-                        "id": "007991F27D",
+                        "id": "00C6C44CA9",
                         "parentIdRef": "6oms7n5q6g",
                         "title": "SPF Sparse View Wireframe",
                         "link": "https://drive.google.com/file/d/1e45t88iP42Ozz-1JxbUhyrJgedB9JB-u/view"
@@ -149,13 +149,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "001ADC0B77",
+                        "id": "00DA606DAC",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Design",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Finance-MakerDAO%20Finances%20Design.png"
                     },
                     {
-                        "id": "00BA8AEECE",
+                        "id": "006F951FE2",
                         "parentIdRef": "ouw54bhall",
                         "title": "Dense Aggregated View Wireframes",
                         "link": "https://drive.google.com/file/d/15yB0TA5ONtboB9CH5aIO5Ekgiu7CkOl9/view"
@@ -183,13 +183,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009333C4B2",
+                        "id": "00C9B4CA6E",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "UI Design For Connect Interface",
                         "link": "https://raw.githubusercontent.com/makerdao-ses/makerdao-ses.github.io/main/ecosystem-dashboard/ecosystem-actors/POWERHOUSE/Projects/PEA/key-results/PEA/key-results/Connect%20Design.png"
                     },
                     {
-                        "id": "003379A051",
+                        "id": "00BFD7A830",
                         "parentIdRef": "kpbo8i75rw",
                         "title": "Connect Electron Vercel App",
                         "link": "https://connect-ph.vercel.app/"
@@ -217,19 +217,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "004F52065E",
+                        "id": "003EB6C646",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage wireframe",
                         "link": "https://drive.google.com/file/d/123yTPfNFi04Uu-0aPCWAhvEMCbEOrTth/view"
                     },
                     {
-                        "id": "0062867F97",
+                        "id": "00C95DBB54",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage design",
                         "link": "https://drive.google.com/file/d/1REv0A7uKrfOFRwNJulxCEv7PzoZk_fNK/view"
                     },
                     {
-                        "id": "00F8484B94",
+                        "id": "0092EDC1D2",
                         "parentIdRef": "0dbjdklyf3",
                         "title": "Homepage deployment",
                         "link": "http://fusion.sky.money/ "
@@ -257,13 +257,13 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0033A9EAAE",
+                        "id": "00F174606B",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view (keepers) wireframe",
                         "link": "https://drive.google.com/file/d/1fNbvSFIzRiSqpuzTUHMUsqe0x6mKz7vd/view"
                     },
                     {
-                        "id": "00073FDC26",
+                        "id": "00EAFCD893",
                         "parentIdRef": "ytyg91jjo4",
                         "title": "Sparse view implementation",
                         "link": "https://fusion.sky.money/finances/legacy/keepers?year=2022"
@@ -291,7 +291,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00B9398083",
+                        "id": "00018AC952",
                         "parentIdRef": "v3h9js184z",
                         "title": "More...",
                         "link": ""
@@ -319,19 +319,19 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00928630AA",
+                        "id": "00B47A595F",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame budget design",
                         "link": "https://drive.google.com/file/d/1I1ZhCn4NhxTtjFCkc7b-EzisZoaOlS1q/view"
                     },
                     {
-                        "id": "001365503A",
+                        "id": "00BED05FDB",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame transition design",
                         "link": "https://drive.google.com/file/d/1o-h79Dz8zLFXRCmV5qY75bcU5eKBpbNo/view"
                     },
                     {
-                        "id": "00912D130E",
+                        "id": "00DDB502B5",
                         "parentIdRef": "4t7h2poslu",
                         "title": "Endgame finances implementation",
                         "link": "https://fusion.sky.money/endgame#budget-transition-status"
@@ -359,7 +359,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0057A7B9E1",
+                        "id": "0085E393C9",
                         "parentIdRef": "oxhmqkmwnn",
                         "title": "More...",
                         "link": ""
@@ -410,7 +410,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00EC55FF7D",
+                        "id": "0097F9D075",
                         "parentIdRef": "01fv5qq0u1",
                         "title": "Original Reporting Flow",
                         "link": "https://drive.google.com/file/d/1BmX9KAr-gkkpHX4YHuoasZVAppih4Rat/view"
@@ -438,7 +438,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "009BF52FBD",
+                        "id": "00B312616C",
                         "parentIdRef": "b5tfk809uv",
                         "title": "RWA document model specification",
                         "link": "https://makerdao-ses.notion.site/makerdao-rwa-portfolio-public-77da583c2c384d04ae36445db45611dd"
@@ -466,7 +466,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "0090B4887A",
+                        "id": "006AC67682",
                         "parentIdRef": "m1n0lzoznh",
                         "title": "RWA conceptual wireframes",
                         "link": "https://drive.google.com/file/d/1NZXm_Q43sKH5pqwHTwN0DYvSW1uewMlY/view"
@@ -494,7 +494,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00D6A73101",
+                        "id": "00F248C0CE",
                         "parentIdRef": "wngvicriyz",
                         "title": "RWA API query",
                         "link": "https://makerdao-ses.notion.site/RWA-API-Query-Key-Result-889eab4be0144d799650620794694916"
@@ -522,7 +522,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00694BC3DC",
+                        "id": "005081D6B4",
                         "parentIdRef": "ogzlyy7ukp",
                         "title": "stakeholder engagement coordination",
                         "link": ""
@@ -550,7 +550,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00CDF0296D",
+                        "id": "00AAD87942",
                         "parentIdRef": "kb8o0w0tfy",
                         "title": "connect document viewer",
                         "link": "https://connect.sky.money/d/sky"
@@ -578,7 +578,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "00EA2704C2",
+                        "id": "007515075C",
                         "parentIdRef": "ryjcnx0174",
                         "title": "More...",
                         "link": ""
@@ -606,7 +606,7 @@ export default [
                 "": "",
                 "keyResults": [
                     {
-                        "id": "007E5C144E",
+                        "id": "000E0902FC",
                         "parentIdRef": "wu0lb3194m",
                         "title": "RWA data available via Fusion ",
                         "link": "https://drive.google.com/file/d/14-RiBUMYKdERObH2EoEiwGSkQghcTqH0/view"
@@ -657,7 +657,7 @@ export default [
                 "": "d2p 1",
                 "keyResults": [
                     {
-                        "id": "00470E64FE",
+                        "id": "00C154C253",
                         "parentIdRef": "r6tlft9f4e",
                         "title": "Post demo 1 refactoring work",
                         "link": ""
@@ -685,7 +685,7 @@ export default [
                 "": "d2p 2",
                 "keyResults": [
                     {
-                        "id": "00F9BC0DE9",
+                        "id": "00431571DB",
                         "parentIdRef": "cx0506kugw",
                         "title": "Renown authentication flow",
                         "link": "https://makerdao-ses.notion.site/DID-structure-Signage-fa07b5d37db04b1db0b26f707b1f758a"
@@ -713,7 +713,7 @@ export default [
                 "": "d2p 3",
                 "keyResults": [
                     {
-                        "id": "00133BE0E2",
+                        "id": "007CD448A9",
                         "parentIdRef": "4d51i0q4qj",
                         "title": "Conflict resolution delivered",
                         "link": ""
@@ -741,7 +741,7 @@ export default [
                 "": "d2",
                 "keyResults": [
                     {
-                        "id": "00F5192F9D",
+                        "id": "005B299D4F",
                         "parentIdRef": "q5hd3erqmt",
                         "title": "RWA demo 2 delivery",
                         "link": "https://drive.google.com/file/d/1Q1zYh1_qosF8JG1z3gbKszrp60HlnYyV/view"
@@ -769,7 +769,7 @@ export default [
                 "": " d3p 1",
                 "keyResults": [
                     {
-                        "id": "004C1E112F",
+                        "id": "0027B817BD",
                         "parentIdRef": "oldvqgs590",
                         "title": "More...",
                         "link": ""
@@ -797,7 +797,7 @@ export default [
                 "": "d3p 2 (d2p 2)",
                 "keyResults": [
                     {
-                        "id": "00DF2D5FCC",
+                        "id": "00334EF46F",
                         "parentIdRef": "ulwyl79k28",
                         "title": "More...",
                         "link": ""
@@ -825,13 +825,13 @@ export default [
                 "": "d3p 3, stretch goal",
                 "keyResults": [
                     {
-                        "id": "007681B93B",
+                        "id": "0000AFFC74",
                         "parentIdRef": "twnztcoccx",
                         "title": "More...",
                         "link": ""
                     },
                     {
-                        "id": "00DE724028",
+                        "id": "00525B3473",
                         "parentIdRef": "twnztcoccx",
                         "title": "New website content",
                         "link": "https://www.powerhouse.inc/"
@@ -859,13 +859,13 @@ export default [
                 "": "d3p 4",
                 "keyResults": [
                     {
-                        "id": "001FA6F7F7",
+                        "id": "00F44CB687",
                         "parentIdRef": "tln6r1aurh",
                         "title": "Deeplink support for Connect webapp",
                         "link": "https://connect.sky.money/d/sky/Blocktower/BlocktowerS4"
                     },
                     {
-                        "id": "0087250298",
+                        "id": "00812A4EAA",
                         "parentIdRef": "tln6r1aurh",
                         "title": "Updated Powerhouse website",
                         "link": "https://www.powerhouse.inc/"
@@ -893,13 +893,13 @@ export default [
                 "": "d2p d3p 5",
                 "keyResults": [
                     {
-                        "id": "00BB4BBC05",
+                        "id": "000DA55E0F",
                         "parentIdRef": "h66erzw61m",
                         "title": "Switchboard delivery ",
                         "link": "https://apps.powerhouse.io/makerdao/switchboard"
                     },
                     {
-                        "id": "00EB3D2BC4",
+                        "id": "00655160FE",
                         "parentIdRef": "h66erzw61m",
                         "title": "More...",
                         "link": ""
@@ -927,13 +927,13 @@ export default [
                 "": "d3p 6",
                 "keyResults": [
                     {
-                        "id": "00E46663E4",
+                        "id": "003086841F",
                         "parentIdRef": "dt0g52xq5w",
                         "title": "Fusion (with switchboard data) delivery",
                         "link": "https://fusion.sky.money/"
                     },
                     {
-                        "id": "00DC78BA92",
+                        "id": "00E49A3051",
                         "parentIdRef": "dt0g52xq5w",
                         "title": "Reactivated Powerhouse X account",
                         "link": "https://x.com/PowerhouseDAO"
@@ -984,13 +984,13 @@ export default [
                 "": "Apeiron KR numbering algo",
                 "keyResults": [
                     {
-                        "id": "00DB8132BE",
+                        "id": "009923D1B6",
                         "parentIdRef": "kjjxdnrl1n",
                         "title": "Mapping existing manual process in Notion",
                         "link": "https://drive.google.com/file/d/1HdJ9WGOVkUg9cn9qn7TBghLOTf0g3F1A/view"
                     },
                     {
-                        "id": "00E33321B1",
+                        "id": "00A11F7941",
                         "parentIdRef": "kjjxdnrl1n",
                         "title": "Atlas editing process capture",
                         "link": "https://drive.google.com/file/d/1fgHtkfic8PbI71cLavgDz7XUoNg71ZtW/view"
@@ -1018,13 +1018,13 @@ export default [
                 "": "Apeiron DM state schema",
                 "keyResults": [
                     {
-                        "id": "006AF3AA5D",
+                        "id": "00E84F483E",
                         "parentIdRef": "kjjxdnrl2n",
                         "title": "Atlas document model",
                         "link": "https://drive.google.com/file/d/1j9SVd_cJ5K885WRmc0Zm8UBSqveIRruu/view"
                     },
                     {
-                        "id": "009657C108",
+                        "id": "00955748C1",
                         "parentIdRef": "kjjxdnrl2n",
                         "title": "Atlas viewer prototype",
                         "link": "https://sky-atlas.powerhouse.io/"
@@ -1052,13 +1052,13 @@ export default [
                 "": "Apeiron viewer state schema",
                 "keyResults": [
                     {
-                        "id": "0051C3D076",
+                        "id": "00069C7298",
                         "parentIdRef": "kjjxdnrl3n",
                         "title": "Business analysis",
                         "link": "https://drive.google.com/file/d/1MErkuyCLXEXbvcRs7Sxma9BTPsTOo7-p/view"
                     },
                     {
-                        "id": "007F6ACAFC",
+                        "id": "005C7A08CE",
                         "parentIdRef": "kjjxdnrl3n",
                         "title": "Exploratory exercise for Atlas viewer",
                         "link": "https://drive.google.com/file/d/1aN-e04slhCDfd1O3SWENEfJhUd28mcEG/view"
@@ -1109,7 +1109,7 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "0013ECC4ED",
+                        "id": "009EE5B4F1",
                         "parentIdRef": "ulwyl79k29",
                         "title": "PH EA update 2/3 - Work for Sky",
                         "link": "https://forum.makerdao.com/t/ea-status-update-2-3-powerhouse-work-for-makerdao/24712"
@@ -1137,13 +1137,13 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "007681B93B",
+                        "id": "0000AFFC74",
                         "parentIdRef": "twnztcoccx",
                         "title": "More...",
                         "link": ""
                     },
                     {
-                        "id": "00DE724028",
+                        "id": "00525B3473",
                         "parentIdRef": "twnztcoccx",
                         "title": "New website content",
                         "link": "https://www.powerhouse.inc/"
@@ -1171,13 +1171,13 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "001FA6F7F7",
+                        "id": "00F44CB687",
                         "parentIdRef": "tln6r1aurh",
                         "title": "Deeplink support for Connect webapp",
                         "link": "https://connect.sky.money/d/sky/Blocktower/BlocktowerS4"
                     },
                     {
-                        "id": "0087250298",
+                        "id": "00812A4EAA",
                         "parentIdRef": "tln6r1aurh",
                         "title": "Updated Powerhouse website",
                         "link": "https://www.powerhouse.inc/"
@@ -1205,13 +1205,13 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "00E46663E4",
+                        "id": "003086841F",
                         "parentIdRef": "dt0g52xq5w",
                         "title": "Fusion (with switchboard data) delivery",
                         "link": "https://fusion.sky.money/"
                     },
                     {
-                        "id": "00DC78BA92",
+                        "id": "00E49A3051",
                         "parentIdRef": "dt0g52xq5w",
                         "title": "Reactivated Powerhouse X account",
                         "link": "https://x.com/PowerhouseDAO"
@@ -1239,13 +1239,13 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "00BB4BBC05",
+                        "id": "000DA55E0F",
                         "parentIdRef": "h66erzw61m",
                         "title": "Switchboard delivery ",
                         "link": "https://apps.powerhouse.io/makerdao/switchboard"
                     },
                     {
-                        "id": "00EB3D2BC4",
+                        "id": "00655160FE",
                         "parentIdRef": "h66erzw61m",
                         "title": "More...",
                         "link": ""
@@ -1273,7 +1273,7 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "006653C239",
+                        "id": "0075237648",
                         "parentIdRef": "q5hd3eumto",
                         "title": "team swag",
                         "link": "https://x.com/PowerhouseDAO/status/1795562122593575190"
@@ -1301,7 +1301,7 @@ export default [
                 "": "Kilgore",
                 "keyResults": [
                     {
-                        "id": "0036A62588",
+                        "id": "00ADE807F6",
                         "parentIdRef": "oldvqgs592",
                         "title": "More...",
                         "link": ""
@@ -1352,7 +1352,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00EF4D0D94",
+                        "id": "004AB527E7",
                         "parentIdRef": "ulwyl79k30",
                         "title": "Minimal legal & ops setup documentation",
                         "link": "https://drive.google.com/file/d/13bKuzd0Dxv79QhNkXjy3vgIU5Q1-pGEb/view?usp=sharing"
@@ -1380,7 +1380,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00CF84B233",
+                        "id": "005312A909",
                         "parentIdRef": "gr6r14ar5t",
                         "title": "Contractual and Legal Entity Specs",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
@@ -1408,7 +1408,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00F130D686",
+                        "id": "00243BE471",
                         "parentIdRef": "oldvqgs593",
                         "title": "Jurisdiction and Entity type defined",
                         "link": "https://drive.google.com/file/d/13bKuzd0Dxv79QhNkXjy3vgIU5Q1-pGEb/view?usp=sharing"
@@ -1436,7 +1436,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "00C58132C6",
+                        "id": "00029B41C1",
                         "parentIdRef": "ulwyl79k31",
                         "title": "Multisig Participation Agreement",
                         "link": "https://drive.google.com/file/d/1GkOzswYpBj7b4h7IFdFLu4ZiST_ceK-D/view?usp=sharing"
@@ -1464,7 +1464,7 @@ export default [
                 "": "Charm",
                 "keyResults": [
                     {
-                        "id": "009F60B271",
+                        "id": "00A1BEB814",
                         "parentIdRef": "ej8711il45",
                         "title": "Operational Hub Entity incorporation",
                         "link": "https://makerdao-ses.notion.site/EXT-Powerhouse-Legal-Documentation-Operational-Hub-OH-aa03c414fe00421680e1526c8f1a31a4"
