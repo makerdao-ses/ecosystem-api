@@ -1168,7 +1168,7 @@ export default [
               "code": "SPIN7",
               "title": "Spin-off agreement with SkyBase",
               "description": "Agreement for Sky Incubation Stake / structure spin-off relationship",
-              "status": "TO DO",
+              "status": "TODO",
               "workProgress": {
                 "value": 0.001
               },
