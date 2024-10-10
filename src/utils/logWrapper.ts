@@ -195,16 +195,24 @@ async function appendLogToFile(logData: any) {
     }
 }
 
-let queries: any[] = [];
+const getQueries = async () => {
+    const queryCache = await client.get("query-cache");
+    if (queryCache) {
+        return JSON.parse(queryCache);
+    }
+    return [];
+}
 
 async function addQuery(query: any) {
     const queryHash = getHashKey(query.knexQuery ?? query.analyticsQuery);
+    const queries = await getQueries();
     const foundQuery = queries.find(q => q.queryHash === queryHash);
     if (!foundQuery) {
         queries.push({ ...query, hitCount: 0, queryHash });
     } else {
         foundQuery.hitCount++;
     }
+    await client.set("query-cache", JSON.stringify(queries));
 }
 
 
@@ -213,6 +221,7 @@ async function addQuery(query: any) {
 // it refreshes most popular(maxQuery) queries and reduces their hit number by 1
 // should look through queries but only up to max concurrency param ( 4 / 5 at a time )
 export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: number = 500) {
+    const queries = await getQueries();
     if (queries.length === 0) return;
 
     const logger = getChildLogger({}, { moduleName: 'updateQueryCache' });
@@ -241,7 +250,7 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
     }
 
     // replace query with sorted query and reset hitCount
-    queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
+    await client.set("query-cache", JSON.stringify(sortedQueries.map(q => ({ ...q, hitCount: 0 }))));
     const mainEnd = Date.now();
     logger.info({
         message: 'Time to update query cache + new nr of queries',
@@ -250,6 +259,7 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
     })
 }
 
-export function queryLength() {
+export async function queryLength() {
+    const queries = await getQueries();
     return queries.length;
 }
