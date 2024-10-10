@@ -212,7 +212,7 @@ async function addQuery(query: any) {
     } else {
         foundQuery.hitCount++;
     }
-    await client.set("query-cache", JSON.stringify(queries));
+    client.set("query-cache", JSON.stringify(queries));
 }
 
 
