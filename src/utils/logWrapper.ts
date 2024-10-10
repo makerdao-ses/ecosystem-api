@@ -244,7 +244,13 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
     queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
 
     if(client) {
-        client.set(JSON.stringify(queries.map(q => q.toQuery())))
+        client.set(JSON.stringify(queries.map(q => {
+            if(q.analyticsQuery) {
+                return q.analyticsQuery
+            } else {
+                return q.knexQuery.toQuery()
+            }
+        })))
     }
     const mainEnd = Date.now();
     logger.info({
