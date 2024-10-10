@@ -242,6 +242,10 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
 
     // replace query with sorted query and reset hitCount
     queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
+
+    if(client) {
+        client.set(JSON.stringify(queries.map(q => q.toQuery())))
+    }
     const mainEnd = Date.now();
     logger.info({
         message: 'Time to update query cache + new nr of queries',
