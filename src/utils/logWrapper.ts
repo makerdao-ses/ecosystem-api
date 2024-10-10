@@ -3,7 +3,6 @@ import { createClient } from 'redis';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
-import { AnalyticsQueryEngine, } from "../analytics/AnalyticsQueryEngine.js";
 import { AnalyticsQuery } from "../analytics/AnalyticsQuery.js";
 import { Knex } from "knex";
 
@@ -105,15 +104,16 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
 export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, analyticsQuery: AnalyticsQuery, refreshCache: boolean = false) => {
     const modules = await getApiModules();
     const engine = modules.datasource.Analytics.engine;
+    const store = modules.datasource.Analytics.store;
 
-    addQuery({ queryName, moduleName, analyticsQuery });
+    const queryString = store.getBaseQuery(analyticsQuery).toString();
+    addQuery({ queryName, moduleName, analyticsQuery, analyticsQueryString: queryString });
     const logger = getChildLogger({}, { moduleName });
     try {
         const start = Date.now(); // Start timing
         if (!client) {
             await init()
         }
-        const queryString = JSON.stringify(analyticsQuery);
         const key = getHashKey(analyticsQuery);
         const value = refreshCache ? null : await client.get(key);
         let results = null;
@@ -244,11 +244,11 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
     queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
 
     if(client) {
-        client.set(JSON.stringify(queries.map(q => {
+        client.set("query-cache", JSON.stringify(sortedQueries.map(q => {
             if(q.analyticsQuery) {
-                return q.analyticsQuery
+                return {query: q.analyticsQueryString, hitCount: q.hitCount}
             } else {
-                return q.knexQuery.toQuery()
+                return {query: q.knexQuery.toQuery(), hitCount: q.hitCount}
             }
         })))
     }

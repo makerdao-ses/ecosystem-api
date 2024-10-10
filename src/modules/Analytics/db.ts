@@ -30,12 +30,13 @@ type MultiCurrencyFilter = queryFilter & {
 
 export class AnalyticsModel {
   engine: AnalyticsQueryEngine;
+  store: AnalyticsStore;
   knex: Knex;
 
   constructor(knex: Knex) {
     this.knex = knex;
-    const store = new AnalyticsStore(knex);
-    this.engine = new AnalyticsQueryEngine(store);
+    this.store = new AnalyticsStore(knex);
+    this.engine = new AnalyticsQueryEngine(this.store);
   }
 
   public async query(filter: queryFilter) {
