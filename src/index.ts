@@ -16,7 +16,7 @@ import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
 import { createDataLoaders } from "./utils/dataLoaderFactory.js";
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
-import { updateQueryCache } from "./utils/logWrapper.js";
+import { updateQueryCache, warmUpQueryCache } from "./utils/logWrapper.js";
 import { closeRedis } from "./utils/logWrapper.js";
 
 const startupTime = new Date();
@@ -120,3 +120,4 @@ const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 4000;
 export const apiModules = await initApi();
 
 startApolloServer(buildExpressApp(), apiModules, { port });
+await warmUpQueryCache();

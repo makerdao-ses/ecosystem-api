@@ -55,6 +55,10 @@ export class AnalyticsPath {
 
     return new AnalyticsPath(segments.slice(0, levelOfDetail));
   }
+
+  public getSegments(): AnalyticsPathSegment[] {
+    return this._segments;
+  }
 }
 
 export class AnalyticsPathSegment {
