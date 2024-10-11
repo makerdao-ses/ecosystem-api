@@ -200,15 +200,10 @@ async function addQuery(query: any) {
     const queryHash = getHashKey(query.knexQuery ?? query.analyticsQuery);
     const foundQuery = queries.find(q => q.queryHash === queryHash);
     if (!foundQuery) {
+        const queryString = query.knexQuery ? query.knexQuery.toString() : query.analyticsQueryString;
         queries.push({ ...query, hitCount: 0, queryHash });
-        const logDetails = {
-            queryHash,
-            moduleName: query.moduleName,
-            queryName: query.queryName,
-            queryType: query.knexQuery ? 'knex' : 'analytics'
-        };
         logger.info({
-            query: query.knexQuery ?? query.analyticsQueryString,
+            query: queryString,
         },
             'New query added to cache');
     } else {
