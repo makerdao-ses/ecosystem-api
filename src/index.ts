@@ -16,6 +16,8 @@ import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
 import { createDataLoaders } from "./utils/dataLoaderFactory.js";
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
+import { updateQueryCache } from "./utils/logWrapper.js";
+import { closeRedis } from "./utils/logWrapper.js";
 
 const startupTime = new Date();
 function buildExpressApp() {
@@ -41,6 +43,19 @@ function buildExpressApp() {
       startupTime
     });
   });
+  app.get('/update-cache', async (_req, res) => {
+    if (_req.headers['refresh-cache'] !== process.env.REFRESH_CACHE_SECRET) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Unauthorized',
+      });
+    }
+    const { maxConcurrency, maxQueries } = _req.query;
+    updateQueryCache(maxConcurrency ? Number(maxConcurrency) : undefined, maxQueries ? Number(maxQueries) : undefined);
+    return res.json({
+      status: 'ok',
+    });
+  });
 
   return app;
 }
@@ -51,6 +66,9 @@ async function startApolloServer(
   options: ListenOptions,
 ) {
   const httpServer = http.createServer(app);
+  httpServer.on('close', () => {
+    closeRedis;
+  });
 
   const schema = makeExecutableSchema({
     typeDefs: apiModules.typeDefs,
@@ -71,15 +89,17 @@ async function startApolloServer(
       try {
         const user = (req as any).auth || null;
         const noCache = req.headers['no-cache'] === 'true' ? true : false;
+        const refreshCache = req.headers['refresh-cache'] === process.env.REFRESH_CACHE_SECRET ? true : false;
+
         const loaders = createDataLoaders(apiModules.datasource);
         if (user) {
           const auth = new Authorization(apiModules.datasource, user.id);
-          return { user, auth, loaders };
+          return { user, auth, loaders, refreshCache };
         }
         if (noCache) {
-          return { noCache, loaders };
+          return { noCache, loaders, refreshCache };
         }
-        return { loaders };
+        return { loaders, refreshCache };
       } catch (error: any) {
         throw new AuthenticationError(error.message);
       }
@@ -97,6 +117,6 @@ async function startApolloServer(
 
 dotenv.config();
 const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 4000;
-const apiModules = await initApi();
+export const apiModules = await initApi();
 
 startApolloServer(buildExpressApp(), apiModules, { port });

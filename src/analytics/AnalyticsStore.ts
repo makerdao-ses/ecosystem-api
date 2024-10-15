@@ -77,7 +77,7 @@ export class AnalyticsStore {
       }
     }
     baseQuery.orderBy("start");
-    const results = await measureQueryPerformance('analyticsQuery', 'analyticsQuery', baseQuery);
+    const results = await baseQuery;
     return this._formatQueryRecords(results, Object.keys(query.select));
   }
 

@@ -60,7 +60,8 @@ async function processMkrRow(row) {
                 AND "vestingDate" = nv."vestingDate"
                 AND "mkrAmount" = nv."mkrAmount"
                 AND "mkrAmountOld" = nv."mkrAmountOld"
-              );              
+              )
+              RETURNING *;              
               `,
               [
                 budgetStatementIdVal,
@@ -70,10 +71,14 @@ async function processMkrRow(row) {
                 comment,
               ]
             );
+            
+            // Increment countMkr only if a row was inserted
+            if (result.rowCount > 0) {
+              countMkr++;
+            }
           } catch (error) {
             console.error(error);
           }
-          countMkr++
         }
       }
     );
@@ -144,7 +149,7 @@ const transferPromises = transferData.map(processTransferData);
 
 Promise.all([...mkrPromises, ...transferPromises])
   .then(() => {
-    console.log('Mkr Transfers:', countMkr);
+    console.log('Mkr Transfers Inserted:', countMkr);
     console.log('Transfer Requests:', countTransfer);
   })
   .catch(error => {

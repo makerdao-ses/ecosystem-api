@@ -17,7 +17,14 @@ const getOwnerId = async (ownerType, idSegment, knex) => {
   }
 
   if (ownerType === "AlignedDelegates") {
-    return null;
+    let result = await knex("CoreUnit")
+      .select("id")
+      .where("type", "=", "AlignedDelegates")
+      .first();
+    if (!result) {
+      throw new Error(`Cannot find Core Unit with code "${idSegment}"`);
+    }
+    return result.id;
   }
 
   if (ownerType === "SpecialPurposeFund") {

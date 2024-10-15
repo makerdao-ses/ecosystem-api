@@ -1162,6 +1162,16 @@ export default [
     BudgetPath: "atlas/scopes/ACC/ELP/PH-001"
   },
   {
+    Name: "Liquidity Bootstrapping Initiative",
+    "budget path 1": "makerdao",
+    "budget path 2": "scopes",
+    "budget path 3": "ACC",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0xd8507ef0a59f37d15b5d7b630fa6eea40ce4afdd",
+    BudgetPath: "atlas/scopes/ACC"
+  },
+  {
     Name: "Chainlink Automation",
     "budget path 1": "makerdao",
     "budget path 2": "keepers",
@@ -1241,6 +1251,15 @@ export default [
     "budget path 4": "",
     Type: "PaymentProcessor",
     Address: "0x3c267dfc8ba8f7359af0d8afc45b43731173236d",
+  },
+  {
+    Name: "Accountable Payment Processor 2",
+    "budget path 1": "makerdao",
+    "budget path 2": "payment-processors",
+    "budget path 3": "accountable",
+    "budget path 4": "",
+    Type: "PaymentProcessor",
+    Address: "0x62DAd9169Cd0D553fe876B6aa6566Ebb6CcdB8B2",
   },
   {
     Name: "Maker Protocol Wallet",

@@ -25,6 +25,7 @@ import blockNumbersDEWIZ from "../data/blockNumbers-DEWIZ.js";
 import blockNumbersDRAFT from "../data/blockNumbers-DRAFT.js";
 import blockNumbersDELEGATES from "../data/blockNumbers-DELEGATES.js";
 import blockNumbersDRAFT_KEEPERS from "../data/blockNumbers-DRAFT-KEEPERS.js";
+import blockNumbersADs from "../data/blockNumbers-ADs.js";
 
 const ownerMapping = {
   CoreUnit: {
@@ -80,7 +81,7 @@ const ownerMapping = {
     null: "blockNumbersDELEGATES",
   },
   AlignedDelegates: {
-    null: "blockNumbersDRAFT",
+    54: "blockNumbersADs",
   },
   Keepers: {
     null: "blockNumbersDRAFT_KEEPERS",
@@ -123,6 +124,7 @@ const blockNumbersMapping = {
   blockNumbersDELEGATES,
   blockNumbersDRAFT,
   blockNumbersDRAFT_KEEPERS,
+  blockNumbersADs
 };
 
 const getMonthInfo = (owner, month, endBlockNo) => {
