@@ -99,11 +99,11 @@ export const typeDefs = [
 export const resolvers = {
   Query: {
     activityFeed: async (_: any, filter: any, { dataSources }: any) => {
-      return measureQueryPerformance('getActivityFeed', "ChangeTracking", dataSources.db.ChangeTracking.getActivityFeed(
+      return await dataSources.db.ChangeTracking.getActivityFeed(
         filter.limit,
         filter.offset,
         filter.filter,
-      ));
+      );
     },
     userActivity: async (_: any, { filter }: any, { dataSources }: any) => {
       if (filter !== undefined) {
