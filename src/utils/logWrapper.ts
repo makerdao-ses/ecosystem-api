@@ -7,6 +7,9 @@ import { AnalyticsQuery } from "../analytics/AnalyticsQuery.js";
 import { Knex } from "knex";
 import { serializeAnalyticsQuery, deserializeAnalyticsQuery } from './analyticsSerializer.js';
 
+const SLOW_QUERY_LOG_KEY = 'slow_query_logs';
+const SLOW_QUERY_THRESHOLD = 10; // 10 seconds
+
 let apiModules: any;
 
 const getApiModules = async () => {
@@ -73,6 +76,10 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
             executionTime: `${executionTime}s`,
             query: knexQuery.toString(),
         };
+        // Store slow queries in Redis
+        if (executionTime > SLOW_QUERY_THRESHOLD) {
+            await logSlowQuery(logData);
+        }
         if (executionTime > 0.5) {
             logger.info({
                 executionTime: `${(end - start) / 1000}s`,
@@ -131,6 +138,11 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
             executionTime: `${executionTime}s`,
             query: queryString,
         };
+
+        // Store slow queries in Redis
+        if (executionTime > SLOW_QUERY_THRESHOLD) {
+            await logSlowQuery(logData);
+        }
         if (executionTime > 0.5) {
             logger.info({
                 executionTime: `${(end - start) / 1000}s`,
@@ -312,4 +324,28 @@ export async function warmUpQueryCache() {
 
 export function queryLength() {
     return queries.length;
+}
+
+async function logSlowQuery(logData: any) {
+    if (!client) {
+        await init();
+    }
+    const currentLogs = await client.lRange(SLOW_QUERY_LOG_KEY, 0, -1);
+    const serializedLog = JSON.stringify(logData);
+
+    // Keep only the last 100 slow query logs
+    if (currentLogs.length >= 100) {
+        await client.lPop(SLOW_QUERY_LOG_KEY);
+    }
+
+    await client.rPush(SLOW_QUERY_LOG_KEY, serializedLog);
+}
+
+// New function to retrieve slow query logs
+export async function getSlowQueryLogs(): Promise<any[]> {
+    if (!client) {
+        await init();
+    }
+    const logs = await client.lRange(SLOW_QUERY_LOG_KEY, 0, -1);
+    return logs.map((log: any) => JSON.parse(log));
 }
