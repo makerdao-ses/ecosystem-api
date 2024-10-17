@@ -110,17 +110,7 @@ export const measureAnalyticsQueryPerformance = async (queryName: string, module
     const modules = await getApiModules();
     const engine = modules.datasource.Analytics.engine;
     const store = modules.datasource.Analytics.store;
-    console.log('analyticsQuery', analyticsQuery);
-    console.log('serializeAnalyticsQuery', serializeAnalyticsQuery(analyticsQuery));
-    const deserialized = deserializeAnalyticsQuery(serializeAnalyticsQuery(analyticsQuery));
-    console.log('deserializeAnalyticsQuery', {
-        deserialized,
-        currency: deserialized.currency.toString(),
-        select: Object.entries(deserialized.select).map(([key, paths]) => ({
-            dimension: key,
-            paths: paths.map((path: any) => path.toString())
-        }))
-    });
+    
     const queryString = store.getBaseQuery(analyticsQuery).toString();
     addQuery({ queryName, moduleName, analyticsQuery, analyticsQueryString: queryString });
     const logger = getChildLogger({}, { moduleName });
