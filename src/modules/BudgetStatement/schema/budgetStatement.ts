@@ -1,6 +1,11 @@
 import { gql, AuthenticationError } from "apollo-server-core";
 import {
   convertDate,
+  getAnalyticsActuals,
+  getAnalyticsForecast,
+  getAnalyticsOnChain,
+  getAnalyticsOffChain,
+  getAnalyticsNetOutflow
 } from "./utils.js";
 import { measureQueryPerformance } from "../../../utils/logWrapper.js";
 import { resolveBudgetPath } from "./utils.js";
@@ -613,35 +618,35 @@ export const resolvers = {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await loaders.getAnalyticsForecastLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
+      const analytics = await getAnalyticsForecast(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.forecast;
     },
     actualExpenses: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await loaders.getAnalyticsActualsLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
+      const analytics = await getAnalyticsActuals(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.actuals;
     },
     paymentsOnChain: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await loaders.getAnalyticsOnChainLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
+      const analytics = await getAnalyticsOnChain(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.paymentsOnChain;
     },
     paymentsOffChain: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await loaders.getAnalyticsOffChainLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
+      const analytics = await getAnalyticsOffChain(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.paymentsOffChain;
     },
     netProtocolOutflow: async (parent: any, __: any, { dataSources, loaders }: any) => {
       const { ownerId, ownerType, month } = parent;
       const queryEngine = dataSources.db.Analytics;
       const convertedMonth = convertDate(month);
-      const analytics = await loaders.getAnalyticsNetOutflowLoader.load(`${convertedMonth}-${ownerType}-${ownerId}`);
+      const analytics = await getAnalyticsNetOutflow(queryEngine, convertedMonth, ownerType, ownerId);
       return analytics[0]?.netProtocolOutflow;
     }
   },
