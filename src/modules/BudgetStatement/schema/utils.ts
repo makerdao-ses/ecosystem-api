@@ -1,4 +1,13 @@
 import { Knex } from 'knex';
+import { addMonths, subMonths, parse, format } from 'date-fns';
+
+// Helper function to adjust dates
+const adjustDates = (yearMonth: string) => {
+    const date = parse(yearMonth, 'yyyy/MM', new Date());
+    const start = format(subMonths(date, 5), 'yyyy/MM');
+    const end = format(addMonths(date, 5), 'yyyy/MM');
+    return { start, end };
+};
 
 export const convertDate = (dateString: string) => {
     const [year, month] = dateString.split('-');
@@ -9,10 +18,11 @@ export const convertDate = (dateString: string) => {
 };
 
 export const getAnalyticsActuals = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+    const { start, end } = adjustDates(yearMonth);
 
     const filter = {
-        start: "2020/01",
-        end: "2100/01",
+        start,
+        end,
         granularity: 'total',
         metrics: ['Actuals'],
         dimensions: [
@@ -29,10 +39,11 @@ export const getAnalyticsActuals = async (queryEngine: any, yearMonth: string, o
 }
 
 export const getAnalyticsForecast = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+    const { start, end } = adjustDates(yearMonth);
 
     const filter = {
-        start: "2020/01",
-        end: "2100/01",
+        start,
+        end,
         granularity: 'total',
         metrics: ['Forecast'],
         dimensions: [
@@ -49,10 +60,11 @@ export const getAnalyticsForecast = async (queryEngine: any, yearMonth: string, 
 }
 
 export const getAnalyticsOnChain = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+    const { start, end } = adjustDates(yearMonth);
 
     const filter = {
-        start: "2020/01",
-        end: "2100/01",
+        start,
+        end,
         granularity: 'total',
         metrics: ['PaymentsOnChain'],
         dimensions: [
@@ -69,10 +81,11 @@ export const getAnalyticsOnChain = async (queryEngine: any, yearMonth: string, o
 }
 
 export const getAnalyticsNetOutflow = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+    const { start, end } = adjustDates(yearMonth);
 
     const filter = {
-        start: "2020/01",
-        end: "2100/01",
+        start,
+        end,
         granularity: 'total',
         metrics: ['ProtocolNetOutflow'],
         dimensions: [
@@ -88,12 +101,12 @@ export const getAnalyticsNetOutflow = async (queryEngine: any, yearMonth: string
     return result;
 }
 
-
 export const getAnalyticsOffChain = async (queryEngine: any, yearMonth: string, ownerType: string, teamId: number) => {
+    const { start, end } = adjustDates(yearMonth);
 
     const filter = {
-        start: "2020/01",
-        end: "2100/01",
+        start,
+        end,
         granularity: 'total',
         metrics: ['PaymentsOffChainIncluded'],
         dimensions: [
