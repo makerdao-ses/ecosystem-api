@@ -353,7 +353,7 @@ export async function warmUpQueryCache() {
                     knexQuery: q.query
                 };
             });
-            updateQueryCache(5, 100);
+            updateQueryCache(5, 200);
         }
     } catch (error) {
         console.log('error', error);
