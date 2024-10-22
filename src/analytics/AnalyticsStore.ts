@@ -307,6 +307,43 @@ export class AnalyticsStore {
     const currencies = await this._knex("AnalyticsSeries").select('unit').distinct().whereNotNull('unit');
     return currencies.map((c) => c.unit);
   }
+
+  public getBaseQuery(query: AnalyticsSeriesQuery): Knex.QueryBuilder {
+    const analyticsView = this._buildViewQuery(
+      "AV",
+      Object.keys(query.select),
+      query.metrics.map((m) => m),
+      query.currency.firstSegment().filters,
+      query.end,
+    );
+
+    const baseQuery = this._knex<AnalyticsSeriesRecord>(
+      this._knex.raw(analyticsView),
+    ).select("AV.*");
+
+    // Add dimension filter(s)
+    for (const [dimension, paths] of Object.entries(query.select)) {
+      baseQuery.leftJoin(`AnalyticsDimension as ${dimension}`, (q) => {
+        q.on(`${dimension}.path`, `dim_${dimension}`);
+      });
+      baseQuery.select(`${dimension}.icon as dim_icon`);
+      baseQuery.select(`${dimension}.description as dim_description`);
+      baseQuery.select(`${dimension}.label as dim_label`);
+      if (paths.length == 1) {
+        baseQuery.andWhereLike(`dim_${dimension}`, paths[0].toString("/%"));
+      } else if (paths.length > 1) {
+        baseQuery.andWhere((q) => {
+          paths.forEach((p) =>
+            q.orWhereLike(`dim_${dimension}`, p.toString("/%")),
+          );
+          return q;
+        });
+      }
+    }
+    baseQuery.orderBy("start");
+
+    return baseQuery;
+  }
 }
 
 type DimensionsMap = Record<string, Record<string, number[]>>;

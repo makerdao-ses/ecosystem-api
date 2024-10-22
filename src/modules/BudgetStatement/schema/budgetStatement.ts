@@ -438,7 +438,7 @@ export const resolvers = {
       if (noCache) {
         return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
       }
-      return await measureQueryPerformance('getBudgetStatements', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatements(filter));
+      return await measureQueryPerformance('getBudgetStatements', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatements(filter), false, 'critical');
     },
     budgetStatementWallets: async (
       _: any,
