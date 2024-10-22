@@ -49,8 +49,14 @@ export const closeRedis = () => {
     client && client.disconnect();
 };
 
-export const measureQueryPerformance = async (queryName: string, moduleName: string, knexQuery: Knex.QueryBuilder, refreshCache: boolean = false) => {
-    addQuery({ queryName, moduleName, knexQuery });
+export const measureQueryPerformance = async (
+    queryName: string,
+    moduleName: string,
+    knexQuery: Knex.QueryBuilder,
+    refreshCache: boolean = false,
+    priority: 'critical' | 'high' | 'medium' | 'low' = 'medium'
+) => {
+    addQuery({ queryName, moduleName, knexQuery, priority });
     const logger = getChildLogger({}, { moduleName });
     try {
         const start = Date.now(); // Start timing
@@ -106,13 +112,19 @@ export const measureQueryPerformance = async (queryName: string, moduleName: str
     }
 };
 
-export const measureAnalyticsQueryPerformance = async (queryName: string, moduleName: string, analyticsQuery: AnalyticsQuery, refreshCache: boolean = false) => {
+export const measureAnalyticsQueryPerformance = async (
+    queryName: string, 
+    moduleName: string, 
+    analyticsQuery: AnalyticsQuery, 
+    refreshCache: boolean = false,
+    priority: 'critical' | 'high' | 'medium' | 'low' = 'medium'
+) => {
     const modules = await getApiModules();
     const engine = modules.datasource.Analytics.engine;
     const store = modules.datasource.Analytics.store;
-    
+
     const queryString = store.getBaseQuery(analyticsQuery).toString();
-    addQuery({ queryName, moduleName, analyticsQuery, analyticsQueryString: queryString });
+    addQuery({ queryName, moduleName, analyticsQuery, analyticsQueryString: queryString, priority });
     const logger = getChildLogger({}, { moduleName });
     try {
         const start = Date.now(); // Start timing
@@ -205,29 +217,52 @@ async function appendLogToFile(logData: any) {
     }
 }
 
-let queries: any[] = [];
+// Add a new type for PrioritizedQuery
+type PrioritizedQuery = {
+    queryHash: string;
+    queryName: string;
+    moduleName: string;
+    knexQuery?: Knex.QueryBuilder;
+    analyticsQuery?: AnalyticsQuery;
+    analyticsQueryString?: string;
+    hitCount: number;
+    priority: 'critical' | 'high' | 'medium' | 'low';
+};
 
+let queries: PrioritizedQuery[] = [];
+
+// Modify the addQuery function to include priority
 async function addQuery(query: any) {
     const logger = getChildLogger({}, { moduleName: 'addQuery' });
     const queryHash = getHashKey(query.knexQuery ?? query.analyticsQuery);
     const foundQuery = queries.find(q => q.queryHash === queryHash);
     if (!foundQuery) {
         const queryString = query.knexQuery ? query.knexQuery.toString() : query.analyticsQueryString;
-        queries.push({ ...query, hitCount: 0, queryHash });
+        queries.push({ ...query, hitCount: 0, queryHash, priority: query.priority || 'medium' });
         logger.info({
             query: queryString,
-        },
-            'New query added to cache');
+            priority: query.priority || 'medium'
+        }, 'New query added to cache');
     } else {
         foundQuery.hitCount++;
+        // Update priority if it's higher than the existing one
+        if (query.priority && getPriorityValue(query.priority) > getPriorityValue(foundQuery.priority)) {
+            foundQuery.priority = query.priority;
+        }
     }
 }
 
+// Helper function to convert priority to numeric value
+function getPriorityValue(priority: PrioritizedQuery['priority']): number {
+    switch (priority) {
+        case 'critical': return 3;
+        case 'high': return 2;
+        case 'medium': return 1;
+        case 'low': return 0;
+    }
+}
 
-// add maxconcurrency param
-// maxQueries param
-// it refreshes most popular(maxQuery) queries and reduces their hit number by 1
-// should look through queries but only up to max concurrency param ( 4 / 5 at a time )
+// Modify updateQueryCache to consider priority
 export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: number = 500) {
     try {
         if (queries.length === 0) return;
@@ -236,17 +271,22 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
 
         const mainStart = Date.now();
 
-        // sort querie by hitCount
-        const sortedQueries = queries.sort((a, b) => b.hitCount - a.hitCount).slice(0, maxQueries);
+        // Sort queries by priority first, then by hitCount
+        const sortedQueries = queries.sort((a, b) => {
+            const priorityDiff = getPriorityValue(b.priority) - getPriorityValue(a.priority);
+            return priorityDiff !== 0 ? priorityDiff : b.hitCount - a.hitCount;
+        }).slice(0, maxQueries);
+
         logger.info({
             nrOfInitialQueries: queries.length,
-            hitCount: sortedQueries[0].hitCount
-        })
+            highestPriority: sortedQueries[0].priority,
+            highestHitCount: sortedQueries[0].hitCount
+        });
 
         // update query cache with max concurrency
         for (let i = 0; i < maxQueries; i += maxConcurrency) {
             const batchStart = Date.now();
-            await Promise.all(sortedQueries.slice(i, i + maxConcurrency).map(query =>
+            await Promise.all(sortedQueries.slice(i, i + maxConcurrency).map((query: any) =>
                 query.analyticsQuery ?
                     measureAnalyticsQueryPerformance(query.queryName, query.moduleName, query.analyticsQuery, true)
                     : measureQueryPerformance(query.queryName, query.moduleName, query.knexQuery, true)

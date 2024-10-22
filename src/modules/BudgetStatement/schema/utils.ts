@@ -30,7 +30,7 @@ export const getAnalyticsActuals = async (queryEngine: any, yearMonth: string, o
         ],
         currency: 'DAI'
     }
-    const results = await queryEngine.query(filter);
+    const results = await queryEngine.query(filter, 'critical');
 
     const result = results.map((s: any) => ({
         actuals: s.rows.find((r: any) => r.metric == 'Actuals')?.value,
@@ -51,7 +51,7 @@ export const getAnalyticsForecast = async (queryEngine: any, yearMonth: string, 
         ],
         currency: 'DAI'
     }
-    const results = await queryEngine.query(filter);
+    const results = await queryEngine.query(filter, 'critical');
 
     const result = results.map((s: any) => ({
         forecast: s.rows.find((r: any) => r.metric == 'Forecast')?.value
@@ -72,7 +72,7 @@ export const getAnalyticsOnChain = async (queryEngine: any, yearMonth: string, o
         ],
         currency: 'DAI'
     }
-    const results = await queryEngine.query(filter);
+    const results = await queryEngine.query(filter, 'critical');
 
     const result = results.map((s: any) => ({
         paymentsOnChain: s.rows.find((r: any) => r.metric == 'PaymentsOnChain')?.value,
@@ -93,7 +93,7 @@ export const getAnalyticsNetOutflow = async (queryEngine: any, yearMonth: string
         ],
         currency: 'DAI'
     }
-    const results = await queryEngine.query(filter);
+    const results = await queryEngine.query(filter, 'critical');
 
     const result = results.map((s: any) => ({
         netProtocolOutflow: s.rows.find((r: any) => r.metric == 'ProtocolNetOutflow')?.value,
@@ -114,7 +114,7 @@ export const getAnalyticsOffChain = async (queryEngine: any, yearMonth: string, 
         ],
         currency: 'DAI'
     }
-    const results = await queryEngine.query(filter);
+    const results = await queryEngine.query(filter, 'critical');
 
     const result = results.map((s: any) => ({
         paymentsOffChain: s.rows.find((r: any) => r.metric == 'PaymentsOffChainIncluded')?.value,

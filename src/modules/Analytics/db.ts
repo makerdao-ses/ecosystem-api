@@ -39,7 +39,7 @@ export class AnalyticsModel {
     this.engine = new AnalyticsQueryEngine(this.store);
   }
 
-  public async query(filter: queryFilter) {
+  public async query(filter: queryFilter, priority: 'critical' | 'high' | 'medium' | 'low' = 'medium') {
 
     if (!filter) {
       return [];
@@ -67,7 +67,7 @@ export class AnalyticsModel {
         query.lod[dimension.name] = Number(dimension.lod);
       });
     }
-    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false);
+    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, priority);
 
   }
 
