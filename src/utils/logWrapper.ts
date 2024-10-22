@@ -113,9 +113,9 @@ export const measureQueryPerformance = async (
 };
 
 export const measureAnalyticsQueryPerformance = async (
-    queryName: string, 
-    moduleName: string, 
-    analyticsQuery: AnalyticsQuery, 
+    queryName: string,
+    moduleName: string,
+    analyticsQuery: AnalyticsQuery,
     refreshCache: boolean = false,
     priority: 'critical' | 'high' | 'medium' | 'low' = 'medium'
 ) => {
@@ -247,7 +247,7 @@ async function addQuery(query: any) {
         foundQuery.hitCount++;
         // Update priority if it's higher than the existing one
         if (query.priority && getPriorityValue(query.priority) > getPriorityValue(foundQuery.priority)) {
-            foundQuery.priority = query.priority;
+            foundQuery.hitCount *= 50;
         }
     }
 }
@@ -271,10 +271,10 @@ export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: n
 
         const mainStart = Date.now();
 
-        // Sort queries by priority first, then by hitCount
+        // Sort queries by hitCount
         const sortedQueries = queries.sort((a, b) => {
-            const priorityDiff = getPriorityValue(b.priority) - getPriorityValue(a.priority);
-            return priorityDiff !== 0 ? priorityDiff : b.hitCount - a.hitCount;
+            // Compare by hitCount (higher hitCount comes first)
+            return b.hitCount - a.hitCount;
         }).slice(0, maxQueries);
 
         logger.info({
