@@ -1,13 +1,7 @@
-import { Knex } from "knex";
-
-import { AnalyticsQueryEngine } from "../../analytics/AnalyticsQueryEngine.js";
-import { AnalyticsStore } from "../../analytics/AnalyticsStore.js";
-import {
-  AnalyticsGranularity,
-  AnalyticsQuery,
-} from "../../analytics/AnalyticsQuery.js";
-import { AnalyticsPath } from "../../analytics/AnalyticsPath.js";
+import { AnalyticsGranularity, AnalyticsPath, AnalyticsQuery, AnalyticsQueryEngine } from "@powerhousedao/analytics-engine-core";
+import { PostgresAnalyticsStore } from "@powerhousedao/analytics-engine-pg";
 import { measureAnalyticsQueryPerformance } from '../../utils/logWrapper.js';
+import { DateTime } from "luxon";
 
 type queryFilter = {
   start?: Date;
@@ -29,29 +23,21 @@ type MultiCurrencyFilter = queryFilter & {
 
 
 export class AnalyticsModel {
-  engine: AnalyticsQueryEngine;
-  store: AnalyticsStore;
-  knex: Knex;
+  readonly engine: AnalyticsQueryEngine;
 
-  constructor(knex: Knex) {
-    this.knex = knex;
-    this.store = new AnalyticsStore(knex);
-    this.engine = new AnalyticsQueryEngine(this.store);
+  constructor(pgConnectionString: string) {
+    const store = new PostgresAnalyticsStore(pgConnectionString)
+    this.engine = new AnalyticsQueryEngine(store);
   }
 
-  public async query(filter: queryFilter, priority: 'critical' | 'high' | 'medium' | 'low' = 'medium') {
-
+  public async query(filter: queryFilter) {
     if (!filter) {
       return [];
     }
-    const metrics = await this.getMetrics();
-    const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
-    if (filteredMetrics.length < 1) {
-      throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
-    }
+
     const query: AnalyticsQuery = {
-      start: filter.start ? new Date(filter.start) : null,
-      end: filter.end ? new Date(filter.end) : null,
+      start: filter.start ? DateTime.fromJSDate(filter.start) : null,
+      end: filter.end ? DateTime.fromJSDate(filter.end) : null,
       granularity: getGranularity(filter.granularity),
       metrics: filter.metrics,
       currency: getCurrency(filter.currency),
@@ -67,23 +53,18 @@ export class AnalyticsModel {
         query.lod[dimension.name] = Number(dimension.lod);
       });
     }
-    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, priority);
 
+    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, "high");
   }
 
   public async multiCurrencyQuery(filter: MultiCurrencyFilter) {
-
     if (!filter) {
       return [];
     }
-    const metrics = await this.getMetrics();
-    const filteredMetrics = filter.metrics.filter(metric => metrics.includes(metric));
-    if (filteredMetrics.length < 1) {
-      throw new Error("No valid metrics provided, make sure to use metrics from this list: " + metrics.join(", "));
-    }
+    
     const query: AnalyticsQuery = {
-      start: filter.start ? new Date(filter.start) : null,
-      end: filter.end ? new Date(filter.end) : null,
+      start: filter.start ? DateTime.fromJSDate(filter.start) : null,
+      end: filter.end ? DateTime.fromJSDate(filter.end) : null,
       granularity: getGranularity(filter.granularity),
       metrics: filter.metrics,
       currency: getCurrency(filter.currency),
@@ -111,24 +92,16 @@ export class AnalyticsModel {
 
   }
 
-  public async test() {
-    return await this.engine.test();
-  }
-
   public async getDimensions() {
     return await this.engine.getDimensions()
   }
 
-  public async getMetrics() {
-    return await this.engine.getMetrics()
-  }
-
   public async getCurrencies() {
-    return await this.engine.getCurrencies()
+    return ['DAI', 'MKR', 'USDT', 'USDY'];
   }
 }
 
-export default (knex: Knex) => new AnalyticsModel(knex);
+export default () => new AnalyticsModel(process.env.PG_CONNECTION_STRING!);
 
 const getGranularity = (
   granularity: string | undefined,
