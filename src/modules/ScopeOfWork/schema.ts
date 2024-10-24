@@ -111,16 +111,5 @@ export const resolvers = {
             const roadmaps = await dataSources.db.ScopeOfWork.getRoadmaps();
             return { roadmaps }
         }
-    },
-    Progress: {
-        __resolveType: (obj: any) => {
-            if (obj.total && obj.completed) {
-                return "StoryPoints";
-            } else if (obj.value) {
-                return "Percentage";
-            } else {
-                throw new Error("Invalid value type");
-            }
-        },
-    },
+    }
 }
