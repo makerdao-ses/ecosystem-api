@@ -23,7 +23,7 @@ async function init() {
     client = await createClient({
         url: process.env.REDIS_TLS_URL,
         socket: {
-            tls: true,
+            tls: process.env.REDIS_TLS_URL?.startsWith('rediss://'),
             rejectUnauthorized: false,
         }
     }).on('error', (err: string) => console.log('Redis Client Error', err))

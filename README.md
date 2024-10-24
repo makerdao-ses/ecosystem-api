@@ -9,7 +9,7 @@ Easily run all services using `docker-compose`. This will run Postgres, Redis, a
 cp .env.example .env
 
 # startup
-docker-compose -f docker-compose.yml -f docker-compose.api.yml up
+docker compose -f docker-compose.yml -f docker-compose.api.yml up
 ```
 
 A GraphQL explorer will now be available at [http://localhost:4000](http://localhost:4000).
@@ -19,7 +19,7 @@ A GraphQL explorer will now be available at [http://localhost:4000](http://local
 For local development, we run dependencies via `docker-compose`, while using familiar tools like file-watchers locally.
 
 ```
-docker-compose up -d
+docker compose up -d
 
 npm install
 npm run dev
@@ -32,7 +32,7 @@ This will make a GraphQL explorer available at [http://localhost:4000](http://lo
 A DB copy tool is available that leverages containers to export and import data without needing any tools installed locally.
 
 ```
-docker-compose up -d
+docker compose up -d
 
 ./dump-db.sh <user> <password> <host> <db>
 ```

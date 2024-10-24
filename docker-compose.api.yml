@@ -1,10 +1,10 @@
-version: "3.8"
 services:
   api:
     build: ./
     restart: always
     environment:
-      - PG_CONNECTION_STRING=${PG_CONNECTION_STRING}
+      - PG_CONNECTION_STRING=postgres://makerdao:pwd@db:5432/EcosystemApi?sslmode=disable
+      - REDIS_TLS_URL=redis://username:password@redis:6379
     ports:
       - "4000:4000"
     entrypoint:
