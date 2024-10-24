@@ -97,7 +97,8 @@ export class AnalyticsModel {
   }
 
   public async getCurrencies() {
-    return ['DAI', 'MKR', 'USDT', 'USDY'];
+    // todo: use knex inside of the analytics engine to select distinct currencies
+    return ['DAI', 'FTE', 'MKR', 'USDC', 'USDP', 'USDT'];
   }
 }
 

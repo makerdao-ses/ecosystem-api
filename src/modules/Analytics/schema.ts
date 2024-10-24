@@ -125,10 +125,6 @@ export const resolvers = {
         })),
       }))
     },
-    metrics: async (parent: any, { filter }: any, { dataSources }: any) => {
-      const queryEngine: AnalyticsModel = dataSources.db.Analytics;
-      return await queryEngine.getMetrics();
-    },
     dimensions: async (_: any, { filter }: any, { dataSources }: any) => {
       const queryEngine: AnalyticsModel = dataSources.db.Analytics;
       return await queryEngine.getDimensions();

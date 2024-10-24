@@ -1,6 +1,4 @@
-import { AnalyticsPath } from '../analytics/AnalyticsPath.js';
-import { AnalyticsQuery, AnalyticsGranularity } from '../analytics/AnalyticsQuery.js';
-
+import { AnalyticsPath, AnalyticsQuery, AnalyticsGranularity } from "@powerhousedao/analytics-engine-core";
 
 export function serializeAnalyticsQuery(query: AnalyticsQuery): string {
     return JSON.stringify(query, (key, value) => {

@@ -34,7 +34,7 @@ export class SnapshotModel {
   constructor(knex: Knex) {
     this.knex = knex;
     this.coreunit = CoreUnitModel(knex);
-    this.analyticsModel = AnalyticsModel(knex);
+    this.analyticsModel = AnalyticsModel();
   }
 
   async getSnapshots(filter: {
