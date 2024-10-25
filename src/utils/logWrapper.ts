@@ -23,10 +23,12 @@ const getApiModules = async () => {
 let client: any;
 
 async function init() {
+    const redisUrl = process.env.REDIS_TLS_URL!;
+    console.log(`Connecting to Redis at ${redisUrl}`);
     client = await createClient({
-        url: process.env.REDIS_TLS_URL,
+        url: redisUrl,
         socket: {
-            tls: true,
+            tls: redisUrl.startsWith('rediss'),
             rejectUnauthorized: false,
         }
     }).on('error', (err: string) => console.log('Redis Client Error', err))

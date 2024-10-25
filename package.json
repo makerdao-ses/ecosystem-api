@@ -6,7 +6,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node ./build/index.js",
-        "build": "tsc -p ./config/tsconfig.json && npm run migrate:latest",
+        "build": "tsc -p ./config/tsconfig.json",
         "dev": "tsc-watch --noClear -p ./config/tsconfig.json --onSuccess \"node ./build/index.js\"",
         "migrate:status": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:status",
         "migrate:latest": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:latest",
@@ -20,6 +20,7 @@
     "dependencies": {
         "@graphql-tools/schema": "^8.3.3",
         "@powerhousedao/analytics-engine-core": "^0.1.0",
+        "@powerhousedao/analytics-engine-knex": "^0.1.0",
         "@powerhousedao/analytics-engine-graphql": "^0.1.0",
         "@powerhousedao/analytics-engine-pg": "^0.1.0",
         "apollo-server-core": "^3.13.0",

@@ -2,6 +2,7 @@ import { AnalyticsGranularity, AnalyticsPath, AnalyticsQuery, AnalyticsQueryEngi
 import { PostgresAnalyticsStore } from "@powerhousedao/analytics-engine-pg";
 import { measureAnalyticsQueryPerformance } from '../../utils/logWrapper.js';
 import { DateTime } from "luxon";
+import { defaultQueryLogger, defaultResultsLogger } from "@powerhousedao/analytics-engine-knex";
 
 type queryFilter = {
   start?: Date;
@@ -26,7 +27,7 @@ export class AnalyticsModel {
   readonly engine: AnalyticsQueryEngine;
 
   constructor(pgConnectionString: string) {
-    const store = new PostgresAnalyticsStore(pgConnectionString)
+    const store = new PostgresAnalyticsStore(pgConnectionString, defaultQueryLogger("model"), defaultResultsLogger("model"));
     this.engine = new AnalyticsQueryEngine(store);
   }
 
@@ -45,6 +46,14 @@ export class AnalyticsModel {
       lod: {},
     };
 
+    if (query.start && !query.start.isValid) {
+      query.start = null;
+    }
+
+    if (query.end && !query.end.isValid) {
+      query.end = null;
+    }
+
     if (filter.dimensions.length < 1) {
       throw new Error("No dimensions provided");
     } else {
@@ -54,7 +63,11 @@ export class AnalyticsModel {
       });
     }
 
-    return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, "high");
+    const results = await this.engine.execute(query);
+
+    return results;
+
+    //return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, "high");
   }
 
   public async multiCurrencyQuery(filter: MultiCurrencyFilter) {
@@ -71,6 +84,14 @@ export class AnalyticsModel {
       select: {},
       lod: {},
     };
+
+    if (query.start && !query.start.isValid) {
+      query.start = null;
+    }
+
+    if (query.end && !query.end.isValid) {
+      query.end = null;
+    }
 
     if (filter.dimensions.length < 1) {
       throw new Error("No dimensions provided");
