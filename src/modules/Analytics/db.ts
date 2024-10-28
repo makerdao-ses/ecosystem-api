@@ -67,6 +67,7 @@ export class AnalyticsModel {
 
     return results;
 
+    // TODO: pull caching interface out into analytics module
     //return measureAnalyticsQueryPerformance('analyticsQuery', 'analyticsQuery', query, false, "high");
   }
 
