@@ -33,6 +33,7 @@
         "express-jwt": "^8.4.1",
         "graphql": "^16.3.0",
         "graphql-scalars": "^1.17.0",
+        "graphql-tag": "^2.12.6",
         "json-stringify-deterministic": "^1.0.8",
         "jsonwebtoken": "^8.5.1",
         "knex": "^3.1.0",
