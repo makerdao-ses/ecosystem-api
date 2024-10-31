@@ -82,7 +82,7 @@ async function startApolloServer(
     resolvers: apiModules.resolvers,
   });
 
-  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), (responseCachePlugin as any).default()];
+  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), responseCachePlugin()];
   const server = new ApolloServer({
     schema,
     plugins,
