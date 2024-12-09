@@ -1162,6 +1162,16 @@ export default [
     BudgetPath: "atlas/scopes/ACC/ELP/PH-001"
   },
   {
+    Name: "Powerhouse Genesis Operational Hub Association",
+    "budget path 1": "makerdao",
+    "budget path 2": "ecosystem-actors",
+    "budget path 3": "PH-001",
+    "budget path 4": "",
+    Type: "Operational",
+    Address: "0xf130f741d4e3185b29412c65397363f8c23a0460",
+    BudgetPath: "atlas/scopes/ACC/ELP/PH-001"
+  },
+  {
     Name: "Liquidity Bootstrapping Initiative",
     "budget path 1": "makerdao",
     "budget path 2": "scopes",
