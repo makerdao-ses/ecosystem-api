@@ -44,9 +44,15 @@ export const timer = setInterval(
             client && (await client.ping());
         } catch (err) {
             console.error('Ping Interval Error', err);
+            // Attempt to reconnect immediately
+            try {
+                await init();
+            } catch (initErr) {
+                console.error('Redis reconnection failed:', initErr);
+            }
         }
     },
-    1000 * 60 * 4
+    1000 * 30  // 30 seconds
 );
 
 export const closeRedis = () => {
@@ -358,7 +364,7 @@ export async function warmUpQueryCache() {
                     knexQuery: q.query
                 };
             });
-            updateQueryCache(5, 200);
+            updateQueryCache(3, 200);
         }
     } catch (error) {
         console.log('error', error);
