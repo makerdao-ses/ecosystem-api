@@ -274,7 +274,7 @@ function getPriorityValue(priority: PrioritizedQuery['priority']): number {
 }
 
 // Modify updateQueryCache to consider priority
-export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: number = 300) {
+export async function updateQueryCache(maxConcurrency: number = 3, maxQueries: number = 300) {
     try {
         if (queries.length === 0) return;
 
