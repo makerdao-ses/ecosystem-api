@@ -2,8 +2,9 @@ import linkApiModules from "../factory";
 import EcosystemDatabase from "../EcosystemDatabase";
 import initKnex from "../../initKnex";
 import defaultSettings from "../default.config";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer } from "@apollo/server";
 import { Authorization } from "../Auth/authorization";
+import { startStandaloneServer } from "@apollo/server/standalone";
 
 let server: any, db: any;
 
@@ -15,7 +16,11 @@ beforeAll(async () => {
     user: { cuId: 46, username: "exampleName" },
     auth: new Authorization(db, 1),
   };
-  server = new ApolloServer({ typeDefs, resolvers, context });
+  server = new ApolloServer({ typeDefs, resolvers });
+  await startStandaloneServer(server, {
+    context: async () => context,
+    listen: { port: 4000 },
+  })
 });
 
 afterAll(async () => {

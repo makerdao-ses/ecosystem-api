@@ -1,4 +1,5 @@
-import { gql, AuthenticationError } from "apollo-server-core";
+import { gql } from "graphql-tag";
+import { AuthenticationError } from "../../../utils/AuthenticationError.js";
 import {
   convertDate,
   getAnalyticsActuals,
