@@ -1,23 +1,30 @@
-import { ApolloServer, AuthenticationError } from "apollo-server-express";
-import {
-  ApolloServerPluginDrainHttpServer,
-} from "apollo-server-core";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from '@apollo/server/express4';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+
 import express from "express";
-import compression from "compression";
 import http from "http";
+import cors from "cors";
+
+import compression from "compression";
 import dotenv from "dotenv";
+
 import { expressjwt } from "express-jwt";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { Authorization } from "./modules/Auth/authorization.js";
-import responseCachePlugin from "apollo-server-plugin-response-cache";
+import responseCachePlugin from "@apollo/server-plugin-response-cache";
 import initApi from "./initApi.js";
 import { Algorithm } from "jsonwebtoken";
 import { ListenOptions } from "net";
 import { ApiModules } from "./modules/factory.js";
 import { createDataLoaders } from "./utils/dataLoaderFactory.js";
 import { InMemoryLRUCache } from '@apollo/utils.keyvaluecache';
-import { updateQueryCache } from "./utils/logWrapper.js";
+import { updateQueryCache, warmUpQueryCache } from "./utils/logWrapper.js";
 import { closeRedis } from "./utils/logWrapper.js";
+import { GraphQLError } from "graphql";
+import { ApolloServerErrorCode } from "@apollo/server/errors";
+
+const graphqlPath = '/graphql';
 
 const startupTime = new Date();
 function buildExpressApp() {
@@ -67,7 +74,7 @@ async function startApolloServer(
 ) {
   const httpServer = http.createServer(app);
   httpServer.on('close', () => {
-    closeRedis;
+    closeRedis();
   });
 
   const schema = makeExecutableSchema({
@@ -75,8 +82,7 @@ async function startApolloServer(
     resolvers: apiModules.resolvers,
   });
 
-  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), (responseCachePlugin as any).default()];
-
+  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), responseCachePlugin()];
   const server = new ApolloServer({
     schema,
     plugins,
@@ -85,33 +91,55 @@ async function startApolloServer(
         maxSize: 1000,
       }),
     },
-    context: ({ req }) => {
-      try {
-        const user = (req as any).auth || null;
-        const noCache = req.headers['no-cache'] === 'true' ? true : false;
-        const refreshCache = req.headers['refresh-cache'] === process.env.REFRESH_CACHE_SECRET ? true : false;
-
-        const loaders = createDataLoaders(apiModules.datasource);
-        if (user) {
-          const auth = new Authorization(apiModules.datasource, user.id);
-          return { user, auth, loaders, refreshCache };
-        }
-        if (noCache) {
-          return { noCache, loaders, refreshCache };
-        }
-        return { loaders, refreshCache };
-      } catch (error: any) {
-        throw new AuthenticationError(error.message);
-      }
-    },
-    dataSources: () => ({ db: apiModules.datasource }),
   });
 
   await server.start();
-  server.applyMiddleware({ app });
+
+  app.use(graphqlPath,
+    cors<cors.CorsRequest>(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const ctx: {
+          dataSources: { db: any };
+          user?: any;
+          auth?: Authorization;
+          loaders?: ReturnType<typeof createDataLoaders>;
+          noCache?: boolean;
+          refreshCache?: boolean;
+        } = {
+          dataSources: { db: apiModules.datasource },
+          user: (req as any).auth || null,
+          noCache: req.headers['no-cache'] === 'true' ? true : false,
+          refreshCache: req.headers['refresh-cache'] === process.env.REFRESH_CACHE_SECRET ? true : false,
+        };
+
+        try {
+          ctx.loaders = createDataLoaders(apiModules.datasource);
+          if (ctx.user) {
+            ctx.auth = new Authorization(apiModules.datasource, ctx.user.id);
+            
+            return ctx;
+          }
+
+          return ctx;
+        } catch (error: any) {
+          console.log(`Error in context: ${error.message}.`);
+
+          throw new GraphQLError(error.message, {
+            extensions: {
+              code: ApolloServerErrorCode.INTERNAL_SERVER_ERROR,
+            },
+          });
+        }
+      },
+    })
+  );
+
   await new Promise<void>((resolve) => httpServer.listen(options, resolve));
+
   console.log(
-    `Server ready at http://localhost:${options.port}${server.graphqlPath}`,
+    `Server ready at http://localhost:${options.port}${graphqlPath}`,
   );
 }
 
@@ -120,3 +148,4 @@ const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 4000;
 export const apiModules = await initApi();
 
 startApolloServer(buildExpressApp(), apiModules, { port });
+await warmUpQueryCache();

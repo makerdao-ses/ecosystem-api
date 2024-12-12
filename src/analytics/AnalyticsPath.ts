@@ -15,6 +15,11 @@ export class AnalyticsPath {
     return new AnalyticsPath(segments);
   }
 
+  public static fromJSON(json: any): AnalyticsPath {
+    const segments = json._v.split("/").map((segment: string) => AnalyticsPathSegment.fromString(segment));
+    return new AnalyticsPath(segments);
+  }
+
   constructor(segments: AnalyticsPathSegment[]) {
     this._segments = segments;
   }
@@ -55,6 +60,10 @@ export class AnalyticsPath {
 
     return new AnalyticsPath(segments.slice(0, levelOfDetail));
   }
+
+  public getSegments(): AnalyticsPathSegment[] {
+    return this._segments;
+  }
 }
 
 export class AnalyticsPathSegment {
@@ -92,6 +101,10 @@ export class AnalyticsPathSegment {
     }
 
     return new AnalyticsPathSegment(filtersArg, groupsArg);
+  }
+
+  public static fromJSON(json: any): AnalyticsPathSegment {
+    return AnalyticsPathSegment.fromString(json._v);
   }
 
   public static escape(segment: string): string {

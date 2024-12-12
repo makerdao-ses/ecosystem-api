@@ -1,4 +1,5 @@
-import { gql, AuthenticationError } from "apollo-server-core";
+import { gql } from "graphql-tag";
+import { AuthenticationError } from "../../../utils/AuthenticationError.js";
 import {
   convertDate,
   getAnalyticsActuals,
@@ -438,7 +439,7 @@ export const resolvers = {
       if (noCache) {
         return await dataSources.db.BudgetStatement.getBudgetStatements(filter);
       }
-      return await measureQueryPerformance('getBudgetStatements', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatements(filter));
+      return await measureQueryPerformance('getBudgetStatements', 'BudgetStatements', dataSources.db.BudgetStatement.getBudgetStatements(filter), false, 'critical');
     },
     budgetStatementWallets: async (
       _: any,
