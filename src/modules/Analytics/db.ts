@@ -1,6 +1,5 @@
 import { AnalyticsGranularity, AnalyticsPath, AnalyticsQuery, AnalyticsQueryEngine } from "@powerhousedao/analytics-engine-core";
 import { PostgresAnalyticsStore } from "@powerhousedao/analytics-engine-pg";
-import { measureAnalyticsQueryPerformance } from '../../utils/logWrapper.js';
 import { DateTime } from "luxon";
 import { defaultQueryLogger, defaultResultsLogger } from "@powerhousedao/analytics-engine-knex";
 
@@ -27,7 +26,11 @@ export class AnalyticsModel {
   readonly engine: AnalyticsQueryEngine;
 
   constructor(pgConnectionString: string) {
-    const store = new PostgresAnalyticsStore(pgConnectionString, defaultQueryLogger("model"), defaultResultsLogger("model"));
+    const store = new PostgresAnalyticsStore({ 
+      connectionString: pgConnectionString,
+      queryLogger: defaultQueryLogger("model"), 
+      resultsLogger: defaultResultsLogger("model"),
+    });
     this.engine = new AnalyticsQueryEngine(store);
   }
 

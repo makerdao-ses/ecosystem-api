@@ -1,4 +1,5 @@
-import { gql, AuthenticationError, ForbiddenError } from "apollo-server-core";
+import { gql } from "graphql-tag";
+import { AuthenticationError } from "../../../utils/AuthenticationError.js";
 import { BudgetStatementAuthModel } from "../dbAuth.js";
 
 export const typeDefs = [

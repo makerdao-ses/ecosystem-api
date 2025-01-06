@@ -1,9 +1,10 @@
-import { gql, AuthenticationError } from "apollo-server-core";
+import { gql } from "graphql-tag";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcrypt";
 import { QueryParams } from "../../utils/QueryParams.js";
 import { env } from "process";
+import { AuthenticationError } from "../../utils/AuthenticationError.js";
 dotenv.config();
 
 export const typeDefs = [

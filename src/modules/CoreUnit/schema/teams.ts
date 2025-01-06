@@ -1,4 +1,4 @@
-import { gql } from "apollo-server-core";
+import { gql } from "graphql-tag";
 import { measureQueryPerformance } from "../../../utils/logWrapper.js";
 
 export const typeDefs = gql`
@@ -121,8 +121,13 @@ export const typeDefs = gql`
 export const resolvers = {
   Query: {
     // coreUnits: (parent, args, context, info) => {}
-    teams: async (_: any, filter: any, { dataSources }: any) => {
-      const result = await measureQueryPerformance('getTeams', 'Teams', dataSources.db.CoreUnit.getTeams(filter));
+    teams: async (_: any, filter: any, { noCache, dataSources }: any) => {
+      let result: any;
+      if (noCache) {
+        result = await dataSources.db.CoreUnit.getTeams(filter);
+      } else {
+        result = await measureQueryPerformance('getTeams', 'Teams', dataSources.db.CoreUnit.getTeams(filter));
+      }
       const parsedResult = result.map((cu: any) => {
         if (cu.category !== null) {
           const cleanCategory = cu.category.slice(1, cu.category.length - 1);

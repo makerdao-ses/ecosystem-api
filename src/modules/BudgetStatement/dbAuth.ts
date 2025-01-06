@@ -2,7 +2,8 @@ import { BudgetStatementModel } from "./db";
 import { AuthModel } from "../Auth/db";
 import { CoreUnitModel } from "../CoreUnit/db";
 import { ChangeTrackingModel } from "../ChangeTracking/db";
-import { AuthenticationError, ForbiddenError } from "apollo-server-core";
+import { AuthenticationError } from "../../utils/AuthenticationError.js";
+import { ForbiddenError } from "../../utils/ForbiddenError.js";
 
 export class BudgetStatementAuthModel {
   private bsModel: BudgetStatementModel;

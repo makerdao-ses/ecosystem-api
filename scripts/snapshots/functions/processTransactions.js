@@ -47,6 +47,17 @@ const processTransactions = async (
   }
 
   while ((txData = transactionsStack.pop())) {
+    // Add validation for sender/receiver only for MKR tokens(MKR to SKY interation))
+    if ((txData.token === 'MKR') && (!txData.sender || !txData.receiver)) {
+      if (txData.flow === 'outflow') {
+        txData.sender = txData.wallet;
+        txData.receiver = '0x0000000000000000000000000000000000000000';
+      } else {
+        txData.receiver = txData.wallet;
+        txData.sender = '0x0000000000000000000000000000000000000000';
+      }
+    }
+
     const relativeTxData = applyFlow(
       txData,
       invertFlows ? invertedFlow[txData.flow] : txData.flow,

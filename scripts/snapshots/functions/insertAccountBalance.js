@@ -30,8 +30,8 @@ const insertAccountBalances = async (allAccounts, offChainIncluded, knex) => {
           let result = await knex.raw(`
                 SELECT 
                     count(*),
-                    round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 2) AS inflow,
-                    round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 2) AS outflow
+                    round(sum(CASE WHEN sat.amount > 0 THEN sat.amount ELSE 0 END), 8) AS inflow,
+                    round(sum(CASE WHEN sat.amount < 0 THEN sat.amount ELSE 0 END), 8) AS outflow
                 
                 FROM "SnapshotAccountTransaction" as sat
                 

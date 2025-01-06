@@ -23,12 +23,15 @@ const getApiModules = async () => {
 let client: any;
 
 async function init() {
-    const redisUrl = process.env.REDIS_TLS_URL!;
-    console.log(`Connecting to Redis at ${redisUrl}`);
+    const url = process.env.REDIS_TLS_URL;
+    if (!url) {
+        throw new Error('REDIS_TLS_URL not set');
+    }
+
     client = await createClient({
-        url: redisUrl,
+        url,
         socket: {
-            tls: redisUrl.startsWith('rediss'),
+            tls: url.startsWith('rediss'),
             rejectUnauthorized: false,
         }
     }).on('error', (err: string) => console.log('Redis Client Error', err))
@@ -41,9 +44,15 @@ export const timer = setInterval(
             client && (await client.ping());
         } catch (err) {
             console.error('Ping Interval Error', err);
+            // Attempt to reconnect immediately
+            try {
+                await init();
+            } catch (initErr) {
+                console.error('Redis reconnection failed:', initErr);
+            }
         }
     },
-    1000 * 60 * 4
+    1000 * 30  // 30 seconds
 );
 
 export const closeRedis = () => {
@@ -265,7 +274,7 @@ function getPriorityValue(priority: PrioritizedQuery['priority']): number {
 }
 
 // Modify updateQueryCache to consider priority
-export async function updateQueryCache(maxConcurrency: number = 5, maxQueries: number = 300) {
+export async function updateQueryCache(maxConcurrency: number = 3, maxQueries: number = 300) {
     try {
         if (queries.length === 0) return;
 
@@ -355,7 +364,7 @@ export async function warmUpQueryCache() {
                     knexQuery: q.query
                 };
             });
-            updateQueryCache(5, 200);
+            updateQueryCache(3, 200);
         }
     } catch (error) {
         console.log('error', error);
