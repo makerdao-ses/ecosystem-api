@@ -11,6 +11,8 @@ import defaultSettings from "./default.config.js";
 import { ModulesConfig } from "./ModulesConfig";
 import EcosystemDatabase from "./EcosystemDatabase.js";
 import { DocumentNode } from "graphql";
+import { AnalyticsResolvers, typedefs as analyticsTypes } from "@powerhousedao/analytics-engine-graphql";
+import getAnalytics from "../analytics.js";
 
 const DEBUG_OUTPUT = false;
 
@@ -36,6 +38,7 @@ export default async function linkApiModules(
 
 // Load the GraphQL schema (type definitions + resolvers) of each module
 export async function linkSchemas(settings: ModulesConfig = defaultSettings) {
+  // dynamic modules
   const enabledModules = Object.keys(settings).filter(
     (m) => settings[m].enabled,
   );
@@ -52,11 +55,18 @@ export async function linkSchemas(settings: ModulesConfig = defaultSettings) {
     _.merge(moduleResolvers, schemaJs.resolvers);
   }
 
-  const typeDefs = [...scalarTypeDefs, baseTypes, ...moduleTypeDefs];
+  // all typedefs and resolvers
+  const typeDefs = [
+    ...scalarTypeDefs,
+    baseTypes,
+    analyticsTypes,
+    ...moduleTypeDefs
+  ];
 
   const resolvers = _.merge(
     scalarResolvers,
     baseTypeResolvers,
+    AnalyticsResolvers,
     moduleResolvers,
   );
 
@@ -68,6 +78,10 @@ export async function linkDataModules(
   datasource: EcosystemDatabase,
   settings: ModulesConfig = defaultSettings,
 ) {
+  // static modules
+  datasource.loadModule("Analytics", getAnalytics, []);
+  
+  // dynamic modules
   const enabledModules = Object.keys(settings).filter(
     (m) => settings[m].enabled,
   );

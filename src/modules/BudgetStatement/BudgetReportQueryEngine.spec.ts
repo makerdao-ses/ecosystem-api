@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import initKnex from "../../initKnex.js";
+import getKnex from "../../knex.js";
 import {
   BudgetReportGranularity,
   BudgetReportQuery,
@@ -18,7 +18,7 @@ const DEBUG_OUTPUT_TO_FILE = false;
 let knex: Knex;
 
 beforeAll(async () => {
-  knex = initKnex();
+  knex = getKnex();
 });
 
 afterAll(async () => {

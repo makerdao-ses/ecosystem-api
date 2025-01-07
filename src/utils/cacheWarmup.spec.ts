@@ -1,9 +1,8 @@
+import { AnalyticsModel } from "@powerhousedao/analytics-engine-graphql";
 import initApi from "../initApi.js";
 import { CoreUnitModel } from "../modules/CoreUnit/db.js";
-import { AnalyticsModel } from "../modules/Analytics/db.js";
 import {
     updateQueryCache,
-    measureAnalyticsQueryPerformance,
     measureQueryPerformance,
     queryLength,
 } from "./logWrapper.js";
@@ -15,7 +14,6 @@ beforeAll(async () => {
     try {
         const apiModules = await initApi({
             CoreUnit: { enabled: true },
-            Analytics: { enabled: true },
         });
         authModel = apiModules.datasource.module<CoreUnitModel>("CoreUnit");
         analyticsModel = apiModules.datasource.module<AnalyticsModel>("Analytics");

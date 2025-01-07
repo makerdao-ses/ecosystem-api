@@ -27,13 +27,19 @@ npm run dev
 
 This will make a GraphQL explorer available at [http://localhost:4000](http://localhost:4000), which will reload the API on every local file change.
 
-### DB Transfer
+### Clearing the Development DB
+
+The local DB running via `docker compose` writes to the `./db` path. This means that to nuke the database and start again from an empty one, simply `rm -rf .db`. This is common before a DB migration, as detailed below.
+
+### DB Migration
 
 A DB copy tool is available that leverages containers to export and import data without needing any tools installed locally.
 
 ```
+# start the database
 docker-compose up -d
 
+# dumps from db specified with parameters, into that db
 ./dump-db.sh <user> <password> <host> <db>
 ```
 

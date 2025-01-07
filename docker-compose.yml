@@ -1,6 +1,6 @@
 services:
   db:
-    image: postgres:14.1-alpine
+    image: postgres:15.8-alpine
     restart: always
     environment:
       - POSTGRES_USER=makerdao
@@ -11,7 +11,7 @@ services:
     expose:
       - 5444
     volumes:
-      - db:/var/lib/postgresql/data
+      - ./.db:/var/lib/postgresql/data
     command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
   redis:
     image: redis:7.4-alpine
