@@ -23,7 +23,7 @@
         "@apollo/utils.keyvaluecache": "2.1.1",
         "@graphql-tools/schema": "^8.3.3",
         "@powerhousedao/analytics-engine-core": "^0.3.0",
-        "@powerhousedao/analytics-engine-graphql": "^0.2.1",
+        "@powerhousedao/analytics-engine-graphql": "^0.2.2",
         "@powerhousedao/analytics-engine-knex": "^0.4.0",
         "@powerhousedao/analytics-engine-pg": "^0.4.0",
         "bcrypt": "^5.0.1",
