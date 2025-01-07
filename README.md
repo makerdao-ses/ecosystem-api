@@ -44,3 +44,16 @@ docker-compose up -d
 ```
 
 This exports from the target instance and imports into the locally running postgres instance.
+
+### Environment Variables
+
+The following environment variables are supported:
+
+| Name                  | Description | Default | Required  |
+| -                     | -           | -       | -         |
+| SECRET                | | | |
+| REFRESH_CACHE_SECRET  | | | |
+| PORT                  | Port to run API on. | `3000` | NO |
+| PG_CONNECTION_STRING  | Connection string for Postgres. | `""` | YES |
+| REDIS_TLS_URL         | Connection string for Redis. | `""` | YES |
+| DEBUG                 | True to turn on debug logging. | `false` | No |
