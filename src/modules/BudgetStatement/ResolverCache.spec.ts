@@ -1,5 +1,5 @@
 import { Knex } from "knex";
-import initKnex from "../../initKnex.js";
+import getKnex from "../../knex.js";
 import {
   BudgetReportPath,
   BudgetReportPathSegment,
@@ -11,7 +11,7 @@ import { ResolverCache } from "./ResolverCache";
 let knex: Knex;
 
 beforeAll(async () => {
-  knex = initKnex();
+  knex = getKnex();
 });
 
 afterAll(async () => {
