@@ -148,4 +148,6 @@ const port = process.env.PORT ? Number.parseInt(process.env.PORT) : 4000;
 export const apiModules = await initApi();
 
 startApolloServer(buildExpressApp(), apiModules, { port });
-await warmUpQueryCache();
+if (process.env.CACHE_DISABLED !== 'true') {
+    await warmUpQueryCache();
+}

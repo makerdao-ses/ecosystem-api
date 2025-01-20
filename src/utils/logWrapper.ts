@@ -20,44 +20,75 @@ const getApiModules = async () => {
     return apiModules;
 };
 
-let client: any;
+const isCacheDisabled = () => process.env.CACHE_DISABLED === 'true';
+
+let client: any = null;
 
 async function init() {
-    const url = process.env.REDIS_TLS_URL;
-    if (!url) {
-        throw new Error('REDIS_TLS_URL not set');
+    if (isCacheDisabled()) {
+        console.log('cache is disabled')
+        return;
     }
-
-    client = await createClient({
-        url,
-        socket: {
-            tls: url.startsWith('rediss'),
-            rejectUnauthorized: false,
+    try {
+        const url = process.env.REDIS_TLS_URL;
+        if (!url) {
+            throw new Error('REDIS_TLS_URL not set');
         }
-    }).on('error', (err: string) => console.log('Redis Client Error', err))
-        .connect();
+
+        client = await createClient({
+            url,
+            socket: {
+                tls: url.startsWith('rediss'),
+                rejectUnauthorized: false,
+            }
+        });
+
+        client.on('error', (err: string) => {
+            if (!isCacheDisabled()) {
+                console.log('Redis Client Error', err);
+            }
+        });
+
+        await client.connect();
+    } catch (error) {
+        if (!isCacheDisabled()) {
+            console.error('Redis initialization error:', error);
+        }
+        client = null;
+    }
 }
 
-export const timer = setInterval(
+export const timer = isCacheDisabled() ? null : setInterval(
     async () => {
+        if (isCacheDisabled()) {
+            if (timer) {
+                clearInterval(timer);
+            }
+            return;
+        }
         try {
             client && (await client.ping());
         } catch (err) {
-            console.error('Ping Interval Error', err);
-            // Attempt to reconnect immediately
-            try {
-                await init();
-            } catch (initErr) {
-                console.error('Redis reconnection failed:', initErr);
+            if (!isCacheDisabled()) {
+                console.error('Ping Interval Error', err);
+                try {
+                    await init();
+                } catch (initErr) {
+                    console.error('Redis reconnection failed:', initErr);
+                }
             }
         }
     },
-    1000 * 30  // 30 seconds
+    1000 * 30
 );
 
 export const closeRedis = () => {
-    clearInterval(timer);
-    client && client.disconnect();
+    if (timer) {
+        clearInterval(timer);
+    }
+    if (client) {
+        client.disconnect();
+    }
 };
 
 export const measureQueryPerformance = async (
@@ -67,58 +98,24 @@ export const measureQueryPerformance = async (
     refreshCache: boolean = false,
     priority: 'critical' | 'high' | 'medium' | 'low' = 'medium'
 ) => {
-    addQuery({ queryName, moduleName, knexQuery, priority });
     const logger = getChildLogger({}, { moduleName });
     try {
-        const start = Date.now(); // Start timing
-        if (!client) {
-            await init()
-        }
+        const start = Date.now();
+        
+        const results = isCacheDisabled() ? 
+            await knexQuery : 
+            await handleCachedQuery(knexQuery, refreshCache);
 
-        const key = getHashKey(knexQuery);
-        const value = refreshCache ? null : await client.get(key);
-        let results = null;
-        if (value) {
-            results = JSON.parse(value, dateTimeReviver);
-        } else {
-            results = await knexQuery;
-            client.set(key, JSON.stringify(results), { EX: 14400 });
-        }
-        const end = Date.now(); // End timing
+        const end = Date.now();
         const executionTime = (end - start) / 1000;
-        const logData = {
-            timestamp: new Date().toISOString(),
-            queryName,
-            moduleName,
-            executionTime: `${executionTime}s`,
-            query: knexQuery.toString(),
-        };
-        // Store slow queries in Redis
-        if (executionTime > SLOW_QUERY_THRESHOLD) {
-            await logSlowQuery(logData);
-        }
-        if (executionTime > 0.5) {
-            logger.info({
-                executionTime: `${(end - start) / 1000}s`,
-                query: knexQuery.toString(),
-            },
-                queryName);
-            // await appendLogToFile(logData);
-        } else {
-            logger.debug({
-                executionTime: `${(end - start) / 1000}s`,
-                query: knexQuery.toString(),
-            },
-                queryName);
-        }
-
+        
+        logQueryPerformance(logger, queryName, executionTime, knexQuery.toString());
         return results;
     } catch (error: any) {
         logger.error({
             error: error.message,
             query: knexQuery.toString(),
-        },
-            queryName);
+        }, queryName);
         return await knexQuery;
     }
 };
@@ -133,62 +130,77 @@ export const measureAnalyticsQueryPerformance = async (
     const modules = await getApiModules();
     const engine = modules.datasource.Analytics.engine;
     const store = modules.datasource.Analytics.store;
-
     const queryString = store.getBaseQuery(analyticsQuery).toString();
-    addQuery({ queryName, moduleName, analyticsQuery, analyticsQueryString: queryString, priority });
+    
     const logger = getChildLogger({}, { moduleName });
     try {
-        const start = Date.now(); // Start timing
-        if (!client) {
-            await init()
-        }
-        const key = getHashKey(analyticsQuery);
-        const value = refreshCache ? null : await client.get(key);
-        let results = null;
-        if (value) {
-            results = JSON.parse(value, dateTimeReviver);
-        } else {
-            results = await engine.execute(analyticsQuery) as any;
-            client.set(key, JSON.stringify(results), { EX: 14400 });
-            // log request if !requestCache, to also include timing info
-        }
-        const end = Date.now(); // End timing
+        const start = Date.now();
+        
+        const results = isCacheDisabled() ?
+            await engine.execute(analyticsQuery) :
+            await handleCachedAnalyticsQuery(engine, analyticsQuery, refreshCache);
+
+        const end = Date.now();
         const executionTime = (end - start) / 1000;
-        const logData = {
-            timestamp: new Date().toISOString(),
-            queryName,
-            moduleName,
-            executionTime: `${executionTime}s`,
-            query: queryString,
-        };
-
-        // Store slow queries in Redis
-        if (executionTime > SLOW_QUERY_THRESHOLD) {
-            await logSlowQuery(logData);
-        }
-        if (executionTime > 0.5) {
-            logger.info({
-                executionTime: `${(end - start) / 1000}s`,
-                query: queryString,
-            },
-                queryName);
-            // await appendLogToFile(logData);
-        } else {
-            logger.debug({
-                executionTime: `${(end - start) / 1000}s`,
-                query: queryString,
-            },
-                queryName);
-        }
-
+        
+        logQueryPerformance(logger, queryName, executionTime, queryString);
         return results;
     } catch (error: any) {
         logger.error({
             error: error.message,
             query: analyticsQuery,
-        },
-            queryName);
-        return await engine.execute(analyticsQuery) as any;
+        }, queryName);
+        return await engine.execute(analyticsQuery);
+    }
+};
+
+async function handleCachedQuery(knexQuery: Knex.QueryBuilder, refreshCache: boolean) {
+    if (isCacheDisabled()) {
+        return await knexQuery;
+    }
+    
+    if (!client) {
+        await init();
+    }
+    const key = getHashKey(knexQuery);
+    const value = refreshCache ? null : await client.get(key);
+    if (value) {
+        return JSON.parse(value, dateTimeReviver);
+    }
+    const results = await knexQuery;
+    client.set(key, JSON.stringify(results), { EX: 14400 });
+    return results;
+}
+
+async function handleCachedAnalyticsQuery(engine: any, analyticsQuery: AnalyticsQuery, refreshCache: boolean) {
+    if (isCacheDisabled()) {
+        return await engine.execute(analyticsQuery);
+    }
+    
+    if (!client) {
+        await init();
+    }
+    const key = getHashKey(analyticsQuery);
+    const value = refreshCache ? null : await client.get(key);
+    if (value) {
+        return JSON.parse(value, dateTimeReviver);
+    }
+    const results = await engine.execute(analyticsQuery);
+    client.set(key, JSON.stringify(results), { EX: 14400 });
+    return results;
+}
+
+function logQueryPerformance(logger: any, queryName: string, executionTime: number, queryString: string) {
+    if (executionTime > 0.5) {
+        logger.info({
+            executionTime: `${executionTime}s`,
+            query: queryString,
+        }, queryName);
+    } else {
+        logger.debug({
+            executionTime: `${executionTime}s`,
+            query: queryString,
+        }, queryName);
     }
 }
 
@@ -228,7 +240,6 @@ async function appendLogToFile(logData: any) {
     }
 }
 
-// Add a new type for PrioritizedQuery
 type PrioritizedQuery = {
     queryHash: string;
     queryName: string;
@@ -242,8 +253,11 @@ type PrioritizedQuery = {
 
 let queries: PrioritizedQuery[] = [];
 
-// Modify the addQuery function to include priority
 async function addQuery(query: any) {
+    if (isCacheDisabled()) {
+        return;
+    }
+    
     const logger = getChildLogger({}, { moduleName: 'addQuery' });
     const queryHash = getHashKey(query.knexQuery ?? query.analyticsQuery);
     const foundQuery = queries.find(q => q.queryHash === queryHash);
@@ -256,14 +270,12 @@ async function addQuery(query: any) {
         }, 'New query added to cache');
     } else {
         foundQuery.hitCount++;
-        // Update priority if it's higher than the existing one
         if (query.priority && getPriorityValue(query.priority) > getPriorityValue(foundQuery.priority)) {
             foundQuery.hitCount *= 50;
         }
     }
 }
 
-// Helper function to convert priority to numeric value
 function getPriorityValue(priority: PrioritizedQuery['priority']): number {
     switch (priority) {
         case 'critical': return 3;
@@ -273,65 +285,66 @@ function getPriorityValue(priority: PrioritizedQuery['priority']): number {
     }
 }
 
-// Modify updateQueryCache to consider priority
 export async function updateQueryCache(maxConcurrency: number = 3, maxQueries: number = 300) {
+    if (isCacheDisabled()) {
+        return;
+    }
     try {
         if (queries.length === 0) return;
 
         const logger = getChildLogger({}, { moduleName: 'updateQueryCache' });
-
         const mainStart = Date.now();
 
-        // Sort queries by hitCount
-        const sortedQueries = queries.sort((a, b) => {
-            // Compare by hitCount (higher hitCount comes first)
-            return b.hitCount - a.hitCount;
-        }).slice(0, maxQueries);
+        // Skip Redis operations if cache is disabled
+        if (!isCacheDisabled()) {
+            const sortedQueries = queries.sort((a, b) => {
+                return b.hitCount - a.hitCount;
+            }).slice(0, maxQueries);
 
-        logger.info({
-            nrOfInitialQueries: queries.length,
-            highestPriority: sortedQueries[0].priority,
-            highestHitCount: sortedQueries[0].hitCount
-        });
-
-        // update query cache with max concurrency
-        for (let i = 0; i < maxQueries; i += maxConcurrency) {
-            const batchStart = Date.now();
-            await Promise.all(sortedQueries.slice(i, i + maxConcurrency).map((query: any) =>
-                query.analyticsQuery ?
-                    measureAnalyticsQueryPerformance(query.queryName, query.moduleName, query.analyticsQuery, true)
-                    : measureQueryPerformance(query.queryName, query.moduleName, query.knexQuery, true)
-            ));
             logger.info({
-                message: `Time to update query cache batch ${i}`,
-                duration: `${(Date.now() - batchStart) / 1000}s`
-            })
+                nrOfInitialQueries: queries.length,
+                highestPriority: sortedQueries[0].priority,
+                highestHitCount: sortedQueries[0].hitCount
+            });
+
+            for (let i = 0; i < maxQueries; i += maxConcurrency) {
+                const batchStart = Date.now();
+                await Promise.all(sortedQueries.slice(i, i + maxConcurrency).map((query: any) =>
+                    query.analyticsQuery ?
+                        measureAnalyticsQueryPerformance(query.queryName, query.moduleName, query.analyticsQuery, true)
+                        : measureQueryPerformance(query.queryName, query.moduleName, query.knexQuery, true)
+                ));
+                logger.info({
+                    message: `Time to update query cache batch ${i}`,
+                    duration: `${(Date.now() - batchStart) / 1000}s`
+                })
+            }
+
+            queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
+
+            // Only attempt Redis operations if cache is not disabled and client exists
+            if (client && !isCacheDisabled()) {
+                await client.set("query-cache", JSON.stringify(sortedQueries.map(q => {
+                    if (q.analyticsQuery) {
+                        return {
+                            query: q.analyticsQueryString,
+                            analyticsQuery: serializeAnalyticsQuery(q.analyticsQuery),
+                            hitCount: q.hitCount,
+                            moduleName: q.moduleName,
+                            queryName: q.queryName
+                        }
+                    } else {
+                        return {
+                            query: typeof q.knexQuery === 'object' ? q.knexQuery.toQuery() : q.knexQuery,
+                            hitCount: q.hitCount,
+                            moduleName: q.moduleName,
+                            queryName: q.queryName
+                        }
+                    }
+                })), { EX: 86400 });
+            }
         }
 
-        // replace query with sorted query and reset hitCount
-        queries = sortedQueries.map(q => ({ ...q, hitCount: 0 }));
-
-        // storing queries in redis
-        if (client) {
-            client.set("query-cache", JSON.stringify(sortedQueries.map(q => {
-                if (q.analyticsQuery) {
-                    return {
-                        query: q.analyticsQueryString,
-                        analyticsQuery: serializeAnalyticsQuery(q.analyticsQuery),
-                        hitCount: q.hitCount,
-                        moduleName: q.moduleName,
-                        queryName: q.queryName
-                    }
-                } else {
-                    return {
-                        query: typeof q.knexQuery === 'object' ? q.knexQuery.toQuery() : q.knexQuery,
-                        hitCount: q.hitCount,
-                        moduleName: q.moduleName,
-                        queryName: q.queryName
-                    }
-                }
-            })), { EX: 86400 })
-        }
         const mainEnd = Date.now();
         logger.info({
             message: 'Time to update query cache + new nr of queries',
@@ -339,11 +352,16 @@ export async function updateQueryCache(maxConcurrency: number = 3, maxQueries: n
             duration: `${(mainEnd - mainStart) / 1000}s`
         })
     } catch (error) {
-        console.error('Error updating query cache:', error);
+        if (!isCacheDisabled()) {
+            console.error('Error updating query cache:', error);
+        }
     }
 }
 
 export async function warmUpQueryCache() {
+    if (isCacheDisabled()) {
+        return;
+    }
     const logger = getChildLogger({}, { moduleName: 'warmUpQueryCache' });
 
     if (!client) {
@@ -372,19 +390,23 @@ export async function warmUpQueryCache() {
     }
 }
 
-
 export function queryLength() {
+    if (isCacheDisabled()) {
+        return 0;
+    }
     return queries.length;
 }
 
 async function logSlowQuery(logData: any) {
+    if (isCacheDisabled()) {
+        return;
+    }
     if (!client) {
         await init();
     }
     const currentLogs = await client.lRange(SLOW_QUERY_LOG_KEY, 0, -1);
     const serializedLog = JSON.stringify(logData);
 
-    // Keep only the last 100 slow query logs
     if (currentLogs.length >= 100) {
         await client.lPop(SLOW_QUERY_LOG_KEY);
     }
@@ -392,8 +414,10 @@ async function logSlowQuery(logData: any) {
     await client.rPush(SLOW_QUERY_LOG_KEY, serializedLog);
 }
 
-// New function to retrieve slow query logs
 export async function getSlowQueryLogs(): Promise<any[]> {
+    if (isCacheDisabled()) {
+        return [];
+    }
     if (!client) {
         await init();
     }
