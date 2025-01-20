@@ -1,21 +1,14 @@
-# builder
-FROM node:22.5-alpine AS builder
-
-RUN npm install -g typescript pnpm
+# Use Bun image
+FROM oven/bun:latest
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml knexfile.js ./
-RUN pnpm install
 
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN bun install
+
+# Copy the rest of the application code
 COPY . ./
-RUN tsc -p ./config/tsconfig.json
 
-# runner
-FROM node:22.5-alpine AS runner
-
-RUN npm install -g knex
-
-WORKDIR /app
-COPY --from=builder /app/ ./
-
-ENTRYPOINT [ "node" ]
+# Start the application
+CMD ["bun", "run", "./src/index.ts"]

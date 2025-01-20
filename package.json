@@ -5,14 +5,14 @@
     "type": "module",
     "main": "index.js",
     "scripts": {
-        "start": "node ./build/index.js",
-        "build": "tsc -p ./config/tsconfig.json",
-        "dev": "tsc-watch --noClear -p ./config/tsconfig.json --onSuccess \"node ./build/index.js\"",
+        "start": "bun run ./src/index.ts",
+        "build": "bun run ./src/index.ts",
+        "dev": "bun run ./src/index.ts --watch",
         "migrate:status": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:status",
         "migrate:latest": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:latest",
         "migrate:up": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:up",
         "migrate:down": "knex --migrations-directory=./migrations/new --migrations-table-name=knex_migrations_new migrate:down",
-        "test": "jest -c ./jest.config.js",
+        "test": "bun test",
         "test:watch": "jest -c ./jest.config.js --watchAll"
     },
     "author": "",
@@ -67,9 +67,6 @@
         "eslint": "^8.53.0",
         "nodemon": "^2.0.16",
         "prettier": "^3.0.3",
-        "ts-jest": "^29.1.1",
-        "tsc-watch": "^6.0.4",
-        "typescript": "^5.4.2",
         "xlsx": "^0.18.5"
     },
     "pnpm": {
