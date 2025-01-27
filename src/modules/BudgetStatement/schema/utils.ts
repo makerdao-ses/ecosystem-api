@@ -4,8 +4,8 @@ import { addMonths, subMonths, parse, format } from 'date-fns';
 // Helper function to adjust dates
 const adjustDates = (yearMonth: string) => {
     const date = parse(yearMonth, 'yyyy/MM', new Date());
-    const start = format(subMonths(date, 5), 'yyyy/MM');
-    const end = format(addMonths(date, 5), 'yyyy/MM');
+    const start = format(subMonths(date, 5), 'yyyy-MM-01');
+    const end = format(addMonths(date, 5), 'yyyy-MM-01');
     return { start, end };
 };
 
