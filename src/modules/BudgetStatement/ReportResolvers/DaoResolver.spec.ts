@@ -1,4 +1,4 @@
-import initKnex from "../../../initKnex.js";
+import getKnex from "../../../knex.js";
 import { Knex } from "knex";
 import { BudgetReportPath } from "../BudgetReportPath.js";
 import { DaoResolver } from "./DaoResolver.js";
@@ -7,7 +7,7 @@ import { BudgetReportGranularity } from "../BudgetReportQuery.js";
 let knex: Knex;
 
 beforeAll(async () => {
-  knex = initKnex();
+  knex = getKnex();
 });
 
 afterAll(async () => {

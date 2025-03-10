@@ -1,4 +1,4 @@
-import initKnex from "../../initKnex.js";
+import getKnex from "../../knex.js";
 import { Knex } from "knex";
 import {
   LineItemFetcher,
@@ -10,7 +10,7 @@ const DEBUG_OUTPUT = false;
 let knex: Knex;
 
 beforeAll(async () => {
-  knex = initKnex();
+  knex = getKnex();
 });
 
 afterAll(async () => {

@@ -1,7 +1,8 @@
 import { Knex } from "knex";
 import CoreUnitModel from "../CoreUnit/db.js";
-import AnalyticsModel from "../Analytics/db.js";
 import { measureQueryPerformance } from "../../utils/logWrapper.js";
+import { AnalyticsModel, queryFilter } from "@powerhousedao/analytics-engine-graphql";
+import getAnalytics from "../../analytics.js";
 
 export type SnapshotFilter = {
   id?: number | string;
@@ -29,12 +30,12 @@ const get3Months = (month: string) => {
 export class SnapshotModel {
   knex: Knex;
   coreunit: any;
-  analyticsModel: any;
+  analyticsModel: AnalyticsModel;
 
-  constructor(knex: Knex) {
+  constructor(knex: Knex, analytics: AnalyticsModel) {
     this.knex = knex;
     this.coreunit = CoreUnitModel(knex);
-    this.analyticsModel = AnalyticsModel(knex);
+    this.analyticsModel = analytics;
   }
 
   async getSnapshots(filter: {
@@ -183,13 +184,13 @@ export class SnapshotModel {
     endDate.setMonth(endDate.getMonth() + 1);
     end = endDate.toISOString().slice(0, 7);
 
-    const filter = {
+    const filter:queryFilter = {
       start,
       end: end,
       granularity: 'total',
       metrics: ['Actuals', 'PaymentsOnChain', 'PaymentsOffChainIncluded'],
       dimensions: [
-        { name: 'report', select: `atlas/${ownerType}/${ownerId}`, lod: 5 }
+        { name: 'report', select: `atlas/${ownerType}/${ownerId}`, lod: "5" }
       ],
       currency: 'DAI'
     }
@@ -227,4 +228,4 @@ export class SnapshotModel {
 
 }
 
-export default (knex: Knex) => new SnapshotModel(knex);
+export default (knex: Knex) => new SnapshotModel(knex, getAnalytics(knex));

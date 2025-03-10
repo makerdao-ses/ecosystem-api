@@ -9,7 +9,6 @@ export default {
   Delegates: { enabled: true },
   Snapshot: { enabled: true },
   Budget: { enabled: true },
-  Analytics: { enabled: true },
   Projects: { enabled: true },
   ScopeOfWork: { enabled: true },
   // Roadmap: { enabled: true, require: ['CoreUnit'] },
