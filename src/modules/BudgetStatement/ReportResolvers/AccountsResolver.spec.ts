@@ -1,14 +1,13 @@
-import initKnex from "../../../initKnex.js";
+import getKnex from "../../../knex.js";
 import { Knex } from "knex";
 import { AccountsResolver, AccountsResolverData } from "./AccountsResolver.js";
-import { BudgetReportPeriod } from "../BudgetReportPeriod.js";
 import { BudgetReportPath } from "../BudgetReportPath.js";
 import { BudgetReportGranularity } from "../BudgetReportQuery.js";
 
 let knex: Knex;
 
 beforeAll(async () => {
-  knex = initKnex();
+  knex = getKnex();
 });
 
 afterAll(async () => {

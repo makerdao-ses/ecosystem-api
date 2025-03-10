@@ -3,7 +3,7 @@ import { createClient } from 'redis';
 import { createHash } from 'crypto';
 import fs from 'fs/promises';
 import path from 'path';
-import { AnalyticsQuery } from "../analytics/AnalyticsQuery.js";
+import { AnalyticsQuery } from "@powerhousedao/analytics-engine-core";
 import { Knex } from "knex";
 import { serializeAnalyticsQuery, deserializeAnalyticsQuery } from './analyticsSerializer.js';
 

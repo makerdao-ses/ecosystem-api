@@ -1,6 +1,6 @@
 import linkApiModules from "../factory";
 import EcosystemDatabase from "../EcosystemDatabase";
-import initKnex from "../../initKnex";
+import getKnex from "../../knex.js";
 import defaultSettings from "../default.config";
 import { ApolloServer } from "@apollo/server";
 import { Authorization } from "../Auth/authorization";
@@ -9,7 +9,7 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 let server: any, db: any;
 
 beforeAll(async () => {
-  db = new EcosystemDatabase(initKnex());
+  db = new EcosystemDatabase(getKnex());
   const { typeDefs, resolvers } = await linkApiModules(db, defaultSettings);
   const context = {
     dataSources: { db },

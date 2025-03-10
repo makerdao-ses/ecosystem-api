@@ -1,4 +1,4 @@
-import knex from "knex";
+import knex, { Knex }  from "knex";
 import pkg from "pg";
 import { reviver } from "./modules/BudgetStatement/JsonSerializerTypes.js";
 
@@ -12,11 +12,18 @@ types.setTypeParser(114, (val) => {
   return JSON.parse(val, reviver);
 });
 
+let instance: Knex | null = null;
+
 export default () => {
+  if (instance) {
+    return instance;
+  }
+
   const knexConfig = {
     client: "pg",
     connection: process.env.PG_CONNECTION_STRING,
   };
 
-  return knex(knexConfig);
+  instance = knex(knexConfig);
+  return instance;
 };
