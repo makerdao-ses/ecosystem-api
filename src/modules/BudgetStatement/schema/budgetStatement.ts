@@ -512,6 +512,11 @@ export const resolvers = {
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
+
+      if (!output) {
+        return []; // Return empty array if no CoreUnit found
+      }
+
       const result = await loaders.getBudgetStatementsLoader.load(`${id}-${output.type}`);
       return result;
     },
@@ -523,6 +528,11 @@ export const resolvers = {
         .knex("CoreUnit")
         .where("id", id)
         .select("type");
+
+      if (!output) {
+        return []; // Return empty array if no CoreUnit found
+      }
+
       const result = await loaders.getBudgetStatementsLoader.load(`${id}-${output.type}`);
       return result;
     },
