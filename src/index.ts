@@ -86,6 +86,7 @@ async function startApolloServer(
   const server = new ApolloServer({
     schema,
     plugins,
+    introspection: true,
     persistedQueries: {
       cache: new InMemoryLRUCache({
         maxSize: 1000,
