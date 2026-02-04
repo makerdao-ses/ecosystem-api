@@ -194,7 +194,7 @@ jobs:
 
           echo "Updating ${VALUES_FILE} with version ${VERSION}"
 
-          yq -i ".ecosystemApi.image.tag = \"${VERSION}\"" "$VALUES_FILE"
+          yq -i ".image.tag = \"${VERSION}\"" "$VALUES_FILE"
 
           echo "Updated image tag to ${VERSION}"
           cat "$VALUES_FILE"
