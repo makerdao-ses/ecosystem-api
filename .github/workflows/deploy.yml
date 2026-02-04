@@ -176,12 +176,12 @@ jobs:
       (needs.prepare.outputs.channel == 'dev' || needs.prepare.outputs.channel == 'staging')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout k8s-cluster repository
+      - name: Checkout k8s-hosting repository
         uses: actions/checkout@v4
         with:
-          repository: powerhouse-inc/powerhouse-k8s-cluster
+          repository: powerhouse-inc/powerhouse-k8s-hosting
           token: ${{ secrets.K8S_REPO_PAT }}
-          path: k8s-cluster
+          path: k8s-hosting
 
       - name: Install yq
         uses: mikefarah/yq@v4
@@ -190,7 +190,7 @@ jobs:
         run: |
           CHANNEL="${{ needs.prepare.outputs.channel }}"
           VERSION="${{ needs.prepare.outputs.version }}"
-          VALUES_FILE="k8s-cluster/tenants/${CHANNEL}/ecosystem-api-values.yaml"
+          VALUES_FILE="k8s-hosting/tenants/${CHANNEL}/ecosystem-api-values.yaml"
 
           echo "Updating ${VALUES_FILE} with version ${VERSION}"
 
@@ -201,7 +201,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
-          cd k8s-cluster
+          cd k8s-hosting
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
