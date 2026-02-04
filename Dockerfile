@@ -1,11 +1,11 @@
 # builder
 FROM node:22.5-alpine AS builder
 
-RUN npm install -g typescript pnpm
+RUN npm install -g typescript
 
 WORKDIR /app
-COPY package.json pnpm-lock.yaml knexfile.js ./
-RUN pnpm install
+COPY package.json package-lock.json knexfile.js ./
+RUN npm ci
 
 COPY . ./
 RUN tsc -p ./config/tsconfig.json
