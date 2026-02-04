@@ -1,0 +1,238 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - dev
+
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: "Release channel"
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - main
+        default: "staging"
+      dry-run:
+        description: "Dry run (skip publishing)"
+        required: false
+        type: boolean
+        default: false
+
+env:
+  NODE_VERSION: "22"
+  PNPM_VERSION: "9"
+  DOCKER_REGISTRY: cr.vetra.io
+  PROJECT_NAME: ecosystem-api
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      channel: ${{ steps.params.outputs.channel }}
+      branch: ${{ steps.params.outputs.branch }}
+      dry_run: ${{ steps.params.outputs.dry_run }}
+      version: ${{ steps.params.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine parameters
+        id: params
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CHANNEL="${{ inputs.channel }}"
+            DRY_RUN="${{ inputs.dry-run }}"
+          else
+            # Determine channel from branch
+            BRANCH="${{ github.ref_name }}"
+            case "$BRANCH" in
+              main) CHANNEL="main" ;;
+              staging) CHANNEL="staging" ;;
+              dev) CHANNEL="dev" ;;
+              *) CHANNEL="dev" ;;
+            esac
+            DRY_RUN="false"
+          fi
+
+          BRANCH="${{ github.ref_name }}"
+          VERSION=$(node -p "require('./package.json').version")
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+
+          # Create version tag
+          if [ "$CHANNEL" = "main" ]; then
+            VERSION_TAG="v${VERSION}"
+          else
+            VERSION_TAG="v${VERSION}-${CHANNEL}.${SHORT_SHA}"
+          fi
+
+          echo "channel=$CHANNEL" >> $GITHUB_OUTPUT
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          echo "dry_run=$DRY_RUN" >> $GITHUB_OUTPUT
+          echo "version=$VERSION_TAG" >> $GITHUB_OUTPUT
+
+          echo "Channel: $CHANNEL"
+          echo "Branch: $BRANCH"
+          echo "Version: $VERSION_TAG"
+          echo "Dry Run: $DRY_RUN"
+
+  build-docker:
+    name: Build Docker Image
+    needs: [prepare]
+    if: needs.prepare.outputs.dry_run != 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Ensure Docker project exists
+        run: |
+          PROJECT_NAME="${{ env.PROJECT_NAME }}"
+
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" \
+            "https://${{ env.DOCKER_REGISTRY }}/api/v2.0/projects?name=${PROJECT_NAME}")
+
+          if [ "$STATUS" = "200" ]; then
+            EXISTS=$(curl -s \
+              -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" \
+              "https://${{ env.DOCKER_REGISTRY }}/api/v2.0/projects?name=${PROJECT_NAME}" | \
+              jq -r ".[] | select(.name==\"${PROJECT_NAME}\") | .name")
+
+            if [ "$EXISTS" = "$PROJECT_NAME" ]; then
+              echo "Project ${PROJECT_NAME} already exists"
+            else
+              echo "Creating project ${PROJECT_NAME}..."
+              curl -X POST \
+                -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" \
+                -H "Content-Type: application/json" \
+                -d "{\"project_name\": \"${PROJECT_NAME}\", \"public\": false}" \
+                "https://${{ env.DOCKER_REGISTRY }}/api/v2.0/projects"
+            fi
+          else
+            echo "Creating project ${PROJECT_NAME}..."
+            curl -X POST \
+              -u "${{ secrets.DOCKER_USERNAME }}:${{ secrets.DOCKER_PASSWORD }}" \
+              -H "Content-Type: application/json" \
+              -d "{\"project_name\": \"${PROJECT_NAME}\", \"public\": false}" \
+              "https://${{ env.DOCKER_REGISTRY }}/api/v2.0/projects"
+          fi
+
+      - name: Login to Docker Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Determine image tags
+        id: tags
+        run: |
+          VERSION="${{ needs.prepare.outputs.version }}"
+          CHANNEL="${{ needs.prepare.outputs.channel }}"
+
+          DOCKER_BASE="${{ env.DOCKER_REGISTRY }}/${{ env.PROJECT_NAME }}/api"
+
+          TAGS="${DOCKER_BASE}:${VERSION}"
+
+          if [ "$CHANNEL" = "main" ]; then
+            TAGS="${TAGS},${DOCKER_BASE}:latest"
+          else
+            TAGS="${TAGS},${DOCKER_BASE}:${CHANNEL}"
+          fi
+
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT
+          echo "Image tags: $TAGS"
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.tags.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  update-k8s:
+    name: Update K8s Cluster
+    needs: [prepare, build-docker]
+    if: |
+      needs.prepare.outputs.dry_run != 'true' &&
+      (needs.prepare.outputs.channel == 'dev' || needs.prepare.outputs.channel == 'staging')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout k8s-cluster repository
+        uses: actions/checkout@v4
+        with:
+          repository: powerhouse-inc/powerhouse-k8s-cluster
+          token: ${{ secrets.K8S_REPO_PAT }}
+          path: k8s-cluster
+
+      - name: Install yq
+        uses: mikefarah/yq@v4
+
+      - name: Update image tags
+        run: |
+          CHANNEL="${{ needs.prepare.outputs.channel }}"
+          VERSION="${{ needs.prepare.outputs.version }}"
+          VALUES_FILE="k8s-cluster/tenants/${CHANNEL}/ecosystem-api-values.yaml"
+
+          echo "Updating ${VALUES_FILE} with version ${VERSION}"
+
+          yq -i ".ecosystemApi.image.tag = \"${VERSION}\"" "$VALUES_FILE"
+
+          echo "Updated image tag to ${VERSION}"
+          cat "$VALUES_FILE"
+
+      - name: Commit and push changes
+        run: |
+          cd k8s-cluster
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          CHANNEL="${{ needs.prepare.outputs.channel }}"
+          VERSION="${{ needs.prepare.outputs.version }}"
+
+          git add "tenants/${CHANNEL}/ecosystem-api-values.yaml"
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore(${CHANNEL}): update ecosystem-api image tag to ${VERSION}"
+            git push
+          fi
+
+  summary:
+    name: Release Summary
+    needs: [prepare, build-docker, update-k8s]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Summary
+        run: |
+          echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Parameter | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Channel | ${{ needs.prepare.outputs.channel }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Branch | ${{ needs.prepare.outputs.branch }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Version | ${{ needs.prepare.outputs.version }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dry Run | ${{ needs.prepare.outputs.dry_run }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Docker Image" >> $GITHUB_STEP_SUMMARY
+          echo "\`${{ env.DOCKER_REGISTRY }}/${{ env.PROJECT_NAME }}/api:${{ needs.prepare.outputs.version }}\`" >> $GITHUB_STEP_SUMMARY
