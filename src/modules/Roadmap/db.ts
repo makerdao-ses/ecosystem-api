@@ -94,13 +94,20 @@ export class RoadmapModel {
     this.coreUnitModel = coreUnitModel;
   }
 
+  private validateColumn(paramName: string, allowedColumns: string[]): void {
+    if (!allowedColumns.includes(paramName)) {
+      throw new Error(`Invalid column name: ${paramName}`);
+    }
+  }
+
   async getRoadmaps(
     paramName?: string | undefined,
     paramValue?: string | number | boolean | undefined,
   ): Promise<Roadmap[]> {
     const baseQuery = this.knex.select("*").from("Roadmap").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'ownerCuId', 'roadmapCode', 'roadmapName', 'comments', 'roadmapStatus', 'strategicInitiative', 'roadmapSummary']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -115,7 +122,8 @@ export class RoadmapModel {
       .from("RoadmapStakeholder")
       .orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'stakeholderId', 'roadmapId', 'stakeholderRoleId']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -130,7 +138,8 @@ export class RoadmapModel {
       .from("StakeholderRole")
       .orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'stakeholderRoleName']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -142,7 +151,8 @@ export class RoadmapModel {
   ): Promise<Stakeholder[]> {
     const baseQuery = this.knex.select("*").from("Stakeholder").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'name', 'stakeholderContributorId', 'stakeholderCuCode']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -154,7 +164,8 @@ export class RoadmapModel {
   ): Promise<RoadmapOutput[]> {
     const baseQuery = this.knex.select("*").from("RoadmapOutput").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'outputId', 'roadmapId', 'outputTypeId']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -166,7 +177,8 @@ export class RoadmapModel {
   ): Promise<Output[]> {
     const baseQuery = this.knex.select("*").from("Output").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'name', 'outputUrl', 'outputDate']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -178,7 +190,8 @@ export class RoadmapModel {
   ): Promise<OutputType[]> {
     const baseQuery = this.knex.select("*").from("OutputType").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'outputType']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -190,7 +203,8 @@ export class RoadmapModel {
   ): Promise<Milestone[]> {
     const baseQuery = this.knex.select("*").from("Milestone").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'roadmapId', 'taskId']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -202,7 +216,8 @@ export class RoadmapModel {
   ): Promise<Task[]> {
     const baseQuery = this.knex.select("*").from("Task").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'parentId', 'taskName', 'taskStatus', 'ownerStakeholderId', 'startDate', 'target', 'completedPercentage', 'confidenceLevel', 'comments']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }
@@ -214,7 +229,8 @@ export class RoadmapModel {
   ): Promise<Review[]> {
     const baseQuery = this.knex.select("*").from("Review").orderBy("id");
     if (paramName !== undefined && paramValue !== undefined) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      this.validateColumn(paramName, ['id', 'taskId', 'reviewDate', 'reviewOutcome']);
+      return baseQuery.where(paramName, paramValue);
     } else {
       return baseQuery;
     }

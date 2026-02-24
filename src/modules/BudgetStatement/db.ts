@@ -230,17 +230,18 @@ export class BudgetStatementModel {
 
     // use other join query if lastModified filter is set
     if (filter?.filter?.sortByLastModified) {
+      const sortDir = filter.filter.sortByLastModified.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
       const subquery = this.knex
         .select(this.knex.raw("DISTINCT ON ((params->>'budgetStatementId')::integer) params->>'budgetStatementId' as id, created_at"))
         .from("ChangeTrackingEvents")
         .whereRaw("params->>'budgetStatementId' IS NOT NULL")
-        .orderByRaw(`(params->>'budgetStatementId')::integer, created_at ${filter?.filter?.sortByLastModified.toUpperCase()}`);
+        .orderByRaw(`(params->>'budgetStatementId')::integer, created_at ${sortDir}`);
 
       query = this.knex
         .select("BudgetStatement.*", "cte.created_at as last_modified")
         .from("BudgetStatement")
         .leftJoin(subquery.as('cte'), 'BudgetStatement.id', this.knex.raw('cte.id::integer'))
-        .orderByRaw(`last_modified ${filter?.filter?.sortByLastModified} NULLS LAST, month DESC`);
+        .orderByRaw(`last_modified ${sortDir} NULLS LAST, month DESC`);
     }
 
     if (filter?.limit !== undefined && filter?.offset !== undefined) {
@@ -386,6 +387,13 @@ export class BudgetStatementModel {
       .select("*")
       .from("BudgetStatementLineItem")
       .orderBy("month", "desc");
+    const allowedLineItemColumns = ['id', 'budgetStatementWalletId', 'month', 'position', 'group', 'budgetCategory', 'forecast', 'actual', 'comments', 'canonicalBudgetCategory', 'headcountExpense', 'budgetCap', 'payment'];
+    if (paramName !== undefined && !allowedLineItemColumns.includes(paramName)) {
+      throw new Error(`Invalid column name: ${paramName}`);
+    }
+    if (secondParamName !== undefined && !allowedLineItemColumns.includes(secondParamName)) {
+      throw new Error(`Invalid column name: ${secondParamName}`);
+    }
     if (offset != undefined && limit != undefined) {
       return baseQuery.limit(limit).offset(offset);
     } else if (
@@ -394,7 +402,7 @@ export class BudgetStatementModel {
       secondParamName === undefined &&
       secondParamValue === undefined
     ) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      return baseQuery.where(paramName, paramValue);
     } else if (
       paramName !== undefined &&
       paramValue !== undefined &&
@@ -402,8 +410,8 @@ export class BudgetStatementModel {
       secondParamValue !== undefined
     ) {
       return baseQuery
-        .where(`${paramName}`, paramValue)
-        .andWhere(`${secondParamName}`, secondParamValue);
+        .where(paramName, paramValue)
+        .andWhere(secondParamName, secondParamValue);
     } else {
       return baseQuery;
     }
@@ -474,6 +482,13 @@ export class BudgetStatementModel {
     secondParamName?: string | undefined,
     secondParamValue?: string | number | boolean | undefined,
   ): Promise<BudgetStatementComment[]> {
+    const allowedCommentColumns = ['id', 'budgetStatementId', 'authorId', 'timestamp', 'comment', 'status'];
+    if (paramName !== undefined && !allowedCommentColumns.includes(paramName)) {
+      throw new Error(`Invalid column name: ${paramName}`);
+    }
+    if (secondParamName !== undefined && !allowedCommentColumns.includes(secondParamName)) {
+      throw new Error(`Invalid column name: ${secondParamName}`);
+    }
     const baseQuery = this.knex
       .select("*")
       .from("BudgetStatementComment")
@@ -484,7 +499,7 @@ export class BudgetStatementModel {
       secondParamName === undefined &&
       secondParamValue === undefined
     ) {
-      return baseQuery.where(`${paramName}`, paramValue);
+      return baseQuery.where(paramName, paramValue);
     } else if (
       paramName !== undefined &&
       paramValue !== undefined &&
@@ -492,8 +507,8 @@ export class BudgetStatementModel {
       secondParamValue !== undefined
     ) {
       return baseQuery
-        .where(`${paramName}`, paramValue)
-        .andWhere(`${secondParamName}`, secondParamValue);
+        .where(paramName, paramValue)
+        .andWhere(secondParamName, secondParamValue);
     } else {
       return baseQuery;
     }

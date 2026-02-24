@@ -29,7 +29,11 @@ export class AuthModel {
     paramName: string,
     paramValue: string | number | boolean,
   ): Promise<User[]> {
-    return this.knex("User").where(`${paramName}`, paramValue);
+    const allowedColumns = ['id', 'username', 'password', 'active'];
+    if (!allowedColumns.includes(paramName)) {
+      throw new Error(`Invalid column name: ${paramName}`);
+    }
+    return this.knex("User").where(paramName, paramValue);
   }
 
   async getResourceId(userId: number) {
@@ -257,8 +261,12 @@ export class AuthModel {
       })
       .orderBy("User.id", "asc");
     if (paramName !== undefined && paramValue !== undefined) {
+      const allowedColumns = ['id', 'username', 'active'];
+      if (!allowedColumns.includes(paramName)) {
+        throw new Error(`Invalid column name: ${paramName}`);
+      }
       return await baseQuery.where(
-        paramName === "id" ? "User.id" : `${paramName}`,
+        paramName === "id" ? "User.id" : paramName,
         paramValue,
       );
     }
