@@ -756,7 +756,7 @@ export const resolvers = {
               input[0].ownerId,
             );
           }
-          if (parseInt(allowed[0].count) > 0 || input[0].ownerId === null) {
+          if (parseInt(allowed[0].count) > 0) {
             if (input.length < 1) {
               throw new Error("No input data");
             }
@@ -803,15 +803,17 @@ export const resolvers = {
             throw new Error("Account disabled. Reach admin for more info.");
           }
           const cuIdFromInput = input.pop();
-          let allowed = { count: 0 };
-          if (cuIdFromInput.ownerType !== "Delegates") {
+          let allowed: any = { count: 0 };
+          if (cuIdFromInput.ownerType === "Delegates") {
+            [allowed] = await dataSources.db.Auth.canUpdate(userObj.id, "Delegates", null);
+          } else {
             [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(
               userObj.id,
               cuIdFromInput.ownerType,
               cuIdFromInput.cuId,
             );
           }
-          if (allowed.count > 0 || cuIdFromInput.ownerType === "Delegates") {
+          if (parseInt(allowed.count) > 0) {
             //Tacking Change
             let CU;
             if (cuIdFromInput.ownerType === "Delegates") {
@@ -961,15 +963,17 @@ export const resolvers = {
             throw new Error("Account disabled. Reach admin for more info.");
           }
           const cuIdFromInput = input.pop();
-          let allowed = { count: 0 };
-          if (cuIdFromInput.ownerType !== "Delegates") {
+          let allowed: any = { count: 0 };
+          if (cuIdFromInput.ownerType === "Delegates") {
+            [allowed] = await dataSources.db.Auth.canUpdate(userObj.id, "Delegates", null);
+          } else {
             [allowed] = await dataSources.db.Auth.canUpdateCoreUnit(
               userObj.id,
               cuIdFromInput.ownerType,
               cuIdFromInput.cuId,
             );
           }
-          if (allowed.count > 0 || cuIdFromInput.ownerType === "Delegates") {
+          if (parseInt(allowed.count) > 0) {
             //Tacking Change
             let CU;
             if (cuIdFromInput.ownerType === "Delegates") {
