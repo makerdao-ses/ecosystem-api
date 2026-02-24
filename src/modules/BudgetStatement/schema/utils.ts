@@ -128,8 +128,8 @@ export const resolveBudgetPath = async (path: string, knex: Knex) => {
     // Escape single quotes in path
     // include / at the end to ensure we are matching the full path
     path = path.endsWith('/') ? path : `${path}/`;
-    const escapedPath = path.replace(/'/g, "''");
-    query = query.where('path', 'like', `${escapedPath}%`);
+    const escapedPath = path.replace(/[%_\\]/g, '\\$&');
+    query = query.whereRaw(`"path" LIKE ? ESCAPE '\\'`, [`${escapedPath}%`]);
 
     const result = await query;
     return result.map((item: any) => item.budgetStatementId);
