@@ -5,6 +5,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 
 import express from "express";
 import http from "http";
+import crypto from "crypto";
 import cors from "cors";
 
 import compression from "compression";
@@ -52,7 +53,14 @@ function buildExpressApp() {
     });
   });
   app.get('/update-cache', async (_req, res) => {
-    if (_req.headers['refresh-cache'] !== process.env.REFRESH_CACHE_SECRET) {
+    const headerVal = _req.headers['refresh-cache'];
+    const secretVal = process.env.REFRESH_CACHE_SECRET;
+    if (
+      typeof headerVal !== 'string' ||
+      !secretVal ||
+      Buffer.byteLength(headerVal) !== Buffer.byteLength(secretVal) ||
+      !crypto.timingSafeEqual(Buffer.from(headerVal), Buffer.from(secretVal))
+    ) {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized',
