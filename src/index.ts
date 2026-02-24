@@ -1,9 +1,11 @@
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 import express from "express";
 import http from "http";
+import crypto from "crypto";
 import cors from "cors";
 
 import compression from "compression";
@@ -51,7 +53,14 @@ function buildExpressApp() {
     });
   });
   app.get('/update-cache', async (_req, res) => {
-    if (_req.headers['refresh-cache'] !== process.env.REFRESH_CACHE_SECRET) {
+    const headerVal = _req.headers['refresh-cache'];
+    const secretVal = process.env.REFRESH_CACHE_SECRET;
+    if (
+      typeof headerVal !== 'string' ||
+      !secretVal ||
+      Buffer.byteLength(headerVal) !== Buffer.byteLength(secretVal) ||
+      !crypto.timingSafeEqual(Buffer.from(headerVal), Buffer.from(secretVal))
+    ) {
       return res.status(401).json({
         status: 'error',
         message: 'Unauthorized',
@@ -82,10 +91,15 @@ async function startApolloServer(
     resolvers: apiModules.resolvers,
   });
 
-  const plugins = [ApolloServerPluginDrainHttpServer({ httpServer }), responseCachePlugin()];
+  const plugins = [
+    ApolloServerPluginDrainHttpServer({ httpServer }),
+    responseCachePlugin(),
+    ApolloServerPluginLandingPageLocalDefault({ embed: true }),
+  ];
   const server = new ApolloServer({
     schema,
     plugins,
+    introspection: true,
     persistedQueries: {
       cache: new InMemoryLRUCache({
         maxSize: 1000,

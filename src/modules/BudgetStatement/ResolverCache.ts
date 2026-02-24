@@ -97,7 +97,7 @@ export class ResolverCache {
       .insert({
         hash,
         expiry: this._knex.raw(
-          "CURRENT_TIMESTAMP + interval '" + expirationInMinutes + " minutes'",
+          "CURRENT_TIMESTAMP + make_interval(mins => ?)", [expirationInMinutes],
         ),
         data: JSON.stringify(outputGroups),
       })
