@@ -122,10 +122,16 @@ export class ChangeTrackingModel {
   }
 
   getBsEvents(bsId: string) {
+    let parsedBsId: any;
+    try {
+      parsedBsId = JSON.parse(bsId);
+    } catch {
+      return this.knex.select("*").from("ChangeTrackingEvents").whereRaw("1 = 0");
+    }
     return this.knex
       .select("*")
       .from("ChangeTrackingEvents")
-      .whereRaw("params->>? = ?", ["budgetStatementId", JSON.parse(bsId)])
+      .whereRaw("params->>? = ?", ["budgetStatementId", parsedBsId])
       .orderBy("ChangeTrackingEvents.id", "desc");
   }
 
@@ -333,6 +339,13 @@ export class ChangeTrackingModel {
     secondParamName: string | undefined,
     secondParamValue: string | undefined,
   ) {
+    const allowedColumns = ['id', 'userId', 'collection', 'data', 'lastVisit'];
+    if (paramName !== undefined && !allowedColumns.includes(paramName)) {
+      throw new Error(`Invalid column name: ${paramName}`);
+    }
+    if (secondParamName !== undefined && !allowedColumns.includes(secondParamName)) {
+      throw new Error(`Invalid column name: ${secondParamName}`);
+    }
     if (
       paramName === undefined &&
       paramValue === undefined &&
@@ -342,13 +355,13 @@ export class ChangeTrackingModel {
       return this.knex("UserActivity").orderBy("id", "desc").limit(1);
     } else if (secondParamName == undefined && secondParamValue == undefined) {
       return this.knex("UserActivity")
-        .where(`${paramName}`, paramValue)
+        .where(paramName!, paramValue)
         .orderBy("id", "desc")
         .limit(1);
     } else {
       return this.knex("UserActivity")
-        .where(`${paramName}`, paramValue)
-        .andWhere(`${secondParamName}`, secondParamValue)
+        .where(paramName!, paramValue)
+        .andWhere(secondParamName!, secondParamValue)
         .orderBy("id", "desc")
         .limit(1);
     }
